@@ -1,0 +1,164 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SABR DIGITAL | Sites That Work</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600;800&family=Syne:wght@800&family=Oswald:wght@700&family=Inter:wght@400;700;900&family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&display=swap" rel="stylesheet">
+    <style>
+      :root {
+        --sabr-blue: #2563eb;
+        --sabr-sky: #38bdf8;
+        --sabr-navy: #1e3a8a;
+        --sabr-white: #ffffff;
+        --sabr-cream: #fdfbf7;
+        --sabr-ice: #f0f9ff;
+      }
+      
+      html, body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        min-height: 100%;
+        background: var(--sabr-cream);
+        color: var(--sabr-navy);
+        /* REMOVED scroll-behavior: smooth to ensure instant JS jumps */
+        font-family: 'Manrope', sans-serif;
+        overflow-x: hidden;
+        text-rendering: optimizeLegibility;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* Layout Integrity: Refined for clarity and anti-crowding */
+      h1, h2, h3 { 
+        line-height: 1.1 !important; 
+        word-break: normal;
+        overflow-wrap: normal;
+        hyphens: none !important;
+      }
+      
+      p {
+        line-height: 1.6;
+      }
+      
+      .font-syne { font-family: 'Syne', sans-serif; font-display: swap; }
+      .font-oswald { font-family: 'Oswald', sans-serif; }
+      .font-inter { font-family: 'Inter', sans-serif; }
+      .font-serif { font-family: 'Fraunces', serif; }
+      
+      .text-shimmer-blue {
+        background: linear-gradient(
+          90deg, 
+          #2563eb 0%, 
+          #38bdf8 25%, 
+          #ffffff 50%, 
+          #38bdf8 75%, 
+          #2563eb 100%
+        );
+        background-size: 200% auto;
+        color: var(--sabr-blue);
+        background-clip: text;
+        text-fill-color: transparent;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: blue-shine 5s linear infinite;
+        will-change: background-position;
+      }
+
+      @keyframes blue-shine { to { background-position: 200% center; } }
+
+      .fluid-bg-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        pointer-events: none !important;
+        opacity: 0.15;
+        contain: strict;
+      }
+
+      .ignition-line {
+        position: fixed;
+        top: 50%;
+        left: 0;
+        width: 100%;
+        height: 6px;
+        background: var(--sabr-blue);
+        z-index: 5000;
+        transform: scaleX(0);
+        transform-origin: center;
+        pointer-events: none;
+        display: none;
+        box-shadow: 0 0 40px rgba(37, 99, 235, 0.4);
+        will-change: transform, opacity;
+      }
+
+      #root { 
+        position: relative; 
+        z-index: 10; 
+        width: 100%; 
+        overflow-x: hidden; 
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.2.3",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react-router-dom": "https://esm.sh/react-router-dom@^6.22.0",
+    "gsap": "https://esm.sh/gsap@^3.14.2",
+    "gsap/": "https://esm.sh/gsap@^3.14.2/",
+    "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
+    "three": "https://esm.sh/three@^0.182.0",
+    "framer-motion": "https://esm.sh/framer-motion@^11.0.0"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <div class="ignition-line" id="ignition"></div>
+    <canvas id="fluid-bg" class="fluid-bg-canvas"></canvas>
+    <div id="root"></div>
+
+    <script type="module">
+      import * as THREE from 'three';
+      const canvas = document.getElementById('fluid-bg');
+      const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: false, powerPreference: "high-performance" });
+      const scene = new THREE.Scene();
+      const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+      const material = new THREE.ShaderMaterial({
+        uniforms: { uTime: { value: 0 } },
+        vertexShader: `varying vec2 vUv; void main() { vUv = uv; gl_Position = vec4(position, 1.0); }`,
+        fragmentShader: `
+          precision lowp float;
+          uniform float uTime;
+          varying vec2 vUv;
+          void main() {
+            vec2 uv = vUv;
+            float t = uTime * 0.1;
+            float wave = sin(uv.x * 2.0 + t) * cos(uv.y * 1.5 + t);
+            vec3 c1 = vec3(0.99, 0.98, 0.97);
+            vec3 c2 = vec3(0.92, 0.96, 1.0);
+            vec3 color = mix(c1, c2, wave * 0.2 + 0.2);
+            gl_FragColor = vec4(color, 1.0);
+          }
+        `
+      });
+      scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material));
+      function resize() { renderer.setSize(window.innerWidth, window.innerHeight, false); }
+      window.addEventListener('resize', resize);
+      resize();
+      function animate(time) { material.uniforms.uTime.value = time * 0.001; renderer.render(scene, camera); requestAnimationFrame(animate); }
+      requestAnimationFrame(animate);
+    </script>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>

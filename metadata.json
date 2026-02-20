@@ -1,0 +1,7 @@
+{
+  "name": "SABR DIGITAL - Architectural Web Engineering",
+  "description": "Refactored digital experience for SABR DIGITAL, optimized for 95+ Lighthouse and 60 FPS performance using hand-coded architectural principles.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
