@@ -124,7 +124,7 @@ const CafeHome: React.FC = () => {
               <Flower2 size={16} className="text-[#FDE2E4]" />
               <span className="text-white font-black text-[10px] uppercase tracking-[0.5em]">Parisian Patisserie & Brunch</span>
             </div>
-            <h1 className="font-serif text-6xl md:text-[9vw] leading-[0.85] text-white font-black tracking-tighter">
+            <h1 className="font-serif text-6xl md:text-[clamp(4rem,9vw,8rem)] leading-[0.85] text-white font-black tracking-tighter">
               SAVOUR THE <br /> <span className="text-[#FDE2E4] italic">MOMENT.</span>
             </h1>
             <div className="flex flex-col sm:flex-row gap-6 justify-center lg:justify-start pt-6">
@@ -159,7 +159,7 @@ const CafeHome: React.FC = () => {
         >
           <div className="space-y-4">
             <span className="text-[#A4715E] font-black text-[11px] uppercase tracking-[0.6em]">The Culinary Selection</span>
-            <h2 className="font-serif text-5xl md:text-7xl font-black text-[#4A403A] tracking-tighter uppercase leading-none">CHEF'S <br /><span className="text-[#A4715E] italic">SIGNATURES.</span></h2>
+            <h2 className="font-serif text-5xl md:text-6xl font-black text-[#4A403A] tracking-tighter uppercase leading-none">CHEF'S <br /><span className="text-[#A4715E] italic">SIGNATURES.</span></h2>
           </div>
           <p className="text-[#A4715E]/60 text-lg italic max-w-sm border-l-2 border-[#FDE2E4] pl-10">"Every dish is a canvas. We source our flour from local mills and our fruit from Wiltshire orchards."</p>
         </motion.div>
@@ -204,7 +204,7 @@ const CafeHome: React.FC = () => {
         <div className="absolute inset-0 bg-[#4A403A]/60 backdrop-blur-[1px]"></div>
         <div className="relative z-10 text-center space-y-10 px-6">
            <span className="text-white font-black text-[12px] uppercase tracking-[1em]">Seasonal Highlight</span>
-           <h2 className="font-serif text-5xl md:text-8xl text-[#FDE2E4] font-black uppercase tracking-tighter leading-none">THE ROSE <br /> <span className="text-white italic">PATISSERIE.</span></h2>
+           <h2 className="font-serif text-5xl md:text-7xl text-[#FDE2E4] font-black uppercase tracking-tighter leading-none">THE ROSE <br /> <span className="text-white italic">PATISSERIE.</span></h2>
            <div className="pt-6">
             <Link to="/demo/cafe/menu" className="inline-block px-12 py-6 bg-white text-[#A4715E] rounded-full font-black text-[10px] uppercase tracking-widest hover:scale-110 transition-transform duration-500 shadow-2xl">Discover The Collection</Link>
            </div>
@@ -221,7 +221,7 @@ const CafeHome: React.FC = () => {
             className="flex flex-col lg:flex-row items-center gap-24"
           >
             <div className="w-full lg:w-1/2 space-y-12">
-              <h2 className="font-serif text-5xl md:text-8xl font-black text-[#4A403A] tracking-tighter uppercase leading-[0.85]">
+              <h2 className="font-serif text-5xl md:text-7xl font-black text-[#4A403A] tracking-tighter uppercase leading-[0.85]">
                 CRAFTED <br /> <span className="text-[#A4715E] italic">SPACES.</span>
               </h2>
               <p className="text-xl text-[#A4715E]/70 font-medium italic border-l-4 border-[#FDE2E4] pl-10 leading-relaxed max-w-lg">

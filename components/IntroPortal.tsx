@@ -19,20 +19,21 @@ const IntroPortal: React.FC<IntroPortalProps> = ({ onComplete }) => {
       return;
     }
 
-    // Smoother entrance with bounce
-    tl.fromTo(textRef.current, 
-      { opacity: 0, y: 50, scale: 0.9, filter: 'blur(20px)' },
-      { opacity: 1, y: 0, scale: 1, filter: 'blur(0px)', duration: 1.4, ease: 'back.out(2)' }
+    // Captivating brand reveal
+    const chars = textRef.current.querySelectorAll('.brand-char');
+    tl.fromTo(chars, 
+      { opacity: 0, y: 100, rotateX: -90, filter: 'blur(10px)' },
+      { opacity: 1, y: 0, rotateX: 0, filter: 'blur(0px)', duration: 1, stagger: 0.05, ease: 'expo.out' }
     );
 
     // Data streams reveal
     tl.fromTo(".intro-detail", 
       { opacity: 0, scaleX: 0 },
       { opacity: 1, scaleX: 1, stagger: 0.03, duration: 1.2, ease: 'expo.out' },
-      "-=1.0"
+      "-=0.5"
     );
 
-    tl.to(textRef.current, { opacity: 0, scale: 1.1, filter: 'blur(15px)', duration: 0.4, ease: 'power2.in' }, "+=0.6");
+    tl.to(textRef.current, { opacity: 0, scale: 1.1, filter: 'blur(15px)', duration: 0.4, ease: 'power2.in' }, "+=0.8");
 
     // High velocity ignition
     tl.set(ignitionLine, { 
@@ -72,9 +73,13 @@ const IntroPortal: React.FC<IntroPortalProps> = ({ onComplete }) => {
         <div className="absolute bottom-5 right-5 font-mono text-[8px] intro-detail origin-right">PREMIUM DIGITAL STUDIO</div>
       </div>
 
-      <div ref={textRef} className="text-center z-10 px-6">
-        <h1 className="font-syne text-5xl md:text-[10vw] text-slate-900 font-black uppercase tracking-[0.2em] leading-none mb-6">
-          SABR DIGITAL
+      <div ref={textRef} className="text-center z-10 px-6 perspective-1000">
+        <h1 className="font-syne text-5xl md:text-[10vw] text-slate-900 font-black uppercase tracking-[0.2em] leading-none mb-6 flex flex-wrap justify-center">
+          {"SABR DIGITAL".split("").map((char, i) => (
+            <span key={i} className="brand-char inline-block min-w-[0.3em]">
+              {char === " " ? "\u00A0" : char}
+            </span>
+          ))}
         </h1>
         <div className="flex items-center justify-center gap-8">
           <div className="intro-detail h-[2px] w-24 bg-blue-600 origin-right"></div>
@@ -85,5 +90,11 @@ const IntroPortal: React.FC<IntroPortalProps> = ({ onComplete }) => {
     </div>
   );
 };
+
+const style = `
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+`;
 
 export default IntroPortal;

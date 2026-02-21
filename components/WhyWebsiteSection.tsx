@@ -199,49 +199,57 @@ const WhyWebsiteSection: React.FC = () => {
       {/* DETAIL MODAL */}
       <AnimatePresence>
         {selectedPro && (
-          <div className="fixed inset-0 z-[1000] flex items-center justify-center p-6">
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setSelectedPro(null)} className="absolute inset-0 bg-slate-950/40 backdrop-blur-2xl" />
+          <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 sm:p-6 md:p-10">
             <motion.div 
-              initial={{ opacity: 0, scale: 0.9, y: 20 }} 
+              initial={{ opacity: 0 }} 
+              animate={{ opacity: 1 }} 
+              exit={{ opacity: 0 }} 
+              onClick={() => setSelectedPro(null)} 
+              className="absolute inset-0 bg-slate-950/90 backdrop-blur-xl" 
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, y: 30 }} 
               animate={{ opacity: 1, scale: 1, y: 0 }} 
-              exit={{ opacity: 0, scale: 0.9, y: 20 }} 
-              className="relative w-full max-w-5xl bg-white rounded-[3.5rem] shadow-3xl border border-slate-100 overflow-hidden flex flex-col max-h-[85vh]"
+              exit={{ opacity: 0, scale: 0.95, y: 30 }} 
+              className="relative w-full max-w-5xl bg-white rounded-[2.5rem] md:rounded-[3.5rem] shadow-[0_50px_100px_rgba(0,0,0,0.5)] border border-white/10 overflow-hidden flex flex-col max-h-[90vh] z-20"
             >
-              {/* MODAL HEADER - RESCALED FOR MOBILE TO PREVENT CUTOFF */}
-              <div className="px-6 sm:px-10 py-5 sm:py-6 flex items-center justify-between border-b border-slate-50 bg-[#fdfbf7]/50 backdrop-blur-md sticky top-0 z-10">
+              {/* MODAL HEADER - FIXED AND CLEAN */}
+              <div className="px-8 sm:px-12 py-6 sm:py-8 flex items-center justify-between border-b border-slate-100 bg-white sticky top-0 z-30">
                 <div className="flex flex-col text-left shrink-0">
-                  <span className="font-syne text-sm sm:text-xl tracking-[0.05em] font-black text-slate-950 flex items-center leading-none">SABR<span className="text-shimmer-blue ml-1 sm:ml-1.5">DIGITAL</span></span>
-                  <span className="text-[6px] sm:text-[7px] uppercase font-black tracking-[0.6em] sm:tracking-[0.8em] text-blue-400 mt-1">Digital Studio</span>
+                  <span className="font-syne text-lg sm:text-2xl tracking-[0.05em] font-black text-slate-950 flex items-center leading-none uppercase">
+                    SABR<span className="text-blue-600 ml-1.5">PROTOCOL</span>
+                  </span>
+                  <span className="text-[7px] sm:text-[8px] uppercase font-black tracking-[0.6em] text-blue-400 mt-1.5">Technical Blueprint</span>
                 </div>
-                <div className="flex items-center gap-2 sm:gap-4 overflow-hidden">
-                  <div className="flex items-center gap-1.5 sm:gap-3 px-2 sm:px-4 py-1.5 sm:py-2 bg-white border border-slate-100 rounded-full shadow-sm">
-                    <button onClick={handlePrev} className="p-0.5 sm:p-1 hover:text-blue-600 focus:outline-none transition-colors"><ChevronLeft size={14} className="sm:w-4 sm:h-4" /></button>
-                    <span className="text-[8px] sm:text-[9px] font-black text-slate-950 uppercase tracking-[0.1em] sm:tracking-[0.2em] min-w-[30px] sm:min-w-[40px] text-center">{activeIndex + 1} / {sabrPros.length}</span>
-                    <button onClick={handleNext} className="p-0.5 sm:p-1 hover:text-blue-600 focus:outline-none transition-colors"><ChevronRight size={14} className="sm:w-4 sm:h-4" /></button>
+                <div className="flex items-center gap-3 sm:gap-6">
+                  <div className="hidden sm:flex items-center gap-4 px-5 py-2.5 bg-slate-50 border border-slate-100 rounded-full shadow-inner">
+                    <button onClick={handlePrev} className="p-1 hover:text-blue-600 focus:outline-none transition-colors"><ChevronLeft size={16} /></button>
+                    <span className="text-[10px] font-black text-slate-950 uppercase tracking-[0.2em] min-w-[45px] text-center">{activeIndex + 1} / {sabrPros.length}</span>
+                    <button onClick={handleNext} className="p-1 hover:text-blue-600 focus:outline-none transition-colors"><ChevronRight size={16} /></button>
                   </div>
-                  <button onClick={() => setSelectedPro(null)} className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-all shrink-0"><X size={16} className="sm:w-[18px] sm:h-[18px]" /></button>
+                  <button onClick={() => setSelectedPro(null)} className="w-10 h-10 sm:w-14 sm:h-14 rounded-full bg-slate-950 text-white flex items-center justify-center hover:bg-blue-600 transition-all shadow-xl active:scale-90"><X size={24} /></button>
                 </div>
               </div>
 
-              {/* MODAL CONTENT */}
-              <div className="p-10 md:p-16 overflow-y-auto custom-scrollbar">
+              {/* MODAL CONTENT - SCROLLABLE AREA */}
+              <div className="p-8 sm:p-12 md:p-20 overflow-y-auto custom-scrollbar bg-white">
                 <AnimatePresence mode="wait">
                   <motion.div 
                     key={selectedPro.id} 
-                    initial={{ opacity: 0, x: 20 }} 
-                    animate={{ opacity: 1, x: 0 }} 
-                    exit={{ opacity: 0, x: -20 }} 
-                    transition={{ duration: 0.3 }} 
-                    className="flex flex-col md:flex-row gap-16 lg:gap-24 items-start"
+                    initial={{ opacity: 0, y: 20 }} 
+                    animate={{ opacity: 1, y: 0 }} 
+                    exit={{ opacity: 0, y: -20 }} 
+                    transition={{ duration: 0.4, ease: "circOut" }} 
+                    className="flex flex-col lg:flex-row gap-12 md:gap-20 lg:gap-32 items-start"
                   >
                     {/* LEFT SIDE: ICON & STACKED TITLE */}
-                    <div className="w-full md:w-[220px] space-y-8 shrink-0">
-                      <div className={`w-20 h-20 rounded-[1.5rem] ${selectedPro.bg} ${selectedPro.color} flex items-center justify-center shadow-lg`}>
-                        {React.cloneElement(selectedPro.icon as React.ReactElement<{ size?: number }>, { size: 32 })}
+                    <div className="w-full lg:w-[280px] space-y-10 shrink-0">
+                      <div className={`w-24 h-24 rounded-[2rem] ${selectedPro.bg} ${selectedPro.color} flex items-center justify-center shadow-2xl transform -rotate-3 group-hover:rotate-0 transition-transform duration-500`}>
+                        {React.cloneElement(selectedPro.icon as React.ReactElement<{ size?: number }>, { size: 40 })}
                       </div>
-                      <div>
-                        <span className="text-blue-600 font-black text-[9px] uppercase tracking-[0.6em] block mb-3">Protocol Item</span>
-                        <h2 className="font-syne text-xl md:text-2xl font-black text-slate-950 uppercase tracking-tighter leading-[0.85] flex flex-col">
+                      <div className="space-y-4">
+                        <span className="text-blue-600 font-black text-[10px] uppercase tracking-[0.6em] block">Protocol Item</span>
+                        <h2 className="font-syne text-3xl md:text-4xl font-black text-slate-950 uppercase tracking-tighter leading-[0.85] flex flex-col">
                           {selectedPro.title.split(' ').map((word, wIdx) => (
                             <span key={wIdx} className="block whitespace-nowrap">{word}</span>
                           ))}
@@ -250,30 +258,30 @@ const WhyWebsiteSection: React.FC = () => {
                     </div>
 
                     {/* RIGHT SIDE: BIOS / DETAIL INFO */}
-                    <div className="flex-1 space-y-12">
-                      <section className="space-y-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-6 h-[1px] bg-blue-600/30"></div>
-                          <h4 className="text-[9px] font-black text-blue-600 uppercase tracking-[0.5em]">What it means</h4>
+                    <div className="flex-1 space-y-16">
+                      <section className="space-y-6">
+                        <div className="flex items-center gap-4">
+                          <div className="w-8 h-[2px] bg-blue-600/30"></div>
+                          <h4 className="text-[10px] font-black text-blue-600 uppercase tracking-[0.5em]">What it means</h4>
                         </div>
-                        <p className="text-lg md:text-2xl font-bold text-slate-700 italic leading-snug">"{selectedPro.meaning}"</p>
+                        <p className="text-xl md:text-3xl font-bold text-slate-800 italic leading-tight tracking-tight">"{selectedPro.meaning}"</p>
                       </section>
 
-                      <section className="space-y-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-6 h-[1px] bg-blue-600/30"></div>
-                          <h4 className="text-[9px] font-black text-blue-600 uppercase tracking-[0.5em]">Why it matters</h4>
+                      <section className="space-y-6">
+                        <div className="flex items-center gap-4">
+                          <div className="w-8 h-[2px] bg-blue-600/30"></div>
+                          <h4 className="text-[10px] font-black text-blue-600 uppercase tracking-[0.5em]">Why it matters</h4>
                         </div>
-                        <p className="text-base text-slate-500 font-medium leading-relaxed">{selectedPro.matters}</p>
+                        <p className="text-lg md:text-xl text-slate-500 font-medium leading-relaxed max-w-2xl">{selectedPro.matters}</p>
                       </section>
 
-                      <section className="space-y-6 pt-8 border-t border-slate-50">
-                        <h4 className="text-[9px] font-black text-slate-400 uppercase tracking-[0.5em]">Expected Outcomes</h4>
-                        <div className="grid grid-cols-1 gap-3">
+                      <section className="space-y-8 pt-12 border-t border-slate-100">
+                        <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.5em]">Expected Outcomes</h4>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                           {selectedPro.outcomes.map((outcome, i) => (
-                            <div key={i} className="flex items-center gap-3 p-4 bg-slate-50 rounded-xl border border-transparent hover:border-blue-100 transition-colors group">
-                              <div className="w-5 h-5 rounded-full bg-white flex items-center justify-center text-blue-600 shadow-sm shrink-0 group-hover:scale-110 transition-transform"><CheckCircle2 size={12} /></div>
-                              <span className="font-black text-[11px] uppercase tracking-wider text-slate-600 group-hover:text-slate-950 transition-colors">{outcome}</span>
+                            <div key={i} className="flex items-center gap-4 p-5 bg-slate-50 rounded-2xl border border-transparent hover:border-blue-100 hover:bg-white transition-all group shadow-sm hover:shadow-md">
+                              <div className="w-6 h-6 rounded-full bg-white flex items-center justify-center text-blue-600 shadow-sm shrink-0 group-hover:scale-110 transition-transform"><CheckCircle2 size={14} /></div>
+                              <span className="font-black text-[12px] uppercase tracking-wider text-slate-600 group-hover:text-slate-950 transition-colors">{outcome}</span>
                             </div>
                           ))}
                         </div>

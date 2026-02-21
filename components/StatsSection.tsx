@@ -59,7 +59,7 @@ const StatsSection: React.FC = () => {
             <span className="text-blue-600 font-black text-[11px] uppercase tracking-[0.8em]">USER PSYCHOLOGY</span>
             <div className="h-[2px] w-10 bg-blue-600"></div>
           </div>
-          <h2 className="font-syne text-4xl md:text-6xl font-black text-slate-950 tracking-tighter uppercase leading-[0.9] mb-4">
+          <h2 className="font-syne text-[clamp(2rem,8vw,4.5rem)] font-black text-slate-950 tracking-tighter uppercase leading-[0.9] mb-4">
             THE RISK OF <br /><span className="text-blue-600 italic">SILENCE.</span>
           </h2>
         </div>

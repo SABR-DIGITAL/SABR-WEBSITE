@@ -50,7 +50,7 @@ const PhysioHome: React.FC = () => {
           </motion.div>
 
           <div className="space-y-4">
-            <h1 className="font-serif text-[clamp(2.5rem,10vw,7rem)] leading-[0.9] text-emerald-950 font-bold tracking-tighter transform-gpu">
+            <h1 className="font-serif text-[clamp(2.5rem,10vw,6rem)] leading-[0.9] text-emerald-950 font-bold tracking-tighter transform-gpu">
               <motion.span 
                 initial={{ opacity: 0, x: -30 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -102,7 +102,7 @@ const PhysioHome: React.FC = () => {
             <div className="w-full lg:w-1/3 lg:pr-20 space-y-16">
               <div className="space-y-4">
                 <span className="text-emerald-400 font-bold text-[10px] uppercase tracking-[0.6em]">System Architecture</span>
-                <h2 className="font-serif text-5xl md:text-7xl font-bold leading-[0.9] tracking-tighter">High-Grade <span className="text-emerald-400 italic">Care.</span></h2>
+                <h2 className="font-serif text-5xl md:text-6xl font-bold leading-[0.9] tracking-tighter">High-Grade <span className="text-emerald-400 italic">Care.</span></h2>
               </div>
               
               <div className="space-y-10 border-t border-emerald-800/50 pt-16">
@@ -178,7 +178,7 @@ const PhysioHome: React.FC = () => {
           <div className="mb-32 flex flex-col md:flex-row items-end justify-between gap-12">
             <div className="space-y-4">
               <span className="text-emerald-600 font-bold text-[10px] uppercase tracking-[0.6em]">The Recovery Formula</span>
-              <h2 className="font-serif text-5xl md:text-8xl font-bold text-emerald-950 tracking-tighter uppercase leading-[0.85]">STRUCTURAL <br /><span className="text-emerald-600 italic">LOGIC.</span></h2>
+              <h2 className="font-serif text-5xl md:text-7xl font-bold text-emerald-950 tracking-tighter uppercase leading-[0.85]">STRUCTURAL <br /><span className="text-emerald-600 italic">LOGIC.</span></h2>
             </div>
             <p className="text-emerald-800/60 text-lg md:text-xl font-medium italic border-l-4 border-emerald-100 pl-10 max-w-sm">
               "We decompose physical restrictions into solvable mechanical equations."

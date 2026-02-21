@@ -101,7 +101,7 @@ const Home: React.FC = () => {
       <Navbar />
 
       {/* Hero Section */}
-      <section ref={heroRef} id="home" className="relative min-h-[90vh] flex flex-col items-center justify-center pt-12 lg:pt-0 overflow-hidden px-6 md:px-12">
+      <section ref={heroRef} id="home" className="relative min-h-[90vh] flex flex-col items-center justify-center pt-12 lg:pt-0 overflow-visible px-6 md:px-12">
         <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
           <div 
             ref={bgRef}
@@ -122,7 +122,7 @@ const Home: React.FC = () => {
             className="flex-1 space-y-4 md:space-y-6 text-center lg:text-left z-20"
           >
             <p className="text-[#BC4B26] font-black text-[12px] md:text-[14px] uppercase tracking-[0.8em]">Since 1976</p>
-            <h1 className="text-white font-oswald text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.1] tracking-tight uppercase max-w-xl mx-auto lg:mx-0">
+            <h1 className="text-white font-oswald text-4xl sm:text-5xl md:text-6xl lg:text-[clamp(3rem,6vw,5rem)] font-bold leading-[1.1] tracking-tight uppercase max-w-xl mx-auto lg:mx-0">
               FORESTRY & <br /> 
               <span className="bg-[#F4F1EA] text-[#1A3C28] px-4 py-1 inline-block mt-2">LAND MGMT.</span>
             </h1>
@@ -144,7 +144,7 @@ const Home: React.FC = () => {
               initial={{ opacity: 0, x: 50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 1.2, delay: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              className="bg-[#F4F1EA] p-8 md:p-12 lg:p-14 w-full md:max-w-md shadow-[0_40px_100px_rgba(0,0,0,0.2)] z-30 lg:absolute lg:top-1/2 lg:-translate-y-1/2 lg:-left-20 xl:-left-32 border border-[#1A3C28]/5"
+              className="bg-[#F4F1EA] p-8 md:p-12 lg:p-14 w-full md:max-w-md shadow-[0_40px_100px_rgba(0,0,0,0.2)] z-[50] lg:absolute lg:top-1/2 lg:-translate-y-1/2 lg:-left-12 xl:-left-20 border border-[#1A3C28]/5 pointer-events-auto"
             >
               <div className="w-10 h-1 bg-[#BC4B26] mb-6"></div>
               <h2 className="text-[#1A3C28] font-oswald text-2xl md:text-3xl font-bold uppercase tracking-tight mb-4">GET A FREE QUOTE</h2>
@@ -157,7 +157,7 @@ const Home: React.FC = () => {
               </div>
               <Link 
                 to="/demo/landscaping/contact"
-                className="w-full py-5 bg-[#BC4B26] text-white font-black text-[10px] uppercase tracking-[0.4em] flex items-center justify-center gap-4 hover:bg-[#1A3C28] transition-all transform hover:scale-[1.02] active:scale-95 shadow-lg"
+                className="relative z-[60] w-full py-5 bg-[#BC4B26] text-white font-black text-[10px] uppercase tracking-[0.4em] flex items-center justify-center gap-4 hover:bg-[#1A3C28] transition-all transform hover:scale-[1.02] active:scale-95 shadow-lg cursor-pointer"
               >
                 Free Quote <ArrowRight size={16} />
               </Link>
@@ -225,7 +225,7 @@ const Home: React.FC = () => {
             </motion.div>
           </div>
           <div className="w-full md:w-1/2 space-y-10">
-            <h2 className="text-[#1A3C28] font-oswald text-4xl md:text-5xl lg:text-6xl font-bold uppercase tracking-tighter leading-none">OAK & ASH <br /> <span className="text-[#BC4B26] italic">LEGACY.</span></h2>
+            <h2 className="text-[#1A3C28] font-oswald text-4xl md:text-5xl lg:text-5xl font-bold uppercase tracking-tighter leading-none">OAK & ASH <br /> <span className="text-[#BC4B26] italic">LEGACY.</span></h2>
             <p className="text-[#4A403A] text-xl leading-relaxed opacity-80 border-l-4 border-[#BC4B26] pl-10">
               Founded in 1976, we have managed some of the most complex forestry and private estate landscaping projects in the United Kingdom.
             </p>

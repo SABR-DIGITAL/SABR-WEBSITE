@@ -32,11 +32,6 @@ const CafeBooking = lazy(() => import('./components/demos/cafe/CafeBooking'));
 
 const PlumberDemo = lazy(() => import('./components/demos/PlumberDemo'));
 
-// Florist Demo
-const FloristHome = lazy(() => import('./components/demos/florist/FloristHome'));
-const FloristBouquets = lazy(() => import('./components/demos/florist/FloristBouquets'));
-const FloristContact = lazy(() => import('./components/demos/florist/FloristContact'));
-
 // Physio Demo (New)
 const PhysioHome = lazy(() => import('./components/demos/physio/PhysioHome'));
 const PhysioPrices = lazy(() => import('./components/demos/physio/PhysioPrices'));
@@ -195,9 +190,6 @@ const MainApp: React.FC = () => {
               <Route path="/demo/cafe/contact" element={<CafeContact />} />
               <Route path="/demo/cafe/book" element={<CafeBooking />} />
               <Route path="/demo/plumber" element={<PlumberDemo />} />
-              <Route path="/demo/florist" element={<FloristHome />} />
-              <Route path="/demo/florist/bouquets" element={<FloristBouquets />} />
-              <Route path="/demo/florist/contact" element={<FloristContact />} />
               <Route path="/demo/physio" element={<PhysioHome />} />
               <Route path="/demo/physio/prices" element={<PhysioPrices />} />
               <Route path="/demo/physio/team" element={<PhysioTeam />} />
@@ -211,7 +203,7 @@ const MainApp: React.FC = () => {
               <div className="max-w-7xl mx-auto px-6">
                 <button 
                   onClick={() => navigateTo('home')}
-                  className="font-syne text-6xl tracking-tighter font-black mb-16 text-slate-950 uppercase hover:opacity-70 transition-opacity focus:outline-none"
+                  className="font-syne text-4xl sm:text-6xl md:text-7xl tracking-tighter font-black mb-16 text-slate-950 uppercase hover:opacity-70 transition-opacity focus:outline-none leading-none"
                 >
                   SABR <span className="text-blue-600 italic">DIGITAL</span>
                 </button>

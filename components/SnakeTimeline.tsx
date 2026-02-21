@@ -111,15 +111,10 @@ const SnakeTimeline: React.FC<{ navigateTo: (page: Page) => void }> = ({ navigat
     <div className="bg-[#fdfbf7] min-h-screen text-slate-950 overflow-x-hidden relative selection:bg-blue-600/30">
       
       {/* 1. STANDARDIZED HERO */}
-      <section className="relative pt-12 md:pt-24 pb-16 px-6 z-10">
+      <section className="relative pt-32 md:pt-48 pb-16 px-6 z-10">
         <div className="max-w-7xl mx-auto">
           <div className="mb-32">
-            <div className="flex items-center gap-4 mb-10">
-              <div className="h-[2px] w-20 bg-blue-600"></div>
-              <span className="text-blue-600 font-black text-[13px] uppercase tracking-[1em]">SYSTEM ARCHITECTURE</span>
-            </div>
-            
-            <h2 className="font-syne text-5xl md:text-7xl font-black text-slate-950 tracking-tighter uppercase leading-tight mb-12">
+            <h2 className="font-syne text-[clamp(2.5rem,10vw,5rem)] font-black text-slate-950 tracking-tighter uppercase leading-[0.9] mb-12">
               THE <br />
               <span className="text-shimmer-blue italic pr-4">SYSTEM.</span>
             </h2>
@@ -143,14 +138,14 @@ const SnakeTimeline: React.FC<{ navigateTo: (page: Page) => void }> = ({ navigat
                 {/* Step Content Side */}
                 <div className={`flex flex-col items-center ${isLeft ? 'lg:order-1' : 'lg:order-2'}`}>
                   <div className="relative flex flex-col items-center text-center w-full bg-transparent">
-                    {/* FIXED OVERSIZED ICON: Reduced w/h and scale on mobile to prevent clipping */}
-                    <div className="relative w-40 h-40 md:w-64 md:h-64 lg:w-80 lg:h-80 flex items-center justify-center mb-8 md:mb-12 pointer-events-none animate-icon-float transform-gpu">
-                      <div className="absolute inset-2 md:inset-10 rounded-full blur-[30px] md:blur-[80px] opacity-40" style={{ backgroundColor: step.color }}></div>
-                      <div className="relative z-10 scale-50 md:scale-100" style={{ color: '#000', filter: `drop-shadow(0 0 30px ${step.glow}) brightness(1.1)` }}>
+                    {/* FIXED OVERSIZED ICON: Rescaled for tablet (md) to be more symmetrical */}
+                    <div className="relative w-48 h-48 md:w-80 md:h-80 lg:w-80 lg:h-80 flex items-center justify-center mb-8 md:mb-16 pointer-events-none animate-icon-float transform-gpu">
+                      <div className="absolute inset-2 md:inset-8 rounded-full blur-[30px] md:blur-[100px] opacity-40" style={{ backgroundColor: step.color }}></div>
+                      <div className="relative z-10 scale-50 md:scale-90 lg:scale-100" style={{ color: '#000', filter: `drop-shadow(0 0 30px ${step.glow}) brightness(1.1)` }}>
                         {step.icon}
                       </div>
                     </div>
-                    <div className="space-y-6 max-w-[500px] flex flex-col items-center mx-auto pointer-events-none">
+                    <div className="space-y-6 max-w-[500px] md:max-w-2xl flex flex-col items-center mx-auto pointer-events-none">
                       <h3 className="font-syne text-3xl md:text-5xl lg:text-6xl font-black uppercase tracking-tighter text-slate-950 leading-[0.9]">
                         {step.title}
                       </h3>
@@ -158,14 +153,14 @@ const SnakeTimeline: React.FC<{ navigateTo: (page: Page) => void }> = ({ navigat
                   </div>
                 </div>
 
-                {/* Info Card Side - Clean Rounded Corner Squares */}
+                {/* Info Card Side - Centered and Rescaled for Tablet */}
                 <div className={`flex items-center justify-center relative ${isLeft ? 'lg:order-2' : 'lg:order-1'}`}>
                   <motion.div 
                     initial={{ opacity: 0, scale: 0.9, y: 30 }}
                     whileInView={{ opacity: 1, scale: 1, y: 0 }}
                     viewport={{ amount: 0.5, once: true }}
                     transition={{ duration: 0.5, ease: "easeOut" }}
-                    className="w-full max-w-[460px] p-10 md:p-16 bg-white/60 backdrop-blur-[60px] border border-white/80 rounded-[3rem] shadow-[0_40px_120px_rgba(0,0,0,0.06)] relative z-50"
+                    className="w-full max-w-[460px] md:max-w-2xl p-10 md:p-20 bg-white/60 backdrop-blur-[60px] border border-white/80 rounded-[3rem] shadow-[0_40px_120px_rgba(0,0,0,0.06)] relative z-50"
                   >
                     <div className="space-y-8 md:space-y-10">
                       {step.bullets.map((bullet, idx) => (

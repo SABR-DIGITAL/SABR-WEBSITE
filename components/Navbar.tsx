@@ -40,8 +40,8 @@ const Navbar: React.FC<NavbarProps> = ({ navigateTo, currentPage }) => {
 
   return (
     <>
-      <nav className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-700 px-4 md:px-8 ${scrolled ? 'py-4' : 'py-8'} ${currentPage === 'home' && !isProjects ? 'hidden md:block' : 'block'}`}>
-        <div className={`max-w-7xl mx-auto rounded-full px-8 py-5 flex items-center justify-between transition-all duration-700 backdrop-blur-3xl border ${scrolled ? 'bg-white/95 border-slate-100 shadow-2xl' : 'bg-transparent border-transparent'}`}>
+      <nav className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-700 px-4 md:px-8 ${scrolled ? 'py-4' : 'py-8'} block`}>
+        <div className={`max-w-7xl mx-auto rounded-full px-8 py-5 flex items-center justify-between transition-all duration-700 backdrop-blur-3xl border ${scrolled ? 'bg-white/95 border-slate-100 shadow-2xl' : 'bg-white/10 border-white/20 lg:bg-white/10 lg:border-white/20'} ${!scrolled ? 'bg-transparent border-transparent lg:bg-transparent lg:border-transparent' : ''} ${mobileMenuOpen ? 'opacity-0' : 'opacity-100'} lg:opacity-100`}>
           <button 
             onClick={() => handleNav('home')}
             className="flex flex-col text-left group focus:outline-none focus:ring-0 appearance-none"
@@ -87,22 +87,22 @@ const Navbar: React.FC<NavbarProps> = ({ navigateTo, currentPage }) => {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed inset-0 z-[200] bg-[#fdfbf7] flex flex-col p-8 md:p-12 lg:hidden overflow-y-auto"
+            className="fixed inset-0 z-[200] bg-[#fdfbf7] flex flex-col p-10 md:p-20 lg:hidden overflow-y-auto"
           >
-            <div className="flex justify-between items-center mb-16">
+            <div className="flex justify-between items-center mb-20 md:mb-32">
               <div className="flex flex-col">
-                <span className="font-syne text-2xl font-black text-slate-950">SABR DIGITAL</span>
-                <span className="text-[8px] uppercase font-black tracking-[0.6em] text-blue-600">Protocol Hub</span>
+                <span className="font-syne text-3xl md:text-4xl font-black text-slate-950">SABR DIGITAL</span>
+                <span className="text-[9px] md:text-[11px] uppercase font-black tracking-[0.6em] text-blue-600">Protocol Hub</span>
               </div>
-              <button onClick={() => setMobileMenuOpen(false)} className="w-12 h-12 rounded-full bg-white shadow-sm flex items-center justify-center text-slate-950"><X size={28} /></button>
+              <button onClick={() => setMobileMenuOpen(false)} className="w-14 h-14 md:w-20 md:h-20 rounded-full bg-white shadow-lg flex items-center justify-center text-slate-950 hover:text-blue-600 transition-colors"><X size={32} /></button>
             </div>
             
-            <div className="flex flex-col gap-6 md:gap-8">
+            <div className="flex flex-col gap-10 md:gap-16">
               {[{name: 'Home', id: 'home' as Page}, ...links, {name: 'Contact', id: 'contact' as Page}].map((link) => (
                 <button 
                   key={link.id} 
                   onClick={() => handleNav(link.id)}
-                  className="text-left font-syne text-[clamp(2.5rem,10vw,4.5rem)] font-black text-slate-950 tracking-tighter uppercase hover:text-blue-600 transition-colors leading-none"
+                  className="text-left font-syne text-[clamp(2rem,10vw,5rem)] font-black text-slate-950 tracking-tighter uppercase hover:text-blue-600 transition-colors leading-none pr-10"
                 >
                   {link.name}.
                 </button>

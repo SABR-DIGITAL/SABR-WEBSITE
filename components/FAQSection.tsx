@@ -78,18 +78,14 @@ const FAQSection: React.FC<FAQSectionProps> = ({ navigateTo }) => {
   };
 
   return (
-    <section className="bg-[#fdfbf7] pt-12 md:pt-24 pb-64 overflow-hidden px-6">
+    <section className="bg-[#fdfbf7] pt-32 md:pt-48 pb-64 overflow-hidden px-6">
       <div className="max-w-7xl mx-auto relative z-10">
         
         {/* Header Section */}
         <div className="mb-32">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-12 mb-20">
             <div>
-              <div className="flex items-center gap-4 mb-10">
-                <div className="h-[2px] w-20 bg-blue-600"></div>
-                <span className="text-blue-600 font-black text-[13px] uppercase tracking-[1em]">COMMON QUESTIONS</span>
-              </div>
-              <h2 className="font-syne text-4xl md:text-5xl lg:text-7xl font-black text-slate-950 tracking-tighter uppercase leading-tight">
+              <h2 className="font-syne text-[clamp(2rem,8vw,4.5rem)] font-black text-slate-950 tracking-tighter uppercase leading-[0.9]">
                 YOUR QUESTIONS, <br />
                 <span className="text-shimmer-blue italic">ANSWERED.</span>
               </h2>

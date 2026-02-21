@@ -149,7 +149,7 @@ const DigitalForge: React.FC<DigitalForgeProps> = ({ navigateTo }) => {
 
       <div className="max-w-4xl mx-auto px-8 md:px-12 flex flex-col items-center relative z-10 text-center">
         <div className="h-1 w-20 bg-blue-600 mb-12 md:mb-16 rounded-full"></div>
-        <h2 className="font-syne text-4xl sm:text-5xl md:text-6xl text-white font-black tracking-tighter uppercase leading-[0.85] mb-8 md:mb-10">
+        <h2 className="font-syne text-[clamp(2rem,8vw,4.5rem)] text-white font-black tracking-tighter uppercase leading-[0.85] mb-8 md:mb-10">
           CRAFTED. <br/><span className="text-blue-600 italic">NOT COMPILED.</span>
         </h2>
         <p className="text-slate-400 text-lg md:text-2xl font-medium max-w-3xl leading-relaxed mb-16 opacity-80">

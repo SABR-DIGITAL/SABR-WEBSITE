@@ -16,43 +16,43 @@ const testimonials = [
   {
     logo: <Hexagon size={24} strokeWidth={2} />,
     text: "I used to rely purely on word-of-mouth. Now, the website brings in high-quality leads while I’m out on a job.",
-    gradient: "from-blue-600 to-indigo-700",
+    gradient: "from-blue-400 to-blue-600",
     glow: "rgba(37, 99, 235, 0.4)"
   },
   {
     logo: <TrendingUp size={24} strokeWidth={2} />,
     text: "We’re finally appearing at the top of Google for our local area. The visibility has been a total game-changer.",
-    gradient: "from-indigo-600 to-purple-700",
-    glow: "rgba(79, 70, 229, 0.4)"
+    gradient: "from-blue-500 to-blue-700",
+    glow: "rgba(37, 99, 235, 0.4)"
   },
   {
     logo: <Home size={24} strokeWidth={2} />,
     text: "Our old site was embarrassing. Now, I’m proud to send the link to new clients. It reflects the quality of work we do.",
-    gradient: "from-cyan-500 to-blue-600",
-    glow: "rgba(6, 182, 212, 0.4)"
+    gradient: "from-blue-300 to-blue-500",
+    glow: "rgba(37, 99, 235, 0.4)"
   },
   {
     logo: <Clock size={24} strokeWidth={2} />,
     text: "The new booking system has saved me hours of admin every week. No more back-and-forth emails.",
-    gradient: "from-violet-600 to-fuchsia-700",
-    glow: "rgba(124, 58, 237, 0.4)"
+    gradient: "from-blue-400 to-blue-600",
+    glow: "rgba(37, 99, 235, 0.4)"
   },
   {
     logo: <Smartphone size={24} strokeWidth={2} />,
     text: "Our new site works perfectly on a phone. Most of our customers find us via mobile. It’s been a real revelation.",
-    gradient: "from-blue-500 to-cyan-500",
-    glow: "rgba(59, 130, 246, 0.4)"
+    gradient: "from-blue-500 to-blue-700",
+    glow: "rgba(37, 99, 235, 0.4)"
   },
   {
     logo: <Diamond size={24} strokeWidth={2} />,
     text: "They didn't just build a website; they built a brand identity. We feel more confident than ever.",
-    gradient: "from-purple-600 to-indigo-600",
-    glow: "rgba(147, 51, 234, 0.4)"
+    gradient: "from-blue-300 to-blue-500",
+    glow: "rgba(37, 99, 235, 0.4)"
   },
   {
     logo: <Zap size={24} strokeWidth={2} />,
     text: "The site is incredibly fast and intuitive. Our customers have gone out of their way to tell us how easy it is.",
-    gradient: "from-blue-700 to-violet-800",
+    gradient: "from-blue-400 to-blue-600",
     glow: "rgba(37, 99, 235, 0.4)"
   }
 ];

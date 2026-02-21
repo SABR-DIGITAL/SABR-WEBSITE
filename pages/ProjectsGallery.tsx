@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Sprout, Coffee, Droplet, Flower2, MoveRight, Activity } from 'lucide-react';
+import { Sprout, Coffee, Droplet, MoveRight, Activity } from 'lucide-react';
 // Fix react-router-dom missing exports
 import * as RouterDOM from 'react-router-dom';
 const { Link } = RouterDOM as any;
@@ -52,17 +52,6 @@ const projects = [
     glowColor: 'rgba(6, 182, 212, 0.4)', // Cyan
     path: '/demo/plumber',
     description: "When emergencies happen, speed is everything. We engineered this for instant response and client trust."
-  },
-  {
-    id: 'florist',
-    title: 'The Artisanal Bloom',
-    industry: 'Bespoke Florist',
-    tagline: 'Aesthetic Assembly',
-    bio: "A cinematic floral experience for boutique florists that showcases high-end arrangements and captures seasonal bouquet orders with ease.",
-    icon: <Flower2 className="text-white" size={100} strokeWidth={1} />,
-    glowColor: 'rgba(164, 120, 100, 0.4)', // Mocha
-    path: '/demo/florist',
-    description: "Every bloom has a story. We created a cinematic experience that makes potential customers fall in love at first click."
   }
 ];
 
@@ -172,11 +161,6 @@ const ProjectRow: React.FC<{ project: any, index: number }> = ({ project, index 
         ref={textRef}
         className="w-full lg:w-1/2 flex flex-col items-start lg:pr-12"
       >
-        <div className="reveal-item flex items-center gap-4 mb-6 md:mb-10">
-          <div className="w-12 h-[2px] bg-blue-600"></div>
-          <span className="text-blue-600 font-black text-[10px] md:text-[11px] uppercase tracking-[0.4em] md:tracking-[0.6em]">{project.tagline}</span>
-        </div>
-
         {/* Rescaled mobile font size from text-4xl to text-3xl (-15% approx) to prevent word clipping */}
         <h3 className="reveal-item font-syne text-3xl md:text-4xl lg:text-5xl font-black text-slate-950 uppercase tracking-tighter leading-tight mb-6 md:mb-8">
           {project.title.split(' ')[0]} <br />
@@ -212,14 +196,10 @@ const ProjectsGallery: React.FC = () => {
   }, []);
 
   return (
-    <div className="bg-[#fdfbf7] min-h-screen pt-12 md:pt-24 pb-64 px-6 overflow-hidden">
+    <div className="bg-[#fdfbf7] min-h-screen pt-32 md:pt-48 pb-64 px-6 overflow-hidden">
       <div className="max-w-7xl mx-auto">
         <div className="mb-40 md:mb-64">
-          <div className="flex items-center gap-4 mb-10">
-            <div className="h-[2px] w-12 md:w-20 bg-blue-600"></div>
-            <span className="text-blue-600 font-black text-[11px] md:text-[13px] uppercase tracking-[0.6em] md:tracking-[1em]">OUR COLLECTION</span>
-          </div>
-          <h2 className="font-syne text-4xl md:text-5xl lg:text-7xl font-black text-slate-950 tracking-tighter uppercase leading-tight mb-12">
+          <h2 className="font-syne text-[clamp(2.5rem,10vw,5rem)] font-black text-slate-950 tracking-tighter uppercase leading-[0.9] mb-12">
             SITES THAT <br />
             <span className="text-shimmer-blue italic">GET RESULTS.</span>
           </h2>
