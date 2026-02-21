@@ -8,22 +8,29 @@ const StatBubble: React.FC<{ percentage: number; label: string; sub: string; col
   const bubbleRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    ScrollTrigger.create({
-      trigger: bubbleRef.current,
-      start: "top 85%",
-      onEnter: () => {
-        gsap.to({ val: 0 }, {
-          val: percentage,
-          duration: 3,
-          ease: "power4.out",
-          onUpdate: function() { setCount(Math.floor(this.targets()[0].val)); }
-        });
-        gsap.fromTo(bubbleRef.current, 
-          { scale: 0.8, opacity: 0, y: 50 }, 
-          { scale: 1, opacity: 1, y: 0, duration: 1.5, ease: "expo.out" }
-        );
-      }
-    });
+    const ctx = gsap.context(() => {
+      ScrollTrigger.create({
+        trigger: bubbleRef.current,
+        start: "top 85%",
+        fastScrollEnd: true,
+        onEnter: () => {
+          gsap.to({ val: 0 }, {
+            val: percentage,
+            duration: 2.5,
+            ease: "power4.out",
+            onUpdate: function() { 
+              const val = Math.floor(this.targets()[0].val);
+              setCount(val);
+            }
+          });
+          gsap.fromTo(bubbleRef.current, 
+            { scale: 0.8, opacity: 0, y: 50 }, 
+            { scale: 1, opacity: 1, y: 0, duration: 1.2, ease: "expo.out", force3D: true }
+          );
+        }
+      });
+    }, bubbleRef);
+    return () => ctx.revert();
   }, [percentage]);
 
   return (

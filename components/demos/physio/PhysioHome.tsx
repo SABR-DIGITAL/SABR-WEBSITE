@@ -32,9 +32,9 @@ const PhysioHome: React.FC = () => {
       {/* ARCHITECTURAL HERO */}
       <section className="relative min-h-[90vh] lg:min-h-screen flex flex-col items-center justify-center pt-32 pb-48 px-6 text-center overflow-hidden transform-gpu">
         <div className="absolute inset-0 pointer-events-none overflow-hidden will-change-transform">
-           <Activity size={800} className="absolute -top-60 -left-60 text-emerald-600/5 rotate-12" />
-           <div className="absolute top-1/4 right-0 w-[500px] h-[500px] bg-emerald-100/20 blur-[120px] rounded-full"></div>
-           <Leaf size={600} className="absolute -bottom-40 -right-40 text-emerald-600/5 -rotate-12" />
+           <Activity size={800} className="absolute -top-60 -left-60 text-emerald-600/5 rotate-12 transform-gpu" />
+           <div className="absolute top-1/4 right-0 w-[500px] h-[500px] bg-emerald-100/20 blur-[120px] rounded-full transform-gpu"></div>
+           <Leaf size={600} className="absolute -bottom-40 -right-40 text-emerald-600/5 -rotate-12 transform-gpu" />
            <div className="absolute inset-0 opacity-[0.03] bg-[radial-gradient(#10b981_1px,transparent_1px)] [background-size:40px_40px]"></div>
         </div>
 
@@ -42,8 +42,8 @@ const PhysioHome: React.FC = () => {
           <motion.div
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="inline-flex items-center gap-3 px-5 py-2 bg-emerald-100/80 backdrop-blur-md rounded-full border border-emerald-200 shadow-sm"
+            transition={{ duration: 0.5 }}
+            className="inline-flex items-center gap-3 px-5 py-2 bg-emerald-100/80 backdrop-blur-md rounded-full border border-emerald-200 shadow-sm transform-gpu will-change-[opacity,transform]"
           >
             <Sparkles size={14} className="text-emerald-600" />
             <span className="text-emerald-700 font-bold text-[10px] uppercase tracking-widest">Expert Recovery in Bath</span>
@@ -54,16 +54,16 @@ const PhysioHome: React.FC = () => {
               <motion.span 
                 initial={{ opacity: 0, x: -30 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8, ease: "easeOut", delay: 0.1 }}
-                className="block"
+                transition={{ duration: 0.6, ease: "easeOut", delay: 0.1 }}
+                className="block will-change-[opacity,transform]"
               >
                 PHYSICAL <span className="text-emerald-600 italic">FLOW.</span>
               </motion.span>
               <motion.span 
                 initial={{ opacity: 0, x: 30 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
-                className="block text-emerald-900/20"
+                transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
+                className="block text-emerald-900/20 will-change-[opacity,transform]"
               >
                 ACTIVE CARE.
               </motion.span>
@@ -73,8 +73,8 @@ const PhysioHome: React.FC = () => {
           <motion.p 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="text-lg md:text-xl text-emerald-800/70 font-medium max-w-xl mx-auto leading-relaxed"
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="text-lg md:text-xl text-emerald-800/70 font-medium max-w-xl mx-auto leading-relaxed transform-gpu will-change-opacity"
           >
             Meticulously engineered recovery for the high-performance human. Precision medical care in the heart of Bath.
           </motion.p>
@@ -82,8 +82,8 @@ const PhysioHome: React.FC = () => {
           <motion.div 
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.6 }}
-            className="flex flex-col sm:flex-row gap-5 justify-center pt-4"
+            transition={{ duration: 0.4, delay: 0.5 }}
+            className="flex flex-col sm:flex-row gap-5 justify-center pt-4 transform-gpu will-change-[opacity,transform]"
           >
             <Link to="/demo/physio/contact" className="px-10 py-6 bg-emerald-700 text-white rounded-2xl font-bold text-[13px] tracking-wide shadow-xl hover:bg-emerald-800 transition-all flex items-center justify-center gap-4 group transform-gpu">
               SYNC APPOINTMENT <MoveRight size={18} className="group-hover:translate-x-2 transition-transform" />

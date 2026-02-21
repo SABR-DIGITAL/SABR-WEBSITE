@@ -139,7 +139,7 @@ const SnakeTimeline: React.FC<{ navigateTo: (page: Page) => void }> = ({ navigat
                 <div className={`flex flex-col items-center ${isLeft ? 'lg:order-1' : 'lg:order-2'}`}>
                   <div className="relative flex flex-col items-center text-center w-full bg-transparent">
                     {/* FIXED OVERSIZED ICON: Rescaled for tablet (md) to be more symmetrical */}
-                    <div className="relative w-48 h-48 md:w-80 md:h-80 lg:w-80 lg:h-80 flex items-center justify-center mb-8 md:mb-16 pointer-events-none animate-icon-float transform-gpu">
+                    <div className="relative w-48 h-48 md:w-80 md:h-80 lg:w-80 lg:h-80 flex items-center justify-center mb-8 md:mb-16 pointer-events-none animate-icon-float transform-gpu will-change-transform">
                       <div className="absolute inset-2 md:inset-8 rounded-full blur-[30px] md:blur-[100px] opacity-40" style={{ backgroundColor: step.color }}></div>
                       <div className="relative z-10 scale-50 md:scale-90 lg:scale-100" style={{ color: '#000', filter: `drop-shadow(0 0 30px ${step.glow}) brightness(1.1)` }}>
                         {step.icon}

@@ -64,56 +64,57 @@ const TestimonialCarousel: React.FC = () => {
   const tweenRef = useRef<gsap.core.Tween | null>(null);
 
   useEffect(() => {
-    const scrollEl = scrollRef.current;
-    if (!scrollEl) return;
+    const ctx = gsap.context(() => {
+      const scrollEl = scrollRef.current;
+      if (!scrollEl) return;
 
-    const scrollWidth = scrollEl.scrollWidth;
-    
-    tweenRef.current = gsap.to(scrollEl, {
-      x: -scrollWidth / 3,
-      duration: 32, 
-      ease: "none",
-      repeat: -1,
-    });
+      const scrollWidth = scrollEl.scrollWidth;
+      
+      tweenRef.current = gsap.to(scrollEl, {
+        x: -scrollWidth / 3,
+        duration: 15, // Even faster (was 20)
+        ease: "none",
+        repeat: -1,
+        force3D: true
+      });
+    }, scrollRef);
 
-    return () => {
-      tweenRef.current?.kill();
-    };
+    return () => ctx.revert();
   }, []);
 
   const handleMouseEnter = () => tweenRef.current?.pause();
   const handleMouseLeave = () => tweenRef.current?.play();
 
   return (
-    <section className="bg-[#fdfbf7] py-20 border-b border-slate-100 overflow-hidden select-none relative">
-      <div className="max-w-7xl mx-auto px-6 mb-16 text-left flex flex-col md:flex-row items-start md:items-end justify-between gap-8 relative z-10">
-        <div className="space-y-4">
+    <section className="bg-[#fdfbf7] py-12 md:py-16 border-b border-slate-100 overflow-hidden select-none relative">
+      <div className="max-w-7xl mx-auto px-6 mb-10 text-left flex flex-col md:flex-row items-start md:items-end justify-between gap-6 relative z-10">
+        <div className="space-y-3">
           <div className="flex items-center gap-4">
             <div className="h-[2px] w-12 bg-slate-950"></div>
-            <span className="text-slate-950 font-black text-[11px] uppercase tracking-[1em]">YOUR QUOTES</span>
+            <span className="text-slate-950 font-black text-[10px] uppercase tracking-[1em]">YOUR QUOTES</span>
           </div>
-          <h2 className="font-syne text-4xl md:text-6xl font-black text-slate-950 tracking-tighter uppercase leading-none">
+          <h2 className="font-syne text-3xl md:text-5xl font-black text-slate-950 tracking-tighter uppercase leading-none">
             STATUS <span className="text-blue-600 italic">MATTERS.</span>
           </h2>
         </div>
 
-        <div className="flex items-center gap-4 px-6 py-4 bg-white rounded-2xl shadow-sm border border-slate-100">
-           <Sparkles size={16} className="text-blue-600 animate-pulse" />
-           <span className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400">Verified Client Feedback</span>
+        <div className="flex items-center gap-3 px-5 py-3 bg-white rounded-xl shadow-sm border border-slate-100">
+           <Sparkles size={14} className="text-blue-600 animate-pulse" />
+           <span className="text-[9px] font-black uppercase tracking-[0.4em] text-slate-400">Verified Client Feedback</span>
         </div>
       </div>
 
-      <div className="relative w-full overflow-hidden">
+      <div className="relative w-full overflow-hidden perspective-1000">
         <div 
           ref={scrollRef} 
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
-          className="flex items-center gap-10 whitespace-nowrap will-change-transform transform-gpu px-12 py-10"
+          className="flex items-center gap-6 md:gap-10 whitespace-nowrap will-change-transform transform-gpu px-12 py-8"
         >
           {allTestimonials.map((item, idx) => (
             <div 
               key={idx} 
-              className="relative shrink-0 w-[320px] md:w-[460px] h-[180px] md:h-[220px] group rounded-[2.5rem] overflow-hidden transform transition-all duration-700 hover:scale-105 hover:-rotate-1"
+              className="relative shrink-0 w-[280px] md:w-[420px] h-[160px] md:h-[200px] group rounded-[2rem] md:rounded-[2.5rem] overflow-hidden transform transition-all duration-700 hover:scale-105 hover:-rotate-1 shadow-lg hover:shadow-2xl"
             >
               {/* VIBRANT GRADIENT BACKDROP */}
               <div className={`absolute inset-0 bg-gradient-to-br ${item.gradient} opacity-90 transition-opacity duration-700`}></div>
@@ -127,13 +128,13 @@ const TestimonialCarousel: React.FC = () => {
                 style={{ backgroundColor: item.glow }}
               ></div>
               
-              <div className="relative w-full h-full flex flex-col justify-between p-10 md:p-12 z-10 border border-white/20">
+              <div className="relative w-full h-full flex flex-col justify-between p-8 md:p-10 z-10 border border-white/20">
                 <div className="text-white group-hover:scale-110 transition-transform duration-700 origin-left">
-                  {item.logo}
+                  {React.cloneElement(item.logo as React.ReactElement, { size: 20 })}
                 </div>
 
                 <div className="relative">
-                  <p className="text-white font-inter font-black text-lg md:text-2xl tracking-tighter whitespace-normal leading-[1.25] transition-all duration-700 italic">
+                  <p className="text-white font-inter font-black text-base md:text-xl tracking-tighter whitespace-normal leading-[1.2] transition-all duration-700 italic">
                     "{item.text}"
                   </p>
                 </div>
@@ -143,8 +144,8 @@ const TestimonialCarousel: React.FC = () => {
         </div>
 
         {/* EDGE GRADIENTS FOR LUXURY FADE */}
-        <div className="absolute top-0 left-0 bottom-0 w-32 md:w-80 bg-gradient-to-r from-[#fdfbf7] to-transparent z-20 pointer-events-none"></div>
-        <div className="absolute top-0 right-0 bottom-0 w-32 md:w-80 bg-gradient-to-l from-[#fdfbf7] to-transparent z-20 pointer-events-none"></div>
+        <div className="absolute top-0 left-0 bottom-0 w-24 md:w-64 bg-gradient-to-r from-[#fdfbf7] to-transparent z-20 pointer-events-none"></div>
+        <div className="absolute top-0 right-0 bottom-0 w-24 md:w-64 bg-gradient-to-l from-[#fdfbf7] to-transparent z-20 pointer-events-none"></div>
       </div>
     </section>
   );

@@ -59,7 +59,7 @@ const CafeLocations: React.FC = () => {
               height="100%"
               style={{ border: 0 }}
               allowFullScreen={true}
-              loading="lazy"
+              loading="eager"
               className="grayscale-[20%] brightness-[0.85] transition-all duration-1000"
             />
           </motion.div>

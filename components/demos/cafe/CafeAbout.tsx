@@ -26,6 +26,7 @@ const CafeAbout: React.FC = () => {
         <motion.h1 
           initial={{ y: 20, opacity: 0 }} 
           animate={{ y: 0, opacity: 1 }} 
+          transition={{ duration: 0.8, ease: "easeOut" }}
           className="font-serif text-6xl md:text-[10vw] font-black uppercase tracking-tighter text-[#4A403A] leading-none"
         >
           TRUE <span className="text-[#A4715E] italic">CRAFT.</span>
@@ -37,7 +38,8 @@ const CafeAbout: React.FC = () => {
           <motion.div 
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.8 }}
             className="w-full lg:w-3/5 space-y-12"
           >
             <div className="w-16 h-2 bg-[#A4715E]"></div>

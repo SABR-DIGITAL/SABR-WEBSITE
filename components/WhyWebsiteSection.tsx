@@ -154,7 +154,7 @@ const WhyWebsiteSection: React.FC = () => {
               <button 
                 key={idx}
                 onClick={() => setSelectedPro(item)}
-                className="w-full flex items-center gap-3 p-5 bg-white border border-slate-100 rounded-[1.8rem] shadow-sm hover:border-blue-600 hover:shadow-md transition-all duration-300 group focus:outline-none text-left"
+                className="w-full flex items-center gap-3 p-5 bg-white border border-slate-100 rounded-[1.8rem] shadow-sm hover:border-blue-600 hover:shadow-md transition-all duration-300 group focus:outline-none text-left transform-gpu"
               >
                 <div className={`w-10 h-10 rounded-xl ${item.bg} ${item.color} flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform shadow-sm`}>
                   {item.icon}
@@ -211,7 +211,8 @@ const WhyWebsiteSection: React.FC = () => {
               initial={{ opacity: 0, scale: 0.95, y: 30 }} 
               animate={{ opacity: 1, scale: 1, y: 0 }} 
               exit={{ opacity: 0, scale: 0.95, y: 30 }} 
-              className="relative w-full max-w-5xl bg-white rounded-[2.5rem] md:rounded-[3.5rem] shadow-[0_50px_100px_rgba(0,0,0,0.5)] border border-white/10 overflow-hidden flex flex-col max-h-[90vh] z-20"
+              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+              className="relative w-full max-w-5xl bg-white rounded-[2.5rem] md:rounded-[3.5rem] shadow-[0_50px_100px_rgba(0,0,0,0.5)] border border-white/10 overflow-hidden flex flex-col max-h-[90vh] z-20 transform-gpu will-change-transform"
             >
               {/* MODAL HEADER - FIXED AND CLEAN */}
               <div className="px-8 sm:px-12 py-6 sm:py-8 flex items-center justify-between border-b border-slate-100 bg-white sticky top-0 z-30">

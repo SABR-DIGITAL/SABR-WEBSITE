@@ -27,6 +27,7 @@ const CafeContact: React.FC = () => {
         <motion.h1 
           initial={{ y: 20, opacity: 0 }} 
           animate={{ y: 0, opacity: 1 }} 
+          transition={{ duration: 0.8, ease: "easeOut" }}
           className="font-serif text-6xl md:text-[10vw] font-black uppercase tracking-tighter text-[#4A403A] leading-none"
         >
           SAY <span className="text-[#A4715E] italic">HELLO.</span>
@@ -39,6 +40,7 @@ const CafeContact: React.FC = () => {
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
             className="space-y-20"
           >
             <div className="space-y-12">

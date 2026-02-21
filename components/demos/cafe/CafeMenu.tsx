@@ -69,6 +69,7 @@ const CafeMenu: React.FC = () => {
         <motion.h1 
           initial={{ y: 20, opacity: 0 }} 
           animate={{ y: 0, opacity: 1 }} 
+          transition={{ duration: 0.8, ease: "easeOut" }}
           className="font-serif text-6xl md:text-[12vw] font-black uppercase tracking-tighter text-[#4A403A] leading-none"
         >
           THE <span className="text-[#A4715E] italic">MENU.</span>
@@ -83,6 +84,7 @@ const CafeMenu: React.FC = () => {
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.6, delay: i * 0.1 }}
               className="space-y-20"
             >
               <div className="flex flex-col items-center gap-6">

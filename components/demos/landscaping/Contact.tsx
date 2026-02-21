@@ -1,14 +1,9 @@
 import React, { useState, useEffect } from 'react';
-// Fix react-router-dom missing exports
-import * as RouterDOM from 'react-router-dom';
-const { Link } = RouterDOM as any;
-import { motion as framerMotion } from 'framer-motion';
+import { Link } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Mail, Phone, MapPin, Send, CheckCircle, MoveLeft, Sprout, Sun } from 'lucide-react';
 import Navbar from './Navbar';
 import ExitPreviewButton from '../../ExitPreviewButton';
-
-// Fix motion types by casting to any
-const motion = framerMotion as any;
 
 const Contact: React.FC = () => {
   const [isSent, setIsSent] = useState(false);
@@ -65,9 +60,9 @@ const Contact: React.FC = () => {
           
           {/* Left: Contact Info */}
           <motion.div 
-            initial={{ opacity: 0, x: -30 }}
+            initial={{ opacity: 0, x: -100 }}
             whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 1.2, ease: "expo.out" }}
             viewport={{ once: true }}
             className="space-y-16"
           >
@@ -80,7 +75,7 @@ const Contact: React.FC = () => {
             </div>
 
             <div className="space-y-8">
-              <div className="flex items-center gap-8 group p-8 bg-white/50 border border-[#1A3C28]/5 hover:bg-white hover:shadow-2xl transition-all duration-500 rounded-sm">
+              <div className="flex items-center gap-8 group p-8 bg-white/50 border border-[#1A3C28]/5 hover:bg-white hover:shadow-2xl transition-all duration-500 rounded-sm transform-gpu hover:-translate-y-1">
                 <div className="w-16 h-16 bg-[#1A3C28] flex items-center justify-center text-white group-hover:scale-110 transition-transform">
                   <Phone size={24} />
                 </div>
@@ -90,7 +85,7 @@ const Contact: React.FC = () => {
                 </div>
               </div>
 
-              <div className="flex items-center gap-8 group p-8 bg-white/50 border border-[#1A3C28]/5 hover:bg-white hover:shadow-2xl transition-all duration-500 rounded-sm">
+              <div className="flex items-center gap-8 group p-8 bg-white/50 border border-[#1A3C28]/5 hover:bg-white hover:shadow-2xl transition-all duration-500 rounded-sm transform-gpu hover:-translate-y-1">
                 <div className="w-16 h-16 bg-[#1A3C28] flex items-center justify-center text-white group-hover:scale-110 transition-transform">
                   <Mail size={24} />
                 </div>
@@ -102,7 +97,7 @@ const Contact: React.FC = () => {
             </div>
 
             {/* Architectural Map Preview */}
-            <div className="relative h-80 grayscale overflow-hidden border border-[#1A3C28]/10 group shadow-2xl rounded-sm">
+            <div className="relative h-80 grayscale overflow-hidden border border-[#1A3C28]/10 group shadow-2xl rounded-sm transform-gpu">
               <img 
                 src="https://images.unsplash.com/photo-1526778548025-fa2f459cd5ce?auto=format&fit=crop&q=80&w=800" 
                 alt="Wiltshire Map" 
@@ -119,11 +114,11 @@ const Contact: React.FC = () => {
 
           {/* Right: The Form */}
           <motion.div 
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1 }}
+            initial={{ opacity: 0, x: 100 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 1.5, ease: "expo.out" }}
             viewport={{ once: true }}
-            className="bg-white p-10 md:p-20 shadow-[0_50px_100px_rgba(0,0,0,0.1)] relative border-t-8 border-[#BC4B26] rounded-sm"
+            className="bg-white p-10 md:p-20 shadow-[0_50px_100px_rgba(0,0,0,0.1)] relative border-t-8 border-[#BC4B26] rounded-sm transform-gpu"
           >
             {isSent ? (
               <div className="text-center py-20 flex flex-col items-center gap-10">

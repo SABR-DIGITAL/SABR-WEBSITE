@@ -1,8 +1,40 @@
-import React, { useState, useEffect } from 'react';
-import { Send, Instagram, Mail, CheckCircle, Zap } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Send, Instagram, Mail, CheckCircle, Zap, Phone, Briefcase, User } from 'lucide-react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 const ContactForm: React.FC = () => {
   const [isSent, setIsSent] = useState(false);
+  const sectionRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.from(".contact-info-box", {
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 90%",
+        },
+        y: 30,
+        opacity: 0,
+        duration: 1,
+        stagger: 0.1,
+        ease: "expo.out"
+      });
+
+      gsap.from(".contact-form-box", {
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 90%",
+        },
+        scale: 0.98,
+        opacity: 0,
+        duration: 1.2,
+        ease: "expo.out"
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -10,66 +42,100 @@ const ContactForm: React.FC = () => {
   };
 
   return (
-    <section className="bg-[#fdfbf7] pt-48 pb-64 overflow-hidden px-6 relative">
-      <div className="max-w-7xl mx-auto relative z-10">
+    <section ref={sectionRef} className="bg-[#fdfbf7] min-h-[100dvh] flex items-center justify-center py-20 px-6 relative overflow-hidden">
+      <div className="max-w-7xl mx-auto w-full relative z-10">
         
-        {/* Header Section - MATCHING PROJECTS PAGE EXACTLY */}
-        <div className="mb-64">
-          <div className="flex items-center gap-4 mb-10">
-            <div className="h-[2px] w-20 bg-blue-600"></div>
-            <span className="text-blue-600 font-black text-[13px] uppercase tracking-[1em]">GET IN TOUCH</span>
-          </div>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           
-          <h2 className="font-syne text-5xl md:text-7xl font-black text-slate-950 tracking-tighter uppercase leading-tight mb-12">
-            LET'S <br />
-            <span className="text-shimmer-blue italic">IGNITE.</span>
-          </h2>
-          
-          <div className="max-w-4xl border-l-[8px] border-blue-100 pl-16">
-            <p className="text-xl md:text-3xl text-slate-400 font-medium italic leading-relaxed">
-              Get in touch with us. Tell us about your project and we'll help you grow your business through elite architectural engineering.
-            </p>
-          </div>
-        </div>
+          {/* LEFT SIDE: COMPACT INFO */}
+          <div className="lg:col-span-4 space-y-6">
+            <div className="space-y-4 mb-10">
+              <h2 className="font-syne text-5xl md:text-7xl font-black text-slate-950 tracking-tighter uppercase leading-none">
+                LET'S <br />
+                <span className="text-shimmer-blue italic">IGNITE.</span>
+              </h2>
+              <p className="text-lg text-slate-400 font-medium italic border-l-4 border-blue-100 pl-6">
+                Elite engineering starts here.
+              </p>
+            </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-start">
-          <div className="space-y-10">
-             <div className="p-12 bg-white rounded-[3rem] border border-slate-100 shadow-xl group hover:border-blue-400 transition-all">
-                <div className="w-16 h-16 rounded-2xl bg-blue-50 flex items-center justify-center text-blue-600 mb-10"><Mail size={28} /></div>
-                <p className="text-[11px] uppercase tracking-[0.4em] text-slate-300 font-black mb-3">Email Us</p>
-                <p className="text-slate-950 font-black text-2xl break-all">studio@sabrdigital.com</p>
-             </div>
-             <div className="p-12 bg-white rounded-[3rem] border border-slate-100 shadow-xl group hover:border-blue-400 transition-all">
-                <div className="w-16 h-16 rounded-2xl bg-blue-50 flex items-center justify-center text-blue-600 mb-10"><Instagram size={28} /></div>
-                <p className="text-[11px] uppercase tracking-[0.4em] text-slate-300 font-black mb-3">Our Socials</p>
-                <p className="text-slate-950 font-black text-2xl">@sabrdigital</p>
-             </div>
-          </div>
-
-          <div className="p-14 md:p-20 rounded-[4rem] border border-white shadow-[0_50px_100px_rgba(0,0,0,0.08)] bg-white relative overflow-hidden">
-            <div className="absolute top-0 right-0 p-10 opacity-[0.03] pointer-events-none"><Zap size={300} /></div>
-            <form onSubmit={handleSubmit} className="space-y-12 relative z-10">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                <div className="space-y-4">
-                  <label className="text-[10px] uppercase tracking-[0.6em] text-slate-400 font-black block pl-4">Full Name</label>
-                  <input required type="text" placeholder="Your Name" className="w-full bg-slate-50 border border-slate-100 rounded-3xl p-8 text-slate-900 focus:outline-none focus:border-blue-500 transition-all font-bold text-lg" />
-                </div>
-                <div className="space-y-4">
-                  <label className="text-[10px] uppercase tracking-[0.6em] text-slate-400 font-black block pl-4">Email Address</label>
-                  <input required type="email" placeholder="you@example.com" className="w-full bg-slate-50 border border-slate-100 rounded-3xl p-8 text-slate-900 focus:outline-none focus:border-blue-500 transition-all font-bold text-lg" />
-                </div>
-              </div>
-              <div className="space-y-4">
-                <label className="text-[10px] uppercase tracking-[0.6em] text-slate-400 font-black block pl-4">Your Message</label>
-                <textarea rows={4} placeholder="What are your goals?" className="w-full bg-slate-50 border border-slate-100 rounded-3xl p-8 text-slate-900 focus:outline-none focus:border-blue-500 transition-all font-bold text-lg resize-none" />
-              </div>
-              <button 
-                type="submit"
-                className={`w-full py-10 rounded-[2.5rem] font-black uppercase tracking-[0.8em] text-[15px] flex items-center justify-center gap-6 transition-all transform active:scale-95 shadow-2xl ${isSent ? 'bg-green-500 text-white' : 'bg-slate-950 text-white hover:bg-blue-600'}`}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4">
+              <a 
+                href="mailto:SABRDIGITALWILTS@GMAIL.COM"
+                className="contact-info-box flex items-center gap-5 p-6 bg-white rounded-3xl border border-slate-100 shadow-sm hover:border-blue-400 transition-all group"
               >
-                {isSent ? <CheckCircle size={30} /> : <>SEND MESSAGE <Send size={24} /></>}
-              </button>
-            </form>
+                <div className="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center text-blue-600 group-hover:scale-110 transition-transform"><Mail size={20} /></div>
+                <div>
+                  <p className="text-[8px] uppercase tracking-[0.3em] text-slate-300 font-black mb-0.5">Email</p>
+                  <p className="text-slate-950 font-black text-xs md:text-sm break-all">SABRDIGITALWILTS@GMAIL.COM</p>
+                </div>
+              </a>
+
+              <a 
+                href="https://instagram.com/sabrdigital" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="contact-info-box flex items-center gap-5 p-6 bg-white rounded-3xl border border-slate-200 shadow-md hover:border-blue-400 transition-all group opacity-100"
+              >
+                <div className="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center text-blue-600 group-hover:scale-110 transition-transform"><Instagram size={20} /></div>
+                <div>
+                  <p className="text-[8px] uppercase tracking-[0.3em] text-slate-300 font-black mb-0.5">Instagram</p>
+                  <p className="text-slate-950 font-black text-sm">@sabrdigital</p>
+                </div>
+              </a>
+            </div>
+
+            <div className="contact-info-box p-6 bg-blue-600 rounded-3xl text-white shadow-xl flex items-center gap-4">
+               <Zap size={24} className="animate-pulse" />
+               <p className="font-black text-[10px] uppercase tracking-[0.2em]">WE RESPOND WITHIN 12 HOURS!</p>
+            </div>
+          </div>
+
+          {/* RIGHT SIDE: COMPACT FORM */}
+          <div className="contact-form-box lg:col-span-8 p-8 md:p-12 bg-white rounded-[3rem] border border-white shadow-2xl relative overflow-hidden">
+            {isSent ? (
+              <div className="text-center py-12 space-y-6">
+                <CheckCircle size={60} className="mx-auto text-green-500 animate-bounce" />
+                <h3 className="font-syne font-black text-3xl text-slate-950 uppercase">SYNC INITIATED</h3>
+                <p className="text-slate-400 italic">"We'll be in touch shortly."</p>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-[9px] uppercase tracking-[0.4em] text-slate-400 font-black block pl-2">Full Name *</label>
+                    <input required type="text" placeholder="Your Name" className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-5 text-slate-900 focus:outline-none focus:border-blue-500 transition-all font-bold text-sm" />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[9px] uppercase tracking-[0.4em] text-slate-400 font-black block pl-2">Email Address *</label>
+                    <input required type="email" placeholder="you@example.com" className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-5 text-slate-900 focus:outline-none focus:border-blue-500 transition-all font-bold text-sm" />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-[9px] uppercase tracking-[0.4em] text-slate-400 font-black block pl-2">Phone Number</label>
+                    <input type="tel" placeholder="Optional" className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-5 text-slate-900 focus:outline-none focus:border-blue-500 transition-all font-bold text-sm" />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[9px] uppercase tracking-[0.4em] text-slate-400 font-black block pl-2">Industry *</label>
+                    <input required type="text" placeholder="Your Sector" className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-5 text-slate-900 focus:outline-none focus:border-blue-500 transition-all font-bold text-sm" />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[9px] uppercase tracking-[0.4em] text-slate-400 font-black block pl-2">Your Message *</label>
+                  <textarea required rows={4} placeholder="Project requirements..." className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-5 text-slate-900 focus:outline-none focus:border-blue-500 transition-all font-bold text-sm resize-none" />
+                </div>
+
+                <button 
+                  type="submit"
+                  className="w-full py-6 bg-slate-950 text-white rounded-2xl font-black uppercase tracking-[0.6em] text-[12px] flex items-center justify-center gap-4 hover:bg-blue-600 transition-all transform active:scale-95 shadow-xl"
+                >
+                  SEND MESSAGE <Send size={16} />
+                </button>
+              </form>
+            )}
           </div>
         </div>
       </div>

@@ -121,10 +121,10 @@ const FAQSection: React.FC<FAQSectionProps> = ({ navigateTo }) => {
             return (
               <div 
                 key={i} 
-                className="relative h-[480px] w-full [perspective:2500px] cursor-pointer group"
+                className="relative h-[480px] w-full [perspective:2500px] cursor-pointer group transform-gpu will-change-transform"
                 onClick={() => toggleFlip(i)}
               >
-                <div className={`relative w-full h-full transition-all duration-[0.8s] [transform-style:preserve-3d] shadow-2xl rounded-[4rem] ${isFlipped ? '[transform:rotateY(180deg)]' : ''}`}>
+                <div className={`relative w-full h-full transition-all duration-[0.8s] [transform-style:preserve-3d] shadow-2xl rounded-[4rem] ${isFlipped ? '[transform:rotateY(180deg)]' : ''} transform-gpu will-change-transform`}>
                   
                   {/* Front Face - Minimalist White */}
                   <div className="absolute inset-0 [backface-visibility:hidden] rounded-[4rem] bg-white border border-slate-100 flex flex-col justify-between p-14">

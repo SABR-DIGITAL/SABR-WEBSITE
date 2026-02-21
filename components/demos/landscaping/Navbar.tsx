@@ -1,12 +1,7 @@
 import React, { useState } from 'react';
-// Fix react-router-dom missing exports
-import * as RouterDOM from 'react-router-dom';
-const { Link, useLocation } = RouterDOM as any;
+import { Link, useLocation } from 'react-router-dom';
 import { Phone, Menu, X } from 'lucide-react';
-import { motion as framerMotion, AnimatePresence } from 'framer-motion';
-
-// Fix motion types by casting to any
-const motion = framerMotion as any;
+import { motion, AnimatePresence } from 'framer-motion';
 
 const Navbar: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -23,7 +18,7 @@ const Navbar: React.FC = () => {
   return (
     <div className="w-full relative z-[110] font-inter">
       {/* Top Strip */}
-      <div className="bg-[#1A3C28] py-2.5 px-6 md:px-12 text-center md:text-left border-b border-white/5">
+      <div className="hidden lg:block bg-[#1A3C28] py-2.5 px-6 md:px-12 text-center md:text-left border-b border-white/5">
         <p className="text-white text-[9px] uppercase tracking-[0.5em] font-black flex items-center justify-center md:justify-start gap-4">
           <span className="opacity-50 tracking-[0.2em]">EST 1976</span>
           <span className="w-1 h-1 bg-[#BC4B26] rounded-full"></span>
@@ -31,9 +26,9 @@ const Navbar: React.FC = () => {
         </p>
       </div>
 
-      <nav className="bg-[#F4F1EA] py-5 px-6 md:px-12 border-b border-[#1A3C28]/10 shadow-sm">
+      <nav className="bg-transparent py-5 px-6 md:px-12 border-none shadow-none">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <Link to="/demo/landscaping" className="flex flex-col group shrink-0">
+          <Link to="/demo/landscaping" className="hidden lg:flex flex-col group shrink-0">
             <span className="font-oswald font-bold text-2xl md:text-3xl uppercase tracking-tighter leading-none text-[#1A3C28] group-hover:text-[#BC4B26] transition-colors">
               OAK & ASH
             </span>
@@ -42,7 +37,7 @@ const Navbar: React.FC = () => {
             </span>
           </Link>
 
-          <div className="hidden lg:flex items-center gap-8 xl:gap-12">
+          <div className="hidden lg:flex items-center gap-8 xl:gap-12 lg:bg-[#F4F1EA] lg:px-10 lg:py-5 lg:rounded-full lg:border lg:border-[#1A3C28]/10 lg:shadow-sm">
             {navLinks.map((link: any) => (
               <Link 
                 key={link.name} 
@@ -54,15 +49,15 @@ const Navbar: React.FC = () => {
             ))}
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 ml-auto lg:ml-0">
             <Link 
               to="/demo/landscaping/contact" 
-              className="hidden sm:flex px-6 md:px-10 py-4 bg-[#BC4B26] text-white font-black rounded-none text-[10px] uppercase tracking-[0.4em] hover:bg-[#1A3C28] transition-all shadow-xl items-center gap-3 shrink-0 whitespace-nowrap"
+              className="hidden lg:flex px-6 md:px-10 py-4 bg-[#BC4B26] text-white font-black rounded-none text-[10px] uppercase tracking-[0.4em] hover:bg-[#1A3C28] transition-all shadow-xl items-center gap-3 shrink-0 whitespace-nowrap"
             >
               FREE QUOTE
             </Link>
             <button 
-              className="lg:hidden text-[#1A3C28] p-2 hover:text-[#BC4B26] transition-colors"
+              className="lg:hidden text-[#1A3C28] p-4 bg-[#F4F1EA] rounded-full shadow-xl hover:text-[#BC4B26] transition-colors border border-[#1A3C28]/10"
               onClick={() => setMobileMenuOpen(true)}
             >
               <Menu size={24} />

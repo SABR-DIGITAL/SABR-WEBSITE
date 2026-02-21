@@ -49,22 +49,26 @@ const Home: React.FC = () => {
       gsap.to(bgRef.current, {
         y: '20%',
         ease: 'none',
+        force3D: true,
         scrollTrigger: {
           trigger: heroRef.current,
           start: 'top top',
           end: 'bottom top',
           scrub: 0.5,
+          fastScrollEnd: true
         }
       });
 
       gsap.to(sideImgRef.current, {
         y: '-10%',
         ease: 'none',
+        force3D: true,
         scrollTrigger: {
           trigger: heroRef.current,
           start: 'top top',
           end: 'bottom top',
           scrub: 1,
+          fastScrollEnd: true
         }
       });
 
@@ -74,11 +78,13 @@ const Home: React.FC = () => {
         {
           y: '15%',
           ease: 'none',
+          force3D: true,
           scrollTrigger: {
             trigger: testimonialSectionRef.current,
             start: 'top bottom',
             end: 'bottom top',
             scrub: 0.8,
+            fastScrollEnd: true
           }
         }
       );

@@ -26,15 +26,15 @@ const CafeNavbar: React.FC = () => {
   return (
     <>
       <nav className={`fixed top-0 left-0 right-0 z-[150] transition-all duration-700 px-6 ${scrolled ? 'py-4' : 'py-8'}`}>
-        <div className={`max-w-6xl mx-auto flex items-center justify-between rounded-full px-8 py-4 border transition-all duration-700 ${scrolled ? 'bg-white/80 backdrop-blur-2xl border-white shadow-[0_20px_50px_rgba(164,113,94,0.1)]' : 'bg-white/10 backdrop-blur-md border-white/20 shadow-none'}`}>
-          <Link to="/demo/cafe" className="flex items-center gap-3 group">
+        <div className={`max-w-6xl mx-auto flex items-center justify-between rounded-full px-8 py-4 transition-all duration-700 ${scrolled ? 'lg:bg-white/80 lg:backdrop-blur-2xl lg:border-white lg:shadow-[0_20px_50px_rgba(164,113,94,0.1)]' : 'lg:bg-white/10 lg:backdrop-blur-md lg:border-white/20 lg:shadow-none'} bg-transparent border-transparent shadow-none`}>
+          <Link to="/demo/cafe" className="hidden lg:flex items-center gap-3 group">
             <div className="w-10 h-10 bg-[#A4715E] rounded-full flex items-center justify-center text-[#FFF9F5] shadow-sm group-hover:rotate-[15deg] transition-transform duration-500">
               <Coffee size={20} />
             </div>
             <span className="font-serif text-2xl font-bold text-[#4A403A] tracking-tighter group-hover:text-[#A4715E] transition-colors">The Hearth</span>
           </Link>
-
-          <div className="hidden md:flex items-center gap-10">
+          
+          <div className="hidden lg:flex items-center gap-10">
             {navLinks.map((link) => (
               <Link 
                 key={link.name} 
@@ -54,12 +54,12 @@ const CafeNavbar: React.FC = () => {
             ))}
           </div>
 
-          <div className="flex items-center gap-6">
-            <Link to="/demo/cafe/book" className="hidden sm:block px-8 py-3 bg-[#4A403A] text-[#FFF9F5] rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-[#A4715E] transition-all shadow-lg active:scale-95">
+          <div className="flex items-center gap-6 ml-auto lg:ml-0">
+            <Link to="/demo/cafe/book" className="hidden lg:block px-8 py-3 bg-[#4A403A] text-[#FFF9F5] rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-[#A4715E] transition-all shadow-lg active:scale-95">
               Reserve
             </Link>
             <button 
-              className="md:hidden text-[#4A403A] hover:text-[#A4715E] transition-colors"
+              className="lg:hidden text-[#4A403A] hover:text-[#A4715E] transition-colors p-4 bg-white/90 backdrop-blur-md rounded-full shadow-xl border border-white/20"
               onClick={() => setMobileMenuOpen(true)}
             >
               <Menu size={24} />

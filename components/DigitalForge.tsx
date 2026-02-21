@@ -94,19 +94,30 @@ const DigitalForge: React.FC<DigitalForgeProps> = ({ navigateTo }) => {
 
     let animationId: number;
     const clock = new THREE.Clock();
+    let isVisible = true;
+
+    const observer = new IntersectionObserver((entries) => {
+      isVisible = entries[0].isIntersecting;
+    }, { threshold: 0.1 });
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
 
     const animate = () => {
-      const elapsed = clock.getElapsedTime();
-      core.rotation.y = elapsed * 0.08;
-      core.rotation.z = Math.sin(elapsed * 0.1) * 0.1;
-      architectureMesh.rotation.y = -elapsed * 0.05;
-      architectureMesh.rotation.x = Math.cos(elapsed * 0.1) * 0.05;
-      scanningRing.position.y = Math.sin(elapsed * 0.5) * 3;
-      scanningRing.rotation.z = elapsed * 0.2;
-      ringMat.opacity = 0.1 + Math.abs(Math.sin(elapsed * 0.5)) * 0.2;
-      const scale = 1 + Math.sin(elapsed * 1.5) * 0.02;
-      core.scale.set(scale, scale, scale);
-      renderer.render(scene, camera);
+      if (isVisible) {
+        const elapsed = clock.getElapsedTime();
+        core.rotation.y = elapsed * 0.08;
+        core.rotation.z = Math.sin(elapsed * 0.1) * 0.1;
+        architectureMesh.rotation.y = -elapsed * 0.05;
+        architectureMesh.rotation.x = Math.cos(elapsed * 0.1) * 0.05;
+        scanningRing.position.y = Math.sin(elapsed * 0.5) * 3;
+        scanningRing.rotation.z = elapsed * 0.2;
+        ringMat.opacity = 0.1 + Math.abs(Math.sin(elapsed * 0.5)) * 0.2;
+        const scale = 1 + Math.sin(elapsed * 1.5) * 0.02;
+        core.scale.set(scale, scale, scale);
+        renderer.render(scene, camera);
+      }
       animationId = requestAnimationFrame(animate);
     };
 
@@ -124,6 +135,7 @@ const DigitalForge: React.FC<DigitalForgeProps> = ({ navigateTo }) => {
 
     return () => {
       window.removeEventListener('resize', handleResize);
+      observer.disconnect();
       cancelAnimationFrame(animationId);
       geometry.dispose();
       material.dispose();
@@ -144,7 +156,7 @@ const DigitalForge: React.FC<DigitalForgeProps> = ({ navigateTo }) => {
         className="absolute top-0 left-0 right-0 h-[1px] bg-blue-500 shadow-[0_0_10px_#2563eb] origin-left z-20"
       />
 
-      <canvas ref={canvasRef} className="absolute inset-0 z-0 opacity-90 pointer-events-none transform-gpu scale-125 lg:scale-150" />
+      <canvas ref={canvasRef} className="absolute inset-0 z-0 opacity-90 pointer-events-none transform-gpu scale-125 lg:scale-150 will-change-transform" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#050608_85%)] pointer-events-none z-[1]"></div>
 
       <div className="max-w-4xl mx-auto px-8 md:px-12 flex flex-col items-center relative z-10 text-center">

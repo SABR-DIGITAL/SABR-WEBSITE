@@ -21,7 +21,7 @@ const Navbar: React.FC<NavbarProps> = ({ navigateTo, currentPage }) => {
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -40,11 +40,11 @@ const Navbar: React.FC<NavbarProps> = ({ navigateTo, currentPage }) => {
 
   return (
     <>
-      <nav className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-700 px-4 md:px-8 ${scrolled ? 'py-4' : 'py-8'} block`}>
-        <div className={`max-w-7xl mx-auto rounded-full px-8 py-5 flex items-center justify-between transition-all duration-700 backdrop-blur-3xl border ${scrolled ? 'bg-white/95 border-slate-100 shadow-2xl' : 'bg-white/10 border-white/20 lg:bg-white/10 lg:border-white/20'} ${!scrolled ? 'bg-transparent border-transparent lg:bg-transparent lg:border-transparent' : ''} ${mobileMenuOpen ? 'opacity-0' : 'opacity-100'} lg:opacity-100`}>
+      <nav className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-700 px-4 md:px-8 ${scrolled ? 'py-4' : 'py-8'} block transform-gpu will-change-[padding]`}>
+        <div className={`max-w-7xl mx-auto flex items-center justify-between transition-all duration-700 ${scrolled ? 'lg:bg-white/95 lg:border-slate-100 lg:shadow-2xl lg:rounded-full lg:px-8 lg:py-5 lg:border' : 'bg-transparent border-transparent lg:bg-white/10 lg:border-white/20 lg:backdrop-blur-3xl lg:rounded-full lg:px-8 lg:py-5 lg:border'} ${mobileMenuOpen ? 'opacity-0' : 'opacity-100'} lg:opacity-100 transform-gpu will-change-[background-color,border-color,padding,border-radius] bg-transparent border-transparent shadow-none`}>
           <button 
             onClick={() => handleNav('home')}
-            className="flex flex-col text-left group focus:outline-none focus:ring-0 appearance-none"
+            className="hidden lg:flex flex-col text-left group focus:outline-none focus:ring-0 appearance-none"
           >
             <span className="font-syne text-xl md:text-2xl tracking-[0.05em] font-black text-slate-950 flex items-center">
               SABR<span className="text-shimmer-blue ml-1.5">DIGITAL</span>
@@ -72,7 +72,7 @@ const Navbar: React.FC<NavbarProps> = ({ navigateTo, currentPage }) => {
           </div>
 
           <button 
-            className="lg:hidden p-2 text-slate-950 hover:text-blue-600 transition-colors focus:outline-none"
+            className="lg:hidden ml-auto p-4 bg-white/90 backdrop-blur-md rounded-full shadow-xl text-slate-950 hover:text-blue-600 transition-all border border-slate-100 focus:outline-none"
             onClick={() => setMobileMenuOpen(true)}
           >
             <Menu size={24} />
@@ -102,7 +102,7 @@ const Navbar: React.FC<NavbarProps> = ({ navigateTo, currentPage }) => {
                 <button 
                   key={link.id} 
                   onClick={() => handleNav(link.id)}
-                  className="text-left font-syne text-[clamp(2rem,10vw,5rem)] font-black text-slate-950 tracking-tighter uppercase hover:text-blue-600 transition-colors leading-none pr-10"
+                  className="text-left font-syne text-[clamp(2rem,10vw,4.5rem)] font-black text-slate-950 tracking-tighter uppercase hover:text-blue-600 transition-colors leading-none pr-10"
                 >
                   {link.name}.
                 </button>

@@ -30,8 +30,6 @@ const CafeAbout = lazy(() => import('./components/demos/cafe/CafeAbout'));
 const CafeContact = lazy(() => import('./components/demos/cafe/CafeContact'));
 const CafeBooking = lazy(() => import('./components/demos/cafe/CafeBooking'));
 
-const PlumberDemo = lazy(() => import('./components/demos/PlumberDemo'));
-
 // Physio Demo (New)
 const PhysioHome = lazy(() => import('./components/demos/physio/PhysioHome'));
 const PhysioPrices = lazy(() => import('./components/demos/physio/PhysioPrices'));
@@ -54,7 +52,7 @@ const ScrollToTop = () => {
     if ('scrollRestoration' in window.history) {
       window.history.scrollRestoration = 'manual';
     }
-    window.scrollTo({ top: 0, left: 0, behavior: 'instant' as any });
+    window.scrollTo(0, 0);
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0;
   }, [pathname, hash, key]);
@@ -80,7 +78,7 @@ const MainApp: React.FC = () => {
   const isDemo = location.pathname.startsWith('/demo');
 
   useLayoutEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: 'instant' as any });
+    window.scrollTo(0, 0);
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0;
     ScrollTrigger.refresh();
@@ -88,21 +86,26 @@ const MainApp: React.FC = () => {
 
   useEffect(() => {
     if (!showIntro && !isDemo && contentRef.current) {
-      const tl = gsap.timeline({
-        onStart: () => setIsRevealed(true)
+      const ctx = gsap.context(() => {
+        gsap.to(contentRef.current, {
+          opacity: 1,
+          y: 0,
+          duration: 1.2,
+          ease: 'power4.out',
+          force3D: true,
+          clearProps: 'opacity,transform',
+          onStart: () => setIsRevealed(true)
+        });
       });
       
-      tl.to(contentRef.current, {
-        opacity: 1,
-        y: 0,
-        duration: 1.5,
-        ease: 'power4.out',
-        clearProps: 'opacity,transform'
-      });
-      
-      setTimeout(() => {
+      const timer = setTimeout(() => {
         ScrollTrigger.refresh();
-      }, 500);
+      }, 300);
+
+      return () => {
+        ctx.revert();
+        clearTimeout(timer);
+      };
     }
   }, [showIntro, isDemo]);
 
@@ -112,25 +115,29 @@ const MainApp: React.FC = () => {
       return;
     }
     
-    gsap.to(contentRef.current, {
-      opacity: 0,
-      y: 10,
-      duration: 0.2,
-      ease: 'power3.in',
-      onComplete: () => {
-        setCurrentPage(page);
-        if (window.location.hash !== '#/') {
-          window.location.hash = '/';
+    const ctx = gsap.context(() => {
+      gsap.to(contentRef.current, {
+        opacity: 0,
+        y: 10,
+        duration: 0.2,
+        ease: 'power3.in',
+        force3D: true,
+        onComplete: () => {
+          setCurrentPage(page);
+          if (window.location.hash !== '#/') {
+            window.location.hash = '/';
+          }
+          window.scrollTo(0, 0);
+          
+          requestAnimationFrame(() => {
+            ScrollTrigger.refresh();
+            gsap.fromTo(contentRef.current, 
+              { opacity: 0, y: 30 },
+              { opacity: 1, y: 0, duration: 0.4, ease: 'power4.out', force3D: true }
+            );
+          });
         }
-        window.scrollTo({ top: 0, left: 0, behavior: 'instant' as any });
-        setTimeout(() => {
-          ScrollTrigger.refresh();
-          gsap.fromTo(contentRef.current, 
-            { opacity: 0, y: 30 },
-            { opacity: 1, y: 0, duration: 0.5, ease: 'power4.out' }
-          );
-        }, 10);
-      }
+      });
     });
   };
 
@@ -189,7 +196,6 @@ const MainApp: React.FC = () => {
               <Route path="/demo/cafe/about" element={<CafeAbout />} />
               <Route path="/demo/cafe/contact" element={<CafeContact />} />
               <Route path="/demo/cafe/book" element={<CafeBooking />} />
-              <Route path="/demo/plumber" element={<PlumberDemo />} />
               <Route path="/demo/physio" element={<PhysioHome />} />
               <Route path="/demo/physio/prices" element={<PhysioPrices />} />
               <Route path="/demo/physio/team" element={<PhysioTeam />} />

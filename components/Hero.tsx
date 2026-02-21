@@ -19,43 +19,49 @@ const Hero: React.FC<HeroProps> = ({ navigateTo }) => {
   const [phraseIndex, setPhraseIndex] = useState(0);
 
   useEffect(() => {
-    const tl = gsap.timeline();
-    
-    tl.fromTo(".hero-title-top", 
-      { opacity: 0, y: 30, filter: 'blur(10px)' },
-      { opacity: 1, y: 0, filter: 'blur(0px)', duration: 1.6, ease: "expo.out" }
-    );
-
-    tl.fromTo(".hero-work-block", 
-      { clipPath: 'inset(0 100% 0 0)', scale: 1.02 },
-      { clipPath: 'inset(0 0% 0 0)', scale: 1, duration: 2, ease: "expo.out" },
-      "-=1.3"
-    );
-
-    tl.fromTo(".hero-reveal-bottom", 
-      { opacity: 0, y: 20 },
-      { opacity: 1, y: 0, duration: 1.2, stagger: 0.15, ease: "power3.out" },
-      "-=1.1"
-    );
-
-    const phraseInterval = setInterval(() => {
-      if (!phraseRef.current) return;
-      gsap.to(phraseRef.current, {
-        opacity: 0,
-        y: -10,
-        duration: 0.6,
-        ease: "power2.inOut",
-        onComplete: () => {
-          setPhraseIndex((prev) => (prev + 1) % phrases.length);
-          gsap.fromTo(phraseRef.current, 
-            { opacity: 0, y: 10 },
-            { opacity: 1, y: 0, duration: 0.7, ease: "expo.out" }
-          );
-        }
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({
+        defaults: { ease: "expo.out", force3D: true }
       });
-    }, 5500);
+      
+      tl.fromTo(".hero-title-top", 
+        { opacity: 0, y: 40, filter: 'blur(15px)' },
+        { opacity: 1, y: 0, filter: 'blur(0px)', duration: 1.2 }
+      );
 
-    return () => clearInterval(phraseInterval);
+      tl.fromTo(".hero-work-block", 
+        { clipPath: 'inset(0 100% 0 0)' },
+        { clipPath: 'inset(0 0% 0 0)', duration: 1.5 },
+        "-=1.0"
+      );
+
+      tl.fromTo(".hero-reveal-bottom", 
+        { opacity: 0, y: 30 },
+        { opacity: 1, y: 0, duration: 1, stagger: 0.08 },
+        "-=1.2"
+      );
+
+      const phraseInterval = setInterval(() => {
+        if (!phraseRef.current) return;
+        gsap.to(phraseRef.current, {
+          opacity: 0,
+          y: -15,
+          duration: 0.4,
+          ease: "power2.in",
+          onComplete: () => {
+            setPhraseIndex((prev) => (prev + 1) % phrases.length);
+            gsap.fromTo(phraseRef.current, 
+              { opacity: 0, y: 15 },
+              { opacity: 1, y: 0, duration: 0.6, ease: "expo.out", force3D: true }
+            );
+          }
+        });
+      }, 5500);
+
+      return () => clearInterval(phraseInterval);
+    }, containerRef);
+
+    return () => ctx.revert();
   }, []);
 
   return (
@@ -64,11 +70,11 @@ const Hero: React.FC<HeroProps> = ({ navigateTo }) => {
 
       <div className="flex-1 w-full flex flex-col items-start justify-start gap-6 md:gap-10 pb-12 md:pb-24">
         <div className="w-full flex flex-col items-start">
-          <h1 className="font-syne text-[clamp(1.3rem,4.4vw,4.4rem)] leading-[1.05] tracking-[-0.04em] uppercase flex flex-col items-start text-left text-[#050608] w-full transform-gpu will-change-transform">
+          <h1 className="font-syne text-[clamp(1.1rem,4.4vw,4.4rem)] leading-[1.05] tracking-[-0.04em] uppercase flex flex-col items-start text-left text-[#050608] w-full transform-gpu will-change-transform">
             <span className="hero-title-top font-extrabold mb-4 md:mb-6 pl-0">Built to Perform</span>
             <div className="hero-work-block relative w-screen ml-[-24px] lg:ml-[-96px] flex items-center justify-start overflow-hidden will-change-[clip-path]">
               <div className="absolute inset-0 bg-gradient-to-r from-[#002bb3] via-[#2563eb] via-[#5fb2ff] via-[#2563eb] to-[#002bb3] -z-10 animate-hyper-shimmer bg-[length:200%_auto] will-change-[background-position]"></div>
-              <span className="pl-6 lg:pl-24 pr-4 md:pr-10 py-5 md:py-8 block text-white tracking-tighter whitespace-nowrap text-[clamp(1rem,4vw,4rem)]">Designed to Dominate</span>
+              <span className="pl-6 lg:pl-24 pr-4 md:pr-10 py-5 md:py-8 block text-white tracking-tighter whitespace-nowrap text-[clamp(0.9rem,4vw,4rem)]">Designed to Dominate</span>
             </div>
           </h1>
         </div>

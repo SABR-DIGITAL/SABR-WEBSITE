@@ -101,13 +101,14 @@ const CafeHome: React.FC = () => {
           <motion.div 
             initial={{ scale: 1.1, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 2.5, ease: "easeOut" }}
-            className="w-full h-full"
+            transition={{ duration: 1.5, ease: "easeOut" }}
+            className="w-full h-full transform-gpu will-change-transform"
           >
             <img 
               src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&q=80&w=2000" 
               className="w-full h-full object-cover brightness-[0.75]" 
               alt="High-end brunch table setting"
+              loading="eager"
             />
           </motion.div>
           <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-[#FFF9F5]"></div>
@@ -115,10 +116,10 @@ const CafeHome: React.FC = () => {
 
         <div className="max-w-7xl mx-auto w-full relative z-10 text-center lg:text-left">
           <motion.div 
-            initial={{ opacity: 0, y: 50 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.5, delay: 0.5, ease: "easeOut" }}
-            className="max-w-4xl space-y-12"
+            transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
+            className="max-w-4xl space-y-12 transform-gpu will-change-[opacity,transform]"
           >
             <div className="inline-flex items-center gap-3 px-6 py-2 bg-white/10 backdrop-blur-xl rounded-full border border-white/20">
               <Flower2 size={16} className="text-[#FDE2E4]" />
@@ -154,7 +155,7 @@ const CafeHome: React.FC = () => {
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          viewport={{ once: true, margin: "-50px" }}
           className="flex flex-col md:flex-row justify-between items-end gap-12 mb-24"
         >
           <div className="space-y-4">
@@ -217,7 +218,7 @@ const CafeHome: React.FC = () => {
           <motion.div 
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "-150px" }}
             className="flex flex-col lg:flex-row items-center gap-24"
           >
             <div className="w-full lg:w-1/2 space-y-12">
@@ -277,7 +278,7 @@ const CafeHome: React.FC = () => {
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "-250px" }}
             className="space-y-12"
           >
             <div className="w-20 h-1 bg-[#A4715E]"></div>

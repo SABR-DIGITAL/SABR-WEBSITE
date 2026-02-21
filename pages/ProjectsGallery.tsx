@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Sprout, Coffee, Droplet, MoveRight, Activity } from 'lucide-react';
+import { Sprout, Coffee, MoveRight, Activity } from 'lucide-react';
 // Fix react-router-dom missing exports
 import * as RouterDOM from 'react-router-dom';
 const { Link } = RouterDOM as any;
@@ -41,17 +41,6 @@ const projects = [
     glowColor: 'rgba(37, 99, 235, 0.4)', // Bright Blue
     path: '/demo/physio',
     description: "In the world of health, trust is everything. We engineered a platform that mirrors the precision of expert medical care with a high-end feel."
-  },
-  {
-    id: 'plumber',
-    title: 'Reliable Trade Engines',
-    industry: 'Plumbing',
-    tagline: 'Flow Dynamics',
-    bio: "A fast, reliable emergency site for trade professionals that works perfectly on mobile for customers who need your help right now.",
-    icon: <Droplet className="text-white" size={100} strokeWidth={1} />,
-    glowColor: 'rgba(6, 182, 212, 0.4)', // Cyan
-    path: '/demo/plumber',
-    description: "When emergencies happen, speed is everything. We engineered this for instant response and client trust."
   }
 ];
 
@@ -125,24 +114,29 @@ const ProjectRow: React.FC<{ project: any, index: number }> = ({ project, index 
     const text = textRef.current;
     if (!el || !visual || !text) return;
 
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: el,
-        start: "top 70%",
-        toggleActions: "play none none reverse"
-      }
-    });
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: el,
+          start: "top 70%",
+          fastScrollEnd: true,
+          toggleActions: "play none none reverse"
+        }
+      });
 
-    tl.fromTo(visual, 
-      { opacity: 0, x: isEven ? 50 : -50 },
-      { opacity: 1, x: 0, duration: 1.5, ease: "expo.out" }
-    );
+      tl.fromTo(visual, 
+        { opacity: 0, x: isEven ? 50 : -50 },
+        { opacity: 1, x: 0, duration: 1.2, ease: "expo.out", force3D: true }
+      );
 
-    tl.fromTo(text.querySelectorAll('.reveal-item'), 
-      { opacity: 0, y: 30 },
-      { opacity: 1, y: 0, duration: 1, stagger: 0.15, ease: "power4.out" },
-      "-=1.0"
-    );
+      tl.fromTo(text.querySelectorAll('.reveal-item'), 
+        { opacity: 0, y: 30 },
+        { opacity: 1, y: 0, duration: 0.8, stagger: 0.1, ease: "power4.out", force3D: true },
+        "-=0.8"
+      );
+    }, el);
+
+    return () => ctx.revert();
   }, [isEven]);
 
   return (
