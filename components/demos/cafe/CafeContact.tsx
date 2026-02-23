@@ -1,11 +1,16 @@
 
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { motion as framerMotion, AnimatePresence } from 'framer-motion';
+// Fix react-router-dom missing exports
+import * as RouterDOM from 'react-router-dom';
+const { Link } = RouterDOM as any;
 import { CheckCircle, ArrowRight, Mail, Phone, MapPin, Instagram, Sparkles, Send } from 'lucide-react';
 import ExitPreviewButton from '../../ExitPreviewButton';
 import CafeNavbar from './CafeNavbar';
 import CafeFooter from './CafeFooter';
+
+// Fix motion types by casting to any
+const motion = framerMotion as any;
 
 const CafeContact: React.FC = () => {
   const [isSent, setIsSent] = useState(false);

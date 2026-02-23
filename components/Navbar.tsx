@@ -92,7 +92,7 @@ const Navbar: React.FC<NavbarProps> = ({ navigateTo, currentPage }) => {
             <div className="flex justify-between items-center mb-20 md:mb-32">
               <div className="flex flex-col">
                 <span className="font-syne text-3xl md:text-4xl font-black text-slate-950">SABR DIGITAL</span>
-                <span className="text-[9px] md:text-[11px] uppercase font-black tracking-[0.6em] text-blue-600">Protocol Hub</span>
+                <span className="text-[9px] md:text-[11px] uppercase font-black tracking-[0.6em] text-blue-600">PRO Hub</span>
               </div>
               <button onClick={() => setMobileMenuOpen(false)} className="w-14 h-14 md:w-20 md:h-20 rounded-full bg-white shadow-lg flex items-center justify-center text-slate-950 hover:text-blue-600 transition-colors"><X size={32} /></button>
             </div>
@@ -102,7 +102,7 @@ const Navbar: React.FC<NavbarProps> = ({ navigateTo, currentPage }) => {
                 <button 
                   key={link.id} 
                   onClick={() => handleNav(link.id)}
-                  className="text-left font-syne text-[clamp(2rem,10vw,4.5rem)] font-black text-slate-950 tracking-tighter uppercase hover:text-blue-600 transition-colors leading-none pr-10"
+                  className="text-left font-syne text-[clamp(1.5rem,8vw,3.5rem)] font-black text-slate-950 tracking-tighter uppercase hover:text-blue-600 transition-colors leading-none pr-10"
                 >
                   {link.name}.
                 </button>

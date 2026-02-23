@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import * as RouterDOM from 'react-router-dom';
+import * as FramerMotion from 'framer-motion';
 import { Phone, Menu, X } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+
+// Robust export resolution
+const { Link, useLocation } = RouterDOM as any;
+const { motion, AnimatePresence } = FramerMotion as any;
 
 const Navbar: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);

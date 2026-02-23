@@ -5,6 +5,7 @@ const { Link } = RouterDOM as any;
 import { motion as framerMotion } from 'framer-motion';
 import { Hammer, Sprout, Trees, ArrowRight, MoveLeft } from 'lucide-react';
 import Navbar from './Navbar';
+import Footer from './Footer';
 import ExitPreviewButton from '../../ExitPreviewButton';
 
 // Fix motion types by casting to any
@@ -81,6 +82,7 @@ const Services: React.FC = () => {
           ))}
         </div>
       </section>
+      <Footer />
     </div>
   );
 };

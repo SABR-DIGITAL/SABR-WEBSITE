@@ -45,7 +45,7 @@ const BentoGrid: React.FC<{ navigateTo?: (page: any) => void }> = ({ navigateTo 
           {pillars.map((item, idx) => (
             <div 
               key={idx} 
-              className="group relative bg-white border border-slate-100 p-12 rounded-[2.5rem] hover:border-blue-200 transition-all duration-700 hover:-translate-y-4 shadow-[0_10px_40px_rgba(0,0,0,0.02)] flex flex-col justify-between min-h-[440px] transform-gpu"
+              className="group relative bg-white border border-slate-100 p-12 rounded-[2.5rem] hover:border-blue-200 transition-all duration-700 hover:-translate-y-4 shadow-[0_10px_40px_rgba(0,0,0,0.02)] flex flex-col justify-between min-h-[440px] transform-gpu will-change-transform"
             >
               <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-100 group-hover:text-blue-600 transition-all">
                  <Zap size={32} />

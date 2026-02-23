@@ -35,7 +35,7 @@ const StatBubble: React.FC<{ percentage: number; label: string; sub: string; col
 
   return (
     <div ref={bubbleRef} className="flex flex-col items-center gap-10 opacity-0 group">
-      <div className="relative w-56 h-56 md:w-60 md:h-60 flex items-center justify-center transition-all duration-700">
+      <div className="relative w-56 h-56 md:w-52 lg:w-60 md:h-52 lg:h-60 flex items-center justify-center transition-all duration-700">
         <div className={`absolute inset-0 rounded-full ${glow} blur-[40px] opacity-0 group-hover:opacity-40 transition-all duration-1000 scale-125`}></div>
         <div className="w-full h-full rounded-full bg-white border border-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.04)] flex items-center justify-center relative z-10 overflow-hidden group-hover:border-blue-200 transition-all duration-500">
           <div className="text-center relative z-20">
@@ -70,7 +70,7 @@ const StatsSection: React.FC = () => {
             THE RISK OF <br /><span className="text-blue-600 italic">SILENCE.</span>
           </h2>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-20 lg:gap-28 justify-items-center">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8 lg:gap-28 justify-items-center items-start">
           <StatBubble 
             percentage={38} 
             label="TRUST" 

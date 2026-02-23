@@ -136,7 +136,7 @@ const SnakeTimeline: React.FC<{ navigateTo: (page: Page) => void }> = ({ navigat
             return (
               <div key={step.id} className="grid grid-cols-1 lg:grid-cols-2 items-center gap-12 md:gap-20">
                 {/* Step Content Side */}
-                <div className={`flex flex-col items-center ${isLeft ? 'lg:order-1' : 'lg:order-2'}`}>
+                <div className={`flex flex-col items-center ${isLeft ? 'lg:order-1' : 'lg:order-2'} transform-gpu`}>
                   <div className="relative flex flex-col items-center text-center w-full bg-transparent">
                     {/* FIXED OVERSIZED ICON: Rescaled for tablet (md) to be more symmetrical */}
                     <div className="relative w-48 h-48 md:w-80 md:h-80 lg:w-80 lg:h-80 flex items-center justify-center mb-8 md:mb-16 pointer-events-none animate-icon-float transform-gpu will-change-transform">
@@ -160,7 +160,7 @@ const SnakeTimeline: React.FC<{ navigateTo: (page: Page) => void }> = ({ navigat
                     whileInView={{ opacity: 1, scale: 1, y: 0 }}
                     viewport={{ amount: 0.5, once: true }}
                     transition={{ duration: 0.5, ease: "easeOut" }}
-                    className="w-full max-w-[460px] md:max-w-2xl p-10 md:p-20 bg-white/60 backdrop-blur-[60px] border border-white/80 rounded-[3rem] shadow-[0_40px_120px_rgba(0,0,0,0.06)] relative z-50"
+                    className="w-full max-w-[460px] md:max-w-2xl p-10 md:p-20 bg-white/60 backdrop-blur-[60px] border border-white/80 rounded-[3rem] shadow-[0_40px_120px_rgba(0,0,0,0.06)] relative z-50 transform-gpu will-change-transform"
                   >
                     <div className="space-y-8 md:space-y-10">
                       {step.bullets.map((bullet, idx) => (
@@ -179,14 +179,14 @@ const SnakeTimeline: React.FC<{ navigateTo: (page: Page) => void }> = ({ navigat
       </section>
 
       {/* 3. FUTURISTIC DEPLOYMENT SELECTION */}
-      <section className="bg-[#050608] py-32 md:py-48 px-6 relative overflow-hidden">
+      <section className="bg-[#050608] py-24 md:py-32 px-6 relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-full opacity-[0.02] pointer-events-none">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[180vw] h-[1px] bg-blue-500 rotate-12"></div>
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[180vw] h-[1px] bg-blue-500 -rotate-12"></div>
         </div>
 
         <div className="max-w-7xl mx-auto relative z-10">
-          <div className="text-center mb-24 md:mb-32 space-y-10">
+          <div className="text-center mb-16 md:mb-20 space-y-6">
             <h2 className="font-syne text-4xl md:text-5xl lg:text-6xl font-black text-white uppercase tracking-tighter leading-none">
               PICK YOUR <br /> <span className="text-shimmer-blue italic">PATH.</span>
             </h2>
@@ -197,16 +197,19 @@ const SnakeTimeline: React.FC<{ navigateTo: (page: Page) => void }> = ({ navigat
             </div>
           </div>
 
-          <div className="flex flex-col lg:flex-row items-center justify-center gap-16 md:gap-24 xl:gap-48 mb-32 md:mb-48">
-            <div className="w-full lg:w-1/2 max-w-lg space-y-8 md:space-y-10">
+          <div className="flex flex-col lg:flex-row items-center justify-center gap-12 md:gap-16 xl:gap-32 mb-24 md:mb-32">
+            <div className="w-full lg:w-1/2 max-w-lg space-y-6 md:space-y-8">
               <button 
                 onClick={() => setDeploymentMode('managed')}
-                className={`w-full text-left p-10 md:p-14 rounded-[3.5rem] border-2 transition-all duration-700 relative overflow-hidden group focus:outline-none ${deploymentMode === 'managed' ? 'bg-blue-600 border-blue-600 shadow-[0_0_120px_rgba(37,99,235,0.2)] scale-105' : 'bg-transparent border-white/10 hover:border-blue-600/50'}`}
+                className={`w-full text-left p-8 md:p-10 rounded-[2.5rem] border-4 transition-all duration-700 relative overflow-hidden group focus:outline-none ${deploymentMode === 'managed' ? 'bg-blue-600 border-white shadow-[0_0_120px_rgba(37,99,235,0.4)] scale-105' : 'bg-transparent border-white/10 hover:border-blue-600/50'}`}
               >
-                <div className="relative z-10 space-y-4">
-                  <span className={`text-[10px] font-black uppercase tracking-[0.5em] ${deploymentMode === 'managed' ? 'text-white/60' : 'text-blue-600'}`}>OPTION 01</span>
-                  <h3 className="font-syne text-2xl md:text-3xl lg:text-4xl font-black text-white uppercase tracking-tight leading-tight">WE DO THE <br />WORK</h3>
-                  <p className={`text-base md:text-lg font-medium italic leading-relaxed ${deploymentMode === 'managed' ? 'text-white/80' : 'text-white/30'}`}>
+                <div className="relative z-10 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className={`text-[10px] font-black uppercase tracking-[0.5em] ${deploymentMode === 'managed' ? 'text-white' : 'text-blue-600'}`}>OPTION 01</span>
+                    {deploymentMode === 'managed' && <div className="w-3 h-3 bg-white rounded-full animate-pulse"></div>}
+                  </div>
+                  <h3 className="font-syne text-2xl md:text-3xl font-black text-white uppercase tracking-tight leading-tight">WE DO THE <br />WORK</h3>
+                  <p className={`text-sm md:text-base font-medium italic leading-relaxed ${deploymentMode === 'managed' ? 'text-white' : 'text-white/30'}`}>
                     "We host, update, and manage your site so you can focus on your trade."
                   </p>
                 </div>
@@ -214,12 +217,15 @@ const SnakeTimeline: React.FC<{ navigateTo: (page: Page) => void }> = ({ navigat
 
               <button 
                 onClick={() => setDeploymentMode('ownership')}
-                className={`w-full text-left p-10 md:p-14 rounded-[3.5rem] border-2 transition-all duration-700 relative overflow-hidden group focus:outline-none ${deploymentMode === 'ownership' ? 'bg-slate-900 border-slate-700 shadow-[0_0_120px_rgba(255,255,255,0.05)] scale-105' : 'bg-transparent border-white/10 hover:border-white/30'}`}
+                className={`w-full text-left p-8 md:p-10 rounded-[2.5rem] border-4 transition-all duration-700 relative overflow-hidden group focus:outline-none ${deploymentMode === 'ownership' ? 'bg-slate-900 border-white shadow-[0_0_120px_rgba(255,255,255,0.1)] scale-105' : 'bg-transparent border-white/10 hover:border-white/30'}`}
               >
-                <div className="relative z-10 space-y-4">
-                  <span className={`text-[10px] font-black uppercase tracking-[0.5em] ${deploymentMode === 'ownership' ? 'text-white/60' : 'text-white/30'}`}>OPTION 02</span>
-                  <h3 className="font-syne text-2xl md:text-3xl lg:text-4xl font-black text-white uppercase tracking-tight leading-tight">YOU TAKE <br />THE KEYS</h3>
-                  <p className={`text-base md:text-lg font-medium italic leading-relaxed ${deploymentMode === 'ownership' ? 'text-white/80' : 'text-white/30'}`}>
+                <div className="relative z-10 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className={`text-[10px] font-black uppercase tracking-[0.5em] ${deploymentMode === 'ownership' ? 'text-white' : 'text-white/30'}`}>OPTION 02</span>
+                    {deploymentMode === 'ownership' && <div className="w-3 h-3 bg-white rounded-full animate-pulse"></div>}
+                  </div>
+                  <h3 className="font-syne text-2xl md:text-3xl font-black text-white uppercase tracking-tight leading-tight">YOU TAKE <br />THE KEYS</h3>
+                  <p className={`text-sm md:text-base font-medium italic leading-relaxed ${deploymentMode === 'ownership' ? 'text-white' : 'text-white/30'}`}>
                     "You own the site 100%. We give you the logins and you're in control."
                   </p>
                 </div>
@@ -260,8 +266,8 @@ const SnakeTimeline: React.FC<{ navigateTo: (page: Page) => void }> = ({ navigat
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ amount: 0.5 }}
-              className="relative flex flex-col items-center w-full text-center"
+              viewport={{ amount: 0.5, once: true }}
+              className="relative flex flex-col items-center w-full text-center transform-gpu will-change-transform"
             >
               <div className="relative w-40 h-40 md:w-48 md:h-48 mb-8 flex items-center justify-center mx-auto group cursor-pointer" onClick={() => navigateTo('contact')}>
                 <div className="absolute inset-0 bg-blue-600 blur-[60px] opacity-20 animate-pulse group-hover:opacity-40 transition-opacity"></div>

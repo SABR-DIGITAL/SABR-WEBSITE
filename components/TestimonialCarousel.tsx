@@ -77,6 +77,18 @@ const TestimonialCarousel: React.FC = () => {
         repeat: -1,
         force3D: true
       });
+
+      const observer = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting) {
+          tweenRef.current?.play();
+        } else {
+          tweenRef.current?.pause();
+        }
+      }, { threshold: 0.1 });
+
+      observer.observe(scrollEl);
+
+      return () => observer.disconnect();
     }, scrollRef);
 
     return () => ctx.revert();

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import * as RouterDOM from 'react-router-dom';
 const { Link } = RouterDOM as any;
 import { motion as framerMotion, AnimatePresence } from 'framer-motion';
+import { gsap } from 'gsap';
 import { 
   Coffee, 
   ArrowRight, 
@@ -72,10 +73,18 @@ const CafeHome: React.FC = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    const interval = setInterval(() => {
+    
+    let delayedCall: gsap.core.Tween;
+    const rotateTestimonials = () => {
       setTestiIndex(prev => (prev + 1) % testimonials.length);
-    }, 5000);
-    return () => clearInterval(interval);
+      delayedCall = gsap.delayedCall(5, rotateTestimonials);
+    };
+    
+    delayedCall = gsap.delayedCall(5, rotateTestimonials);
+    
+    return () => {
+      delayedCall?.kill();
+    };
   }, []);
 
   return (
@@ -176,7 +185,7 @@ const CafeHome: React.FC = () => {
               whileHover={{ y: -20 }}
               className="group relative aspect-[3/4] rounded-[3.5rem] overflow-hidden shadow-2xl border-[12px] border-white cursor-pointer"
             >
-              <img src={dish.img} alt={dish.title} className="w-full h-full object-cover transition-all duration-1000 group-hover:scale-110" />
+              <img src={dish.img} alt={dish.title} className="w-full h-full object-cover transition-all duration-1000 group-hover:scale-110" loading="lazy" />
               <div className="absolute inset-0 bg-gradient-to-t from-[#4A403A]/90 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
               <div className="absolute bottom-10 left-10 text-white">
                 <span className="text-[9px] font-black uppercase tracking-[0.4em] opacity-60 mb-2 block">{dish.category}</span>
@@ -384,7 +393,7 @@ const CafeHome: React.FC = () => {
             "https://images.unsplash.com/photo-1507133750040-4a8f57021571?auto=format&fit=crop&q=80&w=800",
           ].map((img, i) => (
             <a key={i} href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="min-w-[350px] aspect-square rounded-[2.5rem] overflow-hidden grayscale hover:grayscale-0 transition-all duration-700 shadow-2xl border-[6px] border-white group relative">
-              <img src={img} alt={`The Hearth Instagram ${i}`} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
+              <img src={img} alt={`The Hearth Instagram ${i}`} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" loading="lazy" />
               <div className="absolute inset-0 bg-[#A4715E]/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                 <Heart size={40} className="text-white fill-current" />
               </div>

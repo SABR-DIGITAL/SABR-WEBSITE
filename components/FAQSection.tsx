@@ -83,11 +83,11 @@ const FAQSection: React.FC<FAQSectionProps> = ({ navigateTo }) => {
         
         {/* Header Section */}
         <div className="mb-32">
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-12 mb-20">
+          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-12 mb-20">
             <div>
-              <h2 className="font-syne text-[clamp(2rem,8vw,4.5rem)] font-black text-slate-950 tracking-tighter uppercase leading-[0.9]">
-                YOUR QUESTIONS, <br />
-                <span className="text-shimmer-blue italic">ANSWERED.</span>
+              <h2 className="font-syne text-[clamp(1.8rem,9vw,5rem)] font-black text-slate-950 tracking-tighter uppercase leading-[0.9] max-w-[90vw]">
+                COMMON <br />
+                <span className="text-shimmer-blue italic">QUESTIONS.</span>
               </h2>
             </div>
 
@@ -95,13 +95,13 @@ const FAQSection: React.FC<FAQSectionProps> = ({ navigateTo }) => {
             <motion.div 
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="flex items-center gap-4 px-6 py-4 bg-white rounded-2xl shadow-xl border border-blue-50 self-start md:self-center"
+              className="flex items-center gap-4 px-6 py-4 bg-white rounded-2xl shadow-xl border border-blue-50 self-start lg:self-center shrink-0"
             >
               <div className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center animate-pulse">
                 <MousePointer2 size={18} />
               </div>
               <div className="space-y-0.5">
-                <p className="text-[10px] font-black uppercase tracking-widest text-slate-950">Interface Protocol</p>
+                <p className="text-[10px] font-black uppercase tracking-widest text-slate-950">PRO Hub</p>
                 <p className="text-[11px] font-bold text-slate-400 italic">"Click any tile to reveal technical intel."</p>
               </div>
             </motion.div>
@@ -127,16 +127,16 @@ const FAQSection: React.FC<FAQSectionProps> = ({ navigateTo }) => {
                 <div className={`relative w-full h-full transition-all duration-[0.8s] [transform-style:preserve-3d] shadow-2xl rounded-[4rem] ${isFlipped ? '[transform:rotateY(180deg)]' : ''} transform-gpu will-change-transform`}>
                   
                   {/* Front Face - Minimalist White */}
-                  <div className="absolute inset-0 [backface-visibility:hidden] rounded-[4rem] bg-white border border-slate-100 flex flex-col justify-between p-14">
-                    <div className="w-20 h-20 rounded-2xl bg-slate-50 flex items-center justify-center text-blue-600 border border-slate-100 group-hover:border-blue-600 group-hover:scale-105 transition-all duration-500">
+                  <div className="absolute inset-0 [backface-visibility:hidden] rounded-[4rem] bg-white border border-slate-100 flex flex-col justify-center md:justify-between items-center md:items-start p-10 md:p-14 text-center md:text-left">
+                    <div className="w-20 h-20 rounded-2xl bg-slate-50 flex items-center justify-center text-blue-600 border border-slate-100 transition-all duration-500 mb-8 md:mb-0">
                       {faq.icon}
                     </div>
                     <div className="space-y-6">
-                      <h3 className="font-syne font-black text-slate-950 text-3xl leading-[1.1] tracking-tight uppercase">
+                      <h3 className="font-syne font-black text-slate-950 text-2xl md:text-3xl leading-[1.1] tracking-tight uppercase">
                         {faq.q}
                       </h3>
-                      <div className="flex items-center gap-4 text-blue-600 text-[11px] font-black uppercase tracking-[0.5em]">
-                        ACCESS ANSWER <ChevronRight size={18} className="group-hover:translate-x-2 transition-transform" />
+                      <div className="flex items-center justify-center md:justify-start gap-4 text-blue-600 text-[11px] font-black uppercase tracking-[0.5em]">
+                        ACCESS ANSWER <ChevronRight size={18} className="transition-transform" />
                       </div>
                     </div>
                   </div>

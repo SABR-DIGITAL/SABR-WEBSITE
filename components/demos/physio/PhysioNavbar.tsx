@@ -1,8 +1,13 @@
 
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+// Fix react-router-dom missing exports
+import * as RouterDOM from 'react-router-dom';
+const { Link, useLocation } = RouterDOM as any;
 import { Leaf, Menu, X, CalendarDays } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion as framerMotion, AnimatePresence } from 'framer-motion';
+
+// Fix motion types by casting to any
+const motion = framerMotion as any;
 
 const PhysioNavbar: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);

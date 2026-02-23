@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion as framerMotion, AnimatePresence } from 'framer-motion';
 import { 
   Zap, 
   Smartphone, 
@@ -13,8 +13,13 @@ import {
   CheckCircle2,
   ArrowRight,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react';
+
+// Fix motion types by casting to any
+const motion = framerMotion as any;
 
 interface SabrPro {
   id: number;
@@ -160,9 +165,9 @@ const WhyWebsiteSection: React.FC = () => {
                   {item.icon}
                 </div>
                 <div className="flex-1 overflow-hidden">
-                  <h3 className="font-syne text-[11px] font-black uppercase tracking-tight text-slate-900 group-hover:text-blue-600 transition-colors flex flex-col leading-none gap-0.5">
+                  <h3 className="font-syne text-[10px] sm:text-[11px] font-black uppercase tracking-tight text-slate-900 group-hover:text-blue-600 transition-colors flex flex-col leading-none gap-0.5">
                     {item.title.split(' ').map((word, wIdx) => (
-                      <span key={wIdx} className="block whitespace-nowrap">{word}</span>
+                      <span key={wIdx} className="block whitespace-nowrap overflow-hidden text-ellipsis">{word}</span>
                     ))}
                   </h3>
                 </div>
@@ -188,7 +193,7 @@ const WhyWebsiteSection: React.FC = () => {
               
               <div className="max-w-md border-l-4 border-blue-50 pl-8">
                 <p className="text-slate-400 font-bold text-[13px] uppercase tracking-[0.4em] italic leading-relaxed">
-                  "Explore our architectural pillars. Click a protocol item on the left to review its technical blueprint."
+                  "Explore our architectural pillars. Click a PRO item on the left to review its technical blueprint."
                 </p>
               </div>
             </div>
@@ -205,8 +210,57 @@ const WhyWebsiteSection: React.FC = () => {
               animate={{ opacity: 1 }} 
               exit={{ opacity: 0 }} 
               onClick={() => setSelectedPro(null)} 
-              className="absolute inset-0 bg-slate-950/90 backdrop-blur-xl" 
-            />
+              className="absolute inset-0 bg-slate-950/90 backdrop-blur-xl transform-gpu" 
+            >
+              {/* DIRECTIONAL ARROWS - STACKED ABOVE AND BELOW */}
+              <div className="absolute inset-0 flex flex-col items-center justify-between py-4 pointer-events-none">
+                {/* TOP ARROWS */}
+                <div className="flex flex-col items-center -space-y-8 opacity-80">
+                  {[...Array(4)].map((_, i) => (
+                    <motion.div
+                      key={`top-${i}`}
+                      animate={{ 
+                        y: [0, 15, 0], 
+                        opacity: [0.4, 1, 0.4],
+                        scale: [1, 1.1, 1]
+                      }}
+                      transition={{ 
+                        duration: 1.5, 
+                        repeat: Infinity, 
+                        delay: i * 0.15,
+                        ease: "easeInOut"
+                      }}
+                      className="text-blue-400 drop-shadow-[0_0_20px_rgba(37,99,235,1)]"
+                    >
+                      <ChevronDown size={80} strokeWidth={4} />
+                    </motion.div>
+                  ))}
+                </div>
+
+                {/* BOTTOM ARROWS */}
+                <div className="flex flex-col items-center -space-y-8 opacity-80">
+                  {[...Array(4)].map((_, i) => (
+                    <motion.div
+                      key={`bottom-${i}`}
+                      animate={{ 
+                        y: [0, -15, 0], 
+                        opacity: [0.4, 1, 0.4],
+                        scale: [1, 1.1, 1]
+                      }}
+                      transition={{ 
+                        duration: 1.5, 
+                        repeat: Infinity, 
+                        delay: i * 0.15,
+                        ease: "easeInOut"
+                      }}
+                      className="text-blue-400 drop-shadow-[0_0_20px_rgba(37,99,235,1)]"
+                    >
+                      <ChevronUp size={80} strokeWidth={4} />
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
             <motion.div 
               initial={{ opacity: 0, scale: 0.95, y: 30 }} 
               animate={{ opacity: 1, scale: 1, y: 0 }} 
@@ -215,20 +269,26 @@ const WhyWebsiteSection: React.FC = () => {
               className="relative w-full max-w-5xl bg-white rounded-[2.5rem] md:rounded-[3.5rem] shadow-[0_50px_100px_rgba(0,0,0,0.5)] border border-white/10 overflow-hidden flex flex-col max-h-[90vh] z-20 transform-gpu will-change-transform"
             >
               {/* MODAL HEADER - FIXED AND CLEAN */}
-              <div className="px-8 sm:px-12 py-6 sm:py-8 flex items-center justify-between border-b border-slate-100 bg-white sticky top-0 z-30">
+              <div className="px-8 sm:px-12 py-6 sm:py-8 flex items-center justify-between border-b border-slate-100 bg-white sticky top-0 z-30 transform-gpu">
                 <div className="flex flex-col text-left shrink-0">
                   <span className="font-syne text-lg sm:text-2xl tracking-[0.05em] font-black text-slate-950 flex items-center leading-none uppercase">
-                    SABR<span className="text-blue-600 ml-1.5">PROTOCOL</span>
+                    SABR<span className="text-blue-600 ml-1.5">PRO</span>
                   </span>
                   <span className="text-[7px] sm:text-[8px] uppercase font-black tracking-[0.6em] text-blue-400 mt-1.5">Technical Blueprint</span>
                 </div>
                 <div className="flex items-center gap-3 sm:gap-6">
-                  <div className="hidden sm:flex items-center gap-4 px-5 py-2.5 bg-slate-50 border border-slate-100 rounded-full shadow-inner">
-                    <button onClick={handlePrev} className="p-1 hover:text-blue-600 focus:outline-none transition-colors"><ChevronLeft size={16} /></button>
-                    <span className="text-[10px] font-black text-slate-950 uppercase tracking-[0.2em] min-w-[45px] text-center">{activeIndex + 1} / {sabrPros.length}</span>
-                    <button onClick={handleNext} className="p-1 hover:text-blue-600 focus:outline-none transition-colors"><ChevronRight size={16} /></button>
+                  <div className="hidden sm:flex items-center gap-2 sm:gap-4 px-3 sm:px-5 py-2 sm:py-2.5 bg-slate-50 border border-slate-100 rounded-full shadow-inner">
+                    <button onClick={handlePrev} className="p-1 hover:text-blue-600 focus:outline-none transition-colors"><ChevronLeft size={14} className="sm:w-4 sm:h-4" /></button>
+                    <span className="text-[9px] sm:text-[10px] font-black text-slate-950 uppercase tracking-[0.1em] sm:tracking-[0.2em] min-w-[35px] sm:min-w-[45px] text-center">{activeIndex + 1} / {sabrPros.length}</span>
+                    <button onClick={handleNext} className="p-1 hover:text-blue-600 focus:outline-none transition-colors"><ChevronRight size={14} className="sm:w-4 sm:h-4" /></button>
                   </div>
-                  <button onClick={() => setSelectedPro(null)} className="w-10 h-10 sm:w-14 sm:h-14 rounded-full bg-slate-950 text-white flex items-center justify-center hover:bg-blue-600 transition-all shadow-xl active:scale-90"><X size={24} /></button>
+                  <button 
+                    onClick={() => setSelectedPro(null)} 
+                    className="h-8 sm:h-10 px-4 sm:px-0 sm:w-10 rounded-full bg-slate-950 text-white flex items-center justify-center hover:bg-blue-600 transition-all shadow-xl active:scale-90 gap-2"
+                  >
+                    <span className="sm:hidden text-[9px] font-black uppercase tracking-widest">Exit</span>
+                    <X size={14} className="hidden sm:block sm:w-5 sm:h-5" />
+                  </button>
                 </div>
               </div>
 
@@ -249,7 +309,7 @@ const WhyWebsiteSection: React.FC = () => {
                         {React.cloneElement(selectedPro.icon as React.ReactElement<{ size?: number }>, { size: 40 })}
                       </div>
                       <div className="space-y-4">
-                        <span className="text-blue-600 font-black text-[10px] uppercase tracking-[0.6em] block">Protocol Item</span>
+                        <span className="text-blue-600 font-black text-[10px] uppercase tracking-[0.6em] block">PRO Item</span>
                         <h2 className="font-syne text-3xl md:text-4xl font-black text-slate-950 uppercase tracking-tighter leading-[0.85] flex flex-col">
                           {selectedPro.title.split(' ').map((word, wIdx) => (
                             <span key={wIdx} className="block whitespace-nowrap">{word}</span>

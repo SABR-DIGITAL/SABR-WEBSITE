@@ -14,33 +14,30 @@ const projects = [
     title: 'Helping Gardeners Grow',
     industry: 'Landscaping',
     tagline: 'Terrain Architecture',
-    bio: "A beautiful, easy-to-use site designed for landscaping experts to showcase their outdoor craft and capture local phone calls effortlessly.",
     icon: <Sprout className="text-white" size={100} strokeWidth={1} />,
     glowColor: 'rgba(34, 197, 94, 0.4)', // Emerald
     path: '/demo/landscaping',
     description: "We understand that your business happens on-site. We built this to help you capture leads while you're busy creating beautiful spaces."
   },
   {
-    id: 'cafe',
-    title: 'Brewing Local Connection',
-    industry: 'Cafe & Bistro',
-    tagline: 'Sensory Engineering',
-    bio: "A welcoming digital storefront for cafes that makes it simple for customers to find your location, browse your menu, and visit your shop.",
-    icon: <Coffee className="text-white" size={100} strokeWidth={1} />,
-    glowColor: 'rgba(245, 158, 11, 0.4)', // Amber
-    path: '/demo/cafe',
-    description: "Your cafe is the heart of the community. This site brings that same warm, welcoming feeling to the digital world."
-  },
-  {
     id: 'physio',
     title: 'Active Recovery',
     industry: 'Physiotherapy',
     tagline: 'Recovery Protocol',
-    bio: "A clinical yet luxury digital experience for family-run physiotherapy studios. Built to establish deep clinical trust and drive instant bookings.",
     icon: <Activity className="text-white" size={100} strokeWidth={1} />,
     glowColor: 'rgba(37, 99, 235, 0.4)', // Bright Blue
     path: '/demo/physio',
     description: "In the world of health, trust is everything. We engineered a platform that mirrors the precision of expert medical care with a high-end feel."
+  },
+  {
+    id: 'cafe',
+    title: 'Brewing Local Connection',
+    industry: 'Cafe',
+    tagline: 'Sensory Engineering',
+    icon: <Coffee className="text-white" size={100} strokeWidth={1} />,
+    glowColor: 'rgba(245, 158, 11, 0.4)', // Amber
+    path: '/demo/cafe',
+    description: "Your cafe is the heart of the community. This site brings that same warm, welcoming feeling to the digital world."
   }
 ];
 
@@ -160,12 +157,6 @@ const ProjectRow: React.FC<{ project: any, index: number }> = ({ project, index 
           {project.title.split(' ')[0]} <br />
           <span className="text-shimmer-blue italic">{project.title.split(' ').slice(1).join(' ')}</span>
         </h3>
-
-        <div className="reveal-item mb-8 md:mb-10 p-8 md:p-10 rounded-[2rem] md:rounded-[2.5rem] bg-white border border-slate-100 shadow-sm relative overflow-hidden">
-          <p className="text-lg md:text-xl text-slate-500 font-medium leading-relaxed italic relative z-10">
-            "{project.bio}"
-          </p>
-        </div>
 
         <p className="reveal-item text-slate-400 font-medium leading-relaxed mb-10 md:mb-14 max-w-xl text-base md:text-lg">
           {project.description}

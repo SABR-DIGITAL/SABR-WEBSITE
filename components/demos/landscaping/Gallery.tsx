@@ -5,6 +5,7 @@ const { Link } = RouterDOM as any;
 import { motion as framerMotion } from 'framer-motion';
 import { MoveLeft, Camera, ZoomIn } from 'lucide-react';
 import Navbar from './Navbar';
+import Footer from './Footer';
 import ExitPreviewButton from '../../ExitPreviewButton';
 
 // Fix motion types by casting to any
@@ -71,6 +72,7 @@ const Gallery: React.FC = () => {
           </Link>
         </div>
       </section>
+      <Footer />
     </div>
   );
 };

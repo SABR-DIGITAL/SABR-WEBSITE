@@ -52,9 +52,7 @@ const ScrollToTop = () => {
     if ('scrollRestoration' in window.history) {
       window.history.scrollRestoration = 'manual';
     }
-    window.scrollTo(0, 0);
-    document.documentElement.scrollTop = 0;
-    document.body.scrollTop = 0;
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' as any });
   }, [pathname, hash, key]);
   return null;
 };
@@ -78,10 +76,14 @@ const MainApp: React.FC = () => {
   const isDemo = location.pathname.startsWith('/demo');
 
   useLayoutEffect(() => {
-    window.scrollTo(0, 0);
-    document.documentElement.scrollTop = 0;
-    document.body.scrollTop = 0;
-    ScrollTrigger.refresh();
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' as any });
+    
+    // Debounce refresh to avoid layout thrashing
+    const timer = setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 100);
+    
+    return () => clearTimeout(timer);
   }, [currentPage, location.pathname, location.key]);
 
   useEffect(() => {
@@ -100,7 +102,7 @@ const MainApp: React.FC = () => {
       
       const timer = setTimeout(() => {
         ScrollTrigger.refresh();
-      }, 300);
+      }, 500);
 
       return () => {
         ctx.revert();

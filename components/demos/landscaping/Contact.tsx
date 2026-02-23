@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import * as RouterDOM from 'react-router-dom';
+import * as FramerMotion from 'framer-motion';
 import { Mail, Phone, MapPin, Send, CheckCircle, MoveLeft, Sprout, Sun } from 'lucide-react';
 import Navbar from './Navbar';
+import Footer from './Footer';
 import ExitPreviewButton from '../../ExitPreviewButton';
+
+// Robust export resolution
+const { Link } = RouterDOM as any;
+const { motion, AnimatePresence } = FramerMotion as any;
 
 const Contact: React.FC = () => {
   const [isSent, setIsSent] = useState(false);
@@ -120,60 +125,76 @@ const Contact: React.FC = () => {
             viewport={{ once: true }}
             className="bg-white p-10 md:p-20 shadow-[0_50px_100px_rgba(0,0,0,0.1)] relative border-t-8 border-[#BC4B26] rounded-sm transform-gpu"
           >
-            {isSent ? (
-              <div className="text-center py-20 flex flex-col items-center gap-10">
-                <div className="w-24 h-24 bg-[#1A3C28] text-white flex items-center justify-center shadow-2xl animate-bounce">
-                  <CheckCircle size={48} />
-                </div>
-                <div className="space-y-4">
-                  <h3 className="text-[#1A3C28] font-oswald text-3xl font-bold uppercase tracking-tight">ENQUIRY RECEIVED</h3>
-                  <p className="text-[#4A403A] font-medium italic opacity-70">"Thank you. Our land management specialist will contact you within 24 hours."</p>
-                </div>
-                <Link to="/demo/landscaping" className="px-12 py-5 bg-[#BC4B26] text-white font-black text-[10px] uppercase tracking-widest hover:bg-[#1A3C28] transition-all">Return to Home</Link>
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="space-y-12 relative z-10">
-                <div className="space-y-8">
-                  <h3 className="text-[#1A3C28] font-oswald text-2xl font-bold uppercase tracking-tight border-b border-[#1A3C28]/5 pb-6">Request A Site Visit</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                    <div className="space-y-4">
-                      <label className="text-[10px] uppercase tracking-[0.6em] text-[#4A403A] font-black block">Full Name</label>
-                      <input required type="text" placeholder="John Oak" className="w-full bg-[#F4F1EA]/30 border-b border-[#1A3C28]/20 p-4 text-[#1A3C28] focus:outline-none focus:border-[#BC4B26] transition-all font-bold text-lg" />
-                    </div>
-                    <div className="space-y-4">
-                      <label className="text-[10px] uppercase tracking-[0.6em] text-[#4A403A] font-black block">Project Location</label>
-                      <input required type="text" placeholder="Postcode / Area" className="w-full bg-[#F4F1EA]/30 border-b border-[#1A3C28]/20 p-4 text-[#1A3C28] focus:outline-none focus:border-[#BC4B26] transition-all font-bold text-lg" />
+            <AnimatePresence mode="wait">
+              {isSent ? (
+                <motion.div 
+                  key="success"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="text-center py-20 flex flex-col items-center gap-10"
+                >
+                  <div className="w-24 h-24 bg-[#1A3C28] text-white flex items-center justify-center shadow-2xl animate-bounce">
+                    <CheckCircle size={48} />
+                  </div>
+                  <div className="space-y-4">
+                    <h3 className="text-[#1A3C28] font-oswald text-3xl font-bold uppercase tracking-tight">ENQUIRY RECEIVED</h3>
+                    <p className="text-[#4A403A] font-medium italic opacity-70">"Thank you. Our land management specialist will contact you within 24 hours."</p>
+                  </div>
+                  <Link to="/demo/landscaping" className="px-12 py-5 bg-[#BC4B26] text-white font-black text-[10px] uppercase tracking-widest hover:bg-[#1A3C28] transition-all">Return to Home</Link>
+                </motion.div>
+              ) : (
+                <motion.form 
+                  key="form"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  onSubmit={handleSubmit} 
+                  className="space-y-12 relative z-10"
+                >
+                  <div className="space-y-8">
+                    <h3 className="text-[#1A3C28] font-oswald text-2xl font-bold uppercase tracking-tight border-b border-[#1A3C28]/5 pb-6">Request A Site Visit</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                      <div className="space-y-4">
+                        <label className="text-[10px] uppercase tracking-[0.6em] text-[#4A403A] font-black block">Full Name</label>
+                        <input required type="text" placeholder="John Oak" className="w-full bg-[#F4F1EA]/30 border-b border-[#1A3C28]/20 p-4 text-[#1A3C28] focus:outline-none focus:border-[#BC4B26] transition-all font-bold text-lg" />
+                      </div>
+                      <div className="space-y-4">
+                        <label className="text-[10px] uppercase tracking-[0.6em] text-[#4A403A] font-black block">Project Location</label>
+                        <input required type="text" placeholder="Postcode / Area" className="w-full bg-[#F4F1EA]/30 border-b border-[#1A3C28]/20 p-4 text-[#1A3C28] focus:outline-none focus:border-[#BC4B26] transition-all font-bold text-lg" />
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <div className="space-y-4">
-                  <label className="text-[10px] uppercase tracking-[0.6em] text-[#4A403A] font-black block">Specialist Service</label>
-                  <select required className="w-full bg-[#F4F1EA]/30 border-b border-[#1A3C28]/20 p-4 text-[#1A3C28] focus:outline-none focus:border-[#BC4B26] transition-all font-bold appearance-none">
-                    <option value="">Select Service...</option>
-                    <option value="mulching">Forestry Mulching</option>
-                    <option value="harvesting">Timber Harvesting</option>
-                    <option value="planning">Management Planning</option>
-                    <option value="landscape">Full Architectural Landscape</option>
-                  </select>
-                </div>
+                  <div className="space-y-4">
+                    <label className="text-[10px] uppercase tracking-[0.6em] text-[#4A403A] font-black block">Specialist Service</label>
+                    <select required className="w-full bg-[#F4F1EA]/30 border-b border-[#1A3C28]/20 p-4 text-[#1A3C28] focus:outline-none focus:border-[#BC4B26] transition-all font-bold appearance-none">
+                      <option value="">Select Service...</option>
+                      <option value="mulching">Forestry Mulching</option>
+                      <option value="harvesting">Timber Harvesting</option>
+                      <option value="planning">Management Planning</option>
+                      <option value="landscape">Full Architectural Landscape</option>
+                    </select>
+                  </div>
 
-                <div className="space-y-4">
-                  <label className="text-[10px] uppercase tracking-[0.6em] text-[#4A403A] font-black block">Message / Scope</label>
-                  <textarea rows={4} placeholder="Describe the land and your objectives..." className="w-full bg-[#F4F1EA]/30 border-b border-[#1A3C28]/20 p-4 text-[#1A3C28] focus:outline-none focus:border-[#BC4B26] transition-all font-bold text-lg resize-none" />
-                </div>
+                  <div className="space-y-4">
+                    <label className="text-[10px] uppercase tracking-[0.6em] text-[#4A403A] font-black block">Message / Scope</label>
+                    <textarea rows={4} placeholder="Describe the land and your objectives..." className="w-full bg-[#F4F1EA]/30 border-b border-[#1A3C28]/20 p-4 text-[#1A3C28] focus:outline-none focus:border-[#BC4B26] transition-all font-bold text-lg resize-none" />
+                  </div>
 
-                <button 
-                  type="submit"
-                  className="w-full py-8 bg-[#BC4B26] text-white font-black uppercase tracking-[0.6em] text-[13px] flex items-center justify-center gap-6 transition-all transform active:scale-95 shadow-2xl hover:bg-[#1A3C28]"
-                >
-                  Send Enquiry <Send size={20} />
-                </button>
-              </form>
-            )}
+                  <button 
+                    type="submit"
+                    className="w-full py-8 bg-[#BC4B26] text-white font-black uppercase tracking-[0.6em] text-[13px] flex items-center justify-center gap-6 transition-all transform active:scale-95 shadow-2xl hover:bg-[#1A3C28]"
+                  >
+                    Send Enquiry <Send size={20} />
+                  </button>
+                </motion.form>
+              )}
+            </AnimatePresence>
           </motion.div>
         </div>
       </section>
+
+      <Footer />
     </div>
   );
 };

@@ -1,11 +1,16 @@
 
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion as framerMotion, AnimatePresence } from 'framer-motion';
 import { CheckCircle, MoveRight, Mail, Phone, MapPin, Send, Leaf, Clock, Heart, ShieldCheck, User, Calendar, Info, Search } from 'lucide-react';
 import ExitPreviewButton from '../../ExitPreviewButton';
 import PhysioNavbar from './PhysioNavbar';
 import PhysioFooter from './PhysioFooter';
-import { Link } from 'react-router-dom';
+// Fix react-router-dom missing exports
+import * as RouterDOM from 'react-router-dom';
+const { Link } = RouterDOM as any;
+
+// Fix motion types by casting to any
+const motion = framerMotion as any;
 
 const PhysioContact: React.FC = () => {
   const [isSent, setIsSent] = useState(false);
