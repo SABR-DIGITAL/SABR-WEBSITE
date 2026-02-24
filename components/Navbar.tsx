@@ -57,9 +57,9 @@ const Navbar: React.FC<NavbarProps> = ({ navigateTo, currentPage, startAnimation
         variants={navVariants}
         initial="hidden"
         animate={startAnimation ? "visible" : "hidden"}
-        className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-700 px-4 md:px-8 ${scrolled ? 'py-4' : 'py-8'} block transform-gpu will-change-[padding, transform, opacity]`}
+        className={`fixed top-0 left-0 right-0 z-[100] transition-[padding] duration-700 px-4 md:px-8 ${scrolled ? 'py-4' : 'py-8'} block transform-gpu will-change-[padding, transform, opacity]`}
       >
-        <div className={`max-w-7xl mx-auto flex items-center justify-between transition-all duration-700 ${scrolled ? 'lg:bg-white/95 lg:border-slate-100 lg:shadow-2xl lg:rounded-full lg:px-8 lg:py-5 lg:border' : 'bg-transparent border-transparent lg:bg-white/10 lg:border-white/20 lg:backdrop-blur-3xl lg:rounded-full lg:px-8 lg:py-5 lg:border'} ${mobileMenuOpen ? 'opacity-0' : 'opacity-100'} lg:opacity-100 transform-gpu will-change-[background-color,border-color,padding,border-radius] bg-transparent border-transparent shadow-none`}>
+        <div className={`max-w-7xl mx-auto flex items-center justify-between transition-[background-color,border-color,padding,border-radius,box-shadow] duration-700 ${scrolled ? 'lg:bg-white/95 lg:border-slate-100 lg:shadow-2xl lg:rounded-full lg:px-8 lg:py-5 lg:border' : 'bg-transparent border-transparent lg:bg-white/10 lg:border-white/20 lg:backdrop-blur-3xl lg:rounded-full lg:px-8 lg:py-5 lg:border'} ${mobileMenuOpen ? 'opacity-0' : 'opacity-100'} lg:opacity-100 transform-gpu will-change-[background-color,border-color,padding,border-radius] bg-transparent border-transparent shadow-none`}>
           <button 
             onClick={() => handleNav('home')}
             className="hidden lg:flex flex-col text-left group focus:outline-none focus:ring-0 appearance-none"
