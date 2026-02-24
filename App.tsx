@@ -87,27 +87,15 @@ const MainApp: React.FC = () => {
   }, [currentPage, location.pathname, location.key]);
 
   useEffect(() => {
-    if (!showIntro && !isDemo && contentRef.current) {
-      const ctx = gsap.context(() => {
-        gsap.to(contentRef.current, {
-          opacity: 1,
-          y: 0,
-          duration: 1.2,
-          ease: 'power4.out',
-          force3D: true,
-          clearProps: 'opacity,transform',
-          onStart: () => setIsRevealed(true)
-        });
-      });
+    if (!showIntro && !isDemo) {
+      // Trigger internal animations immediately after intro is gone
+      setIsRevealed(true);
       
       const timer = setTimeout(() => {
         ScrollTrigger.refresh();
       }, 500);
 
-      return () => {
-        ctx.revert();
-        clearTimeout(timer);
-      };
+      return () => clearTimeout(timer);
     }
   }, [showIntro, isDemo]);
 
@@ -149,7 +137,7 @@ const MainApp: React.FC = () => {
 
   const renderHomeContent = () => (
     <>
-      <Hero navigateTo={navigateTo} />
+      <Hero navigateTo={navigateTo} startAnimation={isRevealed} />
       <StatsSection />
       <TestimonialCarousel />
       <DigitalForge navigateTo={navigateTo} />
@@ -167,21 +155,19 @@ const MainApp: React.FC = () => {
     }
   };
 
-  if (showIntro) return <IntroPortal onComplete={handleIntroComplete} />;
-
   return (
     <div className="relative min-h-screen bg-[#fdfbf7]">
       <ScrollToTop />
+      {showIntro && <IntroPortal onComplete={handleIntroComplete} />}
       <div className="flex flex-col min-h-screen relative z-10">
-        {!isDemo && <Navbar navigateTo={navigateTo} currentPage={currentPage} />}
+        {!isDemo && <Navbar navigateTo={navigateTo} currentPage={currentPage} startAnimation={isRevealed} />}
         <main className="relative flex-grow">
           <Suspense fallback={<LoadingFallback />}>
             <Routes>
               <Route path="/" element={
                 <div 
                   ref={contentRef} 
-                  className="w-full" 
-                  style={{ opacity: isRevealed ? 1 : 0, transform: isRevealed ? 'none' : 'translateY(30px)' }}
+                  className="w-full"
                 >
                   {renderPageContent()}
                 </div>
