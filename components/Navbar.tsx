@@ -15,6 +15,18 @@ interface NavbarProps {
   startAnimation?: boolean;
 }
 
+const navVariants = {
+  hidden: { opacity: 0, y: -20 },
+  visible: { 
+    opacity: 1, 
+    y: 0,
+    transition: {
+      duration: 0.8,
+      ease: [0.16, 1, 0.3, 1] // "Confident" ease matching IntroPortal/Hero feel
+    }
+  }
+};
+
 const Navbar: React.FC<NavbarProps> = ({ navigateTo, currentPage, startAnimation = true }) => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -37,18 +49,6 @@ const Navbar: React.FC<NavbarProps> = ({ navigateTo, currentPage, startAnimation
   const handleNav = (id: Page) => {
     setMobileMenuOpen(false);
     navigateTo(id);
-  };
-
-  const navVariants = {
-    hidden: { opacity: 0, y: -20 },
-    visible: { 
-      opacity: 1, 
-      y: 0,
-      transition: {
-        duration: 0.8,
-        ease: [0.16, 1, 0.3, 1] // "Confident" ease matching IntroPortal/Hero feel
-      }
-    }
   };
 
   return (
