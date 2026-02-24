@@ -36,9 +36,17 @@ const ContactForm: React.FC = () => {
     return () => ctx.revert();
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsSent(true);
+    const myForm = e.currentTarget;
+    const formData = new FormData(myForm);
+    fetch("/", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams(formData as any).toString(),
+    })
+      .then(() => setIsSent(true))
+      .catch((error) => alert(error));
   };
 
   return (
@@ -100,32 +108,33 @@ const ContactForm: React.FC = () => {
                 <p className="text-slate-400 italic">"We'll be in touch shortly."</p>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
+              <form onSubmit={handleSubmit} className="space-y-6 relative z-10" name="contact" method="POST" data-netlify="true">
+                <input type="hidden" name="form-name" value="contact" />
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label className="text-[9px] uppercase tracking-[0.4em] text-slate-400 font-black block pl-2">Full Name *</label>
-                    <input required type="text" placeholder="Your Name" className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-5 text-slate-900 focus:outline-none focus:border-blue-500 transition-all font-bold text-sm" />
+                    <input required type="text" name="name" placeholder="Your Name" className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-5 text-slate-900 focus:outline-none focus:border-blue-500 transition-all font-bold text-sm" />
                   </div>
                   <div className="space-y-2">
                     <label className="text-[9px] uppercase tracking-[0.4em] text-slate-400 font-black block pl-2">Email Address *</label>
-                    <input required type="email" placeholder="you@example.com" className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-5 text-slate-900 focus:outline-none focus:border-blue-500 transition-all font-bold text-sm" />
+                    <input required type="email" name="email" placeholder="you@example.com" className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-5 text-slate-900 focus:outline-none focus:border-blue-500 transition-all font-bold text-sm" />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label className="text-[9px] uppercase tracking-[0.4em] text-slate-400 font-black block pl-2">Phone Number</label>
-                    <input type="tel" placeholder="Optional" className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-5 text-slate-900 focus:outline-none focus:border-blue-500 transition-all font-bold text-sm" />
+                    <input type="tel" name="phone" placeholder="Optional" className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-5 text-slate-900 focus:outline-none focus:border-blue-500 transition-all font-bold text-sm" />
                   </div>
                   <div className="space-y-2">
                     <label className="text-[9px] uppercase tracking-[0.4em] text-slate-400 font-black block pl-2">Industry *</label>
-                    <input required type="text" placeholder="Your Sector" className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-5 text-slate-900 focus:outline-none focus:border-blue-500 transition-all font-bold text-sm" />
+                    <input required type="text" name="sector" placeholder="Your Sector" className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-5 text-slate-900 focus:outline-none focus:border-blue-500 transition-all font-bold text-sm" />
                   </div>
                 </div>
 
                 <div className="space-y-2">
                   <label className="text-[9px] uppercase tracking-[0.4em] text-slate-400 font-black block pl-2">Your Message *</label>
-                  <textarea required rows={4} placeholder="Project requirements..." className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-5 text-slate-900 focus:outline-none focus:border-blue-500 transition-all font-bold text-sm resize-none" />
+                  <textarea required name="message" rows={4} placeholder="Project requirements..." className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-5 text-slate-900 focus:outline-none focus:border-blue-500 transition-all font-bold text-sm resize-none" />
                 </div>
 
                 <button 
