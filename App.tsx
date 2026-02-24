@@ -160,7 +160,7 @@ const MainApp: React.FC = () => {
       <ScrollToTop />
       {showIntro && <IntroPortal onComplete={handleIntroComplete} />}
       <div className="flex flex-col min-h-screen relative z-10">
-        {!isDemo && <Navbar navigateTo={navigateTo} currentPage={currentPage} />}
+        {!isDemo && <Navbar navigateTo={navigateTo} currentPage={currentPage} startAnimation={isRevealed} />}
         <main className="relative flex-grow">
           <Suspense fallback={<LoadingFallback />}>
             <Routes>

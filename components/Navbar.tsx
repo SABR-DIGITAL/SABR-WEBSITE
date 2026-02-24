@@ -12,9 +12,10 @@ const motion = framerMotion as any;
 interface NavbarProps {
   navigateTo: (page: Page) => void;
   currentPage: Page;
+  startAnimation?: boolean;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ navigateTo, currentPage }) => {
+const Navbar: React.FC<NavbarProps> = ({ navigateTo, currentPage, startAnimation = true }) => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
@@ -38,9 +39,26 @@ const Navbar: React.FC<NavbarProps> = ({ navigateTo, currentPage }) => {
     navigateTo(id);
   };
 
+  const navVariants = {
+    hidden: { opacity: 0, y: -20 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: {
+        duration: 0.8,
+        ease: [0.16, 1, 0.3, 1] // "Confident" ease matching IntroPortal/Hero feel
+      }
+    }
+  };
+
   return (
     <>
-      <nav className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-700 px-4 md:px-8 ${scrolled ? 'py-4' : 'py-8'} block transform-gpu will-change-[padding]`}>
+      <motion.nav 
+        variants={navVariants}
+        initial="hidden"
+        animate={startAnimation ? "visible" : "hidden"}
+        className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-700 px-4 md:px-8 ${scrolled ? 'py-4' : 'py-8'} block transform-gpu will-change-[padding, transform, opacity]`}
+      >
         <div className={`max-w-7xl mx-auto flex items-center justify-between transition-all duration-700 ${scrolled ? 'lg:bg-white/95 lg:border-slate-100 lg:shadow-2xl lg:rounded-full lg:px-8 lg:py-5 lg:border' : 'bg-transparent border-transparent lg:bg-white/10 lg:border-white/20 lg:backdrop-blur-3xl lg:rounded-full lg:px-8 lg:py-5 lg:border'} ${mobileMenuOpen ? 'opacity-0' : 'opacity-100'} lg:opacity-100 transform-gpu will-change-[background-color,border-color,padding,border-radius] bg-transparent border-transparent shadow-none`}>
           <button 
             onClick={() => handleNav('home')}
@@ -78,7 +96,7 @@ const Navbar: React.FC<NavbarProps> = ({ navigateTo, currentPage }) => {
             <Menu size={24} />
           </button>
         </div>
-      </nav>
+      </motion.nav>
 
       <AnimatePresence>
         {mobileMenuOpen && (
