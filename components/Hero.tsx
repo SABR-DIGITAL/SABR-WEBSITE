@@ -84,12 +84,12 @@ const Hero: React.FC<HeroProps> = ({ navigateTo, startAnimation = true }) => {
 
       <div className="flex-1 w-full flex flex-col items-center sm:items-start justify-start gap-6 md:gap-10 pb-12 md:pb-24">
         <div className="w-full flex flex-col items-center sm:items-start">
-          <h1 className="font-syne text-[clamp(1.1rem,4.4vw,4.4rem)] leading-[1.05] tracking-[-0.04em] uppercase flex flex-col items-center sm:items-start text-center sm:text-left text-[#050608] w-full transform-gpu will-change-transform">
-            <span className="hero-title-top font-extrabold mb-4 md:mb-6 pl-0 opacity-0">Built to Perform</span>
+          <h1 className="font-syne text-[clamp(1.5rem,8vw,4.4rem)] leading-[1.05] tracking-[-0.04em] uppercase flex flex-col items-center sm:items-start text-center sm:text-left text-[#050608] w-full transform-gpu will-change-transform">
+            <span className="hero-title-top font-extrabold mb-4 md:mb-6 px-4 sm:px-0 opacity-0">Built to Perform</span>
             <div className="hero-work-block relative w-screen ml-[-24px] lg:ml-[-96px] flex items-center justify-center sm:justify-start overflow-hidden will-change-[clip-path]" style={{ clipPath: 'inset(0 100% 0 0)' }}>
               {/* Updated gradient to match Navbar 'text-shimmer-blue' exactly for perfect sync */}
               <div className="absolute inset-0 bg-gradient-to-r from-[#2563eb] via-[#38bdf8] via-[#ffffff] via-[#38bdf8] to-[#2563eb] -z-10 animate-hyper-shimmer bg-[length:200%_auto] will-change-[background-position]"></div>
-              <span className="pl-0 sm:pl-6 lg:pl-24 pr-0 sm:pr-4 md:pr-10 py-5 md:py-8 block text-white tracking-tighter whitespace-nowrap text-[clamp(0.9rem,4vw,4rem)]">Designed to Dominate</span>
+              <span className="px-6 sm:pl-6 lg:pl-24 sm:pr-4 md:pr-10 py-5 md:py-8 block text-white tracking-tighter whitespace-nowrap text-[clamp(0.9rem,4vw,4rem)]">Designed to Dominate</span>
             </div>
           </h1>
         </div>
