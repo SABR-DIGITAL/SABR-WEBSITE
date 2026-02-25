@@ -10,7 +10,6 @@ import Navbar from './components/Navbar';
 // Home components
 import Hero from './components/Hero';
 import StatsSection from './components/StatsSection';
-import TestimonialCarousel from './components/TestimonialCarousel';
 import DigitalForge from './components/DigitalForge';
 import WhyWebsiteSection from './components/WhyWebsiteSection';
 
@@ -139,7 +138,6 @@ const MainApp: React.FC = () => {
     <>
       <Hero navigateTo={navigateTo} startAnimation={isRevealed} />
       <StatsSection />
-      <TestimonialCarousel />
       <DigitalForge navigateTo={navigateTo} />
       <WhyWebsiteSection />
     </>

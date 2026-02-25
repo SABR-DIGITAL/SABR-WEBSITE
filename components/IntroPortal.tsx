@@ -181,7 +181,7 @@ const IntroPortal: React.FC<IntroPortalProps> = ({ onComplete }) => {
         <AnimatePresence>
           {phase !== 'initial' && (
             <motion.h1
-              className="intro-title text-[2.5rem] sm:text-[3.2rem] md:text-[5rem] lg:text-[6.8rem] font-black tracking-tighter mb-4 md:mb-8 flex flex-nowrap justify-center overflow-visible whitespace-nowrap"
+              className="intro-title text-[clamp(1.5rem,7vw,2.5rem)] sm:text-[3.2rem] md:text-[5rem] lg:text-[6.8rem] font-black tracking-tighter mb-4 md:mb-8 flex flex-nowrap justify-center overflow-visible whitespace-nowrap"
               variants={titleContainerVariants}
               initial="hidden"
               animate="visible"
