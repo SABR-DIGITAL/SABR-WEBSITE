@@ -1,12 +1,22 @@
 import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Layout, Calendar, Droplet, Flower2, ArrowUpRight, ChevronRight, Activity } from 'lucide-react';
+import { Layout, Calendar, Droplet, Flower2, ArrowUpRight, ChevronRight, Activity, Scissors } from 'lucide-react';
 // Fix react-router-dom missing exports
 import * as RouterDOM from 'react-router-dom';
 const { Link } = RouterDOM as any;
 
 const projects = [
+  {
+    id: 'barber',
+    title: 'Vertex Architectural',
+    industry: 'Barber Shop',
+    icon: <Scissors className="text-white" size={40} />,
+    color: 'bg-[#7F00FF]',
+    problem: 'Generic booking lost premium clients.',
+    solution: 'High-end silhouettes & calculated cuts.',
+    path: '/demo/barber'
+  },
   {
     id: 'landscaping',
     title: 'The Booking System',

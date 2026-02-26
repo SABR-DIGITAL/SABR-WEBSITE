@@ -1,202 +1,231 @@
-
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Scissors, CheckCircle, ArrowRight, User, Clock, Calendar, Database, Zap, Cpu, Activity, CircleDashed } from 'lucide-react';
+import { CheckCircle, Calendar, Clock, Scissors, User, ChevronRight, ChevronLeft } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import ExitPreviewButton from '../../ExitPreviewButton';
 import BarberNavbar from './BarberNavbar';
 
 const BarberBooking: React.FC = () => {
-  const [isSent, setIsSent] = useState(false);
-  const [activeStep, setActiveStep] = useState(0);
+  const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
-    system: '',
-    architect: '',
-    epoch: '',
-    time: '09:00'
+    service: '',
+    date: '',
+    time: '',
+    name: '',
+    email: ''
   });
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  const systems = [
-    { id: 'S1', name: "ARCHITECTURAL CUT", price: "£32", time: "45m" },
-    { id: 'S2', name: "SCULPTED BEARD", price: "£20", time: "30m" },
-    { id: 'S3', name: "STRUCTURAL FADE", price: "£38", time: "50m" },
-    { id: 'S4', name: "NANO-ALIGNMENT", price: "£15", time: "15m" }
+  const services = [
+    { id: 1, name: "Skin Fade", price: "£30", duration: "45m" },
+    { id: 2, name: "Beard Sculpt", price: "£25", duration: "30m" },
+    { id: 3, name: "Full Service", price: "£50", duration: "75m" },
+    { id: 4, name: "Buzz Cut", price: "£20", duration: "20m" }
   ];
 
-  const architects = ["Julian Vance", "Marcus Stone", "Sarah Thorne"];
-  const times = ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"];
+  const timeSlots = ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"];
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setTimeout(() => setIsSent(true), 1500);
-  };
+  const nextStep = () => setStep(prev => prev + 1);
+  const prevStep = () => setStep(prev => prev - 1);
 
   return (
-    <div className="min-h-screen bg-[#050505] text-[#E0E0E0] font-inter selection:bg-[#7F00FF] selection:text-white">
-      <div className="fixed inset-0 opacity-[0.03] pointer-events-none z-[100] bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"></div>
+    <div className="min-h-screen bg-white text-neutral-900 font-sans selection:bg-[#00D95F] selection:text-black flex flex-col">
       <ExitPreviewButton />
       <BarberNavbar />
 
-      <section className="pt-56 pb-48 px-6 max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-24 items-start">
-          
-          {/* LEFT: SYNTHESIZER CONTROL PANEL */}
-          <div className="lg:col-span-1 space-y-12">
-            <div className="space-y-6">
-              <span className="text-[#7F00FF] font-black text-[10px] uppercase tracking-[1em]">SYSTEM INITIALIZATION</span>
-              <h1 className="font-syne text-6xl md:text-7xl font-black uppercase tracking-tighter leading-none">THE <br /> <span className="text-white/20 italic">DASHBOARD.</span></h1>
+      <section className="pt-32 pb-24 px-6 max-w-3xl mx-auto w-full flex-grow">
+        <div className="text-center mb-16">
+          <span className="inline-block py-2 px-4 bg-neutral-100 text-neutral-900 font-bold text-[10px] uppercase tracking-[0.2em] mb-6 border-l-4 border-[#00D95F]">
+            Appointments
+          </span>
+          <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-black uppercase">
+            Reserve <span className="text-[#00D95F]">Your Seat.</span>
+          </h1>
+        </div>
+
+        {/* Progress Bar */}
+        <div className="flex justify-between items-center mb-12 px-4 relative">
+          <div className="absolute top-1/2 left-0 w-full h-px bg-neutral-200 -z-10"></div>
+          {[1, 2, 3].map((num) => (
+            <div 
+              key={num}
+              className={`w-10 h-10 flex items-center justify-center font-black text-sm transition-all duration-300 ${
+                step >= num ? 'bg-black text-white' : 'bg-white border-2 border-neutral-200 text-neutral-400'
+              }`}
+            >
+              {num}
             </div>
+          ))}
+        </div>
 
-            <div className="p-10 border border-white/5 bg-white/[0.02] backdrop-blur-3xl space-y-10 relative overflow-hidden">
-               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#7F00FF] to-transparent opacity-30"></div>
-               <div className="flex items-center justify-between opacity-40">
-                  <span className="text-[9px] font-black uppercase tracking-widest">Active Link</span>
-                  <div className="flex gap-1">
-                    <div className="w-1 h-1 bg-[#7F00FF] rounded-full"></div>
-                    <div className="w-1 h-1 bg-[#7F00FF] rounded-full animate-pulse"></div>
+        <div className="bg-white border border-neutral-200 p-8 md:p-12 shadow-2xl relative overflow-hidden">
+          <AnimatePresence mode="wait">
+            {step === 1 && (
+              <motion.div 
+                key="step1"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                className="space-y-8"
+              >
+                <h3 className="text-xl font-black tracking-tight flex items-center gap-3 border-b border-neutral-100 pb-4 uppercase">
+                  <Scissors size={20} className="text-[#00D95F]" /> Select Experience
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {services.map(service => (
+                    <button
+                      key={service.id}
+                      onClick={() => setFormData({...formData, service: service.name})}
+                      className={`p-6 text-left border-2 transition-all duration-300 hover:shadow-md ${
+                        formData.service === service.name 
+                          ? 'border-[#00D95F] bg-neutral-50' 
+                          : 'border-neutral-100 bg-white hover:border-[#00D95F]/30'
+                      }`}
+                    >
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="font-bold tracking-wide text-sm uppercase">{service.name}</span>
+                        <span className="font-black text-[#00D95F]">{service.price}</span>
+                      </div>
+                      <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-neutral-400">{service.duration}</span>
+                    </button>
+                  ))}
+                </div>
+                <div className="flex justify-end pt-4">
+                  <button 
+                    disabled={!formData.service}
+                    onClick={nextStep}
+                    className="px-8 py-4 bg-black text-white font-black uppercase tracking-widest hover:bg-[#00D95F] disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center gap-2 rounded-none"
+                  >
+                    Next Step <ChevronRight size={16} />
+                  </button>
+                </div>
+              </motion.div>
+            )}
+
+            {step === 2 && (
+              <motion.div 
+                key="step2"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                className="space-y-8"
+              >
+                <h3 className="text-2xl font-black uppercase tracking-tight flex items-center gap-3">
+                  <Calendar size={24} className="text-[#00D95F]" /> Date & Time
+                </h3>
+                
+                <div className="space-y-6">
+                  <div>
+                    <label className="block text-xs font-black uppercase tracking-widest text-neutral-400 mb-3 ml-2">Select Date</label>
+                    <input 
+                      type="date" 
+                      className="w-full p-4 border-2 border-neutral-200 font-bold outline-none focus:border-[#00D95F] transition-colors"
+                      onChange={(e) => setFormData({...formData, date: e.target.value})}
+                    />
                   </div>
-               </div>
 
-               <div className="space-y-8">
-                  <div className="space-y-4">
-                    <p className="text-[9px] font-black uppercase tracking-widest text-white/30">System Load</p>
-                    <div className="w-full h-1 bg-white/5 relative">
-                       <motion.div initial={{ scaleX: 0 }} animate={{ scaleX: 0.72 }} className="absolute inset-0 bg-[#7F00FF] origin-left"></motion.div>
+                  <div>
+                    <label className="block text-xs font-black uppercase tracking-widest text-neutral-400 mb-3 ml-2">Select Time</label>
+                    <div className="grid grid-cols-3 md:grid-cols-4 gap-3">
+                      {timeSlots.map(time => (
+                        <button
+                          key={time}
+                          onClick={() => setFormData({...formData, time})}
+                          className={`py-3 text-sm font-bold border-2 transition-all ${
+                            formData.time === time 
+                              ? 'bg-black text-white border-black' 
+                              : 'bg-white text-neutral-600 border-neutral-100 hover:border-[#00D95F]'
+                          }`}
+                        >
+                          {time}
+                        </button>
+                      ))}
                     </div>
                   </div>
-                  <div className="space-y-4">
-                    <p className="text-[9px] font-black uppercase tracking-widest text-white/30">Kernel Status</p>
-                    <p className="text-xs font-bold uppercase text-[#7F00FF]">Ready for Deployment</p>
-                  </div>
-               </div>
+                </div>
 
-               <div className="pt-8 border-t border-white/5 grid grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                     <p className="text-[8px] font-black uppercase tracking-widest text-white/20">Latency</p>
-                     <p className="text-sm font-mono">14ms</p>
-                  </div>
-                  <div className="space-y-2">
-                     <p className="text-[8px] font-black uppercase tracking-widest text-white/20">Node</p>
-                     <p className="text-sm font-mono">SN1_V04</p>
-                  </div>
-               </div>
-            </div>
-          </div>
+                <div className="flex justify-between pt-8">
+                  <button onClick={prevStep} className="px-6 py-4 text-neutral-500 font-bold uppercase tracking-widest text-xs hover:text-black">
+                    Back
+                  </button>
+                  <button 
+                    disabled={!formData.date || !formData.time}
+                    onClick={nextStep}
+                    className="px-8 py-4 bg-black text-white font-black uppercase tracking-widest hover:bg-[#00D95F] disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center gap-2 rounded-none"
+                  >
+                    Next Step <ChevronRight size={16} />
+                  </button>
+                </div>
+              </motion.div>
+            )}
 
-          {/* MAIN MODULE */}
-          <div className="lg:col-span-2">
-            <AnimatePresence mode="wait">
-              {isSent ? (
-                <motion.div 
-                  initial={{ opacity: 0, scale: 0.98 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="bg-white/[0.02] border border-[#7F00FF]/40 p-12 md:p-24 text-center space-y-12 backdrop-blur-3xl relative overflow-hidden"
-                >
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(127,0,255,0.1),transparent)]"></div>
-                  <div className="w-24 h-24 border-2 border-[#7F00FF] flex items-center justify-center mx-auto relative group">
-                     <CheckCircle size={40} className="text-[#7F00FF] group-hover:scale-110 transition-transform" />
-                  </div>
-                  <div className="space-y-6 relative z-10">
-                    <h3 className="font-syne text-5xl font-black uppercase tracking-tighter leading-none">BUILD LOCKED.</h3>
-                    <p className="text-xl text-white/40 italic font-medium max-w-md mx-auto leading-relaxed">
-                      "Calibration confirmed. Your session has been written to the master ledger."
-                    </p>
-                  </div>
-                  <Link to="/demo/barber" className="relative inline-block px-16 py-6 border border-[#7F00FF] text-[#F1E6FF] font-black text-[10px] uppercase tracking-[0.8em] hover:bg-[#7F00FF] hover:text-white transition-all z-10">Return to Hub</Link>
-                </motion.div>
-              ) : (
-                <form onSubmit={handleSubmit} className="space-y-12">
-                  
-                  {/* Step 1: System Selection */}
-                  <div className="space-y-8">
-                     <div className="flex items-center gap-6">
-                        <div className="w-8 h-8 border border-[#7F00FF] flex items-center justify-center text-[10px] font-black">01</div>
-                        <h4 className="font-syne text-3xl font-black uppercase tracking-tight">SERVICE LOADOUT.</h4>
-                     </div>
-                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {systems.map(s => (
-                          <button
-                            key={s.id}
-                            type="button"
-                            onClick={() => setFormData({...formData, system: s.name})}
-                            className={`p-10 border transition-all duration-700 text-left relative overflow-hidden group ${formData.system === s.name ? 'bg-[#7F00FF] border-[#7F00FF] text-white shadow-[0_0_30px_rgba(127,0,255,0.3)]' : 'bg-white/5 border-white/5 hover:border-[#7F00FF]/50'}`}
-                          >
-                             <span className="absolute top-4 right-4 text-[10px] font-mono opacity-20">{s.id}</span>
-                             <h5 className="font-syne text-xl font-black uppercase tracking-tight mb-2">{s.name}</h5>
-                             <div className="flex justify-between items-center opacity-40 group-hover:opacity-100">
-                                <p className="text-[10px] font-black uppercase tracking-widest">{s.time} Protocol</p>
-                                <p className="text-sm font-bold">{s.price}</p>
-                             </div>
-                          </button>
-                        ))}
-                     </div>
-                  </div>
+            {step === 3 && (
+              <motion.div 
+                key="step3"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                className="space-y-8"
+              >
+                <h3 className="text-2xl font-black uppercase tracking-tight flex items-center gap-3">
+                  <User size={24} className="text-[#00D95F]" /> Your Details
+                </h3>
 
-                  {/* Step 2: Epoch & Node */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-24 pt-12 border-t border-white/5">
-                    <div className="space-y-10">
-                       <div className="flex items-center gap-6">
-                          <div className="w-8 h-8 border border-[#7F00FF] flex items-center justify-center text-[10px] font-black">02</div>
-                          <h4 className="font-syne text-2xl font-black uppercase tracking-tight">TEMPORAL WINDOW.</h4>
-                       </div>
-                       <div className="space-y-6">
-                          <label className="text-[9px] font-black uppercase tracking-widest text-white/30 ml-2">Select Epoch</label>
-                          <input type="date" required onChange={(e) => setFormData({...formData, epoch: e.target.value})} className="w-full bg-white/5 border border-white/10 p-6 text-[#E0E0E0] focus:outline-none focus:border-[#7F00FF] transition-all font-bold text-lg rounded-none uppercase" />
-                       </div>
-                    </div>
+                <div className="space-y-6">
+                  <input 
+                    type="text" 
+                    placeholder="Full Name" 
+                    className="w-full p-5 border-2 border-neutral-200 bg-white font-bold outline-none focus:border-[#00D95F] placeholder:text-neutral-300 transition-colors"
+                    onChange={(e) => setFormData({...formData, name: e.target.value})}
+                  />
+                  <input 
+                    type="email" 
+                    placeholder="Email Address" 
+                    className="w-full p-5 border-2 border-neutral-200 bg-white font-bold outline-none focus:border-[#00D95F] placeholder:text-neutral-300 transition-colors"
+                    onChange={(e) => setFormData({...formData, email: e.target.value})}
+                  />
+                </div>
 
-                    <div className="space-y-10">
-                       <div className="flex items-center gap-6">
-                          <div className="w-8 h-8 border border-[#7F00FF] flex items-center justify-center text-[10px] font-black">03</div>
-                          <h4 className="font-syne text-2xl font-black uppercase tracking-tight">TIME SLICE.</h4>
-                       </div>
-                       <div className="grid grid-cols-3 gap-3">
-                          {times.map(t => (
-                            <button
-                              key={t}
-                              type="button"
-                              onClick={() => setFormData({...formData, time: t})}
-                              className={`py-4 text-[10px] font-black uppercase tracking-widest transition-all border ${formData.time === t ? 'bg-[#7F00FF] border-[#7F00FF] text-white shadow-xl' : 'bg-transparent text-white/20 border-white/10 hover:border-white/30'}`}
-                            >
-                              {t}
-                            </button>
-                          ))}
-                       </div>
-                    </div>
-                  </div>
+                <div className="flex justify-between pt-8">
+                  <button onClick={prevStep} className="px-6 py-4 text-neutral-500 font-bold uppercase tracking-widest text-xs hover:text-black">
+                    Back
+                  </button>
+                  <button 
+                    disabled={!formData.name || !formData.email}
+                    onClick={nextStep}
+                    className="px-8 py-4 bg-[#00D95F] text-black font-black uppercase tracking-widest hover:bg-black hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center gap-2 shadow-xl rounded-none"
+                  >
+                    Confirm Booking <CheckCircle size={18} />
+                  </button>
+                </div>
+              </motion.div>
+            )}
 
-                  {/* Step 3: Identity & Execution */}
-                  <div className="pt-12 border-t border-white/5 space-y-12">
-                     <div className="flex items-center gap-6">
-                        <div className="w-8 h-8 border border-[#7F00FF] flex items-center justify-center text-[10px] font-black">04</div>
-                        <h4 className="font-syne text-2xl font-black uppercase tracking-tight">IDENTITY VERIFICATION.</h4>
-                     </div>
-                     <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                        <input required type="text" placeholder="Unit Name" className="w-full bg-white/5 border-b border-white/10 p-6 text-[#E0E0E0] focus:outline-none focus:border-[#7F00FF] transition-all font-bold text-lg focus:bg-white/10" />
-                        <input required type="email" placeholder="Communication Point" className="w-full bg-white/5 border-b border-white/10 p-6 text-[#E0E0E0] focus:outline-none focus:border-[#7F00FF] transition-all font-bold text-lg focus:bg-white/10" />
-                     </div>
-                     
-                     <button type="submit" className="w-full py-12 bg-white/[0.02] border border-[#7F00FF] text-[#F1E6FF] font-black uppercase tracking-[1em] text-[15px] hover:bg-[#7F00FF] hover:text-[#050505] transition-all duration-700 shadow-[0_0_50px_rgba(127,0,255,0.2)] active:scale-[0.98]">
-                        INITIALIZE SESSION
-                     </button>
-                  </div>
-                </form>
-              )}
-            </AnimatePresence>
-          </div>
+            {step === 4 && (
+              <motion.div 
+                key="step4"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="text-center py-12 space-y-8"
+              >
+                <div className="w-24 h-24 bg-[#00D95F] rounded-full flex items-center justify-center text-black mx-auto shadow-2xl animate-bounce">
+                  <CheckCircle size={48} />
+                </div>
+                <div>
+                  <h3 className="text-3xl font-black uppercase tracking-tight mb-2">You're Booked!</h3>
+                  <p className="text-neutral-500 max-w-xs mx-auto font-medium">Confirmation sent to {formData.email}. We'll see you on {formData.date} at {formData.time}.</p>
+                </div>
+                <Link to="/demo/barber" className="inline-block px-10 py-4 bg-neutral-200 text-neutral-900 font-bold uppercase tracking-widest hover:bg-neutral-300 transition-colors text-xs rounded-none">
+                  Return Home
+                </Link>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </section>
-
-      {/* METADATA STRIP */}
-      <div className="max-w-7xl mx-auto px-6 py-12 border-t border-white/5 flex flex-wrap justify-between items-center gap-12 opacity-20">
-         {['SECURE_ENCRYPTION_v2', 'NANO_PRECISION_UNIT', 'VERTEX_CLOUD_LINK', 'ZERO_TOLERANCE_POLICY'].map(tag => (
-           <span key={tag} className="text-[8px] font-black uppercase tracking-[0.8em]">{tag}</span>
-         ))}
-      </div>
     </div>
   );
 };

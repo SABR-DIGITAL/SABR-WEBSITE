@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Sprout, Coffee, MoveRight, Activity } from 'lucide-react';
+import { Sprout, Coffee, MoveRight, Activity, Scissors } from 'lucide-react';
 // Fix react-router-dom missing exports
 import * as RouterDOM from 'react-router-dom';
 const { Link } = RouterDOM as any;
@@ -18,6 +18,16 @@ const projects = [
     glowColor: 'rgba(34, 197, 94, 0.4)', // Emerald
     path: '/demo/landscaping',
     description: "We understand that your business happens on-site. We built this to help you capture leads while you're busy creating beautiful spaces."
+  },
+  {
+    id: 'barber',
+    title: 'Precision Engineering',
+    industry: 'Barber Shop',
+    tagline: 'Vertex Architecture',
+    icon: <Scissors className="text-white" size={100} strokeWidth={1} />,
+    glowColor: 'rgba(127, 0, 255, 0.4)', // Purple
+    path: '/demo/barber',
+    description: "Where high-fashion architecture meets the ritual of the blade. Every stroke is a calculated move toward perfection."
   },
   {
     id: 'physio',
@@ -199,6 +209,7 @@ const ProjectsGallery: React.FC = () => {
             <ProjectRow key={project.id} project={project} index={idx} />
           ))}
         </div>
+
         <div className="mt-64 md:mt-80 text-center relative">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[70vw] h-[70vw] bg-blue-500/5 blur-[100px] md:blur-[150px] rounded-full pointer-events-none"></div>
           <div className="w-px h-32 md:h-48 bg-gradient-to-b from-blue-600 to-transparent mx-auto mb-16 md:mb-20"></div>
