@@ -1,8 +1,6 @@
-
 import React, { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { MapPin, Phone, Clock, Navigation, Calendar, ArrowRight, Share2, Scissors, Target, Radio, Database } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { MapPin, Phone, Clock, ArrowRight, Navigation } from 'lucide-react';
 import ExitPreviewButton from '../../ExitPreviewButton';
 import BarberNavbar from './BarberNavbar';
 
@@ -11,131 +9,120 @@ const BarberLocations: React.FC = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  const [activeNode, setActiveNode] = useState(0);
+  const [activeLocation, setActiveLocation] = useState(0);
 
-  const nodes = [
-    { name: "APEX STUDIO 0x01", city: "London, UK", coords: "51.5074° N", site: "Milsom Street", status: "Nominal" },
-    { name: "NEXUS POINT 0x02", city: "Swindon, UK", coords: "51.5609° N", site: "12 High Street", status: "Active" }
+  const locations = [
+    { 
+      id: 1, 
+      name: "Mayfair Atelier", 
+      address: "42 Savile Row, London", 
+      postcode: "W1S 3QB",
+      phone: "020 7123 4567",
+      mapQuery: "Savile+Row+London",
+      image: "https://images.unsplash.com/photo-1600948836101-f9ffda59d250?auto=format&fit=crop&q=80&w=800"
+    },
+    { 
+      id: 2, 
+      name: "Shoreditch Loft", 
+      address: "128 Redchurch St, London", 
+      postcode: "E2 7DP",
+      phone: "020 7987 6543",
+      mapQuery: "Redchurch+Street+London",
+      image: "https://images.unsplash.com/photo-1521590832169-dca1f55b2d82?auto=format&fit=crop&q=80&w=800"
+    }
   ];
 
   return (
-    <div className="h-screen bg-[#050505] text-[#E0E0E0] font-inter selection:bg-[#7F00FF] selection:text-white flex flex-col overflow-hidden relative">
-      <div className="fixed inset-0 opacity-[0.03] pointer-events-none z-[100] bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"></div>
+    <div className="min-h-screen bg-white text-neutral-900 font-sans selection:bg-[#00D95F] selection:text-black flex flex-col">
       <ExitPreviewButton />
       <BarberNavbar />
 
-      <div className="flex-1 flex flex-col lg:flex-row pt-24 lg:pt-0 relative z-10">
-        
-        {/* LEFT PANEL: DATA GRID */}
+      <section className="pt-32 pb-12 px-6 max-w-7xl mx-auto w-full">
         <motion.div 
-          initial={{ opacity: 0, x: -50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 1.2, ease: "circOut" }}
-          className="w-full lg:w-[500px] xl:w-[650px] bg-[#080808] p-12 md:p-24 flex flex-col justify-center border-r border-white/5 overflow-y-auto custom-scrollbar"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="text-center mb-20"
         >
-          <div className="space-y-16">
-            <div className="space-y-8">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-[#7F00FF]/10 rounded-full border border-[#7F00FF]/20">
-                <Radio size={12} className="text-[#7F00FF] animate-pulse" />
-                <span className="text-[#7F00FF] font-black text-[9px] uppercase tracking-[0.5em]">Network Scan Complete</span>
-              </div>
-              <h1 className="font-syne text-6xl md:text-8xl font-black uppercase tracking-tighter leading-[0.85]">GLOBAL <br /><span className="text-white/10 italic">NODES.</span></h1>
-            </div>
-
-            <div className="space-y-6">
-              {nodes.map((node, i) => (
-                <button
-                  key={i}
-                  onClick={() => setActiveNode(i)}
-                  className={`w-full p-8 border text-left transition-all duration-700 group relative overflow-hidden ${activeNode === i ? 'bg-white/[0.02] border-[#7F00FF] shadow-[0_0_30px_rgba(127,0,255,0.1)]' : 'bg-transparent border-white/5 hover:border-white/20'}`}
-                >
-                  <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-20 transition-opacity">
-                     <Target size={100} />
-                  </div>
-                  <div className="flex justify-between items-start mb-6">
-                    <h3 className={`font-syne text-2xl font-black uppercase tracking-tight transition-colors ${activeNode === i ? 'text-[#7F00FF]' : 'text-white/40'}`}>{node.name}</h3>
-                    <span className="text-[10px] font-mono text-white/20">{node.status}</span>
-                  </div>
-                  <div className="grid grid-cols-2 gap-8">
-                    <div className="space-y-1">
-                      <p className="text-[8px] font-black uppercase tracking-widest text-white/20">Coordinate</p>
-                      <p className="text-xs font-bold">{node.coords}</p>
-                    </div>
-                    <div className="space-y-1">
-                      <p className="text-[8px] font-black uppercase tracking-widest text-white/20">Sector</p>
-                      <p className="text-xs font-bold uppercase">{node.city}</p>
-                    </div>
-                  </div>
-                </button>
-              ))}
-            </div>
-
-            <div className="pt-10 flex flex-col gap-4">
-               <button className="w-full py-8 bg-[#7F00FF] text-[#050505] font-black uppercase tracking-[1em] text-[11px] shadow-[0_0_40px_rgba(127,0,255,0.3)] hover:bg-white transition-all">
-                  INITIALIZE NAVIGATION
-               </button>
-               <Link to="/demo/barber/book" className="w-full py-8 border border-white/5 text-white/40 font-black uppercase tracking-[1em] text-[11px] hover:text-white hover:border-white/20 transition-all text-center">
-                  RESERVE UNIT_0{activeNode + 1}
-               </Link>
-            </div>
-          </div>
+          <span className="inline-block py-2 px-4 bg-neutral-100 text-neutral-900 font-bold text-[10px] uppercase tracking-[0.2em] mb-6 border-l-4 border-[#00D95F]">
+            Destinations
+          </span>
+          <h1 className="text-5xl md:text-8xl font-black tracking-tighter text-black uppercase">
+            Our <span className="text-[#00D95F]">Studios.</span>
+          </h1>
         </motion.div>
 
-        {/* RIGHT PANEL: IMMERSIVE STREET VIEW MAP */}
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 2, delay: 0.5 }}
-          className="flex-1 relative bg-slate-900 overflow-hidden"
-        >
-          {/* DIGITAL OVERLAY UI */}
-          <div className="absolute inset-0 z-20 pointer-events-none">
-            <div className="absolute top-10 right-10 p-8 bg-black/80 backdrop-blur-3xl border border-white/10 space-y-6 max-w-xs shadow-3xl pointer-events-auto">
-               <div className="flex items-center gap-4 text-[#7F00FF]">
-                  <Database size={16} />
-                  <span className="text-[10px] font-black uppercase tracking-widest">Metadata_Feed</span>
-               </div>
-               <div className="space-y-4">
-                  <p className="text-[11px] text-white/40 font-medium italic">"Node {nodes[activeNode].name} is currently processing at optimal precision levels. Zero-latency scheduling available."</p>
-                  <div className="flex justify-between items-center text-[10px] font-mono text-[#7F00FF]">
-                     <span>TEMP: 18°C</span>
-                     <span>LOAD: 72%</span>
-                  </div>
-               </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 h-full min-h-[600px]">
+          {/* Location List */}
+          <div className="lg:col-span-1 space-y-6">
+            {locations.map((loc, idx) => (
+              <motion.button
+                key={loc.id}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: idx * 0.1 }}
+                onClick={() => setActiveLocation(idx)}
+                className={`w-full text-left p-8 rounded-none transition-all duration-300 border-2 group ${
+                  activeLocation === idx 
+                    ? 'bg-black text-white border-black shadow-xl scale-105' 
+                    : 'bg-white text-neutral-900 border-neutral-100 hover:border-[#00D95F]'
+                }`}
+              >
+                <div className="flex justify-between items-start mb-4">
+                  <h3 className="text-2xl font-black uppercase tracking-tight">{loc.name}</h3>
+                  {activeLocation === idx && <div className="w-3 h-3 bg-[#00D95F] rounded-full animate-pulse"></div>}
+                </div>
+                
+                <div className="space-y-2 opacity-80 text-sm font-medium mb-6">
+                  <p className="flex items-center gap-2"><MapPin size={14} /> {loc.address}</p>
+                  <p className="flex items-center gap-2"><Navigation size={14} /> {loc.postcode}</p>
+                  <p className="flex items-center gap-2"><Phone size={14} /> {loc.phone}</p>
+                </div>
+
+                <div className={`text-xs font-black uppercase tracking-widest flex items-center gap-2 ${activeLocation === idx ? 'text-[#00D95F]' : 'text-neutral-400 group-hover:text-[#00D95F]'}`}>
+                  View Map <ArrowRight size={14} />
+                </div>
+              </motion.button>
+            ))}
+
+            <div className="p-8 bg-[#00D95F] rounded-none mt-8 text-black">
+              <h4 className="font-black uppercase tracking-tight text-xl mb-2">Opening Hours</h4>
+              <ul className="space-y-2 text-sm font-bold">
+                <li className="flex justify-between border-b border-black/10 pb-2"><span>Mon - Fri</span> <span>10:00 - 20:00</span></li>
+                <li className="flex justify-between border-b border-black/10 pb-2"><span>Saturday</span> <span>09:00 - 18:00</span></li>
+                <li className="flex justify-between"><span>Sunday</span> <span>Closed</span></li>
+              </ul>
             </div>
-            
-            {/* CROSSHAIRS */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 border-2 border-[#7F00FF]/20 rounded-full"></div>
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1px] h-64 bg-[#7F00FF]/10"></div>
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-[1px] bg-[#7F00FF]/10"></div>
           </div>
 
-          <iframe
-            key={activeNode}
-            src={`https://www.google.com/maps?q=${nodes[activeNode].site}+${nodes[activeNode].city}&layer=c&cbll=51.5609,-1.7800&cbp=11,0,0,0,0&output=svembed`}
-            width="100%"
-            height="100%"
-            style={{ border: 0 }}
-            allowFullScreen={true}
-            loading="lazy"
-            className="grayscale brightness-[0.7] contrast-[1.2] transition-all duration-[2s]"
-          ></iframe>
-          
-          <div className="absolute bottom-10 left-10 z-30 flex items-center gap-6">
-             <div className="w-12 h-12 border border-[#7F00FF] flex items-center justify-center text-[#7F00FF] bg-black/50 backdrop-blur-xl">
-                <Navigation size={20} />
-             </div>
-             <p className="text-[9px] font-black uppercase tracking-[0.5em] text-white/40">Visual Tracking Active</p>
-          </div>
-        </motion.div>
+          {/* Map/Image Area */}
+          <motion.div 
+            className="lg:col-span-2 bg-neutral-100 overflow-hidden relative shadow-2xl border-4 border-white"
+            key={activeLocation}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <iframe
+              width="100%"
+              height="100%"
+              style={{ border: 0, minHeight: '500px', height: '100%' }}
+              loading="lazy"
+              allowFullScreen
+              src={`https://www.google.com/maps?q=${locations[activeLocation].mapQuery}&output=embed`}
+              className="grayscale hover:grayscale-0 transition-all duration-700"
+            ></iframe>
 
-      </div>
-      
-      <style>{`
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #7F00FF; }
-      `}</style>
+            <div className="absolute bottom-8 left-8 bg-white p-2 shadow-lg transform rotate-2 hover:rotate-0 transition-transform duration-300 hidden md:block border border-neutral-200">
+              <img 
+                src={locations[activeLocation].image} 
+                alt={locations[activeLocation].name} 
+                className="w-32 h-32 object-cover"
+              />
+            </div>
+          </motion.div>
+        </div>
+      </section>
     </div>
   );
 };

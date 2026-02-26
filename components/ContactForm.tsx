@@ -67,7 +67,7 @@ const ContactForm: React.FC = () => {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4">
+            <div className="grid grid-cols-1 gap-4">
               <a 
                 href="mailto:SABRDIGITALWILTS@GMAIL.COM"
                 className="contact-info-box flex items-center gap-5 p-6 bg-white rounded-3xl border border-slate-100 shadow-sm hover:border-blue-400 transition-all group"
@@ -83,7 +83,7 @@ const ContactForm: React.FC = () => {
                 href="https://instagram.com/sabrdigital" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="contact-info-box flex items-center gap-5 p-6 bg-white rounded-3xl border border-slate-200 shadow-md hover:border-blue-400 transition-all group opacity-100"
+                className="contact-info-box flex items-center gap-5 p-6 bg-white rounded-3xl border border-slate-200 shadow-md hover:border-blue-400 transition-all group !opacity-100"
               >
                 <div className="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center text-blue-600 group-hover:scale-110 transition-transform"><Instagram size={20} /></div>
                 <div>
@@ -91,11 +91,11 @@ const ContactForm: React.FC = () => {
                   <p className="text-slate-950 font-black text-sm">@sabrdigital</p>
                 </div>
               </a>
-            </div>
 
-            <div className="contact-info-box p-6 bg-blue-600 rounded-3xl text-white shadow-xl flex items-center gap-4">
-               <Zap size={24} className="animate-pulse" />
-               <p className="font-black text-[10px] uppercase tracking-[0.2em]">WE RESPOND WITHIN 12 HOURS!</p>
+              <div className="contact-info-box p-6 bg-blue-600 rounded-3xl text-white shadow-xl flex items-center gap-4">
+                 <Zap size={24} className="animate-pulse" />
+                 <p className="font-black text-[10px] uppercase tracking-[0.2em]">WE RESPOND WITHIN 12 HOURS!</p>
+              </div>
             </div>
           </div>
 

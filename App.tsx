@@ -15,6 +15,11 @@ import WhyWebsiteSection from './components/WhyWebsiteSection';
 
 // Lazy Loaded Pages
 const ProjectsGallery = lazy(() => import('./pages/ProjectsGallery'));
+const BarberHome = lazy(() => import('./components/demos/barber/BarberHome'));
+const BarberCuts = lazy(() => import('./components/demos/barber/BarberCuts'));
+const BarberLocations = lazy(() => import('./components/demos/barber/BarberLocations'));
+const BarberContact = lazy(() => import('./components/demos/barber/BarberContact'));
+const BarberBooking = lazy(() => import('./components/demos/barber/BarberBooking'));
 const LandscaperHome = lazy(() => import('./components/demos/landscaping/Home'));
 const LandscaperContact = lazy(() => import('./components/demos/landscaping/Contact'));
 const LandscaperServices = lazy(() => import('./components/demos/landscaping/Services'));
@@ -171,6 +176,11 @@ const MainApp: React.FC = () => {
                 </div>
               } />
               <Route path="/projects" element={<ProjectsGallery />} />
+              <Route path="/demo/barber" element={<BarberHome />} />
+              <Route path="/demo/barber/cuts" element={<BarberCuts />} />
+              <Route path="/demo/barber/locations" element={<BarberLocations />} />
+              <Route path="/demo/barber/contact" element={<BarberContact />} />
+              <Route path="/demo/barber/book" element={<BarberBooking />} />
               <Route path="/demo/landscaping" element={<LandscaperHome />} />
               <Route path="/demo/landscaping/services" element={<LandscaperServices />} />
               <Route path="/demo/landscaping/about" element={<LandscaperAbout />} />
