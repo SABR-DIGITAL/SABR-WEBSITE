@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Page } from '../App';
+import { Page, PAGE_PATHS } from '../App';
 // Fix react-router-dom missing exports
 import * as RouterDOM from 'react-router-dom';
 const { Link, useLocation } = RouterDOM as any;
@@ -27,7 +27,7 @@ const navVariants = {
   }
 };
 
-const Navbar: React.FC<NavbarProps> = ({ navigateTo, currentPage, startAnimation = true }) => {
+const Navbar: React.FC<NavbarProps> = ({ currentPage, startAnimation = true }) => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
@@ -46,9 +46,8 @@ const Navbar: React.FC<NavbarProps> = ({ navigateTo, currentPage, startAnimation
     { name: 'FAQ', id: 'faq' }
   ];
 
-  const handleNav = (id: Page) => {
+  const handleNav = (_id: Page) => {
     setMobileMenuOpen(false);
-    navigateTo(id);
   };
 
   return (
@@ -60,34 +59,38 @@ const Navbar: React.FC<NavbarProps> = ({ navigateTo, currentPage, startAnimation
         className={`fixed top-0 left-0 right-0 z-[100] transition-[padding] duration-700 px-4 md:px-8 ${scrolled ? 'py-4' : 'py-8'} block transform-gpu will-change-[padding, transform, opacity]`}
       >
         <div className={`max-w-7xl mx-auto flex items-center justify-between transition-[background-color,border-color,padding,border-radius,box-shadow] duration-700 ${scrolled ? 'lg:bg-white/95 lg:border-slate-100 lg:shadow-2xl lg:rounded-full lg:px-8 lg:py-5 lg:border' : 'bg-transparent border-transparent lg:bg-white/10 lg:border-white/20 lg:backdrop-blur-3xl lg:rounded-full lg:px-8 lg:py-5 lg:border'} ${mobileMenuOpen ? 'opacity-0' : 'opacity-100'} lg:opacity-100 transform-gpu will-change-[background-color,border-color,padding,border-radius] bg-transparent border-transparent shadow-none`}>
-          <button 
+          <Link
+            to="/"
             onClick={() => handleNav('home')}
+            aria-label="SABR Digital home"
             className="hidden lg:flex flex-col text-left group focus:outline-none focus:ring-0 appearance-none"
           >
             <span className="font-syne text-xl md:text-2xl tracking-[0.05em] font-black text-slate-950 flex items-center">
               SABR<span className="text-shimmer-blue ml-1.5">DIGITAL</span>
             </span>
-            <span className="text-[7px] uppercase font-black tracking-[0.8em] text-blue-400">Digital Studio</span>
-          </button>
+            <span className="text-[7px] uppercase font-black tracking-[0.45em] text-blue-400">Web Design Studio</span>
+          </Link>
           
-          <div className="hidden lg:flex items-center gap-12">
+          <nav aria-label="Primary" className="hidden lg:flex items-center gap-12">
             {links.map((item) => (
-              <button 
-                key={item.id} 
+              <Link
+                key={item.id}
+                to={PAGE_PATHS[item.id]}
                 onClick={() => handleNav(item.id)}
                 className={`relative text-[10px] uppercase tracking-[0.5em] transition-all font-black focus:outline-none ${(currentPage === item.id && !isProjects) || (isProjects && item.id === 'work') ? 'text-blue-600' : 'text-blue-500/60 hover:text-blue-600'}`}
               >
                 {item.name}
                 {((currentPage === item.id && !isProjects) || (isProjects && item.id === 'work')) && <div className="absolute -bottom-2 left-0 w-full h-0.5 bg-blue-600 rounded-full"></div>}
-              </button>
+              </Link>
             ))}
-            <button 
+            <Link
+              to={PAGE_PATHS.contact}
               onClick={() => handleNav('contact')}
               className={`px-10 py-4 rounded-full text-[10px] uppercase tracking-[0.4em] font-black transition-all focus:outline-none ${scrolled ? 'bg-blue-600 text-white' : 'bg-slate-950 text-white shadow-xl'} hover:bg-blue-500 hover:scale-105 active:scale-95`}
             >
               Contact
-            </button>
-          </div>
+            </Link>
+          </nav>
 
           <button 
             className="lg:hidden ml-auto p-4 bg-white/90 backdrop-blur-md rounded-full shadow-xl text-slate-950 hover:text-blue-600 transition-all border border-slate-100 focus:outline-none"
@@ -115,17 +118,18 @@ const Navbar: React.FC<NavbarProps> = ({ navigateTo, currentPage, startAnimation
               <button onClick={() => setMobileMenuOpen(false)} className="w-14 h-14 md:w-20 md:h-20 rounded-full bg-white shadow-lg flex items-center justify-center text-slate-950 hover:text-blue-600 transition-colors"><X size={32} /></button>
             </div>
             
-            <div className="flex flex-col gap-10 md:gap-16">
+            <nav aria-label="Mobile" className="flex flex-col gap-10 md:gap-16">
               {[{name: 'Home', id: 'home' as Page}, ...links, {name: 'Contact', id: 'contact' as Page}].map((link) => (
-                <button 
-                  key={link.id} 
+                <Link
+                  key={link.id}
+                  to={PAGE_PATHS[link.id]}
                   onClick={() => handleNav(link.id)}
                   className="text-left font-syne text-[clamp(1.5rem,8vw,3.5rem)] font-black text-slate-950 tracking-tighter uppercase hover:text-blue-600 transition-colors leading-none pr-10"
                 >
                   {link.name}.
-                </button>
+                </Link>
               ))}
-            </div>
+            </nav>
 
             <div className="mt-auto pt-10 border-t border-slate-100 flex items-center justify-between">
               <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">© 2025 SABR STUDIO</p>

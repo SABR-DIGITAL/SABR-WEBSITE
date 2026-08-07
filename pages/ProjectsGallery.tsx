@@ -31,13 +31,13 @@ const projects = [
   },
   {
     id: 'physio',
-    title: 'Active Recovery',
+    title: 'Pulteney Physiotherapy',
     industry: 'Physiotherapy',
-    tagline: 'Recovery Protocol',
+    tagline: 'Editorial Clinic',
     icon: <Activity className="text-white" size={100} strokeWidth={1} />,
     glowColor: 'rgba(37, 99, 235, 0.4)', // Bright Blue
     path: '/demo/physio',
-    description: "In the world of health, trust is everything. We engineered a platform that mirrors the precision of expert medical care with a high-end feel."
+    description: "A private clinic in Bath where people arrive in pain and want to know two things: who will see them, and what it costs. Every fee, every physio and the next free slot, all above the fold."
   },
   {
     id: 'cafe',
@@ -194,13 +194,16 @@ const ProjectsGallery: React.FC = () => {
     <div className="bg-[#fdfbf7] min-h-screen pt-32 md:pt-48 pb-64 px-6 overflow-hidden">
       <div className="max-w-7xl mx-auto">
         <div className="mb-40 md:mb-64">
-          <h2 className="font-syne text-[clamp(2.5rem,10vw,5rem)] font-black text-slate-950 tracking-tighter uppercase leading-[0.9] mb-12">
+          <p className="mb-6 text-[9px] md:text-[11px] font-black uppercase tracking-[0.45em] text-blue-600">
+            Web Design Portfolio &middot; Wiltshire &amp; UK
+          </p>
+          <h1 className="font-syne text-[clamp(2.5rem,10vw,5rem)] font-black text-slate-950 tracking-tighter uppercase leading-[0.9] mb-12">
             SITES THAT <br />
             <span className="text-shimmer-blue italic">GET RESULTS.</span>
-          </h2>
+          </h1>
           <div className="max-w-4xl border-l-[6px] md:border-l-[8px] border-blue-100 pl-8 md:pl-16">
             <p className="text-lg md:text-xl lg:text-3xl text-slate-400 font-medium italic leading-relaxed">
-              We build professional websites for local businesses that need to stand out. Simple, effective, and optimized for your growth.
+              We build professional websites for local businesses across Wiltshire and the UK that need to stand out. Simple, effective, and optimised for your growth.
             </p>
           </div>
         </div>
@@ -217,7 +220,7 @@ const ProjectsGallery: React.FC = () => {
             READY TO <br /><span className="text-blue-600 italic">DOMINATE?</span>
           </h4>
           <Link 
-            to="/#contact"
+            to="/contact"
             className="relative z-10 inline-flex items-center gap-6 md:gap-8 px-12 md:px-20 py-8 md:py-12 bg-blue-600 text-white font-black text-[12px] md:text-[16px] uppercase tracking-[0.5em] md:tracking-[0.8em] rounded-full hover:scale-110 hover:bg-slate-950 transition-all shadow-[0_40px_80px_-15px_rgba(37,99,235,0.4)] active:scale-95 group"
           >
             Start Your Build
