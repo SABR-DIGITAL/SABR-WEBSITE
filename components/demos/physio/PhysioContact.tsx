@@ -1,268 +1,274 @@
-
 import React, { useState, useEffect } from 'react';
 import { motion as framerMotion, AnimatePresence } from 'framer-motion';
-import { CheckCircle, MoveRight, Mail, Phone, MapPin, Send, Leaf, Clock, Heart, ShieldCheck, User, Calendar, Info, Search } from 'lucide-react';
+import { ArrowRight, Check } from 'lucide-react';
 import ExitPreviewButton from '../../ExitPreviewButton';
 import PhysioNavbar from './PhysioNavbar';
 import PhysioFooter from './PhysioFooter';
-// Fix react-router-dom missing exports
-import * as RouterDOM from 'react-router-dom';
-const { Link } = RouterDOM as any;
+import { clinic, openingHours, fees, team, images } from './physioData';
 
 // Fix motion types by casting to any
 const motion = framerMotion as any;
 
-const PhysioContact: React.FC = () => {
-  const [isSent, setIsSent] = useState(false);
-  const [activeStep, setActiveStep] = useState(1);
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    contactPref: 'Email',
-    focus: '',
-    date: '',
-    timeSlot: 'Morning',
-    urgency: 'Standard',
-    referral: ''
-  });
+const gettingHere = [
+  {
+    label: 'On foot',
+    copy: 'Five minutes from Bath Spa station, two from Pulteney Bridge. The door is between the gallery and the bookshop.'
+  },
+  {
+    label: 'Parking',
+    copy: 'Metered bays on Argyle Street and Henrietta Street. The Podium car park is a four-minute walk.'
+  },
+  {
+    label: 'Access',
+    copy: 'The ground-floor room and the rehab studio are step-free. Tell us when you book and we will use them.'
+  }
+];
 
-  useEffect(() => window.scrollTo(0, 0), []);
+const inputClass =
+  'w-full bg-transparent border-b border-[#E2DDD3] py-4 text-[#1D1C19] placeholder:text-[#A9A398] focus:outline-none focus:border-[#4A5D4E] transition-colors duration-300';
+
+const PhysioContact: React.FC = () => {
+  const [sent, setSent] = useState(false);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' as any });
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setTimeout(() => setIsSent(true), 1500);
+    setSent(true);
   };
 
-  const triageOptions = [
-    { id: 'spinal', label: 'SPINAL & BACK', desc: 'Lumbar, thoracic or cervical care' },
-    { id: 'sports', label: 'SPORTS MEDICINE', desc: 'Acute injury or performance gains' },
-    { id: 'postop', label: 'POST-SURGICAL', desc: 'Rehab following clinical operation' },
-    { id: 'chronic', label: 'CHRONIC PAIN', desc: 'Long-term discomfort management' },
-    { id: 'gait', label: 'GAIT & RUNNING', desc: 'Biomechanical analysis and form' },
-    { id: 'women', label: "WOMEN'S HEALTH", desc: 'Specialist pelvic and pre/post-natal' },
-    { id: 'neuro', label: 'NEUROLOGICAL', desc: 'Nerve path and mobility calibration' },
-    { id: 'wellness', label: 'WELLNESS & RESET', desc: 'Maintenance and postural audit' }
-  ];
-
-  const timeSlots = [
-    { label: 'Early Morning', range: '08:00 - 10:00' },
-    { label: 'Midday', range: '11:00 - 14:00' },
-    { label: 'Late Afternoon', range: '15:00 - 17:00' },
-    { label: 'Evening', range: '18:00 - 20:00' }
-  ];
-
   return (
-    <div className="min-h-screen bg-[#f8faf9] font-inter selection:bg-emerald-200">
+    <div className="min-h-screen bg-[#F3F0EA] font-inter text-[#1D1C19] selection:bg-[#4A5D4E] selection:text-[#F3F0EA] overflow-x-hidden">
       <ExitPreviewButton />
       <PhysioNavbar />
 
-      <section className="pt-48 pb-32 px-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-20 items-start">
-            
-            {/* INTAKE INTEL */}
-            <div className="lg:col-span-4 space-y-16 lg:sticky lg:top-48">
-              <div className="space-y-8">
-                <span className="text-emerald-600 font-bold text-xs uppercase tracking-[0.4em]">Clinical Intake</span>
-                <h1 className="font-serif text-5xl md:text-7xl text-emerald-950 font-bold tracking-tight leading-[0.9]">
-                  Sync <br /><span className="text-emerald-600 italic">Protocols.</span>
-                </h1>
-                <p className="text-xl text-emerald-800/60 font-medium italic border-l-4 border-emerald-100 pl-8 leading-relaxed">
-                  "Our advanced intake module ensures we match your unit with the optimal clinician before you even step into the hub."
-                </p>
-              </div>
+      {/* HEADER */}
+      <section className="pt-40 md:pt-52 pb-16 md:pb-24 px-6 md:px-10">
+        <div className="max-w-[1500px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-end">
+          <div className="lg:col-span-8">
+            <p className="text-[9px] uppercase tracking-[0.42em] text-[#4A5D4E] mb-8">Contact</p>
+            <h1 className="font-serif text-[clamp(2.4rem,6vw,4.6rem)] tracking-[-0.02em]">
+              Book in, or just ask us first.
+            </h1>
+          </div>
+          <p className="lg:col-span-4 text-[#6E6A62] leading-relaxed">
+            The phone is answered by whichever physiotherapist is between patients. Messages sent overnight are
+            answered before nine the next working morning.
+          </p>
+        </div>
+      </section>
 
-              <div className="space-y-6">
-                 <div className="flex gap-6 items-center p-6 bg-white rounded-3xl shadow-sm border border-emerald-50">
-                    <div className="w-10 h-10 bg-emerald-50 rounded-full flex items-center justify-center text-emerald-600">
-                       <ShieldCheck size={20} />
-                    </div>
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-900/60">Data Encrypted & Secure</span>
-                 </div>
-                 <div className="flex gap-6 items-center p-6 bg-white rounded-3xl shadow-sm border border-emerald-50">
-                    <div className="w-10 h-10 bg-emerald-50 rounded-full flex items-center justify-center text-emerald-600">
-                       <Clock size={20} />
-                    </div>
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-900/60">Response: &lt; 01 Business Hour</span>
-                 </div>
-              </div>
-            </div>
+      {/* DETAILS STRIP */}
+      <section className="pb-20 md:pb-28 px-6 md:px-10">
+        <div className="max-w-[1500px] mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-[#E2DDD3] border border-[#E2DDD3]">
+          <div className="bg-[#F3F0EA] p-8 md:p-10">
+            <p className="text-[9px] uppercase tracking-[0.42em] text-[#4A5D4E] mb-5">Telephone</p>
+            <a href={`tel:${clinic.phoneHref}`} className="font-serif text-2xl hover:text-[#4A5D4E] transition-colors">
+              {clinic.phoneDisplay}
+            </a>
+            <p className="mt-4 text-sm text-[#6E6A62] leading-relaxed">Fastest way to get an urgent slot.</p>
+          </div>
 
-            {/* INTAKE MODULE */}
-            <div className="lg:col-span-8">
-              <AnimatePresence mode="wait">
-                {isSent ? (
-                  <motion.div 
-                    initial={{ opacity: 0, scale: 0.95 }} 
-                    animate={{ opacity: 1, scale: 1 }} 
-                    className="bg-white p-16 md:p-24 rounded-[4rem] shadow-2xl border border-emerald-100 text-center space-y-12"
+          <div className="bg-[#F3F0EA] p-8 md:p-10">
+            <p className="text-[9px] uppercase tracking-[0.42em] text-[#4A5D4E] mb-5">Email</p>
+            <a
+              href={`mailto:${clinic.email}`}
+              className="font-serif text-xl md:text-[1.35rem] break-words hover:text-[#4A5D4E] transition-colors"
+            >
+              {clinic.email}
+            </a>
+            <p className="mt-4 text-sm text-[#6E6A62] leading-relaxed">Good for insurance and referral paperwork.</p>
+          </div>
+
+          <div className="bg-[#F3F0EA] p-8 md:p-10">
+            <p className="text-[9px] uppercase tracking-[0.42em] text-[#4A5D4E] mb-5">The clinic</p>
+            <address className="not-italic font-serif text-xl md:text-[1.35rem] leading-snug">
+              {clinic.addressLine1}
+              <br />
+              {clinic.addressLine2} {clinic.postcode}
+            </address>
+            <p className="mt-4 text-sm text-[#6E6A62] leading-relaxed">Ground floor, step-free entrance.</p>
+          </div>
+
+          <div className="bg-[#F3F0EA] p-8 md:p-10">
+            <p className="text-[9px] uppercase tracking-[0.42em] text-[#4A5D4E] mb-5">Opening hours</p>
+            <ul className="space-y-2.5">
+              {openingHours.map((row) => (
+                <li key={row.days} className="flex justify-between gap-4 text-sm">
+                  <span className="text-[#1D1C19]">{row.days}</span>
+                  <span className="text-[#6E6A62] whitespace-nowrap">{row.hours}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      {/* FORM + SIDE PANEL */}
+      <section className="pb-24 md:pb-32 px-6 md:px-10">
+        <div className="max-w-[1500px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-14 lg:gap-20">
+
+          {/* FORM */}
+          <div className="lg:col-span-7">
+            <h2 className="font-serif text-[clamp(1.8rem,3.5vw,2.6rem)] tracking-[-0.02em] mb-4">
+              Request an appointment
+            </h2>
+            <p className="text-[#6E6A62] leading-relaxed mb-12 max-w-xl">
+              Tell us roughly what is going on and when you can get here. We will come back with two or three times
+              that fit, not a booking system that fills your inbox.
+            </p>
+
+            <AnimatePresence mode="wait">
+              {sent ? (
+                <motion.div
+                  key="sent"
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="border border-[#E2DDD3] bg-[#FBFAF7] p-10 md:p-14"
+                >
+                  <span className="w-12 h-12 flex items-center justify-center bg-[#4A5D4E] text-[#F3F0EA] mb-7">
+                    <Check size={22} />
+                  </span>
+                  <h3 className="font-serif text-2xl md:text-3xl mb-4">Thank you &mdash; that has come through.</h3>
+                  <p className="text-[#6E6A62] leading-relaxed max-w-md">
+                    In a live clinic site this would land in the practice inbox and be answered the same working day.
+                    This page is a design demonstration, so nothing has actually been sent.
+                  </p>
+                  <button
+                    onClick={() => setSent(false)}
+                    className="mt-9 text-[10px] uppercase tracking-[0.32em] text-[#4A5D4E] border-b border-[#4A5D4E]/40 pb-1 hover:border-[#4A5D4E] transition-colors"
                   >
-                    <div className="w-24 h-24 bg-emerald-600 text-white flex items-center justify-center rounded-3xl mx-auto shadow-xl group">
-                       <CheckCircle size={48} className="group-hover:scale-110 transition-transform" />
+                    Show the form again
+                  </button>
+                </motion.div>
+              ) : (
+                <motion.form
+                  key="form"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  onSubmit={handleSubmit}
+                  className="space-y-9"
+                >
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-9">
+                    <div>
+                      <label htmlFor="name" className="block text-[9px] uppercase tracking-[0.42em] text-[#4A5D4E] mb-1">
+                        Your name
+                      </label>
+                      <input id="name" name="name" type="text" required placeholder="Jane Marshall" className={inputClass} />
                     </div>
-                    <div className="space-y-6">
-                      <h3 className="font-serif text-5xl font-bold text-emerald-950 tracking-tight">Sync Established.</h3>
-                      <p className="text-2xl text-emerald-800/60 italic font-medium leading-tight max-w-md mx-auto">"Clinical data has been written to the ledger. Our team will contact you via {formData.contactPref} shortly."</p>
-                    </div>
-                    <Link to="/demo/physio" className="inline-block px-14 py-6 bg-emerald-950 text-white rounded-2xl font-bold text-sm hover:bg-emerald-700 transition-all">RETURN TO HUB</Link>
-                  </motion.div>
-                ) : (
-                  <div className="bg-white rounded-[4rem] border border-emerald-100 shadow-2xl overflow-hidden">
-                    
-                    {/* Module Progress Bar */}
-                    <div className="bg-emerald-50/50 px-12 py-8 flex items-center justify-between border-b border-emerald-100">
-                       <div className="flex items-center gap-6">
-                          {[1, 2, 3].map((s) => (
-                            <div key={s} className="flex items-center gap-3">
-                              <div className={`w-3 h-3 rounded-full transition-all duration-500 ${activeStep >= s ? 'bg-emerald-600 scale-125' : 'bg-emerald-200'}`}></div>
-                              {activeStep === s && <span className="text-[9px] font-black text-emerald-800 uppercase tracking-widest hidden sm:inline">Active</span>}
-                            </div>
-                          ))}
-                       </div>
-                       <span className="text-[11px] font-bold uppercase tracking-widest text-emerald-800/40 italic">Unit Calibration: Stage 0{activeStep}</span>
-                    </div>
-
-                    <form onSubmit={handleSubmit} className="p-10 md:p-16 lg:p-20 space-y-16">
-                       
-                       {activeStep === 1 && (
-                         <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-12">
-                            <div className="space-y-4">
-                               <h3 className="font-serif text-4xl font-bold text-emerald-950 tracking-tight">Identity & Contact.</h3>
-                               <p className="text-emerald-800/60 font-medium italic">"Establish your communication bridge and verify identity details."</p>
-                            </div>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                               <div className="space-y-3">
-                                  <label className="text-[10px] font-bold uppercase tracking-widest text-emerald-900/40 ml-4">Full Name</label>
-                                  <input required type="text" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} placeholder="Patient legal name" className="w-full bg-emerald-50/30 border border-emerald-100 rounded-2xl p-6 text-emerald-950 font-bold focus:outline-none focus:border-emerald-600 shadow-sm" />
-                               </div>
-                               <div className="space-y-3">
-                                  <label className="text-[10px] font-bold uppercase tracking-widest text-emerald-900/40 ml-4">Direct Phone</label>
-                                  <input required type="tel" value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} placeholder="07XXX XXXXXX" className="w-full bg-emerald-50/30 border border-emerald-100 rounded-2xl p-6 text-emerald-950 font-bold focus:outline-none focus:border-emerald-600 shadow-sm" />
-                               </div>
-                               <div className="space-y-3">
-                                  <label className="text-[10px] font-bold uppercase tracking-widest text-emerald-900/40 ml-4">Email Address</label>
-                                  <input required type="email" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} placeholder="secure@email.com" className="w-full bg-emerald-50/30 border border-emerald-100 rounded-2xl p-6 text-emerald-950 font-bold focus:outline-none focus:border-emerald-600 shadow-sm" />
-                               </div>
-                               <div className="space-y-3">
-                                  <label className="text-[10px] font-bold uppercase tracking-widest text-emerald-900/40 ml-4">Contact Preference</label>
-                                  <select value={formData.contactPref} onChange={(e) => setFormData({...formData, contactPref: e.target.value})} className="w-full bg-emerald-50/30 border border-emerald-100 rounded-2xl p-6 text-emerald-950 font-bold focus:outline-none focus:border-emerald-600 shadow-sm appearance-none cursor-pointer">
-                                     <option>Email</option>
-                                     <option>Phone Call</option>
-                                     <option>WhatsApp</option>
-                                  </select>
-                               </div>
-                            </div>
-                            <button type="button" onClick={() => setActiveStep(2)} className="w-full py-8 bg-emerald-700 text-white rounded-2xl font-bold text-sm tracking-widest flex items-center justify-center gap-4 hover:bg-emerald-900 transition-all shadow-lg group">
-                               CALIBRATE TRIAGE <MoveRight size={20} className="group-hover:translate-x-2 transition-transform" />
-                            </button>
-                         </motion.div>
-                       )}
-
-                       {activeStep === 2 && (
-                         <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-12">
-                            <div className="space-y-4">
-                               <h3 className="font-serif text-4xl font-bold text-emerald-950 tracking-tight">Clinical Focus.</h3>
-                               <p className="text-emerald-800/60 font-medium italic">"Select the relevant anatomical sector or clinical requirement."</p>
-                            </div>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                               {triageOptions.map(option => (
-                                 <button 
-                                   key={option.id} 
-                                   type="button" 
-                                   onClick={() => {
-                                     setFormData({...formData, focus: option.label});
-                                     setActiveStep(3);
-                                   }} 
-                                   className={`p-8 rounded-[2rem] border text-left transition-all group ${formData.focus === option.label ? 'bg-emerald-950 border-emerald-950' : 'bg-emerald-50/50 border-emerald-100 hover:border-emerald-600'}`}
-                                 >
-                                    <h4 className={`font-serif text-xl font-bold transition-colors ${formData.focus === option.label ? 'text-white' : 'text-emerald-950'}`}>{option.label}</h4>
-                                    <p className={`text-[10px] font-medium italic mt-1 transition-colors ${formData.focus === option.label ? 'text-emerald-300' : 'text-emerald-800/40'}`}>"{option.desc}"</p>
-                                 </button>
-                               ))}
-                            </div>
-                            <button type="button" onClick={() => setActiveStep(1)} className="w-full py-4 text-emerald-900/40 font-bold text-[10px] uppercase tracking-[0.5em] hover:text-emerald-900 transition-colors">Recalibrate Identity</button>
-                         </motion.div>
-                       )}
-
-                       {activeStep === 3 && (
-                         <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-12">
-                            <div className="space-y-4">
-                               <h3 className="font-serif text-4xl font-bold text-emerald-950 tracking-tight">Scheduling & Logic.</h3>
-                               <p className="text-emerald-800/60 font-medium italic">"Choose your availability and intake requirements."</p>
-                            </div>
-                            
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-                               <div className="space-y-6">
-                                  <div className="space-y-3">
-                                     <label className="text-[10px] font-bold uppercase tracking-widest text-emerald-900/40 ml-4">Target Epoch (Date)</label>
-                                     <input required type="date" value={formData.date} onChange={(e) => setFormData({...formData, date: e.target.value})} className="w-full bg-emerald-50/30 border border-emerald-100 rounded-2xl p-6 text-emerald-950 font-bold focus:outline-none focus:border-emerald-600 shadow-sm" />
-                                  </div>
-                                  <div className="space-y-3">
-                                     <label className="text-[10px] font-bold uppercase tracking-widest text-emerald-900/40 ml-4">Urgency Level</label>
-                                     <div className="flex flex-wrap gap-2">
-                                        {['Routine', 'Acute / Painful', 'Priority Rehab'].map(u => (
-                                          <button key={u} type="button" onClick={() => setFormData({...formData, urgency: u})} className={`px-4 py-2 rounded-full text-[9px] font-black uppercase tracking-widest transition-all ${formData.urgency === u ? 'bg-emerald-700 text-white shadow-md' : 'bg-emerald-50 text-emerald-800/40 hover:bg-emerald-100'}`}>{u}</button>
-                                        ))}
-                                     </div>
-                                  </div>
-                               </div>
-
-                               <div className="space-y-6">
-                                  <div className="space-y-3">
-                                     <label className="text-[10px] font-bold uppercase tracking-widest text-emerald-900/40 ml-4">Preferred Window</label>
-                                     <div className="grid grid-cols-2 gap-3">
-                                        {timeSlots.map(slot => (
-                                          <button 
-                                            key={slot.label} 
-                                            type="button" 
-                                            onClick={() => setFormData({...formData, timeSlot: slot.label})}
-                                            className={`p-4 rounded-xl border text-center transition-all ${formData.timeSlot === slot.label ? 'bg-emerald-950 border-emerald-950 text-white' : 'bg-white border-emerald-100 hover:border-emerald-400'}`}
-                                          >
-                                             <p className="text-[10px] font-black uppercase tracking-tight">{slot.label}</p>
-                                             <p className={`text-[8px] font-mono mt-1 ${formData.timeSlot === slot.label ? 'text-emerald-400' : 'text-emerald-800/20'}`}>{slot.range}</p>
-                                          </button>
-                                        ))}
-                                     </div>
-                                  </div>
-                                  <div className="space-y-3">
-                                     <label className="text-[10px] font-bold uppercase tracking-widest text-emerald-900/40 ml-4">Referral Source</label>
-                                     <select value={formData.referral} onChange={(e) => setFormData({...formData, referral: e.target.value})} className="w-full bg-emerald-50/30 border border-emerald-100 rounded-2xl p-6 text-emerald-950 font-bold focus:outline-none focus:border-emerald-600 shadow-sm appearance-none cursor-pointer">
-                                        <option value="">How did you hear about us?</option>
-                                        <option>Google Search</option>
-                                        <option>GP Recommendation</option>
-                                        <option>Insurance Panel</option>
-                                        <option>Word of Mouth</option>
-                                        <option>Social Media</option>
-                                     </select>
-                                  </div>
-                               </div>
-                            </div>
-
-                            <button type="submit" className="w-full py-10 bg-emerald-700 text-white rounded-3xl font-bold text-sm tracking-[0.3em] shadow-2xl flex items-center justify-center gap-6 hover:bg-emerald-950 transition-all group overflow-hidden relative">
-                               <span className="relative z-10 flex items-center gap-4">INITIALIZE CLINICAL UPLINK <Send size={20} className="group-hover:translate-x-2 group-hover:-translate-y-2 transition-transform" /></span>
-                               <div className="absolute inset-0 bg-emerald-900 translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
-                            </button>
-                            <button type="button" onClick={() => setActiveStep(2)} className="w-full py-4 text-emerald-900/40 font-bold text-[10px] uppercase tracking-[0.5em] hover:text-emerald-900 transition-colors">Adjust Clinical Sector</button>
-                         </motion.div>
-                       )}
-
-                    </form>
-                    
-                    <div className="px-12 py-10 border-t border-emerald-50 flex items-center justify-between opacity-30">
-                       <div className="flex items-center gap-4">
-                          <Heart size={16} className="text-emerald-600" />
-                          <span className="text-[9px] font-bold uppercase tracking-widest text-emerald-950">HIPAA compliant Intake Node</span>
-                       </div>
-                       <div className="flex items-center gap-4">
-                          <span className="text-[9px] font-bold uppercase tracking-widest text-emerald-950">Encryption: AES-256</span>
-                       </div>
+                    <div>
+                      <label htmlFor="phone" className="block text-[9px] uppercase tracking-[0.42em] text-[#4A5D4E] mb-1">
+                        Phone
+                      </label>
+                      <input id="phone" name="phone" type="tel" required placeholder="07000 000000" className={inputClass} />
                     </div>
                   </div>
-                )}
-              </AnimatePresence>
-            </div>
+
+                  <div>
+                    <label htmlFor="email" className="block text-[9px] uppercase tracking-[0.42em] text-[#4A5D4E] mb-1">
+                      Email
+                    </label>
+                    <input id="email" name="email" type="email" required placeholder="jane@example.co.uk" className={inputClass} />
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-9">
+                    <div>
+                      <label htmlFor="service" className="block text-[9px] uppercase tracking-[0.42em] text-[#4A5D4E] mb-1">
+                        What you need
+                      </label>
+                      <select id="service" name="service" className={`${inputClass} cursor-pointer`} defaultValue={fees[0].name}>
+                        {fees.map((fee) => (
+                          <option key={fee.name} value={fee.name}>
+                            {fee.name} &mdash; {fee.price}
+                          </option>
+                        ))}
+                        <option value="Not sure">Not sure yet</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label htmlFor="physio" className="block text-[9px] uppercase tracking-[0.42em] text-[#4A5D4E] mb-1">
+                        Preferred physiotherapist
+                      </label>
+                      <select id="physio" name="physio" className={`${inputClass} cursor-pointer`} defaultValue="No preference">
+                        <option value="No preference">No preference</option>
+                        {team.map((person) => (
+                          <option key={person.name} value={person.name}>
+                            {person.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label htmlFor="message" className="block text-[9px] uppercase tracking-[0.42em] text-[#4A5D4E] mb-1">
+                      What is the problem?
+                    </label>
+                    <textarea
+                      id="message"
+                      name="message"
+                      rows={4}
+                      required
+                      placeholder="Where it hurts, how long it has been going on, and which days suit you."
+                      className={`${inputClass} resize-none`}
+                    />
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-6 pt-2">
+                    <button
+                      type="submit"
+                      className="group inline-flex items-center justify-center gap-5 px-10 py-5 bg-[#1D1C19] text-[#F3F0EA] text-[10px] uppercase tracking-[0.32em] hover:bg-[#4A5D4E] transition-colors duration-300"
+                    >
+                      Send request
+                      <ArrowRight size={15} className="group-hover:translate-x-1.5 transition-transform duration-300" />
+                    </button>
+                    <p className="text-xs text-[#6E6A62] leading-relaxed max-w-xs">
+                      We keep what you tell us confidential and never pass it on.
+                    </p>
+                  </div>
+                </motion.form>
+              )}
+            </AnimatePresence>
           </div>
+
+          {/* SIDE */}
+          <aside className="lg:col-span-5 space-y-10">
+            <div className="aspect-[4/3] overflow-hidden bg-[#E2DDD3]">
+              <img
+                src={images.studio}
+                alt="The rehabilitation studio"
+                loading="lazy"
+                width="1200"
+                height="900"
+                className="w-full h-full object-cover grayscale-[35%]"
+              />
+            </div>
+
+            <div className="border-t border-[#E2DDD3]">
+              {gettingHere.map((row) => (
+                <div key={row.label} className="py-7 border-b border-[#E2DDD3]">
+                  <p className="text-[9px] uppercase tracking-[0.42em] text-[#4A5D4E] mb-3">{row.label}</p>
+                  <p className="text-[#6E6A62] leading-relaxed">{row.copy}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="bg-[#1D1C19] text-[#F3F0EA] p-9 md:p-11">
+              <p className="text-[9px] uppercase tracking-[0.42em] text-white/40 mb-5">In pain today?</p>
+              <p className="text-white/70 leading-relaxed mb-8">
+                We hold slots back each morning for people who cannot wait. Ring rather than email &mdash; those
+                appointments go on the phone.
+              </p>
+              <a
+                href={`tel:${clinic.phoneHref}`}
+                className="inline-flex items-center gap-4 font-serif text-2xl md:text-[1.75rem] hover:text-[#B9C7B4] transition-colors"
+              >
+                {clinic.phoneDisplay}
+              </a>
+            </div>
+          </aside>
         </div>
       </section>
 

@@ -1,23 +1,93 @@
 import React, { useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import { 
-  Heart, 
-  MoveRight,
-  Sparkles,
-  ShieldCheck,
-  Activity,
-  Smile,
-  Leaf,
-  Target,
-  Zap,
-  Dna,
-  Binary,
-  Microscope
-} from 'lucide-react';
+import { motion as framerMotion } from 'framer-motion';
+// Fix react-router-dom missing exports
+import * as RouterDOM from 'react-router-dom';
+const { Link } = RouterDOM as any;
+import { ArrowRight, ArrowUpRight } from 'lucide-react';
 import ExitPreviewButton from '../../ExitPreviewButton';
 import PhysioNavbar from './PhysioNavbar';
 import PhysioFooter from './PhysioFooter';
+import { clinic, images } from './physioData';
+
+// Fix motion types by casting to any
+const motion = framerMotion as any;
+
+const rise = {
+  hidden: { opacity: 0, y: 28 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
+};
+
+const treatments = [
+  {
+    index: '01',
+    title: 'Hands-on treatment',
+    image: images.handsOn,
+    copy: 'Joint mobilisation, soft tissue work, dry needling and taping. Used to settle pain quickly so you can start moving again, never as a treatment on its own.'
+  },
+  {
+    index: '02',
+    title: 'Assessment and diagnosis',
+    image: images.assessment,
+    copy: 'Fifty minutes to find out what is actually going on, including a look at any scans you already have. You leave with a diagnosis in plain English and a plan on paper.'
+  },
+  {
+    index: '03',
+    title: 'Rehabilitation',
+    image: images.studio,
+    copy: 'Loading, strength and return-to-sport work in our studio next door. This is the part that stops the problem coming back in six months.'
+  }
+];
+
+const steps = [
+  {
+    number: '01',
+    title: 'Get in touch',
+    copy: 'Call, email or book online. You do not need a GP referral to see us, and we will tell you honestly if we are not the right people.'
+  },
+  {
+    number: '02',
+    title: 'Full assessment',
+    copy: 'Fifty minutes with one physiotherapist who stays with you for the whole course of treatment. No rotating through the team.'
+  },
+  {
+    number: '03',
+    title: 'Treatment and a plan',
+    copy: 'Hands-on work in the room, then a short set of exercises that fit around your week rather than the other way round.'
+  },
+  {
+    number: '04',
+    title: 'Back to it',
+    copy: 'Most people need four to six appointments. We discharge you when you are ready and leave the door open if it flares.'
+  }
+];
+
+const stories = [
+  {
+    quote: 'I had put up with the shoulder for two years and assumed surgery was next. Six sessions later I was back swimming at the Rec.',
+    name: 'Helen M.',
+    detail: 'Rotator cuff pain',
+    place: 'Widcombe'
+  },
+  {
+    quote: 'Daniel watched me run, changed two things, and the shin pain that had ruined my last three attempts at a marathon simply went.',
+    name: 'Chris T.',
+    detail: 'Shin splints, marathon training',
+    place: 'Larkhall'
+  },
+  {
+    quote: 'After my knee replacement the hospital gave me a sheet of exercises. Here they actually watched me do them and fixed what I was getting wrong.',
+    name: 'Brian K.',
+    detail: 'Post-operative knee rehab',
+    place: 'Combe Down'
+  }
+];
+
+const credentials = [
+  'HCPC registered',
+  'Chartered Society of Physiotherapy',
+  'Recognised by Bupa, AXA and Aviva',
+  'No GP referral needed'
+];
 
 const PhysioHome: React.FC = () => {
   useEffect(() => {
@@ -25,249 +95,238 @@ const PhysioHome: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#f8faf9] font-inter selection:bg-emerald-200 selection:text-emerald-900 overflow-x-hidden">
+    <div className="min-h-screen bg-[#F3F0EA] font-inter text-[#1D1C19] selection:bg-[#4A5D4E] selection:text-[#F3F0EA] overflow-x-hidden">
       <ExitPreviewButton />
       <PhysioNavbar />
 
-      {/* ARCHITECTURAL HERO */}
-      <section className="relative min-h-[90vh] lg:min-h-screen flex flex-col items-center justify-center pt-32 pb-48 px-6 text-center overflow-hidden transform-gpu">
-        <div className="absolute inset-0 pointer-events-none overflow-hidden will-change-transform">
-           <Activity size={800} className="absolute -top-60 -left-60 text-emerald-600/5 rotate-12 transform-gpu" />
-           <div className="absolute top-1/4 right-0 w-[500px] h-[500px] bg-emerald-100/20 blur-[120px] rounded-full transform-gpu"></div>
-           <Leaf size={600} className="absolute -bottom-40 -right-40 text-emerald-600/5 -rotate-12 transform-gpu" />
-           <div className="absolute inset-0 opacity-[0.03] bg-[radial-gradient(#10b981_1px,transparent_1px)] [background-size:40px_40px]"></div>
-        </div>
+      {/* HERO */}
+      <section className="pt-36 md:pt-44 pb-20 md:pb-28 px-6 md:px-10">
+        <div className="max-w-[1500px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-end">
 
-        <div className="max-w-6xl mx-auto space-y-8 relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-3 px-5 py-2 bg-emerald-100/80 backdrop-blur-md rounded-full border border-emerald-200 shadow-sm transform-gpu will-change-[opacity,transform]"
-          >
-            <Sparkles size={14} className="text-emerald-600" />
-            <span className="text-emerald-700 font-bold text-[10px] uppercase tracking-widest">Expert Recovery in Bath</span>
-          </motion.div>
-
-          <div className="space-y-4">
-            <h1 className="font-serif text-[clamp(2.5rem,10vw,6rem)] leading-[0.9] text-emerald-950 font-bold tracking-tighter transform-gpu">
-              <motion.span 
-                initial={{ opacity: 0, x: -30 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6, ease: "easeOut", delay: 0.1 }}
-                className="block will-change-[opacity,transform]"
-              >
-                PHYSICAL <span className="text-emerald-600 italic">FLOW.</span>
-              </motion.span>
-              <motion.span 
-                initial={{ opacity: 0, x: 30 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
-                className="block text-emerald-900/20 will-change-[opacity,transform]"
-              >
-                ACTIVE CARE.
-              </motion.span>
+          <motion.div initial="hidden" animate="visible" variants={rise} className="lg:col-span-7">
+            <p className="text-[9px] md:text-[10px] uppercase tracking-[0.42em] text-[#4A5D4E] mb-8">
+              Chartered physiotherapy &middot; Bath
+            </p>
+            <h1 className="font-serif text-[clamp(2.6rem,7vw,5.2rem)] tracking-[-0.02em] text-[#1D1C19] mb-10">
+              Back to the thing<br />
+              you stopped doing.
             </h1>
-          </div>
+            <p className="text-lg md:text-xl text-[#6E6A62] leading-relaxed max-w-xl mb-12">
+              A small clinic on Argyle Street for people with pain that has outstayed its welcome. One physiotherapist,
+              start to finish, and a plan that fits the life you actually lead.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Link
+                to="/demo/physio/contact"
+                className="group inline-flex items-center justify-center gap-4 px-10 py-5 bg-[#1D1C19] text-[#F3F0EA] text-[10px] uppercase tracking-[0.32em] hover:bg-[#4A5D4E] transition-colors duration-300"
+              >
+                Book an assessment
+                <ArrowRight size={15} className="group-hover:translate-x-1.5 transition-transform duration-300" />
+              </Link>
+              <Link
+                to="/demo/physio/prices"
+                className="inline-flex items-center justify-center px-10 py-5 border border-[#1D1C19]/20 text-[10px] uppercase tracking-[0.32em] hover:border-[#1D1C19] transition-colors duration-300"
+              >
+                Treatments &amp; fees
+              </Link>
+            </div>
+          </motion.div>
 
-          <motion.p 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="text-lg md:text-xl text-emerald-800/70 font-medium max-w-xl mx-auto leading-relaxed transform-gpu will-change-opacity"
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
+            className="lg:col-span-5 relative"
           >
-            Meticulously engineered recovery for the high-performance human. Precision medical care in the heart of Bath.
-          </motion.p>
-
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.4, delay: 0.5 }}
-            className="flex flex-col sm:flex-row gap-5 justify-center pt-4 transform-gpu will-change-[opacity,transform]"
-          >
-            <Link to="/demo/physio/contact" className="px-10 py-6 bg-emerald-700 text-white rounded-2xl font-bold text-[13px] tracking-wide shadow-xl hover:bg-emerald-800 transition-all flex items-center justify-center gap-4 group transform-gpu">
-              SYNC APPOINTMENT <MoveRight size={18} className="group-hover:translate-x-2 transition-transform" />
-            </Link>
+            <div className="relative aspect-[4/5] overflow-hidden bg-[#E2DDD3]">
+              <img
+                src={images.hero}
+                alt="Movement and rehabilitation session at the clinic"
+                className="w-full h-full object-cover grayscale-[35%]"
+                loading="eager"
+                width="1200"
+                height="1500"
+              />
+            </div>
+            <div className="absolute -bottom-6 -left-6 hidden sm:block bg-[#FBFAF7] border border-[#E2DDD3] px-7 py-6">
+              <p className="text-[9px] uppercase tracking-[0.42em] text-[#4A5D4E] mb-2">The clinic</p>
+              <p className="font-serif text-lg leading-snug">
+                {clinic.addressLine1}, {clinic.addressLine2}
+              </p>
+            </div>
           </motion.div>
         </div>
       </section>
 
-      {/* ASYMMETRICAL CLINICAL BLUEPRINT SECTION - TOTALLY UNIQUE LAYOUT */}
-      <section className="py-40 px-6 bg-emerald-950 text-white relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-[40vw] h-full bg-emerald-900/20 border-l border-emerald-800/30 hidden lg:block"></div>
-        <div className="max-w-7xl mx-auto relative z-10">
-          <div className="flex flex-col lg:flex-row items-start gap-12 lg:gap-0">
-            
-            {/* Left: The Technical Intel Column */}
-            <div className="w-full lg:w-1/3 lg:pr-20 space-y-16">
-              <div className="space-y-4">
-                <span className="text-emerald-400 font-bold text-[10px] uppercase tracking-[0.6em]">System Architecture</span>
-                <h2 className="font-serif text-5xl md:text-6xl font-bold leading-[0.9] tracking-tighter">High-Grade <span className="text-emerald-400 italic">Care.</span></h2>
-              </div>
-              
-              <div className="space-y-10 border-t border-emerald-800/50 pt-16">
-                <div className="group">
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="w-8 h-8 rounded-lg bg-emerald-900 flex items-center justify-center text-emerald-400 border border-emerald-800 group-hover:bg-emerald-400 group-hover:text-emerald-950 transition-colors">
-                      <Target size={16} />
-                    </div>
-                    <h4 className="font-serif text-2xl font-bold">Precision Mapping</h4>
-                  </div>
-                  <p className="text-emerald-100/40 text-sm leading-relaxed italic border-l border-emerald-800 pl-4">"Diagnostic-first focus to identify the core vector of discomfort."</p>
-                </div>
-
-                <div className="group">
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="w-8 h-8 rounded-lg bg-emerald-900 flex items-center justify-center text-emerald-400 border border-emerald-800 group-hover:bg-emerald-400 group-hover:text-emerald-950 transition-colors">
-                      <Zap size={16} />
-                    </div>
-                    <h4 className="font-serif text-2xl font-bold">Rapid Intake</h4>
-                  </div>
-                  <p className="text-emerald-100/40 text-sm leading-relaxed italic border-l border-emerald-800 pl-4">"Start your calibrated recovery roadmap within 72 hours of first sync."</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Right: The High-Viz Clinical Visuals */}
-            <div className="w-full lg:w-2/3 lg:pl-12">
-              <div className="relative">
-                <motion.div 
-                  initial={{ opacity: 0, scale: 0.98 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  className="aspect-[16/10] bg-emerald-900 rounded-[3rem] overflow-hidden border border-emerald-800/50 relative group"
-                >
-                  <img 
-                    src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&q=80&w=1200" 
-                    className="w-full h-full object-cover grayscale brightness-75 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-[2s]" 
-                    alt="Clinical surgical team"
-                  />
-                  <div className="absolute inset-0 bg-emerald-950/40 mix-blend-multiply pointer-events-none group-hover:opacity-0 transition-opacity"></div>
-                </motion.div>
-
-                {/* Overlapping Sharp Detail Cards */}
-                <motion.div 
-                  initial={{ x: 50, opacity: 0 }}
-                  whileInView={{ x: 0, opacity: 1 }}
-                  transition={{ delay: 0.4 }}
-                  className="absolute -bottom-10 -right-4 md:-right-10 bg-white p-10 md:p-14 rounded-[3.5rem] shadow-3xl max-w-sm hidden sm:block border-8 border-emerald-950"
-                >
-                  <div className="flex items-center gap-4 mb-6">
-                    <div className="w-10 h-10 bg-emerald-100 rounded-2xl flex items-center justify-center text-emerald-600"><Smile size={20} /></div>
-                    <span className="text-emerald-950 font-black text-[9px] uppercase tracking-widest">Client Centric</span>
-                  </div>
-                  <h3 className="font-serif text-3xl font-bold text-emerald-950 leading-tight mb-4">Warmth meets <br /> expertise.</h3>
-                  <p className="text-emerald-800/50 text-sm font-medium italic">"We engineer durability for high-performance humans in Bath."</p>
-                </motion.div>
-                
-                {/* Floating Technical Stats */}
-                <div className="absolute top-10 right-10 flex flex-col gap-4 opacity-50 hidden lg:flex">
-                   <div className="flex items-center gap-3 px-4 py-2 bg-emerald-400 text-emerald-950 rounded-full font-black text-[8px] uppercase tracking-[0.2em]">HCPC Certified</div>
-                   <div className="flex items-center gap-3 px-4 py-2 bg-white/10 text-white rounded-full font-black text-[8px] uppercase tracking-[0.2em] border border-white/20">MCSP Verified</div>
-                </div>
-              </div>
-            </div>
-
-          </div>
+      {/* CREDENTIALS STRIP */}
+      <section className="px-6 md:px-10">
+        <div className="max-w-[1500px] mx-auto grid grid-cols-2 lg:grid-cols-4 border-t border-l border-[#E2DDD3]">
+          {credentials.map((item) => (
+            <p
+              key={item}
+              className="border-r border-b border-[#E2DDD3] px-6 py-7 text-[9px] md:text-[10px] uppercase tracking-[0.24em] text-[#6E6A62] leading-relaxed"
+            >
+              {item}
+            </p>
+          ))}
         </div>
       </section>
 
-      {/* THE STRUCTURAL LOGIC GRID - SHARP & ASYMMETRICAL */}
-      <section className="py-40 px-6 bg-white overflow-hidden">
-        <div className="max-w-7xl mx-auto">
-          <div className="mb-32 flex flex-col md:flex-row items-end justify-between gap-12">
-            <div className="space-y-4">
-              <span className="text-emerald-600 font-bold text-[10px] uppercase tracking-[0.6em]">The Recovery Formula</span>
-              <h2 className="font-serif text-5xl md:text-7xl font-bold text-emerald-950 tracking-tighter uppercase leading-[0.85]">STRUCTURAL <br /><span className="text-emerald-600 italic">LOGIC.</span></h2>
-            </div>
-            <p className="text-emerald-800/60 text-lg md:text-xl font-medium italic border-l-4 border-emerald-100 pl-10 max-w-sm">
-              "We decompose physical restrictions into solvable mechanical equations."
+      {/* STATEMENT */}
+      <section className="py-28 md:py-40 px-6 md:px-10">
+        <div className="max-w-[1500px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12">
+          <p className="lg:col-span-3 text-[9px] uppercase tracking-[0.42em] text-[#4A5D4E] pt-4">
+            Why people come here
+          </p>
+          <div className="lg:col-span-9">
+            <p className="font-serif text-[clamp(1.5rem,3vw,2.6rem)] leading-[1.35] tracking-[-0.01em] text-[#1D1C19] max-w-4xl">
+              Most people arrive having been told to rest, take painkillers and wait. That works for about a fortnight.
+              What it does not do is explain why the pain started, or make sure it does not come back.
+            </p>
+            <p className="mt-10 text-lg text-[#6E6A62] leading-relaxed max-w-2xl">
+              We give you a proper hour at the start, find the cause rather than the symptom, and then do the unglamorous
+              work of loading the tissue back up until it can handle your life again. It is not quick, but it lasts.
             </p>
           </div>
+        </div>
+      </section>
 
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-10">
-            {/* Grid Item 1 - Chronic Relief */}
-            <motion.div 
-              whileHover={{ scale: 1.01 }}
-              className="md:col-span-8 p-12 bg-emerald-50 rounded-[4rem] border border-emerald-100 flex flex-col md:flex-row gap-12 items-center group transition-all"
+      {/* TREATMENTS */}
+      <section className="pb-28 md:pb-40 px-6 md:px-10">
+        <div className="max-w-[1500px] mx-auto">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16 pb-8 border-b border-[#E2DDD3]">
+            <h2 className="font-serif text-[clamp(2rem,4.5vw,3.4rem)] tracking-[-0.02em]">What treatment looks like</h2>
+            <Link
+              to="/demo/physio/prices"
+              className="group inline-flex items-center gap-3 text-[10px] uppercase tracking-[0.32em] text-[#4A5D4E] shrink-0"
             >
-              <div className="w-full md:w-1/3 aspect-square bg-white rounded-[3rem] shadow-sm flex items-center justify-center text-emerald-600 overflow-hidden relative">
-                 <Dna size={80} strokeWidth={1} className="opacity-10 absolute -top-4 -left-4" />
-                 <Heart size={48} strokeWidth={1.5} className="relative z-10 group-hover:scale-110 transition-transform duration-500" />
-              </div>
-              <div className="flex-1 space-y-6">
-                <h3 className="font-serif text-3xl font-bold text-emerald-950">Chronic Relief</h3>
-                <p className="text-emerald-800/60 font-medium italic leading-relaxed text-lg">"Targeting deep-seated restrictions with advanced spinal protocols and neuro-muscular reset techniques."</p>
-                <div className="flex gap-4">
-                   <span className="px-4 py-2 bg-white rounded-xl text-[9px] font-black uppercase tracking-widest text-emerald-800">Spinal Mapping</span>
-                   <span className="px-4 py-2 bg-white rounded-xl text-[9px] font-black uppercase tracking-widest text-emerald-800">Neural Sync</span>
+              See all treatments and fees
+              <ArrowUpRight size={15} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 lg:gap-14">
+            {treatments.map((t, i) => (
+              <motion.article
+                key={t.title}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, amount: 0.25 }}
+                variants={rise}
+                transition={{ delay: i * 0.08 }}
+              >
+                <div className="aspect-[4/3] overflow-hidden bg-[#E2DDD3] mb-8 group">
+                  <img
+                    src={t.image}
+                    alt={t.title}
+                    loading="lazy"
+                    width="1200"
+                    height="900"
+                    className="w-full h-full object-cover grayscale-[40%] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-[1.2s] ease-out"
+                  />
                 </div>
-              </div>
-            </motion.div>
-
-            {/* Grid Item 2 - Performance */}
-            <motion.div 
-              whileHover={{ scale: 1.01 }}
-              className="md:col-span-4 p-12 bg-white rounded-[4rem] border border-emerald-100 flex flex-col justify-between group transition-all shadow-sm"
-            >
-              <div className="w-16 h-16 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-600 mb-8">
-                 <Activity size={28} />
-              </div>
-              <div className="space-y-4">
-                <h3 className="font-serif text-3xl font-bold text-emerald-950">Kinetic Flow</h3>
-                <p className="text-emerald-800/50 font-medium italic leading-relaxed">"Optimizing the intersection of joint fluidity and power output."</p>
-              </div>
-            </motion.div>
-
-            {/* Grid Item 3 - Durability */}
-            <motion.div 
-              whileHover={{ scale: 1.01 }}
-              className="md:col-span-4 p-12 bg-emerald-950 text-white rounded-[4rem] border border-emerald-900 flex flex-col justify-between group transition-all"
-            >
-              <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center text-emerald-400 mb-8 border border-white/10">
-                 <ShieldCheck size={28} />
-              </div>
-              <div className="space-y-4">
-                <h3 className="font-serif text-3xl font-bold">Durability</h3>
-                <p className="text-emerald-100/40 font-medium italic leading-relaxed">"Hardening the structure against future injury cycles through load management."</p>
-              </div>
-            </motion.div>
-
-            {/* Grid Item 4 - High Tech Clinic Stats */}
-            <motion.div 
-              whileHover={{ scale: 1.01 }}
-              className="md:col-span-8 p-12 bg-emerald-50 rounded-[4rem] border border-emerald-100 flex flex-col md:flex-row gap-12 items-center group transition-all"
-            >
-              <div className="flex-1 space-y-6">
-                <h3 className="font-serif text-3xl font-bold text-emerald-950">Bio-Mechanical Hub</h3>
-                <p className="text-emerald-800/60 font-medium italic leading-relaxed text-lg">"Our studio utilizes high-fidelity analysis to bridge the gap between medical data and daily comfort."</p>
-                <Link to="/demo/physio/prices" className="inline-flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.4em] text-emerald-700 hover:text-emerald-950 transition-colors">
-                  Explore Session Specs <MoveRight size={14} />
-                </Link>
-              </div>
-              <div className="w-full md:w-1/3 aspect-square bg-emerald-900 rounded-[3rem] shadow-xl flex items-center justify-center text-emerald-400 p-8 border-[12px] border-emerald-950">
-                 <Binary size={60} strokeWidth={1} />
-              </div>
-            </motion.div>
+                <p className="text-[9px] uppercase tracking-[0.42em] text-[#4A5D4E] mb-4">{t.index}</p>
+                <h3 className="font-serif text-2xl md:text-[1.75rem] mb-4">{t.title}</h3>
+                <p className="text-[#6E6A62] leading-relaxed">{t.copy}</p>
+              </motion.article>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* METRIC STRIP - SHARP & MINIMAL */}
-      <section className="py-20 px-6 border-y border-emerald-50 bg-[#f8faf9]">
-        <div className="max-w-6xl mx-auto flex flex-wrap justify-between gap-12 opacity-30 grayscale hover:grayscale-0 transition-all duration-700">
-           {[
-             { icon: <Dna />, label: "Precision Diagnostics" },
-             { icon: <Microscope />, label: "Clinical Excellence" },
-             { icon: <Binary />, label: "Data-Led Recovery" },
-             { icon: <Target />, label: "Targeted Results" }
-           ].map((item, i) => (
-             <div key={i} className="flex items-center gap-4">
-                {/* Fixed type error for cloneElement props */}
-                {React.cloneElement(item.icon as React.ReactElement<any>, { size: 24, strokeWidth: 1.5 })}
-                <span className="text-[10px] font-black uppercase tracking-[0.4em] text-emerald-950">{item.label}</span>
-             </div>
-           ))}
+      {/* HOW IT WORKS */}
+      <section className="bg-[#FBFAF7] py-28 md:py-40 px-6 md:px-10 border-y border-[#E2DDD3]">
+        <div className="max-w-[1500px] mx-auto">
+          <div className="max-w-2xl mb-20">
+            <p className="text-[9px] uppercase tracking-[0.42em] text-[#4A5D4E] mb-7">From first call to discharge</p>
+            <h2 className="font-serif text-[clamp(2rem,4.5vw,3.4rem)] tracking-[-0.02em]">
+              Four appointments, on average, before people forget they had a problem.
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-[#E2DDD3] border border-[#E2DDD3]">
+            {steps.map((step) => (
+              <div key={step.number} className="bg-[#FBFAF7] p-9 md:p-11">
+                <p className="font-serif text-4xl text-[#4A5D4E]/30 mb-8">{step.number}</p>
+                <h3 className="font-serif text-xl mb-4">{step.title}</h3>
+                <p className="text-[#6E6A62] text-[15px] leading-relaxed">{step.copy}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* RECOVERY STORIES */}
+      <section className="py-28 md:py-40 px-6 md:px-10">
+        <div className="max-w-[1500px] mx-auto">
+          <h2 className="font-serif text-[clamp(2rem,4.5vw,3.4rem)] tracking-[-0.02em] mb-16 pb-8 border-b border-[#E2DDD3]">
+            In their words
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-[#E2DDD3] border border-[#E2DDD3]">
+            {stories.map((story) => (
+              <figure key={story.name} className="bg-[#F3F0EA] p-10 md:p-12 flex flex-col justify-between gap-10">
+                <blockquote className="font-serif text-xl md:text-[1.4rem] leading-[1.5] text-[#1D1C19]">
+                  &ldquo;{story.quote}&rdquo;
+                </blockquote>
+                <figcaption>
+                  <p className="text-[15px] text-[#1D1C19] mb-1">{story.name}</p>
+                  <p className="text-[13px] text-[#6E6A62]">{story.detail}</p>
+                  <p className="mt-4 text-[9px] uppercase tracking-[0.42em] text-[#4A5D4E]">{story.place}</p>
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FULL BLEED STUDIO */}
+      <section className="relative h-[60vh] md:h-[75vh] overflow-hidden">
+        <img
+          src={images.studio}
+          alt="Rehabilitation studio at the clinic"
+          loading="lazy"
+          width="1600"
+          height="1000"
+          className="absolute inset-0 w-full h-full object-cover grayscale-[45%]"
+        />
+        <div className="absolute inset-0 bg-[#1D1C19]/45" />
+        <div className="relative h-full max-w-[1500px] mx-auto px-6 md:px-10 flex flex-col justify-end pb-16 md:pb-24">
+          <p className="text-[9px] uppercase tracking-[0.42em] text-[#F3F0EA]/70 mb-6">The rehab studio</p>
+          <h2 className="font-serif text-[clamp(1.8rem,4vw,3rem)] text-[#F3F0EA] max-w-2xl tracking-[-0.02em]">
+            A room of your own for the part most clinics skip.
+          </h2>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="bg-[#F3F0EA] py-28 md:py-40 px-6 md:px-10">
+        <div className="max-w-[1500px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          <div className="lg:col-span-7">
+            <h2 className="font-serif text-[clamp(2rem,5vw,3.8rem)] tracking-[-0.02em] mb-8">
+              Tell us where it hurts.
+            </h2>
+            <p className="text-lg text-[#6E6A62] leading-relaxed max-w-xl">
+              Appointments from 7.30am, and a same-week slot most weeks. If you are not sure whether physiotherapy is
+              the right answer, ring and ask &mdash; the advice is free.
+            </p>
+          </div>
+          <div className="lg:col-span-5 flex flex-col gap-4">
+            <Link
+              to="/demo/physio/contact"
+              className="group flex items-center justify-between gap-6 px-9 py-7 bg-[#1D1C19] text-[#F3F0EA] hover:bg-[#4A5D4E] transition-colors duration-300"
+            >
+              <span className="text-[10px] uppercase tracking-[0.32em]">Book an assessment</span>
+              <ArrowRight size={17} className="group-hover:translate-x-1.5 transition-transform duration-300" />
+            </Link>
+            <a
+              href={`tel:${clinic.phoneHref}`}
+              className="flex items-center justify-between gap-6 px-9 py-7 border border-[#1D1C19]/20 hover:border-[#1D1C19] transition-colors duration-300"
+            >
+              <span className="text-[10px] uppercase tracking-[0.32em]">Call the clinic</span>
+              <span className="font-serif text-lg">{clinic.phoneDisplay}</span>
+            </a>
+          </div>
         </div>
       </section>
 
