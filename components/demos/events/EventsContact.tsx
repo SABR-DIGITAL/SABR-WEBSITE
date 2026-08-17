@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, CheckCircle, Database, Globe, Music } from 'lucide-react';
-import ExitPreviewButton from '../../ExitPreviewButton';
 import EventsNavbar from './EventsNavbar';
 import EventsFooter from './EventsFooter';
 
@@ -19,7 +18,6 @@ const EventsContact: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#050505] text-[#E0E0E0] font-inter selection:bg-[#D4AF37] selection:text-black relative overflow-hidden">
       <div className="fixed inset-0 opacity-[0.02] pointer-events-none z-[100] bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"></div>
-      <ExitPreviewButton />
       <EventsNavbar />
 
       <section className="pt-64 pb-48 px-6 max-w-7xl mx-auto relative z-10">

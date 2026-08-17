@@ -5,7 +5,6 @@ import { motion as framerMotion, AnimatePresence } from 'framer-motion';
 import * as RouterDOM from 'react-router-dom';
 const { Link } = RouterDOM as any;
 import { CheckCircle, ArrowRight, Mail, Phone, MapPin, Instagram, Sparkles, Send } from 'lucide-react';
-import ExitPreviewButton from '../../ExitPreviewButton';
 import CafeNavbar from './CafeNavbar';
 import CafeFooter from './CafeFooter';
 
@@ -24,7 +23,6 @@ const CafeContact: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#FFF9F5] font-sans selection:bg-[#A4715E] selection:text-white overflow-x-hidden">
-      <ExitPreviewButton />
       <CafeNavbar />
 
       <section className="pt-56 pb-32 px-6 text-center">
@@ -68,13 +66,13 @@ const CafeContact: React.FC = () => {
             </div>
 
             <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="block relative aspect-square md:aspect-video rounded-[4rem] overflow-hidden shadow-3xl border-[12px] border-white group">
-               <img src="https://images.unsplash.com/photo-1445116572660-236099ec97a0?auto=format&fit=crop&q=80&w=1200" className="w-full h-full object-cover transition-transform duration-[3s] group-hover:scale-110" alt="Cafe exterior window view" />
+               <img src="https://images.unsplash.com/photo-1445116572660-236099ec97a0?auto=format&fit=crop&q=65&w=1200" className="w-full h-full object-cover transition-transform duration-[3s] group-hover:scale-110" alt="Cafe exterior window view" loading="lazy" decoding="async" />
                <div className="absolute inset-0 bg-gradient-to-t from-[#4A403A]/60 to-transparent"></div>
                <div className="absolute bottom-10 left-10 text-white flex items-center gap-4">
                   <div className="w-12 h-12 bg-white/20 backdrop-blur-xl rounded-full flex items-center justify-center border border-white/20">
                      <Instagram size={24} />
                   </div>
-                  <span className="font-bold tracking-widest uppercase text-xs">@TheHearthWiltshire</span>
+                  <span className="font-bold tracking-widest uppercase text-xs">@TheHearthCafe</span>
                </div>
             </a>
           </motion.div>

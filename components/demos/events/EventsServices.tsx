@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Music, Users, Sparkles, Globe, Target, Cpu, MessageSquare, Zap, ShieldCheck } from 'lucide-react';
-import ExitPreviewButton from '../../ExitPreviewButton';
 import EventsNavbar from './EventsNavbar';
 import EventsFooter from './EventsFooter';
 
@@ -18,7 +17,6 @@ const EventsServices: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#050505] text-[#E0E0E0] font-inter selection:bg-[#D4AF37] selection:text-black">
-      <ExitPreviewButton />
       <EventsNavbar />
 
       <section className="pt-64 pb-32 px-6 max-w-7xl mx-auto text-center lg:text-left">

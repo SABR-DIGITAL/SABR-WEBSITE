@@ -13,11 +13,11 @@ const Footer: React.FC = () => {
             <span className="font-oswald font-bold text-3xl uppercase tracking-tighter leading-none">OAK & ASH</span>
             <span className="font-black text-[10px] uppercase tracking-[0.4em] text-[#BC4B26]">LANDSCAPING</span>
           </div>
-          <p className="text-white/40 text-sm font-medium leading-relaxed max-w-xs">Providing expert forestry and land management solutions across the UK since 1976.</p>
+          <p className="text-white/40 text-sm font-medium leading-relaxed max-w-xs">Providing expert forestry and land management solutions on private estates since 1976.</p>
         </div>
         <div className="space-y-8">
           <h4 className="font-oswald font-bold text-xl uppercase tracking-tight">Our Location</h4>
-          <p className="text-white/60 text-sm font-medium leading-relaxed border-l border-white/10 pl-6">The Old Timber Yard <br /> Wiltshire Forest, SN1 <br /> United Kingdom</p>
+          <p className="text-white/60 text-sm font-medium leading-relaxed border-l border-white/10 pl-6">The Old Timber Yard <br /> Forest Estate, SN1</p>
         </div>
         <div className="space-y-8">
           <h4 className="font-oswald font-bold text-xl uppercase tracking-tight">Contact</h4>

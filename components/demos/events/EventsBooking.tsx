@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { CheckCircle, Activity, Database, Calendar } from 'lucide-react';
-import ExitPreviewButton from '../../ExitPreviewButton';
 import EventsNavbar from './EventsNavbar';
 import EventsFooter from './EventsFooter';
 
@@ -20,7 +19,6 @@ const EventsBooking: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#050505] text-[#E0E0E0] font-inter selection:bg-[#D4AF37] selection:text-black">
-      <ExitPreviewButton />
       <EventsNavbar />
 
       <section className="pt-64 pb-48 px-6 max-w-7xl mx-auto">

@@ -8,14 +8,14 @@ const { Link } = RouterDOM as any;
 
 const projects = [
   {
-    id: 'barber',
-    title: 'Vertex Architectural',
-    industry: 'Barber Shop',
-    icon: <Scissors className="text-white" size={40} />,
-    color: 'bg-[#7F00FF]',
-    problem: 'Generic booking lost premium clients.',
-    solution: 'High-end silhouettes & calculated cuts.',
-    path: '/demo/barber'
+    id: 'equestrian',
+    title: 'Bramble & Bay',
+    industry: 'Riding Academy',
+    icon: <Flower2 className="text-white" size={40} />,
+    color: 'bg-[#E4577A]',
+    problem: 'Lesson enquiries lost in messages.',
+    solution: 'Priced lessons and a three-step booking.',
+    path: '/demo/equestrian'
   },
   {
     id: 'landscaping',

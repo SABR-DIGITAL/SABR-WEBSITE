@@ -11,7 +11,6 @@ import {
   CalendarCheck,
   Info
 } from 'lucide-react';
-import ExitPreviewButton from '../../ExitPreviewButton';
 import CafeNavbar from './CafeNavbar';
 
 // Fix motion types by casting to any
@@ -36,14 +35,13 @@ const CafeBooking: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#FFF9F5] font-sans selection:bg-[#A4715E] selection:text-white">
-      <ExitPreviewButton />
       <CafeNavbar />
 
       <div className="flex flex-col lg:flex-row min-h-screen pt-20">
         <div className="w-full lg:w-[40%] bg-[#4A403A] p-12 md:p-24 flex flex-col justify-between text-white relative overflow-hidden">
           {/* Added high-quality background image to side panel */}
           <div className="absolute inset-0 opacity-20 grayscale brightness-50">
-             <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&q=80&w=1200" className="w-full h-full object-cover" alt="Cafe Interior" />
+             <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&q=65&w=1200" className="w-full h-full object-cover" alt="Cafe Interior" loading="lazy" decoding="async" />
           </div>
           <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(circle_at_20%_20%,#A4715E_0%,transparent_50%)] opacity-30"></div>
           

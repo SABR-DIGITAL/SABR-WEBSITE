@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MapPin, Phone, Clock, ArrowRight, Navigation, Star, Heart, Coffee, ChevronDown, Instagram } from 'lucide-react';
-import ExitPreviewButton from '../../ExitPreviewButton';
 import CafeNavbar from './CafeNavbar';
 import CafeFooter from './CafeFooter';
 
@@ -13,22 +12,20 @@ const locations = [
     name: "Hearth Bath City",
     address: "Milsom Street",
     city: "Bath, BA1",
-    country: "United Kingdom",
     hours: "Mon–Sun: 9am – 7pm",
     phone: "07987 654 321",
     embedUrl: "https://www.google.com/maps?q=Milsom+Street+Bath&layer=c&cbll=51.3837,-2.3615&cbp=11,0,0,0,0&output=svembed",
-    img: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&q=80&w=600"
+    img: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&q=65&w=600"
   },
   {
     id: 2,
     name: "Cotswold Sanctuary",
     address: "Market Square",
     city: "Chipping Campden, GL55",
-    country: "United Kingdom",
     hours: "Mon–Sat: 8am – 5pm",
     phone: "07555 123 456",
     embedUrl: "https://www.google.com/maps?q=Market+Square+Chipping+Campden&layer=c&cbll=52.0514,-1.7770&cbp=11,0,0,0,0&output=svembed",
-    img: "https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&q=80&w=600"
+    img: "https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&q=65&w=600"
   }
 ];
 
@@ -39,7 +36,6 @@ const CafeLocations: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#FFF9F5] font-sans selection:bg-[#A4715E] selection:text-white overflow-x-hidden">
-      <ExitPreviewButton />
       <CafeNavbar />
 
       {/* IMMERSIVE STREET VIEW HERO */}
@@ -93,7 +89,7 @@ const CafeLocations: React.FC = () => {
                 <Navigation size={18} className="text-[#A4715E] mt-1" />
                 <div>
                   <p className="text-[#4A403A] font-bold text-lg leading-tight">{activeLoc.address}</p>
-                  <p className="text-[#4A403A]/60 font-medium italic">{activeLoc.city}, {activeLoc.country}</p>
+                  <p className="text-[#4A403A]/60 font-medium italic">{activeLoc.city}</p>
                 </div>
               </div>
               <div className="flex gap-4 items-center">
@@ -160,7 +156,7 @@ const CafeLocations: React.FC = () => {
                 className={`min-w-[320px] md:min-w-[450px] group cursor-pointer snap-center rounded-[3.5rem] overflow-hidden bg-white border-8 shadow-2xl transition-all duration-700 ${activeLoc.id === loc.id ? 'border-[#A4715E]' : 'border-white'}`}
               >
                 <div className="aspect-[16/10] overflow-hidden relative">
-                  <img src={loc.img} alt={loc.name} className="w-full h-full object-cover grayscale-[30%] group-hover:grayscale-0 transition-all duration-1000 group-hover:scale-110" />
+                  <img src={loc.img} alt={loc.name} className="w-full h-full object-cover grayscale-[30%] group-hover:grayscale-0 transition-all duration-1000 group-hover:scale-110" loading="lazy" decoding="async" />
                   <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-all"></div>
                   {activeLoc.id === loc.id && (
                     <div className="absolute top-6 right-6 bg-[#A4715E] text-white px-4 py-2 rounded-full text-[9px] font-black uppercase tracking-widest flex items-center gap-2">

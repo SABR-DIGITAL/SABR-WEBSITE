@@ -6,7 +6,6 @@ import { motion as framerMotion } from 'framer-motion';
 import { Hammer, Sprout, Trees, ArrowRight, MoveLeft } from 'lucide-react';
 import Navbar from './Navbar';
 import Footer from './Footer';
-import ExitPreviewButton from '../../ExitPreviewButton';
 
 // Fix motion types by casting to any
 const motion = framerMotion as any;
@@ -18,26 +17,25 @@ const Services: React.FC = () => {
     {
       title: "Forestry Mulching",
       desc: "High-efficiency brush and land clearing using state-of-the-art mulching heads. We turn unwanted vegetation into nutrient-rich ground cover.",
-      img: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&q=80&w=1200",
+      img: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&q=65&w=1200",
       features: ["Site Clearance", "Invasive Species Control", "Fire Mitigation"]
     },
     {
       title: "Management Plans",
       desc: "Long-term ecological and timber value strategies for private estates and commercial woodlands. We ensure your land thrives for generations.",
-      img: "https://images.unsplash.com/photo-1473448912268-2022ce9509d8?auto=format&fit=crop&q=80&w=1200",
+      img: "https://images.unsplash.com/photo-1473448912268-2022ce9509d8?auto=format&fit=crop&q=65&w=1200",
       features: ["Ecological Surveys", "Timber Valuation", "Grant Applications"]
     },
     {
       title: "Timber Harvesting",
       desc: "Sustainably managed tree removal and extraction. Our team uses low-impact machinery to protect the forest floor while maximizing yield.",
-      img: "https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&q=80&w=1200",
+      img: "https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&q=65&w=1200",
       features: ["Selective Thinning", "Hazardous Tree Removal", "Extraction & Transport"]
     }
   ];
 
   return (
     <div className="min-h-screen bg-[#F4F1EA] font-inter">
-      <ExitPreviewButton />
       <Navbar />
       
       <section className="relative py-32 px-6 bg-[#1A3C28] text-white overflow-hidden">
@@ -61,7 +59,7 @@ const Services: React.FC = () => {
               className={`flex flex-col ${i % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'} gap-20 items-center`}
             >
               <div className="w-full lg:w-1/2 overflow-hidden shadow-2xl grayscale-[20%] hover:grayscale-0 transition-all duration-[1s] rounded-sm">
-                <img src={service.img} alt={service.title} className="w-full aspect-video object-cover" />
+                <img src={service.img} alt={service.title} className="w-full aspect-video object-cover" loading="lazy" decoding="async" />
               </div>
               <div className="w-full lg:w-1/2 space-y-8">
                 <h2 className="font-oswald text-4xl font-bold text-[#1A3C28] uppercase">{service.title}</h2>

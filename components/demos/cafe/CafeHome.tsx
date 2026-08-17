@@ -19,7 +19,6 @@ import {
   Heart,
   Users
 } from 'lucide-react';
-import ExitPreviewButton from '../../ExitPreviewButton';
 import CafeNavbar from './CafeNavbar';
 import CafeFooter from './CafeFooter';
 
@@ -28,22 +27,22 @@ const motion = framerMotion as any;
 
 const testimonials = [
   { 
-    text: "The best avocado toast in Wiltshire, hands down. The atmosphere is like a warm hug.", 
+    text: "The best avocado toast for miles, hands down. The atmosphere is like a warm hug.", 
     author: "Elena R.", 
     role: "Local Creative",
-    img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=200"
+    img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=65&w=200"
   },
   { 
     text: "A slice of Paris in our little village. Their flat white is perfection.", 
     author: "James T.", 
     role: "Coffee Enthusiast",
-    img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200"
+    img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=65&w=200"
   },
   { 
     text: "We hosted our engagement brunch here. The team made every detail magic.", 
     author: "Sarah L.", 
     role: "Loyal Patron",
-    img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200"
+    img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=65&w=200"
   }
 ];
 
@@ -51,19 +50,19 @@ const featuredDishes = [
   { 
     title: "Velvet Flat White", 
     category: "Barista Selection", 
-    img: "https://images.unsplash.com/photo-1517701604599-bb29b565090c?auto=format&fit=crop&q=80&w=800",
+    img: "https://images.unsplash.com/photo-1517701604599-bb29b565090c?auto=format&fit=crop&q=65&w=800",
     price: "£3.80"
   },
   { 
     title: "Almond Frangipane", 
     category: "Fresh Pastry", 
-    img: "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&q=80&w=800",
+    img: "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&q=65&w=800",
     price: "£4.20"
   },
   { 
     title: "Avocado Sourdough", 
     category: "Brunch Plates", 
-    img: "https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&q=80&w=800",
+    img: "https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&q=65&w=800",
     price: "£9.50"
   }
 ];
@@ -89,7 +88,6 @@ const CafeHome: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#FFF9F5] font-sans selection:bg-[#A4715E] selection:text-white overflow-x-hidden">
-      <ExitPreviewButton />
       <CafeNavbar />
 
       {/* FLOATING BOOKING TAB */}
@@ -114,10 +112,12 @@ const CafeHome: React.FC = () => {
             className="w-full h-full transform-gpu will-change-transform"
           >
             <img 
-              src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&q=80&w=2000" 
+              src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&q=65&w=1600" 
               className="w-full h-full object-cover brightness-[0.75]" 
               alt="High-end brunch table setting"
               loading="eager"
+              fetchPriority="high"
+              decoding="async"
             />
           </motion.div>
           <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-[#FFF9F5]"></div>
@@ -171,7 +171,7 @@ const CafeHome: React.FC = () => {
             <span className="text-[#A4715E] font-black text-[11px] uppercase tracking-[0.6em]">The Culinary Selection</span>
             <h2 className="font-serif text-5xl md:text-6xl font-black text-[#4A403A] tracking-tighter uppercase leading-none">CHEF'S <br /><span className="text-[#A4715E] italic">SIGNATURES.</span></h2>
           </div>
-          <p className="text-[#A4715E]/60 text-lg italic max-w-sm border-l-2 border-[#FDE2E4] pl-10">"Every dish is a canvas. We source our flour from local mills and our fruit from Wiltshire orchards."</p>
+          <p className="text-[#A4715E]/60 text-lg italic max-w-sm border-l-2 border-[#FDE2E4] pl-10">"Every dish is a canvas. We source our flour from local mills and our fruit from orchards down the road."</p>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
@@ -185,7 +185,7 @@ const CafeHome: React.FC = () => {
               whileHover={{ y: -20 }}
               className="group relative aspect-[3/4] rounded-[3.5rem] overflow-hidden shadow-2xl border-[12px] border-white cursor-pointer"
             >
-              <img src={dish.img} alt={dish.title} className="w-full h-full object-cover transition-all duration-1000 group-hover:scale-110" loading="lazy" />
+              <img src={dish.img} alt={dish.title} className="w-full h-full object-cover transition-all duration-1000 group-hover:scale-110" loading="lazy" decoding="async" />
               <div className="absolute inset-0 bg-gradient-to-t from-[#4A403A]/90 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
               <div className="absolute bottom-10 left-10 text-white">
                 <span className="text-[9px] font-black uppercase tracking-[0.4em] opacity-60 mb-2 block">{dish.category}</span>
@@ -207,7 +207,7 @@ const CafeHome: React.FC = () => {
         <motion.div 
           className="absolute inset-0 z-0 bg-cover bg-center scale-110"
           style={{ 
-            backgroundImage: "url('https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&q=80&w=2000')",
+            backgroundImage: "url('https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&q=65&w=1600')",
             backgroundAttachment: 'fixed'
           }}
         ></motion.div>
@@ -255,9 +255,11 @@ const CafeHome: React.FC = () => {
             <div className="w-full lg:w-1/2 relative">
               <div className="relative aspect-square rounded-[4rem] overflow-hidden shadow-3xl group">
                 <img 
-                  src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&q=80&w=1200" 
+                  src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&q=65&w=1200" 
                   className="w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-105" 
                   alt="Cafe Interior Ambiance"
+                  loading="lazy"
+                  decoding="async"
                 />
                 <div className="absolute inset-0 bg-[#A4715E]/10 mix-blend-overlay"></div>
               </div>
@@ -312,9 +314,11 @@ const CafeHome: React.FC = () => {
           >
              <div className="rounded-[4rem] overflow-hidden shadow-[0_50px_100px_rgba(0,0,0,0.5)] group border border-white/10">
               <img 
-                src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=1200" 
+                src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=65&w=1200" 
                 className="w-full grayscale-[40%] group-hover:grayscale-0 transition-all duration-[2s]" 
-                alt="Private Dining Event Space" 
+                alt="Private Dining Event Space"
+                loading="lazy"
+                decoding="async" 
               />
              </div>
              <div className="absolute -bottom-10 -left-10 bg-white p-12 rounded-[3.5rem] shadow-3xl hidden md:block">
@@ -346,7 +350,7 @@ const CafeHome: React.FC = () => {
               >
                 <p className="font-serif text-3xl md:text-5xl text-[#4A403A] italic leading-tight tracking-tight">"{testimonials[testiIndex].text}"</p>
                 <div className="flex flex-col items-center gap-6">
-                  <img src={testimonials[testiIndex].img} className="w-20 h-20 rounded-full border-4 border-white shadow-xl" alt={testimonials[testiIndex].author} />
+                  <img src={testimonials[testiIndex].img} className="w-20 h-20 rounded-full border-4 border-white shadow-xl" alt={testimonials[testiIndex].author} loading="lazy" decoding="async" />
                   <div>
                     <p className="text-[#A4715E] font-black text-sm uppercase tracking-[0.5em] mb-1">{testimonials[testiIndex].author}</p>
                     <p className="text-[#4A403A]/30 text-[10px] font-black uppercase tracking-widest">{testimonials[testiIndex].role}</p>
@@ -373,7 +377,7 @@ const CafeHome: React.FC = () => {
            <div>
             <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="block group">
               <h2 className="font-serif text-4xl font-bold text-[#4A403A] tracking-tighter group-hover:text-[#A4715E] transition-colors">Follow The Hearth.</h2>
-              <p className="text-[#A4715E] font-bold text-xs uppercase tracking-widest">@TheHearthWiltshire</p>
+              <p className="text-[#A4715E] font-bold text-xs uppercase tracking-widest">@TheHearthCafe</p>
             </a>
            </div>
            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 text-[#A4715E] font-black text-[10px] uppercase tracking-widest hover:scale-105 transition-transform">
@@ -382,18 +386,18 @@ const CafeHome: React.FC = () => {
         </div>
         <div className="flex gap-10 animate-shimmer-scroll">
           {[
-            "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&q=80&w=800",
-            "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&q=80&w=800",
-            "https://images.unsplash.com/photo-1517701604599-bb29b565090c?auto=format&fit=crop&q=80&w=800",
-            "https://images.unsplash.com/photo-1445116572660-236099ec97a0?auto=format&fit=crop&q=80&w=800",
-            "https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&q=80&w=800",
-            "https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&q=80&w=1200",
-            "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&q=80&w=1200",
-            "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&q=80&w=800",
-            "https://images.unsplash.com/photo-1507133750040-4a8f57021571?auto=format&fit=crop&q=80&w=800",
+            "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&q=65&w=800",
+            "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&q=65&w=800",
+            "https://images.unsplash.com/photo-1517701604599-bb29b565090c?auto=format&fit=crop&q=65&w=800",
+            "https://images.unsplash.com/photo-1445116572660-236099ec97a0?auto=format&fit=crop&q=65&w=800",
+            "https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&q=65&w=800",
+            "https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&q=65&w=1200",
+            "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&q=65&w=1200",
+            "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&q=65&w=800",
+            "https://images.unsplash.com/photo-1507133750040-4a8f57021571?auto=format&fit=crop&q=65&w=800",
           ].map((img, i) => (
             <a key={i} href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="min-w-[350px] aspect-square rounded-[2.5rem] overflow-hidden grayscale hover:grayscale-0 transition-all duration-700 shadow-2xl border-[6px] border-white group relative">
-              <img src={img} alt={`The Hearth Instagram ${i}`} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" loading="lazy" />
+              <img src={img} alt={`The Hearth Instagram ${i}`} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" loading="lazy" decoding="async" />
               <div className="absolute inset-0 bg-[#A4715E]/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                 <Heart size={40} className="text-white fill-current" />
               </div>

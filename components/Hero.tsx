@@ -84,9 +84,6 @@ const Hero: React.FC<HeroProps> = ({ navigateTo, startAnimation = true }) => {
 
       <div className="flex-1 w-full flex flex-col items-center sm:items-start justify-start gap-6 md:gap-10 pb-12 md:pb-24">
         <div className="w-full flex flex-col items-center sm:items-start">
-          <p className="mb-4 md:mb-6 px-4 sm:px-0 text-[9px] md:text-[11px] font-black uppercase tracking-[0.45em] text-blue-600 text-center sm:text-left">
-            UK Wide
-          </p>
           <h1 className="font-syne text-[clamp(1.5rem,8vw,4.4rem)] leading-[1.05] tracking-[-0.04em] uppercase flex flex-col items-center sm:items-start text-center sm:text-left text-[#050608] w-full transform-gpu will-change-transform">
             <span className="hero-title-top font-extrabold mb-4 md:mb-6 px-4 sm:px-0 opacity-0">Built to Perform</span>
             <div className="hero-work-block relative w-screen ml-[-24px] lg:ml-[-96px] flex items-center justify-center sm:justify-start overflow-hidden will-change-[clip-path]" style={{ clipPath: 'inset(0 100% 0 0)' }}>

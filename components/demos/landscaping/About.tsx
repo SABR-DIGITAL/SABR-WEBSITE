@@ -6,7 +6,6 @@ import { motion as framerMotion } from 'framer-motion';
 import { MoveLeft, Award, ShieldCheck, History } from 'lucide-react';
 import Navbar from './Navbar';
 import Footer from './Footer';
-import ExitPreviewButton from '../../ExitPreviewButton';
 
 // Fix motion types by casting to any
 const motion = framerMotion as any;
@@ -16,7 +15,6 @@ const About: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#F4F1EA] font-inter selection:bg-[#BC4B26] selection:text-white">
-      <ExitPreviewButton />
       <Navbar />
       
       <section className="relative py-40 px-6 bg-[#1A3C28] text-white overflow-hidden">
@@ -37,7 +35,7 @@ const About: React.FC = () => {
             <div className="w-16 h-1.5 bg-[#BC4B26]"></div>
             <h2 className="font-oswald text-4xl md:text-6xl font-bold text-[#1A3C28] uppercase tracking-tight">Three Generations of Excellence.</h2>
             <p className="text-[#4A403A] text-xl font-medium italic leading-relaxed opacity-90 border-l-4 border-[#BC4B26] pl-10">
-              "Oak & Ash began with a single chainsaw and a passion for Wiltshire's ancient woodlands. Today, we manage thousands of acres with the same respect for the land."
+              "Oak & Ash began with a single chainsaw and a passion for ancient woodlands. Today, we manage thousands of acres with the same respect for the land."
             </p>
             <p className="text-[#4A403A]/70 leading-relaxed text-lg">
               Our methods have evolved from manual timber extraction to precision ecological management, but our core philosophy remains: leave the land better than we found it. We bridge the gap between architectural vision and forestry reality.
@@ -57,9 +55,11 @@ const About: React.FC = () => {
           </div>
           <div className="relative">
             <img 
-              src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&q=80&w=1200" 
+              src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&q=65&w=1200" 
               className="w-full grayscale shadow-[0_50px_100px_rgba(0,0,0,0.1)] rounded-sm"
               alt="Legacy Forestry"
+              loading="lazy"
+              decoding="async"
             />
             <div className="absolute -bottom-10 -left-10 bg-[#BC4B26] p-12 text-white hidden md:block rounded-sm shadow-2xl">
               <ShieldCheck size={48} />

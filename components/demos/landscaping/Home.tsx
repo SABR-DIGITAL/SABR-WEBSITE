@@ -6,7 +6,6 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowRight, Quote, MoveLeft } from 'lucide-react';
 import Navbar from './Navbar';
 import Footer from './Footer';
-import ExitPreviewButton from '../../ExitPreviewButton';
 
 // Robust export resolution
 const { Link } = RouterDOM as any;
@@ -103,7 +102,6 @@ const Home: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#F4F1EA] font-inter selection:bg-[#BC4B26] selection:text-white pb-0 overflow-x-hidden">
-      <ExitPreviewButton />
       <Navbar />
 
       {/* Hero Section */}
@@ -113,7 +111,7 @@ const Home: React.FC = () => {
             ref={bgRef}
             className="absolute -inset-y-[30%] inset-x-0 bg-cover bg-center bg-no-repeat grayscale-[15%] brightness-[0.6] transform-gpu will-change-transform"
             style={{ 
-              backgroundImage: "url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&q=80&w=1600')"
+              backgroundImage: "url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&q=65&w=1600')"
             }}
           >
             <div className="absolute inset-0 bg-[#1A3C28]/30"></div>
@@ -140,9 +138,12 @@ const Home: React.FC = () => {
               className="relative w-full aspect-[4/3] lg:max-w-xl rounded-sm overflow-hidden shadow-2xl z-10 hidden md:block transform-gpu will-change-transform"
             >
               <img 
-                src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&q=80&w=1200" 
+                src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&q=65&w=1200" 
                 className="w-full h-[120%] object-cover absolute top-[-10%]" 
-                alt="Forestry Road" 
+                alt="Forestry Road"
+                loading="eager"
+                fetchPriority="high"
+                decoding="async"
               />
             </div>
 
@@ -155,7 +156,7 @@ const Home: React.FC = () => {
               <div className="w-10 h-1 bg-[#BC4B26] mb-6"></div>
               <h2 className="text-[#1A3C28] font-oswald text-2xl md:text-3xl font-bold uppercase tracking-tight mb-4">GET A FREE QUOTE</h2>
               <p className="text-[#4A403A] text-sm font-medium mb-8 leading-relaxed opacity-80">
-                "We provide professional forestry, clearance and architectural landscaping services across the UK. Request your fixed-price site consultation today."
+                "We provide professional forestry, clearance and architectural landscaping services. Request your fixed-price site consultation today."
               </p>
               <div className="mb-8">
                 <p className="text-[10px] uppercase font-black tracking-widest text-[#BC4B26] mb-1">Direct Line</p>
@@ -182,9 +183,9 @@ const Home: React.FC = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
             {[
-              { title: "Forestry Mulching", img: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&q=80&w=800" },
-              { title: "Management Plans", img: "https://images.unsplash.com/photo-1473448912268-2022ce9509d8?auto=format&fit=crop&q=80&w=800" },
-              { title: "Timber Harvesting", img: "https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&q=80&w=800" }
+              { title: "Forestry Mulching", img: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&q=65&w=800" },
+              { title: "Management Plans", img: "https://images.unsplash.com/photo-1473448912268-2022ce9509d8?auto=format&fit=crop&q=65&w=800" },
+              { title: "Timber Harvesting", img: "https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&q=65&w=800" }
             ].map((s: any, i: number) => (
               <Link to="/demo/landscaping/contact" key={i}>
                 <motion.div 
@@ -195,7 +196,7 @@ const Home: React.FC = () => {
                   whileHover={{ y: -10 }}
                   className="group relative aspect-square overflow-hidden cursor-pointer shadow-xl rounded-sm transform-gpu"
                 >
-                  <img src={s.img} alt={s.title} className="w-full h-full object-cover grayscale-[30%] group-hover:grayscale-0 group-hover:scale-110 transition-all duration-[1s]" />
+                  <img src={s.img} alt={s.title} className="w-full h-full object-cover grayscale-[30%] group-hover:grayscale-0 group-hover:scale-110 transition-all duration-[1s]" loading="lazy" decoding="async" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-80"></div>
                   <div className="absolute bottom-0 left-0 right-0 p-8 bg-[#BC4B26]/0 group-hover:bg-[#BC4B26] transition-colors duration-500">
                     <h3 className="text-white font-oswald text-xl font-bold uppercase tracking-tight">{s.title}</h3>
@@ -219,7 +220,7 @@ const Home: React.FC = () => {
               className="relative p-10 md:p-14 bg-[#F4F1EA] border border-[#1A3C28]/5 shadow-2xl rounded-sm"
             >
               <div className="overflow-hidden mb-10 rounded-sm bg-slate-200">
-                <img src="https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&q=80&w=800" alt="Forestry Team" className="w-full h-auto grayscale" />
+                <img src="https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&q=65&w=800" alt="Forestry Team" className="w-full h-auto grayscale" loading="lazy" decoding="async" />
               </div>
               <h3 className="text-[#1A3C28] font-oswald text-3xl font-bold uppercase tracking-tight mb-4">Professional Expertise</h3>
               <p className="text-[#4A403A] text-sm leading-relaxed mb-8 opacity-70">
@@ -233,7 +234,7 @@ const Home: React.FC = () => {
           <div className="w-full md:w-1/2 space-y-10">
             <h2 className="text-[#1A3C28] font-oswald text-4xl md:text-5xl lg:text-5xl font-bold uppercase tracking-tighter leading-none">OAK & ASH <br /> <span className="text-[#BC4B26] italic">LEGACY.</span></h2>
             <p className="text-[#4A403A] text-xl leading-relaxed opacity-80 border-l-4 border-[#BC4B26] pl-10">
-              Founded in 1976, we have managed some of the most complex forestry and private estate landscaping projects in the United Kingdom.
+              Founded in 1976, we have managed some of the most complex forestry and private estate landscaping projects on record.
             </p>
             <div className="grid grid-cols-2 gap-8 pt-4">
               <div>
@@ -256,7 +257,7 @@ const Home: React.FC = () => {
             ref={testimonialBgRef}
             className="absolute -inset-y-[40%] inset-x-0 bg-cover bg-center bg-no-repeat grayscale brightness-[0.3] transform-gpu will-change-transform"
             style={{ 
-              backgroundImage: "url('https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&q=80&w=1600')"
+              backgroundImage: "url('https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&q=65&w=1600')"
             }}
           ></div>
         </div>
@@ -313,14 +314,14 @@ const Home: React.FC = () => {
         </div>
         <div className="flex gap-8 overflow-x-auto pb-10 no-scrollbar snap-x px-4">
           {[
-            "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&q=80&w=1200",
-            "https://images.unsplash.com/photo-1473448912268-2022ce9509d8?auto=format&fit=crop&q=80&w=1200",
+            "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&q=65&w=1200",
+            "https://images.unsplash.com/photo-1473448912268-2022ce9509d8?auto=format&fit=crop&q=65&w=1200",
             "https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&get=80&w=1200",
-            "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&q=80&w=1200",
-            "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&q=80&w=1600"
+            "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&q=65&w=1200",
+            "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&q=65&w=1600"
           ].map((img, i) => (
             <div key={i} className="min-w-[320px] md:min-w-[600px] aspect-video rounded-sm overflow-hidden snap-center shadow-xl border border-white/10 group">
-              <img src={img} alt={`Gallery ${i}`} className="w-full h-full object-cover grayscale-[40%] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-[1.2s] ease-out" />
+              <img src={img} alt={`Gallery ${i}`} className="w-full h-full object-cover grayscale-[40%] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-[1.2s] ease-out" loading="lazy" decoding="async" />
             </div>
           ))}
         </div>
