@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { motion as framerMotion, AnimatePresence } from 'framer-motion';
 import { 
   Zap, 
@@ -13,9 +14,7 @@ import {
   CheckCircle2,
   ArrowRight,
   ChevronLeft,
-  ChevronRight,
-  ChevronDown,
-  ChevronUp
+  ChevronRight
 } from 'lucide-react';
 
 // Fix motion types by casting to any
@@ -118,15 +117,33 @@ const sabrPros: SabrPro[] = [
 const WhyWebsiteSection: React.FC = () => {
   const [selectedPro, setSelectedPro] = useState<SabrPro | null>(null);
 
-  // Disable body scroll when modal is open
+  // Lock the page while a blueprint is open, so the only thing that can scroll
+  // is the panel itself. Compensating for the scrollbar keeps the page still.
   React.useEffect(() => {
-    if (selectedPro) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
+    if (!selectedPro) return;
+
+    const { body, documentElement: html } = document;
+    const previous = {
+      bodyOverflow: body.style.overflow,
+      bodyPaddingRight: body.style.paddingRight,
+      htmlOverscroll: html.style.overscrollBehavior
+    };
+    const scrollbarWidth = window.innerWidth - html.clientWidth;
+
+    body.style.overflow = 'hidden';
+    if (scrollbarWidth > 0) body.style.paddingRight = `${scrollbarWidth}px`;
+    html.style.overscrollBehavior = 'none';
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setSelectedPro(null);
+    };
+    window.addEventListener('keydown', onKeyDown);
+
     return () => {
-      document.body.style.overflow = 'unset';
+      body.style.overflow = previous.bodyOverflow;
+      body.style.paddingRight = previous.bodyPaddingRight;
+      html.style.overscrollBehavior = previous.htmlOverscroll;
+      window.removeEventListener('keydown', onKeyDown);
     };
   }, [selectedPro]);
 
@@ -201,75 +218,31 @@ const WhyWebsiteSection: React.FC = () => {
         </div>
       </div>
 
-      {/* DETAIL MODAL */}
-      <AnimatePresence>
+      {/* DETAIL MODAL
+          Rendered straight into <body>. Anywhere inside the page tree an ancestor
+          transform (GSAP page transitions, a will-change, a filter) becomes the
+          containing block for position: fixed, which is what let this panel sit
+          half off-screen. A portal removes that possibility for good. */}
+      {createPortal(
+        <AnimatePresence>
         {selectedPro && (
-          <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 sm:p-6 md:p-10">
-            <motion.div 
-              initial={{ opacity: 0 }} 
-              animate={{ opacity: 1 }} 
-              exit={{ opacity: 0 }} 
-              onClick={() => setSelectedPro(null)} 
-              className="absolute inset-0 bg-slate-950/90 backdrop-blur-xl transform-gpu" 
-            >
-              {/* DIRECTIONAL ARROWS - STACKED ABOVE AND BELOW */}
-              <div className="absolute inset-0 flex flex-col items-center justify-between py-4 pointer-events-none">
-                {/* TOP ARROWS */}
-                <div className="flex flex-col items-center -space-y-8 opacity-80">
-                  {[...Array(4)].map((_, i) => (
-                    <motion.div
-                      key={`top-${i}`}
-                      animate={{ 
-                        y: [0, 15, 0], 
-                        opacity: [0.4, 1, 0.4],
-                        scale: [1, 1.1, 1]
-                      }}
-                      transition={{ 
-                        duration: 1.5, 
-                        repeat: Infinity, 
-                        delay: i * 0.15,
-                        ease: "easeInOut"
-                      }}
-                      className="text-blue-400 drop-shadow-[0_0_20px_rgba(37,99,235,1)]"
-                    >
-                      <ChevronDown size={80} strokeWidth={4} />
-                    </motion.div>
-                  ))}
-                </div>
-
-                {/* BOTTOM ARROWS */}
-                <div className="flex flex-col items-center -space-y-8 opacity-80">
-                  {[...Array(4)].map((_, i) => (
-                    <motion.div
-                      key={`bottom-${i}`}
-                      animate={{ 
-                        y: [0, -15, 0], 
-                        opacity: [0.4, 1, 0.4],
-                        scale: [1, 1.1, 1]
-                      }}
-                      transition={{ 
-                        duration: 1.5, 
-                        repeat: Infinity, 
-                        delay: i * 0.15,
-                        ease: "easeInOut"
-                      }}
-                      className="text-blue-400 drop-shadow-[0_0_20px_rgba(37,99,235,1)]"
-                    >
-                      <ChevronUp size={80} strokeWidth={4} />
-                    </motion.div>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95, y: 30 }} 
-              animate={{ opacity: 1, scale: 1, y: 0 }} 
-              exit={{ opacity: 0, scale: 0.95, y: 30 }} 
+          <div className="fixed inset-0 h-[100dvh] z-[1000] flex items-center justify-center p-4 sm:p-6 md:p-10 overflow-hidden overscroll-none">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setSelectedPro(null)}
+              className="absolute inset-0 bg-slate-950/90 backdrop-blur-xl transform-gpu"
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 30 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 30 }}
               transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-              className="relative w-full max-w-5xl bg-white rounded-[2.5rem] md:rounded-[3.5rem] shadow-[0_50px_100px_rgba(0,0,0,0.5)] border border-white/10 overflow-hidden flex flex-col max-h-[90vh] z-20 transform-gpu will-change-transform"
+              className="relative w-full max-w-5xl max-h-full bg-white rounded-[2.5rem] md:rounded-[3.5rem] shadow-[0_50px_100px_rgba(0,0,0,0.5)] border border-white/10 overflow-hidden flex flex-col z-20 transform-gpu will-change-transform"
             >
               {/* MODAL HEADER - FIXED AND CLEAN */}
-              <div className="px-8 sm:px-12 py-6 sm:py-8 flex items-center justify-between border-b border-slate-100 bg-white sticky top-0 z-30 transform-gpu">
+              <div className="px-8 sm:px-12 py-6 sm:py-8 flex items-center justify-between border-b border-slate-100 bg-white shrink-0 z-30">
                 <div className="flex flex-col text-left shrink-0">
                   <span className="font-syne text-lg sm:text-2xl tracking-[0.05em] font-black text-slate-950 flex items-center leading-none uppercase">
                     SABR<span className="text-blue-600 ml-1.5">PRO</span>
@@ -292,8 +265,8 @@ const WhyWebsiteSection: React.FC = () => {
                 </div>
               </div>
 
-              {/* MODAL CONTENT - SCROLLABLE AREA */}
-              <div className="p-8 sm:p-12 md:p-20 overflow-y-auto custom-scrollbar bg-white">
+              {/* MODAL CONTENT - THE ONLY SCROLLABLE REGION */}
+              <div className="flex-1 min-h-0 p-8 sm:p-12 md:p-16 overflow-y-auto overscroll-contain custom-scrollbar bg-white">
                 <AnimatePresence mode="wait">
                   <motion.div 
                     key={selectedPro.id} 
@@ -354,7 +327,9 @@ const WhyWebsiteSection: React.FC = () => {
             </motion.div>
           </div>
         )}
-      </AnimatePresence>
+        </AnimatePresence>,
+        document.body
+      )}
 
       <style>{`
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }

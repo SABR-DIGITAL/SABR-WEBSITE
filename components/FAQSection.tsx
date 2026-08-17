@@ -66,7 +66,7 @@ const faqs = [
   {
     icon: <MapPin size={32} />,
     q: "Which areas do you cover?",
-    a: "We are based in Wiltshire and work with businesses right across the UK, including Swindon, Salisbury, Chippenham, Trowbridge, Devizes, Marlborough, Melksham, Warminster, Bath and Bristol."
+    a: "We work with businesses wherever they are based. Everything happens by call, email and WhatsApp, so where you are makes no difference to how the site gets built."
   }
 ];
 

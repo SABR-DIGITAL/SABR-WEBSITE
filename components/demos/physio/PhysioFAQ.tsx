@@ -4,7 +4,6 @@ import { motion as framerMotion, AnimatePresence } from 'framer-motion';
 import * as RouterDOM from 'react-router-dom';
 const { Link } = RouterDOM as any;
 import { Plus, ArrowRight } from 'lucide-react';
-import ExitPreviewButton from '../../ExitPreviewButton';
 import PhysioNavbar from './PhysioNavbar';
 import PhysioFooter from './PhysioFooter';
 import { clinic, fees } from './physioData';
@@ -87,7 +86,6 @@ const PhysioFAQ: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#F3F0EA] font-inter text-[#1D1C19] selection:bg-[#4A5D4E] selection:text-[#F3F0EA] overflow-x-hidden">
-      <ExitPreviewButton />
       <PhysioNavbar />
 
       {/* HEADER */}

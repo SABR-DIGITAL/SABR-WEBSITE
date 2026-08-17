@@ -3,7 +3,6 @@ import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { ChevronRight, Music, Users, Sparkles, Globe, ArrowRight, Zap, Target } from 'lucide-react';
-import ExitPreviewButton from '../../ExitPreviewButton';
 import EventsNavbar from './EventsNavbar';
 import EventsFooter from './EventsFooter';
 
@@ -29,16 +28,18 @@ const EventsHome: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#050505] text-[#E0E0E0] font-inter selection:bg-[#D4AF37] selection:text-black overflow-x-hidden relative">
       <div className="fixed inset-0 opacity-[0.02] pointer-events-none z-[100] bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"></div>
-      <ExitPreviewButton />
       <EventsNavbar />
 
       {/* HERO SECTION */}
       <section ref={heroRef} className="relative h-screen flex items-center justify-center overflow-hidden">
         <motion.div style={{ y: heroY }} className="absolute inset-0 z-0">
           <img 
-            src="https://images.unsplash.com/photo-1514525253361-bee8718a300c?auto=format&fit=crop&q=80&w=2000" 
+            src="https://images.unsplash.com/photo-1514525253361-bee8718a300c?auto=format&fit=crop&q=65&w=1600" 
             className="w-full h-full object-cover brightness-[0.4] contrast-[1.1] grayscale-[20%]" 
             alt="Cinematic event lighting"
+            loading="eager"
+            fetchPriority="high"
+            decoding="async"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#050505]/40 to-[#050505]"></div>
         </motion.div>

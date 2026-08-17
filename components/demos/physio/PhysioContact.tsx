@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion as framerMotion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, Check } from 'lucide-react';
-import ExitPreviewButton from '../../ExitPreviewButton';
 import PhysioNavbar from './PhysioNavbar';
 import PhysioFooter from './PhysioFooter';
 import { clinic, openingHours, fees, team, images } from './physioData';
@@ -41,7 +40,6 @@ const PhysioContact: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#F3F0EA] font-inter text-[#1D1C19] selection:bg-[#4A5D4E] selection:text-[#F3F0EA] overflow-x-hidden">
-      <ExitPreviewButton />
       <PhysioNavbar />
 
       {/* HEADER */}
@@ -243,6 +241,7 @@ const PhysioContact: React.FC = () => {
                 width="1200"
                 height="900"
                 className="w-full h-full object-cover grayscale-[35%]"
+                decoding="async"
               />
             </div>
 

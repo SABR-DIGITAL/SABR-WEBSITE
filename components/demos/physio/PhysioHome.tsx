@@ -4,7 +4,6 @@ import { motion as framerMotion } from 'framer-motion';
 import * as RouterDOM from 'react-router-dom';
 const { Link } = RouterDOM as any;
 import { ArrowRight, ArrowUpRight } from 'lucide-react';
-import ExitPreviewButton from '../../ExitPreviewButton';
 import PhysioNavbar from './PhysioNavbar';
 import PhysioFooter from './PhysioFooter';
 import { clinic, images } from './physioData';
@@ -96,11 +95,13 @@ const PhysioHome: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#F3F0EA] font-inter text-[#1D1C19] selection:bg-[#4A5D4E] selection:text-[#F3F0EA] overflow-x-hidden">
-      <ExitPreviewButton />
       <PhysioNavbar />
 
-      {/* HERO */}
-      <section className="pt-36 md:pt-44 pb-20 md:pb-28 px-6 md:px-10">
+      {/* HERO — the navbar is fixed and about 97px tall unscrolled (a 41px
+          lockup inside py-7), so the top padding is 112px: enough to clear it
+          and nothing more. Anything larger leaves a band of empty paper between
+          the navbar and the photograph, which is the first thing you see. */}
+      <section className="pt-28 pb-20 md:pb-28 px-6 md:px-10">
         <div className="max-w-[1500px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-end">
 
           <motion.div initial="hidden" animate="visible" variants={rise} className="lg:col-span-7">
@@ -144,8 +145,10 @@ const PhysioHome: React.FC = () => {
                 alt="Movement and rehabilitation session at the clinic"
                 className="w-full h-full object-cover grayscale-[35%]"
                 loading="eager"
+                fetchPriority="high"
                 width="1200"
                 height="1500"
+                decoding="async"
               />
             </div>
             <div className="absolute -bottom-6 -left-6 hidden sm:block bg-[#FBFAF7] border border-[#E2DDD3] px-7 py-6">
@@ -158,18 +161,40 @@ const PhysioHome: React.FC = () => {
         </div>
       </section>
 
-      {/* CREDENTIALS STRIP */}
-      <section className="px-6 md:px-10">
-        <div className="max-w-[1500px] mx-auto grid grid-cols-2 lg:grid-cols-4 border-t border-l border-[#E2DDD3]">
-          {credentials.map((item) => (
-            <p
-              key={item}
-              className="border-r border-b border-[#E2DDD3] px-6 py-7 text-[9px] md:text-[10px] uppercase tracking-[0.24em] text-[#6E6A62] leading-relaxed"
-            >
-              {item}
-            </p>
+      {/* CREDENTIALS MARQUEE — CONTINUOUS RIGHT TO LEFT */}
+      <section
+        aria-label="Clinic credentials"
+        className="border-y border-[#E2DDD3] bg-[#FBFAF7] overflow-hidden py-6 md:py-7"
+      >
+        <div className="flex w-max physio-marquee">
+          {[0, 1, 2, 3].map((copy) => (
+            <div key={copy} className="flex shrink-0 items-center" aria-hidden={copy !== 0}>
+              {credentials.map((item) => (
+                <div key={item} className="flex items-center whitespace-nowrap">
+                  <span className="px-8 md:px-14 text-[9px] md:text-[10px] uppercase tracking-[0.24em] text-[#6E6A62]">
+                    {item}
+                  </span>
+                  <span className="w-[3px] h-[3px] rounded-full bg-[#4A5D4E]/50" />
+                </div>
+              ))}
+            </div>
           ))}
         </div>
+
+        <style>{`
+          @keyframes physio-marquee-scroll {
+            from { transform: translate3d(0, 0, 0); }
+            to { transform: translate3d(-50%, 0, 0); }
+          }
+          .physio-marquee {
+            animation: physio-marquee-scroll 60s linear infinite;
+            will-change: transform;
+          }
+          .physio-marquee:hover { animation-play-state: paused; }
+          @media (prefers-reduced-motion: reduce) {
+            .physio-marquee { animation: none; }
+          }
+        `}</style>
       </section>
 
       {/* STATEMENT */}
@@ -223,6 +248,7 @@ const PhysioHome: React.FC = () => {
                     width="1200"
                     height="900"
                     className="w-full h-full object-cover grayscale-[40%] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-[1.2s] ease-out"
+                    decoding="async"
                   />
                 </div>
                 <p className="text-[9px] uppercase tracking-[0.42em] text-[#4A5D4E] mb-4">{t.index}</p>
@@ -289,6 +315,7 @@ const PhysioHome: React.FC = () => {
           width="1600"
           height="1000"
           className="absolute inset-0 w-full h-full object-cover grayscale-[45%]"
+          decoding="async"
         />
         <div className="absolute inset-0 bg-[#1D1C19]/45" />
         <div className="relative h-full max-w-[1500px] mx-auto px-6 md:px-10 flex flex-col justify-end pb-16 md:pb-24">

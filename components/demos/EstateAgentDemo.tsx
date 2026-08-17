@@ -79,7 +79,7 @@ const EstateAgentDemo: React.FC = () => {
                    </div>
                 </div>
                 <h4 className="text-xl font-black uppercase tracking-tight">The Old Mill House</h4>
-                <p className="text-slate-400 font-bold text-sm">4 Beds • 3 Baths • Wiltshire, SN1</p>
+                <p className="text-slate-400 font-bold text-sm">4 Beds • 3 Baths • Detached</p>
                 <div className="mt-6 flex items-center justify-between opacity-0 group-hover:opacity-100 transition-opacity">
                    <button className="text-[10px] font-black uppercase tracking-widest text-[#001f3f] border-b-2 border-[#001f3f] pb-1">View Details</button>
                    <Phone size={16} className="text-slate-300 hover:text-[#001f3f]" />

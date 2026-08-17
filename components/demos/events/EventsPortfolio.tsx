@@ -3,17 +3,16 @@ import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Layers, ArrowUpRight, Search } from 'lucide-react';
-import ExitPreviewButton from '../../ExitPreviewButton';
 import EventsNavbar from './EventsNavbar';
 import EventsFooter from './EventsFooter';
 
 const caseStudies = [
-  { id: 1, title: "LUCID DREAM GALA", venue: "The Royal Exchange", guests: "800 Units", budget: "£450k", img: "https://images.unsplash.com/photo-1514525253361-bee8718a300c?auto=format&fit=crop&q=80&w=800" },
-  { id: 2, title: "CHROME FESTIVAL", venue: "Warehouse 01", guests: "2.5k Units", budget: "£1.2m", img: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&q=80&w=800" },
-  { id: 3, title: "AMBER WEDDING", venue: "Wiltshire Estate", guests: "250 Units", budget: "£180k", img: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&q=80&w=800" },
-  { id: 4, title: "NEXUS LAUNCH", venue: "Global HQ", guests: "1.2k Units", budget: "£600k", img: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&q=80&w=800" },
-  { id: 5, title: "OBSIDIAN NIGHTS", venue: "Private Penthouse", guests: "50 Units", budget: "£95k", img: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&q=80&w=800" },
-  { id: 6, title: "ECHO SYMPOSIUM", venue: "The Glass House", guests: "500 Units", budget: "£320k", img: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=80&w=800" }
+  { id: 1, title: "LUCID DREAM GALA", venue: "The Royal Exchange", guests: "800 Units", budget: "£450k", img: "https://images.unsplash.com/photo-1514525253361-bee8718a300c?auto=format&fit=crop&q=65&w=800" },
+  { id: 2, title: "CHROME FESTIVAL", venue: "Warehouse 01", guests: "2.5k Units", budget: "£1.2m", img: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&q=65&w=800" },
+  { id: 3, title: "AMBER WEDDING", venue: "Private Estate", guests: "250 Units", budget: "£180k", img: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&q=65&w=800" },
+  { id: 4, title: "NEXUS LAUNCH", venue: "Global HQ", guests: "1.2k Units", budget: "£600k", img: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&q=65&w=800" },
+  { id: 5, title: "OBSIDIAN NIGHTS", venue: "Private Penthouse", guests: "50 Units", budget: "£95k", img: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&q=65&w=800" },
+  { id: 6, title: "ECHO SYMPOSIUM", venue: "The Glass House", guests: "500 Units", budget: "£320k", img: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=65&w=800" }
 ];
 
 const EventsPortfolio: React.FC = () => {
@@ -21,7 +20,6 @@ const EventsPortfolio: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#050505] text-[#E0E0E0] font-inter selection:bg-[#D4AF37] selection:text-black pb-32">
-      <ExitPreviewButton />
       <EventsNavbar />
 
       <section className="pt-64 pb-32 px-6 max-w-7xl mx-auto text-center lg:text-left">
@@ -60,7 +58,7 @@ const EventsPortfolio: React.FC = () => {
             </div>
 
             <div className="aspect-[3/4] overflow-hidden grayscale group-hover:grayscale-0 transition-all duration-[1.5s] ease-out brightness-[0.7] group-hover:brightness-100">
-              <img src={item.img} alt={item.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[2s]" />
+              <img src={item.img} alt={item.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[2s]" loading="lazy" decoding="async" />
             </div>
 
             <div className="absolute top-6 left-6 z-20 text-[8px] font-black uppercase tracking-[0.4em] text-[#D4AF37] opacity-60">

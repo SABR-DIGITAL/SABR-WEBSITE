@@ -1,339 +1,221 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { gsap } from 'gsap';
+import React, { useLayoutEffect, useRef, useState } from 'react';
 
 interface IntroPortalProps {
   onComplete: () => void;
 }
 
-const IntroPortal: React.FC<IntroPortalProps> = ({ onComplete }) => {
-  const [phase, setPhase] = useState<'initial' | 'title' | 'tagline' | 'exit'>('initial');
-  const containerRef = useRef<HTMLDivElement>(null);
+// Hard stop. However badly anything else goes, the site becomes reachable.
+const FAILSAFE_MS = 7200;
+// How long we will wait for Syne before starting. Long enough that the webfont
+// almost always wins, short enough that nobody notices the pause.
+const FONT_WAIT_MS = 900;
 
-  // Start sequence on mount
-  useEffect(() => {
-    const timer = setTimeout(() => setPhase('title'), 100);
-    return () => clearTimeout(timer);
+// A title card, not a light show.
+//
+// This version is driven entirely by CSS keyframes, and that is the point.
+// The previous one animated the two words with GSAP's yPercent on top of an
+// inline percentage transform. GSAP reads the existing transform back out of
+// the computed matrix as pixels, so the inline 116% became a pixel y offset
+// that stayed applied underneath the tween — the words animated from 232%
+// to 116% and never appeared. Percentages in one system, matrices in another.
+//
+// Keyframes cannot make that mistake: the hidden state IS the first keyframe,
+// the browser owns the interpolation, and animation-fill-mode holds both ends.
+// It also drops GSAP off the critical path, so a slow chunk can no longer
+// leave the wordmark stuck behind its mask.
+//
+// Timing, from the moment the sequence starts:
+//   0.00  the hairline opens outward
+//   0.30  SABR climbs out from behind its mask
+//   0.46  DIGITAL follows
+//   0.30  the whole lockup settles from 1.055 to 1 across 3.4s
+//   1.25  the caption drifts up
+//   2.85  the caption steps back, the hairline closes
+//   3.05  the plate lifts, the type riding up faster than the plate does
+//   4.40  done
+const IntroPortal: React.FC<IntroPortalProps> = ({ onComplete }) => {
+  const [go, setGo] = useState(false);
+
+  // Held in refs so nothing here depends on a re-render. The guard means the
+  // handover happens exactly once, whichever of the three routes gets there
+  // first: the curtain finishing, the reduced-motion hold, or the failsafe.
+  const onCompleteRef = useRef(onComplete);
+  onCompleteRef.current = onComplete;
+  const doneRef = useRef(false);
+
+  const finish = () => {
+    if (doneRef.current) return;
+    doneRef.current = true;
+    onCompleteRef.current();
+  };
+
+  // Layout effect, not effect: this runs before the browser paints.
+  useLayoutEffect(() => {
+    const failsafe = window.setTimeout(finish, FAILSAFE_MS);
+
+    const reduceMotion =
+      typeof window.matchMedia === 'function' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Anyone who has asked for less movement gets the card held still and then
+    // handed over. The stylesheet below flattens every animation for them, so
+    // all that is needed here is the timer.
+    if (reduceMotion) {
+      setGo(true);
+      const hold = window.setTimeout(finish, 1500);
+      return () => {
+        window.clearTimeout(hold);
+        window.clearTimeout(failsafe);
+      };
+    }
+
+    // Syne loads with display=swap. Starting before it lands would show the
+    // wordmark change width mid-rise, which is exactly the flicker to avoid.
+    // Whichever comes first — fonts ready, or the cap — starts the sequence.
+    let started = false;
+    let cap = 0;
+    const start = () => {
+      if (started) return;
+      started = true;
+      window.clearTimeout(cap);
+      setGo(true);
+    };
+
+    const fonts = (document as any).fonts;
+    if (fonts && typeof fonts.ready?.then === 'function') {
+      cap = window.setTimeout(start, FONT_WAIT_MS);
+      fonts.ready.then(start).catch(start);
+    } else {
+      start();
+    }
+
+    return () => {
+      window.clearTimeout(cap);
+      window.clearTimeout(failsafe);
+    };
+    // Mount only — see the refs above.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Handle Tagline phase
-  useEffect(() => {
-    if (phase === 'title') {
-      const timer = setTimeout(() => setPhase('tagline'), 1200); 
-      return () => clearTimeout(timer);
-    }
-  }, [phase]);
-
-  // Handle Exit phase
-  useEffect(() => {
-    if (phase === 'tagline') {
-      const timer = setTimeout(() => setPhase('exit'), 800); 
-      return () => clearTimeout(timer);
-    }
-  }, [phase]);
-
-  // Execute GSAP Exit Animation
-  useEffect(() => {
-    if (phase === 'exit') {
-      const ignitionLine = document.getElementById('ignition');
-      const titleElement = document.querySelector('.intro-title');
-      const taglineElement = document.querySelector('.intro-tagline');
-      
-      if (!ignitionLine) {
-        onComplete();
-        return;
-      }
-
-      const tl = gsap.timeline();
-
-      // Ensure initial state for ignition line
-      tl.set(ignitionLine, { 
-        display: 'block', 
-        width: '300px', // Start roughly the size of the "DIGITAL" text
-        height: '60px', 
-        opacity: 0, // Start invisible then flash in
-        top: '50%',
-        left: '50%',
-        xPercent: -50,
-        yPercent: -50,
-        background: '#2563eb', // Electric Blue
-        boxShadow: '0 0 30px 10px rgba(37, 99, 235, 0.9)', // Stronger Glow
-        zIndex: 5000,
-        borderRadius: '8px'
-      });
-      
-      // The "Unraveling" Effect
-      const exitDuration = 0.8;
-      const ease = "power4.inOut";
-
-      // 1. Text splits apart (Title UP, Tagline DOWN)
-      if (titleElement) {
-        tl.to(titleElement, { y: -150, opacity: 0, scale: 0.9, filter: 'blur(10px)', duration: exitDuration, ease: ease }, 0);
-      }
-      if (taglineElement) {
-        tl.to(taglineElement, { y: 150, opacity: 0, scale: 0.9, filter: 'blur(10px)', duration: exitDuration, ease: ease }, 0);
-      }
-
-      // 2. The Blue "Fluid" Unravel
-      // Flash in the blue block exactly where the text was
-      tl.to(ignitionLine, {
-        opacity: 1,
-        duration: 0.1,
-        ease: "power2.in",
-        force3D: true
-      }, 0);
-
-      // Expand to horizon
-      tl.to(ignitionLine, { 
-        width: '120vw', 
-        height: '20px', // Flatten
-        borderRadius: '100%',
-        duration: 0.5, 
-        ease: "expo.in",
-        force3D: true
-      }, 0.1);
-
-      // Engulf screen
-      tl.to(ignitionLine, { 
-        height: "150vh", // Then engulf the screen
-        borderRadius: '0%',
-        duration: 0.8, 
-        ease: "expo.out",
-        force3D: true,
-        onComplete: () => {
-           // KEY CHANGE: Once fully engulfed, make the portal transparent
-           // This ensures that when the blue fades, we see the APP
-           if (containerRef.current) {
-             gsap.set(containerRef.current, { background: 'transparent' });
-           }
-        }
-      }, ">-0.3"); // Overlap for fluidity
-      
-      // Fade out the blue screen to reveal the site
-      tl.to(ignitionLine, { 
-        opacity: 0, 
-        duration: 0.8, 
-        delay: 0.1,
-        ease: "power2.out",
-        force3D: true,
-        onComplete: () => {
-          ignitionLine.style.display = 'none';
-          onComplete(); // Trigger app reveal AFTER fade is done
-        }
-      });
-    }
-  }, [phase, onComplete]);
-
-  // Title Animation Variants (Cinematic Reveal)
-  const titleContainerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.06,
-        delayChildren: 0.2
-      }
-    }
-  };
-
-  const letterVariants = {
-    hidden: { 
-      opacity: 0, 
-      y: 80,
-      scale: 0.9,
-      filter: 'blur(10px)'
-    },
-    visible: { 
-      opacity: 1, 
-      y: 0,
-      scale: 1,
-      filter: 'blur(0px)',
-      transition: { 
-        duration: 0.8,
-        ease: [0.16, 1, 0.3, 1] // "Confident" ease (Expo.out feel)
-      }
-    }
-  };
-
-  // Tagline Glitch Variants (Snap in, no float)
-  const taglineVariants = {
-    hidden: { opacity: 0, scale: 1.1, filter: "blur(5px)" },
-    visible: { 
-      opacity: 1,
-      scale: 1,
-      filter: "blur(0px)",
-      transition: {
-        duration: 0.1,
-        ease: "steps(3)"
-      }
-    }
+  // animationend bubbles, so check it is the curtain on this element and not a
+  // word arriving underneath it.
+  const handleAnimationEnd = (event: React.AnimationEvent<HTMLDivElement>) => {
+    if (event.target !== event.currentTarget) return;
+    if (event.animationName.indexOf('ip-curtain') === -1) return;
+    finish();
   };
 
   return (
-    <div ref={containerRef} className="fixed inset-0 z-[4000] flex flex-col items-center justify-center bg-[#ffffff] overflow-hidden font-syne select-none">
-      
-      {/* The Blue Ignition Source */}
-      <div id="ignition" className="absolute hidden will-change-[width,height,opacity,transform]"></div>
+    <div
+      onAnimationEnd={handleAnimationEnd}
+      className={`ip-root fixed inset-0 z-[4000] bg-[#0A0D14] overflow-hidden font-syne select-none ${
+        go ? 'ip-go' : ''
+      }`}
+    >
+      {/* Lens vignette — depth, so the plate does not read as flat black. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            'radial-gradient(115% 115% at 50% 45%, rgba(10,13,20,0) 38%, rgba(0,0,0,0.65) 100%)'
+        }}
+      />
 
-      <div className="flex flex-col items-center justify-center z-10 p-4 text-center relative w-full max-w-5xl">
-        
-        {/* Main Title - Rendered always but animated */}
-        <AnimatePresence>
-          {phase !== 'initial' && (
-            <motion.h1
-              className="intro-title text-[clamp(1.5rem,7vw,2.5rem)] sm:text-[3.2rem] md:text-[5rem] lg:text-[6.8rem] font-black tracking-tighter mb-4 md:mb-8 flex flex-nowrap justify-center overflow-visible whitespace-nowrap"
-              variants={titleContainerVariants}
-              initial="hidden"
-              animate="visible"
-            >
-              {/* SABR - Dark Slate */}
-              <motion.span 
-                variants={letterVariants}
-                className="inline-block text-slate-950 pb-2"
-              >
-                SABR
-              </motion.span>
+      <div className="ip-stage relative h-full w-full flex flex-col items-center justify-center px-6">
+        <div
+          aria-hidden="true"
+          className="ip-rule w-full max-w-[22rem] md:max-w-[34rem] h-px mb-8 md:mb-12"
+          style={{
+            background:
+              'linear-gradient(90deg, rgba(37,99,235,0) 0%, #2563eb 50%, rgba(37,99,235,0) 100%)'
+          }}
+        />
 
-              {/* Spacing */}
-              <motion.span variants={letterVariants} className="inline-block w-[0.2em] pb-2"></motion.span>
+        {/* The size lives on the h1 so the em-based gap between the two words
+            scales with the type instead of with the inherited body size. */}
+        <h1 className="ip-lockup flex items-baseline justify-center gap-[0.22em] whitespace-nowrap text-[clamp(2.1rem,9vw,6rem)] font-black tracking-tighter">
+          <span className="block overflow-hidden">
+            <span className="ip-word ip-word-1 block text-white leading-none">SABR</span>
+          </span>
+          <span className="block overflow-hidden">
+            {/* The shimmer sits on an inner span so it keeps its own infinite
+                background animation while the wrapper does the rising. */}
+            <span className="ip-word ip-word-2 block leading-none">
+              <span className="text-shimmer-blue">DIGITAL</span>
+            </span>
+          </span>
+        </h1>
 
-              {/* DIGITAL - Shimmer Blue */}
-              <motion.span 
-                variants={letterVariants}
-                // Matching the Navbar color scheme exactly (gradient spans the whole word)
-                className="inline-block text-shimmer-blue pb-2"
-              >
-                DIGITAL
-              </motion.span>
-            </motion.h1>
-          )}
-        </AnimatePresence>
-
-        {/* Tagline - Always in DOM to preserve layout spacing, animate opacity */}
-        <div className="mt-2 h-[40px] md:h-[60px] flex items-center justify-center overflow-visible w-full">
-            <AnimatePresence>
-                {(phase === 'tagline' || phase === 'exit') && (
-                <motion.div
-                    className="intro-tagline relative"
-                    initial="hidden"
-                    animate="visible"
-                    variants={taglineVariants}
-                >
-                    <p 
-                    className="text-lg md:text-2xl font-bold tracking-[0.3em] md:tracking-[0.6em] text-blue-600 uppercase glitch-text"
-                    data-text="BUILT FOR THE AMBITIOUS"
-                    >
-                    Built for the Ambitious
-                    </p>
-                </motion.div>
-                )}
-            </AnimatePresence>
-        </div>
-
+        <p className="ip-caption mt-8 md:mt-12 text-[9px] md:text-[11px] font-bold uppercase tracking-[0.55em] text-[#8A93A6] text-center">
+          Web design studio
+        </p>
       </div>
-      
-      {/* Glitch CSS Styles - Electric Blue Theme */}
+
       <style>{`
-        .glitch-text {
-          position: relative;
-          animation: glitch-skew 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite;
-          /* Ensure font matches */
-          font-family: 'Syne', sans-serif;
-        }
-        .glitch-text::before,
-        .glitch-text::after {
-          content: attr(data-text);
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          opacity: 0.8;
-          background: #ffffff; /* Hide main text behind glitch layers if needed */
-        }
-        /* Electric Blue Layer 1 */
-        .glitch-text::before {
-          left: 2px;
-          text-shadow: -2px 0 #3b82f6; /* Blue-500 */
-          clip: rect(44px, 450px, 56px, 0);
-          animation: glitch-anim 2s infinite linear alternate-reverse;
-          z-index: -1;
-        }
-        /* Electric Cyan Layer 2 */
-        .glitch-text::after {
-          left: -2px;
-          text-shadow: -2px 0 #06b6d4; /* Cyan-500 */
-          clip: rect(44px, 450px, 56px, 0);
-          animation: glitch-anim2 2s infinite linear alternate-reverse;
-          z-index: -2;
-        }
-        
-        @keyframes hyper-shimmer {
-          0% { background-position: 200% center; }
-          100% { background-position: 0% center; }
-        }
-        .animate-hyper-shimmer {
-          animation: hyper-shimmer 4s linear infinite;
+        /* First-paint state. No word, rule or caption is ever visible before
+           the sequence owns it, and no script is needed to make that true. */
+        .ip-word { transform: translate3d(0, 116%, 0); }
+        .ip-rule { transform: scaleX(0); }
+        .ip-caption { opacity: 0; }
+
+        .ip-root, .ip-stage, .ip-word, .ip-rule, .ip-lockup, .ip-caption {
+          will-change: transform, opacity;
         }
 
-        @keyframes glitch-anim {
-          0% { clip: rect(42px, 9999px, 44px, 0); }
-          5% { clip: rect(12px, 9999px, 59px, 0); }
-          10% { clip: rect(48px, 9999px, 29px, 0); }
-          15.0% { clip: rect(42px, 9999px, 73px, 0); }
-          20% { clip: rect(63px, 9999px, 27px, 0); }
-          25% { clip: rect(34px, 9999px, 55px, 0); }
-          30.0% { clip: rect(86px, 9999px, 73px, 0); }
-          35% { clip: rect(20px, 9999px, 20px, 0); }
-          40% { clip: rect(26px, 9999px, 60px, 0); }
-          45% { clip: rect(25px, 9999px, 66px, 0); }
-          50% { clip: rect(57px, 9999px, 98px, 0); }
-          55.0% { clip: rect(5px, 9999px, 46px, 0); }
-          60.0% { clip: rect(82px, 9999px, 31px, 0); }
-          65% { clip: rect(54px, 9999px, 27px, 0); }
-          70% { clip: rect(28px, 9999px, 99px, 0); }
-          75% { clip: rect(45px, 9999px, 69px, 0); }
-          80% { clip: rect(23px, 9999px, 85px, 0); }
-          85.0% { clip: rect(54px, 9999px, 84px, 0); }
-          90% { clip: rect(45px, 9999px, 47px, 0); }
-          95% { clip: rect(37px, 9999px, 20px, 0); }
-          100% { clip: rect(4px, 9999px, 91px, 0); }
+        @keyframes ip-word {
+          from { transform: translate3d(0, 116%, 0); }
+          to   { transform: translate3d(0, 0, 0); }
         }
-        @keyframes glitch-anim2 {
-          0% { clip: rect(65px, 9999px, 100px, 0); }
-          5% { clip: rect(52px, 9999px, 74px, 0); }
-          10% { clip: rect(79px, 9999px, 85px, 0); }
-          15.0% { clip: rect(75px, 9999px, 5px, 0); }
-          20% { clip: rect(67px, 9999px, 61px, 0); }
-          25% { clip: rect(14px, 9999px, 79px, 0); }
-          30.0% { clip: rect(1px, 9999px, 66px, 0); }
-          35% { clip: rect(86px, 9999px, 30px, 0); }
-          40% { clip: rect(23px, 9999px, 98px, 0); }
-          45% { clip: rect(85px, 9999px, 72px, 0); }
-          50% { clip: rect(71px, 9999px, 75px, 0); }
-          55.0% { clip: rect(2px, 9999px, 48px, 0); }
-          60.0% { clip: rect(30px, 9999px, 16px, 0); }
-          65% { clip: rect(59px, 9999px, 50px, 0); }
-          70% { clip: rect(41px, 9999px, 62px, 0); }
-          75% { clip: rect(2px, 9999px, 82px, 0); }
-          80% { clip: rect(47px, 9999px, 73px, 0); }
-          85.0% { clip: rect(3px, 9999px, 27px, 0); }
-          90% { clip: rect(26px, 9999px, 55px, 0); }
-          95% { clip: rect(42px, 9999px, 97px, 0); }
-          100% { clip: rect(38px, 9999px, 49px, 0); }
+
+        /* One animation for the whole life of the hairline: expo out as it
+           opens, a hold, then a smooth close on the way out. */
+        @keyframes ip-rule {
+          0%     { transform: scaleX(0); animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1); }
+          42.25% { transform: scaleX(1); animation-timing-function: linear; }
+          80.28% { transform: scaleX(1); animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1); }
+          100%   { transform: scaleX(0); }
         }
-        @keyframes glitch-skew {
-          0% { transform: skew(0deg); }
-          10% { transform: skew(-2deg); }
-          20% { transform: skew(2deg); }
-          30% { transform: skew(0deg); }
-          40% { transform: skew(0deg); }
-          50% { transform: skew(-0.5deg); }
-          60% { transform: skew(1deg); }
-          70% { transform: skew(0deg); }
-          80% { transform: skew(0deg); }
-          90% { transform: skew(0deg); }
-          100% { transform: skew(0deg); }
+
+        /* A push-in slow enough that you feel it rather than see it. */
+        @keyframes ip-settle {
+          from { transform: scale(1.055); }
+          to   { transform: scale(1); }
+        }
+
+        @keyframes ip-caption {
+          0%     { opacity: 0; transform: translate3d(0, 14px, 0); animation-timing-function: cubic-bezier(0.33, 1, 0.68, 1); }
+          55.81% { opacity: 1; transform: translate3d(0, 0, 0); animation-timing-function: linear; }
+          74.42% { opacity: 1; transform: translate3d(0, 0, 0); animation-timing-function: cubic-bezier(0.55, 0, 1, 0.45); }
+          100%   { opacity: 0; transform: translate3d(0, 0, 0); }
+        }
+
+        /* The type rides up faster than the plate, so the exit reads as one
+           continuous movement rather than a fade followed by a wipe. */
+        @keyframes ip-stage {
+          from { transform: translate3d(0, 0, 0); }
+          to   { transform: translate3d(0, -14%, 0); }
+        }
+
+        @keyframes ip-curtain {
+          from { transform: translate3d(0, 0, 0); }
+          to   { transform: translate3d(0, -100%, 0); }
+        }
+
+        .ip-go .ip-rule    { animation: ip-rule 3.55s linear both; }
+        .ip-go .ip-word-1  { animation: ip-word 1.8s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both; }
+        .ip-go .ip-word-2  { animation: ip-word 1.8s cubic-bezier(0.16, 1, 0.3, 1) 0.46s both; }
+        .ip-go .ip-lockup  { animation: ip-settle 3.4s cubic-bezier(0.33, 1, 0.68, 1) 0.3s both; }
+        .ip-go .ip-caption { animation: ip-caption 2.15s linear 1.25s both; }
+        .ip-go .ip-stage   { animation: ip-stage 1.35s cubic-bezier(0.87, 0, 0.13, 1) 3.05s both; }
+        .ip-go.ip-root     { animation: ip-curtain 1.35s cubic-bezier(0.87, 0, 0.13, 1) 3.05s both; }
+
+        @media (prefers-reduced-motion: reduce) {
+          .ip-word, .ip-rule, .ip-caption { transform: none; opacity: 1; }
+          .ip-go .ip-rule, .ip-go .ip-word-1, .ip-go .ip-word-2,
+          .ip-go .ip-lockup, .ip-go .ip-caption, .ip-go .ip-stage,
+          .ip-go.ip-root { animation: none; }
+          .ip-root, .ip-stage, .ip-word, .ip-rule, .ip-lockup, .ip-caption { will-change: auto; }
         }
       `}</style>
     </div>

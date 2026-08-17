@@ -14,12 +14,12 @@ const team = [
 ];
 
 const portfolio = [
-  { id: 1, title: "Modern Estate", category: "Full Build", img: "https://images.unsplash.com/photo-1558904541-efa8c1965f1e?auto=format&fit=crop&q=80&w=800" },
-  { id: 2, title: "Cotswold Patio", category: "Hardscaping", img: "https://images.unsplash.com/photo-1598902108854-10e335adac99?auto=format&fit=crop&q=80&w=800" },
-  { id: 3, title: "Secret Garden", category: "Softscaping", img: "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&q=80&w=800" },
-  { id: 4, title: "Modern Driveway", category: "Groundwork", img: "https://images.unsplash.com/photo-1590073242678-70ee3fc28e8e?auto=format&fit=crop&q=80&w=800" },
-  { id: 5, title: "Alpine Feature", category: "Design", img: "https://images.unsplash.com/photo-1584479898061-15742e14f50d?auto=format&fit=crop&q=80&w=800" },
-  { id: 6, title: "Eco Terrace", category: "Urban", img: "https://images.unsplash.com/photo-1591115765373-520b7a2d7a59?auto=format&fit=crop&q=80&w=800" }
+  { id: 1, title: "Modern Estate", category: "Full Build", img: "https://images.unsplash.com/photo-1558904541-efa8c1965f1e?auto=format&fit=crop&q=65&w=800" },
+  { id: 2, title: "Cotswold Patio", category: "Hardscaping", img: "https://images.unsplash.com/photo-1598902108854-10e335adac99?auto=format&fit=crop&q=65&w=800" },
+  { id: 3, title: "Secret Garden", category: "Softscaping", img: "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&q=65&w=800" },
+  { id: 4, title: "Modern Driveway", category: "Groundwork", img: "https://images.unsplash.com/photo-1590073242678-70ee3fc28e8e?auto=format&fit=crop&q=65&w=800" },
+  { id: 5, title: "Alpine Feature", category: "Design", img: "https://images.unsplash.com/photo-1584479898061-15742e14f50d?auto=format&fit=crop&q=65&w=800" },
+  { id: 6, title: "Eco Terrace", category: "Urban", img: "https://images.unsplash.com/photo-1591115765373-520b7a2d7a59?auto=format&fit=crop&q=65&w=800" }
 ];
 
 const services = [
@@ -37,7 +37,7 @@ const LandscaperDemo: React.FC = () => {
       {selectedImg && (
         <div className="fixed inset-0 z-[200] bg-[#1b4332]/95 backdrop-blur-xl flex items-center justify-center p-6 cursor-zoom-out" onClick={() => setSelectedImg(null)}>
           <button className="absolute top-10 right-10 text-white"><X size={40} /></button>
-          <img src={selectedImg} alt="Enlarged" className="max-w-full max-h-full rounded-3xl animate-scale-in" width="1200" height="800" />
+          <img src={selectedImg} alt="Enlarged" className="max-w-full max-h-full rounded-3xl animate-scale-in" width="1200" height="800" loading="lazy" decoding="async" />
         </div>
       )}
 
@@ -73,7 +73,7 @@ const LandscaperDemo: React.FC = () => {
         <h1 className="text-6xl md:text-[9vw] font-black tracking-tight text-[#1b4332] mb-10 max-w-6xl leading-[0.82] uppercase">
           WE CREATE <br /><span className="text-[#2d6a4f] italic">GARDENS</span> YOU <br />ACTUALLY USE.
         </h1>
-        <p className="text-2xl text-slate-500 max-w-2xl mb-14 leading-relaxed font-medium">Bespoke outdoor environments built to last. Wiltshire's premier tradesmen for high-end homeowners.</p>
+        <p className="text-2xl text-slate-500 max-w-2xl mb-14 leading-relaxed font-medium">Bespoke outdoor environments built to last. Premier tradesmen for high-end homeowners.</p>
         <button className="px-14 py-8 bg-[#2d6a4f] text-white font-black rounded-2xl shadow-xl flex items-center justify-center gap-6 text-sm uppercase tracking-widest hover:bg-[#1b4332] hover:scale-105 transition-all">GET A FREE QUOTE <ArrowRight size={20} /></button>
       </section>
 
@@ -110,7 +110,7 @@ const LandscaperDemo: React.FC = () => {
            <div className="lg:w-1/2 grid grid-cols-1 gap-8">
               {team.map((m, i) => (
                 <div key={i} className="flex items-center gap-10 p-10 bg-slate-50 rounded-[4rem] border border-transparent hover:border-green-100 transition-colors">
-                   <img src={m.img} alt={m.name} className="w-28 h-28 rounded-full border-8 border-white shadow-xl" loading="lazy" />
+                   <img src={m.img} alt={m.name} className="w-28 h-28 rounded-full border-8 border-white shadow-xl" loading="lazy" decoding="async" />
                    <div><h4 className="text-2xl font-black uppercase tracking-tight">{m.name}</h4><p className="text-[#2d6a4f] font-black text-[10px] uppercase mb-3 tracking-widest">{m.role}</p><p className="text-sm text-slate-500 font-medium">{m.bio}</p></div>
                 </div>
               ))}
@@ -125,12 +125,12 @@ const LandscaperDemo: React.FC = () => {
              <button className="px-12 py-6 border border-white/20 rounded-2xl font-black text-[10px] uppercase hover:bg-white hover:text-slate-950 transition-all">View All Work <Sparkles size={16} /></button>
           </div>
           <div className="columns-1 md:columns-2 lg:columns-3 gap-8 space-y-8">
-             {portfolio.map((item) => <div key={item.id} className="relative break-inside-avoid rounded-[2.5rem] overflow-hidden group cursor-zoom-in" onClick={() => setSelectedImg(item.img)}><img src={item.img} alt={item.title} className="w-full transition-transform duration-1000 group-hover:scale-110 grayscale group-hover:grayscale-0" loading="lazy" width="600" height="800" /><div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-10 flex flex-col justify-end"><h4 className="text-3xl font-black uppercase">{item.title}</h4></div></div>)}
+             {portfolio.map((item) => <div key={item.id} className="relative break-inside-avoid rounded-[2.5rem] overflow-hidden group cursor-zoom-in" onClick={() => setSelectedImg(item.img)}><img src={item.img} alt={item.title} className="w-full transition-transform duration-1000 group-hover:scale-110 grayscale group-hover:grayscale-0" loading="lazy" width="600" height="800" decoding="async" /><div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-10 flex flex-col justify-end"><h4 className="text-3xl font-black uppercase">{item.title}</h4></div></div>)}
           </div>
         </div>
       </section>
 
-      <footer className="py-24 px-8 text-center"><div className="flex items-center justify-center gap-3 mb-4"><Leaf className="text-[#2d6a4f]" /><span className="font-black uppercase tracking-widest text-xl">Premier Landscapes</span></div><p className="text-[10px] font-bold text-slate-300 uppercase tracking-widest">© 2025 ALL RIGHTS RESERVED | WILTSHIRE TRADES HUB</p></footer>
+      <footer className="py-24 px-8 text-center"><div className="flex items-center justify-center gap-3 mb-4"><Leaf className="text-[#2d6a4f]" /><span className="font-black uppercase tracking-widest text-xl">Premier Landscapes</span></div><p className="text-[10px] font-bold text-slate-300 uppercase tracking-widest">© 2025 ALL RIGHTS RESERVED | PREMIER LANDSCAPES</p></footer>
       <style>{`.perspective-1000 { perspective: 1000px; } @keyframes scale-in { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } } .animate-scale-in { animation: scale-in 0.4s ease-out; }`}</style>
     </div>
   );

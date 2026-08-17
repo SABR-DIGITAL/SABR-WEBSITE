@@ -3,7 +3,6 @@ import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Flower2, Heart, Award, ShieldCheck, Sparkles, Map } from 'lucide-react';
-import ExitPreviewButton from '../../ExitPreviewButton';
 import CafeNavbar from './CafeNavbar';
 import CafeFooter from './CafeFooter';
 
@@ -12,7 +11,6 @@ const CafeAbout: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#FFF9F5] font-sans selection:bg-[#A4715E] selection:text-white overflow-x-hidden">
-      <ExitPreviewButton />
       <CafeNavbar />
 
       <section className="pt-56 pb-32 px-6 text-center">
@@ -43,7 +41,7 @@ const CafeAbout: React.FC = () => {
             className="w-full lg:w-3/5 space-y-12"
           >
             <div className="w-16 h-2 bg-[#A4715E]"></div>
-            <h2 className="font-serif text-6xl md:text-8xl font-black text-[#4A403A] uppercase tracking-tighter leading-none">Born in Wiltshire. <br /> <span className="text-[#A4715E] italic">Raised in Wick.</span></h2>
+            <h2 className="font-serif text-6xl md:text-8xl font-black text-[#4A403A] uppercase tracking-tighter leading-none">Born on the <br /> <span className="text-[#A4715E] italic">High Street.</span></h2>
             <p className="text-[#A4715E]/70 text-2xl font-medium italic border-l-4 border-[#FDE2E4] pl-10 leading-relaxed">
               "The Hearth started as a single coffee cart in a rainy public park. We believed that even in the rain, a perfect roast could bring people together."
             </p>
@@ -64,9 +62,11 @@ const CafeAbout: React.FC = () => {
                className="relative aspect-[4/5] rounded-[4rem] overflow-hidden shadow-3xl border-[16px] border-white group"
              >
                 <img 
-                  src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&q=80&w=1200" 
+                  src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&q=65&w=1200" 
                   alt="Cafe Ambiance" 
-                  className="w-full h-full object-cover transition-all duration-1000" 
+                  className="w-full h-full object-cover transition-all duration-1000"
+                  loading="lazy"
+                  decoding="async" 
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#4A403A]/50 to-transparent"></div>
              </motion.div>
@@ -82,7 +82,7 @@ const CafeAbout: React.FC = () => {
            <div className="p-16 bg-white rounded-[4rem] border border-[#A4715E]/5 shadow-xl text-center space-y-8 hover:-translate-y-4 transition-transform duration-500">
               <div className="w-20 h-20 bg-[#FDE2E4] text-[#A4715E] flex items-center justify-center rounded-[2rem] mx-auto"><Flower2 size={28} /></div>
               <h4 className="font-serif text-3xl font-bold text-[#4A403A]">Pure Sourcing</h4>
-              <p className="text-base text-[#A4715E]/60 italic leading-relaxed">"We work exclusively with Wiltshire farmers who share our vision for organic, sustainable harvesting."</p>
+              <p className="text-base text-[#A4715E]/60 italic leading-relaxed">"We work exclusively with farmers who share our vision for organic, sustainable harvesting."</p>
            </div>
            <div className="p-16 bg-white rounded-[4rem] border border-[#A4715E]/5 shadow-xl text-center space-y-8 hover:-translate-y-4 transition-transform duration-500">
               <div className="w-20 h-20 bg-[#FDE2E4] text-[#A4715E] flex items-center justify-center rounded-[2rem] mx-auto"><Award size={28} /></div>
@@ -109,9 +109,11 @@ const CafeAbout: React.FC = () => {
               <div className="w-full lg:w-3/5">
                  <div className="aspect-video rounded-[4rem] overflow-hidden shadow-2xl border-[12px] border-white relative group">
                     <img 
-                      src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&q=80&w=1200" 
+                      src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&q=65&w=1200" 
                       className="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-[2s]" 
-                      alt="Interior Architecture" 
+                      alt="Interior Architecture"
+                      loading="lazy"
+                      decoding="async" 
                     />
                     <div className="absolute inset-0 bg-gradient-to-r from-black/20 to-transparent"></div>
                  </div>

@@ -4,7 +4,6 @@ import * as FramerMotion from 'framer-motion';
 import { Mail, Phone, MapPin, Send, CheckCircle, MoveLeft, Sprout, Sun } from 'lucide-react';
 import Navbar from './Navbar';
 import Footer from './Footer';
-import ExitPreviewButton from '../../ExitPreviewButton';
 
 // Robust export resolution
 const { Link } = RouterDOM as any;
@@ -26,16 +25,17 @@ const Contact: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#F4F1EA] font-inter selection:bg-[#BC4B26] selection:text-white pb-32">
-      <ExitPreviewButton />
       <Navbar />
 
       {/* Hero Header */}
       <section className="relative h-[45vh] flex items-center pt-24 px-8 overflow-hidden">
         <div className="absolute inset-0 z-0 scale-105 grayscale brightness-[0.3]">
           <img 
-            src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&q=80&w=1600" 
+            src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&q=65&w=1600" 
             alt="Forestry Work" 
             className="w-full h-full object-cover"
+            loading="lazy"
+            decoding="async"
           />
           <div className="absolute inset-0 bg-[#1A3C28]/40"></div>
         </div>
@@ -104,14 +104,16 @@ const Contact: React.FC = () => {
             {/* Architectural Map Preview */}
             <div className="relative h-80 grayscale overflow-hidden border border-[#1A3C28]/10 group shadow-2xl rounded-sm transform-gpu">
               <img 
-                src="https://images.unsplash.com/photo-1526778548025-fa2f459cd5ce?auto=format&fit=crop&q=80&w=800" 
-                alt="Wiltshire Map" 
+                src="https://images.unsplash.com/photo-1526778548025-fa2f459cd5ce?auto=format&fit=crop&q=65&w=800" 
+                alt="Location map" 
                 className="w-full h-full object-cover opacity-30 transition-transform duration-[2s] group-hover:scale-110"
+                loading="lazy"
+                decoding="async"
               />
               <div className="absolute inset-0 flex items-center justify-center bg-[#1A3C28]/5">
                  <div className="p-8 bg-white shadow-2xl flex items-center gap-4 rounded-sm">
                     <div className="w-10 h-10 bg-[#BC4B26] flex items-center justify-center text-white"><MapPin size={20} /></div>
-                    <p className="text-[#1A3C28] font-black text-[10px] uppercase tracking-[0.4em]">Based in Wiltshire, United Kingdom</p>
+                    <p className="text-[#1A3C28] font-black text-[10px] uppercase tracking-[0.4em]">Visit the yard by appointment</p>
                  </div>
               </div>
             </div>

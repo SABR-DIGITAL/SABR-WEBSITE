@@ -6,6 +6,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import IntroPortal from './components/IntroPortal';
 import Navbar from './components/Navbar';
+import ExitPreviewButton from './components/ExitPreviewButton';
 
 // Home components
 import Hero from './components/Hero';
@@ -15,11 +16,13 @@ import WhyWebsiteSection from './components/WhyWebsiteSection';
 
 // Lazy Loaded Pages
 const ProjectsGallery = lazy(() => import('./pages/ProjectsGallery'));
-const BarberHome = lazy(() => import('./components/demos/barber/BarberHome'));
-const BarberCuts = lazy(() => import('./components/demos/barber/BarberCuts'));
-const BarberLocations = lazy(() => import('./components/demos/barber/BarberLocations'));
-const BarberContact = lazy(() => import('./components/demos/barber/BarberContact'));
-const BarberBooking = lazy(() => import('./components/demos/barber/BarberBooking'));
+const EquestrianHome = lazy(() => import('./components/demos/equestrian/EquestrianHome'));
+const EquestrianLessons = lazy(() => import('./components/demos/equestrian/EquestrianLessons'));
+const EquestrianHorses = lazy(() => import('./components/demos/equestrian/EquestrianHorses'));
+const EquestrianFacilities = lazy(() => import('./components/demos/equestrian/EquestrianFacilities'));
+const EquestrianFaqs = lazy(() => import('./components/demos/equestrian/EquestrianFaqs'));
+const EquestrianContact = lazy(() => import('./components/demos/equestrian/EquestrianContact'));
+const EquestrianBooking = lazy(() => import('./components/demos/equestrian/EquestrianBooking'));
 const LandscaperHome = lazy(() => import('./components/demos/landscaping/Home'));
 const LandscaperContact = lazy(() => import('./components/demos/landscaping/Contact'));
 const LandscaperServices = lazy(() => import('./components/demos/landscaping/Services'));
@@ -45,6 +48,49 @@ const PhysioContact = lazy(() => import('./components/demos/physio/PhysioContact
 const SnakeTimeline = lazy(() => import('./components/SnakeTimeline'));
 const FAQSection = lazy(() => import('./components/FAQSection'));
 const ContactForm = lazy(() => import('./components/ContactForm'));
+
+// The inner pages of a demo are the ones a visitor clicks through next, so once
+// a demo's landing page is on screen we quietly fetch the rest of that demo.
+// Same import specifiers as above, which means the same chunks — no extra work.
+const DEMO_SIBLING_CHUNKS: Record<string, Array<() => Promise<unknown>>> = {
+  equestrian: [
+    () => import('./components/demos/equestrian/EquestrianLessons'),
+    () => import('./components/demos/equestrian/EquestrianHorses'),
+    () => import('./components/demos/equestrian/EquestrianFacilities'),
+    () => import('./components/demos/equestrian/EquestrianFaqs'),
+    () => import('./components/demos/equestrian/EquestrianContact'),
+    () => import('./components/demos/equestrian/EquestrianBooking')
+  ],
+  landscaping: [
+    () => import('./components/demos/landscaping/Services'),
+    () => import('./components/demos/landscaping/Gallery'),
+    () => import('./components/demos/landscaping/About'),
+    () => import('./components/demos/landscaping/Contact')
+  ],
+  cafe: [
+    () => import('./components/demos/cafe/CafeMenu'),
+    () => import('./components/demos/cafe/CafeLocations'),
+    () => import('./components/demos/cafe/CafeAbout'),
+    () => import('./components/demos/cafe/CafeContact'),
+    () => import('./components/demos/cafe/CafeBooking')
+  ],
+  physio: [
+    () => import('./components/demos/physio/PhysioPrices'),
+    () => import('./components/demos/physio/PhysioTeam'),
+    () => import('./components/demos/physio/PhysioFAQ'),
+    () => import('./components/demos/physio/PhysioContact')
+  ]
+};
+
+const warmedDemos = new Set<string>();
+
+const warmDemoSiblings = (slug: string) => {
+  if (warmedDemos.has(slug)) return;
+  const loaders = DEMO_SIBLING_CHUNKS[slug];
+  if (!loaders) return;
+  warmedDemos.add(slug);
+  loaders.forEach((load) => load().catch(() => undefined));
+};
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -108,8 +154,8 @@ const SITE_URL = 'https://sabrdigital.co.uk';
 
 const SEO_META: Record<Page, { title: string; description: string }> = {
   home: {
-    title: 'SABR Digital | Web Design in Wiltshire & Across the UK',
-    description: 'We design and build fast, easy-to-find websites for small businesses in Wiltshire and across the UK. Most sites go live in two to three weeks.'
+    title: 'SABR Digital | Web Design for Small Businesses',
+    description: 'We design and build fast, easy-to-find websites for small businesses. Most sites go live in two to three weeks.'
   },
   work: {
     title: 'Our Work | Website Projects & Live Demos | SABR Digital',
@@ -124,8 +170,8 @@ const SEO_META: Record<Page, { title: string; description: string }> = {
     description: 'What a website costs, how long it takes, who owns it, how hosting works and how we help you get found on Google. Straight answers, no jargon.'
   },
   contact: {
-    title: 'Contact Us | Web Designer in Wiltshire | SABR Digital',
-    description: 'Send a WhatsApp or an email and we will reply within 12 hours. A free, no-pressure chat about your website. Based in Wiltshire, working UK wide.'
+    title: 'Contact SABR Digital | Start Your Website',
+    description: 'Send a WhatsApp or an email and we will reply within 12 hours. A free, no-pressure chat about your website.'
   }
 };
 
@@ -165,7 +211,11 @@ const useSeoMeta = (page: Page, pathname: string) => {
 };
 
 const MainApp: React.FC = () => {
-  const [showIntro, setShowIntro] = useState(true);
+  // Deep links straight into a demo skip the agency intro — the demo has its own
+  // opening sequence and two title cards stacked on top of each other reads as a bug.
+  const [showIntro, setShowIntro] = useState(
+    () => !window.location.pathname.startsWith('/demo')
+  );
   const [isRevealed, setIsRevealed] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
@@ -202,13 +252,37 @@ const MainApp: React.FC = () => {
 
   // Soft cross-fade between pages now that each one is a real route.
   useEffect(() => {
-    if (isDemo || !contentRef.current) return;
+    if (!contentRef.current) return;
+
+    // A leftover GSAP transform on this wrapper would become the containing
+    // block for the fixed Exit Preview button, so demos start from a clean slate.
+    if (isDemo) {
+      gsap.set(contentRef.current, { clearProps: 'all' });
+      return;
+    }
+
     gsap.fromTo(
       contentRef.current,
       { opacity: 0, y: 24 },
-      { opacity: 1, y: 0, duration: 0.45, ease: 'power4.out', force3D: true }
+      { opacity: 1, y: 0, duration: 0.45, ease: 'power4.out', force3D: true, clearProps: 'transform' }
     );
   }, [location.pathname, isDemo]);
+
+  // Inside a demo, fetch its remaining pages while the visitor reads the first
+  // one, so moving around the demo site feels instant.
+  useEffect(() => {
+    if (!isDemo) return;
+    const slug = location.pathname.split('/')[2];
+    if (!slug) return;
+    const warm = () => warmDemoSiblings(slug);
+    const idle = (window as any).requestIdleCallback;
+    if (typeof idle === 'function') {
+      const handle = idle(warm, { timeout: 2500 });
+      return () => (window as any).cancelIdleCallback?.(handle);
+    }
+    const timer = window.setTimeout(warm, 1200);
+    return () => window.clearTimeout(timer);
+  }, [isDemo, location.pathname]);
 
   const navigateTo = (page: Page) => {
     const path = PAGE_PATHS[page];
@@ -237,6 +311,9 @@ const MainApp: React.FC = () => {
       <ScrollToTop />
       <LegacyHashRedirect />
       {showIntro && <IntroPortal onComplete={handleIntroComplete} />}
+      {/* One instance for every demo, mounted outside the animated page wrapper
+          so it stays pinned to the viewport wherever the visitor scrolls. */}
+      {isDemo && <ExitPreviewButton />}
       <div className="flex flex-col min-h-screen relative z-10">
         {!isDemo && <Navbar navigateTo={navigateTo} currentPage={currentPage} startAnimation={isRevealed} />}
         <main className="relative flex-grow">
@@ -248,11 +325,13 @@ const MainApp: React.FC = () => {
                 <Route path="/faq" element={<FAQSection navigateTo={navigateTo} />} />
                 <Route path="/contact" element={<ContactForm />} />
                 <Route path="/projects" element={<ProjectsGallery />} />
-                <Route path="/demo/barber" element={<BarberHome />} />
-                <Route path="/demo/barber/cuts" element={<BarberCuts />} />
-                <Route path="/demo/barber/locations" element={<BarberLocations />} />
-                <Route path="/demo/barber/contact" element={<BarberContact />} />
-                <Route path="/demo/barber/book" element={<BarberBooking />} />
+                <Route path="/demo/equestrian" element={<EquestrianHome />} />
+                <Route path="/demo/equestrian/lessons" element={<EquestrianLessons />} />
+                <Route path="/demo/equestrian/horses" element={<EquestrianHorses />} />
+                <Route path="/demo/equestrian/facilities" element={<EquestrianFacilities />} />
+                <Route path="/demo/equestrian/faqs" element={<EquestrianFaqs />} />
+                <Route path="/demo/equestrian/contact" element={<EquestrianContact />} />
+                <Route path="/demo/equestrian/book" element={<EquestrianBooking />} />
                 <Route path="/demo/landscaping" element={<LandscaperHome />} />
                 <Route path="/demo/landscaping/services" element={<LandscaperServices />} />
                 <Route path="/demo/landscaping/about" element={<LandscaperAbout />} />
@@ -310,8 +389,8 @@ const MainApp: React.FC = () => {
                   <div>
                     <h2 className="text-[10px] uppercase tracking-[0.5em] text-blue-600 font-black mb-6">Areas We Cover</h2>
                     <p className="text-slate-400 text-sm font-medium leading-relaxed">
-                      A web design studio based in Wiltshire, working with businesses across the UK &mdash; Swindon, Salisbury,
-                      Chippenham, Trowbridge, Devizes, Marlborough, Melksham, Warminster, Bath and Bristol.
+                      We work with tradespeople, salons, clinics, cafes and other small businesses,
+                      wherever they are based. Everything is handled remotely, by call and email.
                     </p>
                   </div>
                   <div>
@@ -333,7 +412,7 @@ const MainApp: React.FC = () => {
                 </div>
 
                 <div className="flex flex-col gap-2 items-center">
-                  <p className="text-[12px] text-slate-300 uppercase tracking-[0.6em] font-black">© 2025 SABR DIGITAL STUDIO | WILTSHIRE, UK</p>
+                  <p className="text-[12px] text-slate-300 uppercase tracking-[0.6em] font-black">© 2025 SABR DIGITAL STUDIO</p>
                   <div className="w-24 h-1.5 bg-blue-600 rounded-full mt-10"></div>
                 </div>
               </div>
