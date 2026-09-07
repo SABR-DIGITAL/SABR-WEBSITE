@@ -435,30 +435,18 @@ const DigitalForge: React.FC<DigitalForgeProps> = ({ navigateTo }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const progressRef = useRef(0);
 
-  // Where the timeline sits against the page. Progress 0 lands when the top of
-  // the section has climbed a fifth of the way up the screen — early enough that
-  // the lift-off has begun before it pins, late enough that you are not missing
-  // the opening while it is still a sliver at the bottom. Progress 1 lands as the
-  // stage's bottom edge reaches the bottom of the screen.
-  //
-  // The section is 400svh against a 100svh stage: 78svh of that travel happens
-  // on the way in, and the remaining 300svh — three full screens of scroll — is
-  // spent pinned, which is where the bulk of the pull-back lives.
+  // The section is 400vh against a 100vh stage: the stage is pinned at top: 0
+  // for three full screens of scroll while the camera pulls back smoothly.
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ['start 80%', 'end end']
+    offset: ['start start', 'end end']
   });
 
-  // The copy holds still on the way in, then drifts and shrinks across the whole
-  // pinned stretch as the camera falls away from it.
-  const copyY = useTransform(scrollYProgress, [0.2, 1], [0, -90]);
-  const copyScale = useTransform(scrollYProgress, [0.2, 1], [1, 0.88]);
-  const hintOpacity = useTransform(scrollYProgress, [0.22, 0.34], [1, 0]);
+  const hintOpacity = useTransform(scrollYProgress, [0.03, 0.15], [1, 0]);
 
   useEffect(() => {
-    // Scroll position is handed to the render loop and nowhere else: nothing in
-    // the DOM is written from the scroll callback, so a fast scroll cannot pile
-    // up style writes on the main thread.
+    // Prime progress immediately so mid-page loads or quick transitions don't jump
+    progressRef.current = scrollYProgress.get() || 0;
     const unsubscribe = scrollYProgress.on('change', (v: number) => {
       progressRef.current = v;
     });
@@ -888,8 +876,6 @@ const DigitalForge: React.FC<DigitalForgeProps> = ({ navigateTo }) => {
     // The damped copy of the scroll position. Primed on the first frame so the
     // section does not swing in from zero if you land on it mid-page.
     let smoothed = -1;
-    // Time banked towards the next ambient frame. See the settle check below.
-    let ambient = 0;
 
     const observer = new IntersectionObserver((entries) => {
       isVisible = entries[0].isIntersecting;
@@ -901,30 +887,13 @@ const DigitalForge: React.FC<DigitalForgeProps> = ({ navigateTo }) => {
       elapsed += dt;
       const t = reducedMotion ? 0 : elapsed;
 
-      /* A wheel notch is a step change in scroll position, and this camera
-         multiplies whatever it is given — an eighth of the track is a doubling
-         of distance — so a raw scroll value shows up as a visible jolt, and
-         momentum scrolling at the bottom of the pin shows up as chatter. The
-         target is therefore chased with an exponential decay rather than used
-         directly. Written with exp(-dt * k) so the rate is the same whether
-         the browser is running at 60Hz or 144Hz. */
+      /* Target scroll position is chased with continuous exponential damping
+         to guarantee completely smooth camera movement without wheel notch jolts. */
       const target = progressRef.current;
-      // A jump of more than a quarter of the track in a single frame is not a
-      // scroll, it is a link or a restored position — snap rather than fly.
-      if (smoothed < 0 || Math.abs(target - smoothed) > 0.25) smoothed = target;
-      else smoothed += (target - smoothed) * (1 - Math.exp(-dt * 7.5));
+      if (smoothed < 0) smoothed = target;
+      else if (Math.abs(target - smoothed) > 0.85) smoothed = target;
+      else smoothed += (target - smoothed) * (1 - Math.exp(-dt * 8.0));
       const zoom = easeScroll(smoothed);
-
-      /* While the camera is settled, nothing on screen needs sixty frames a
-         second: the orbits turn at a hundredth of a radian per second and the
-         twinkle is barely over a hertz. So a stationary shot is drawn at 30fps
-         and the GPU is left alone for the other half of the time. The instant
-         the scroll moves this goes back to every frame — which is exactly when
-         the browser's compositor and this scene would otherwise be fighting
-         over the same GPU, and that fight is what a scroll stutter is. */
-      ambient += dt;
-      if (Math.abs(target - smoothed) < 0.0004 && ambient < 1 / 30) return;
-      ambient = 0;
 
       starMat.uniforms.uTime.value = t;
       bandMat.uniforms.uTime.value = t;
@@ -965,7 +934,7 @@ const DigitalForge: React.FC<DigitalForgeProps> = ({ navigateTo }) => {
       const swing = lerp(0.0, 0.75, zoom);
       camera.position.set(
         Math.sin(swing) * dist,
-        height + (reducedMotion ? 0 : Math.sin(t * 0.25) * 0.06 * (1 - zoom)),
+        height,
         Math.cos(swing) * dist
       );
       camera.lookAt(0, 0, 0);
@@ -1026,16 +995,12 @@ const DigitalForge: React.FC<DigitalForgeProps> = ({ navigateTo }) => {
   return (
     <section
       ref={containerRef}
-      className="relative bg-[#02040a] h-[400svh]"
+      className="relative bg-[#02040a] h-[400vh]"
     >
-      {/* 400svh against a 100svh stage. The offset below starts the camera when
-          the section's top reaches 80% of the viewport — a fifth of the way up
-          the screen, so the first turn of the wheel already moves it — and the
-          remaining 300svh is spent pinned, which is three full screens of
-          scroll to get from the cloud tops of the home world out past the last
-          orbit. The section still ends exactly where the stage does, so
-          the next section follows it with no black gap. */}
-      <div ref={stageRef} className="sticky top-0 h-[100svh] w-full overflow-hidden">
+      {/* 400vh against a 100vh pinned stage. The stage pins at top: 0 for three
+          full screens of scroll to smoothly pull back through the planetary system,
+          with the copy held perfectly stationary so there is zero jitter or unwanted movement. */}
+      <div ref={stageRef} className="sticky top-0 h-screen w-full overflow-hidden">
         <canvas
           ref={canvasRef}
           aria-hidden="true"
@@ -1045,15 +1010,8 @@ const DigitalForge: React.FC<DigitalForgeProps> = ({ navigateTo }) => {
         {/* Vignette, so the copy stays razor sharp over a busy sky. */}
         <div className="absolute inset-0 z-[2] pointer-events-none bg-[radial-gradient(ellipse_at_center,rgba(2,4,10,0.72)_0%,rgba(2,4,10,0.35)_45%,rgba(2,4,10,0.85)_100%)]"></div>
 
-        <div className="absolute inset-0 z-[3] flex flex-col items-center justify-center px-8 md:px-12 text-center">
-          {/* willChange keeps this block on its own compositor layer for the
-              whole scroll. Without it the browser promotes and demotes the layer
-              as the transform starts and stops, and re-rasterising a screenful
-              of heavy type mid-scroll is exactly what a stutter is. */}
-          <motion.div
-            style={{ y: copyY, scale: copyScale, willChange: 'transform' }}
-            className="max-w-4xl"
-          >
+        <div className="absolute inset-0 z-[3] flex flex-col items-center justify-center px-8 md:px-12 text-center pointer-events-none">
+          <div className="max-w-4xl pointer-events-auto">
             <div className="h-1 w-20 bg-blue-600 mb-10 md:mb-14 mx-auto rounded-full shadow-[0_0_24px_rgba(37,99,235,0.9)]"></div>
             <h2 className="font-syne text-[clamp(2rem,8vw,4.5rem)] text-white font-black tracking-tighter uppercase leading-[0.85] mb-7 md:mb-9 drop-shadow-[0_8px_40px_rgba(0,0,0,0.85)]">
               CRAFTED. <br/><span className="text-blue-500 italic drop-shadow-[0_0_35px_rgba(37,99,235,0.65)]">NOT COMPILED.</span>
@@ -1067,7 +1025,7 @@ const DigitalForge: React.FC<DigitalForgeProps> = ({ navigateTo }) => {
             >
               Work with us
             </button>
-          </motion.div>
+          </div>
         </div>
 
         <motion.div
