@@ -311,11 +311,12 @@ const MainApp: React.FC = () => {
       <ScrollToTop />
       <LegacyHashRedirect />
       {showIntro && <IntroPortal onComplete={handleIntroComplete} />}
+      {/* Fixed site navigation bar mounted directly at root viewport level */}
+      {!isDemo && <Navbar navigateTo={navigateTo} currentPage={currentPage} startAnimation={isRevealed} />}
       {/* One instance for every demo, mounted outside the animated page wrapper
           so it stays pinned to the viewport wherever the visitor scrolls. */}
       {isDemo && <ExitPreviewButton />}
       <div className="flex flex-col min-h-screen relative z-10">
-        {!isDemo && <Navbar navigateTo={navigateTo} currentPage={currentPage} startAnimation={isRevealed} />}
         <main className="relative flex-grow">
           <div ref={contentRef} className="w-full">
             <Suspense fallback={<LoadingFallback />}>

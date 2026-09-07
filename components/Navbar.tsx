@@ -15,18 +15,6 @@ interface NavbarProps {
   startAnimation?: boolean;
 }
 
-const navVariants = {
-  hidden: { opacity: 0, y: -20 },
-  visible: { 
-    opacity: 1, 
-    y: 0,
-    transition: {
-      duration: 0.8,
-      ease: [0.16, 1, 0.3, 1] // "Confident" ease matching IntroPortal/Hero feel
-    }
-  }
-};
-
 const Navbar: React.FC<NavbarProps> = ({ currentPage, startAnimation = true }) => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -52,13 +40,10 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, startAnimation = true }) =
 
   return (
     <>
-      <motion.nav 
-        variants={navVariants}
-        initial="hidden"
-        animate={startAnimation ? "visible" : "hidden"}
-        className={`fixed top-0 left-0 right-0 z-[100] transition-[padding] duration-700 px-4 md:px-8 ${scrolled ? 'py-4' : 'py-8'} block transform-gpu will-change-[padding, transform, opacity]`}
+      <header 
+        className={`fixed top-0 left-0 right-0 z-[100] px-4 md:px-8 py-4 pointer-events-none transition-opacity duration-700 ${startAnimation ? 'opacity-100' : 'opacity-0'}`}
       >
-        <div className={`max-w-7xl mx-auto flex items-center justify-between transition-[background-color,border-color,padding,border-radius,box-shadow] duration-700 ${scrolled ? 'lg:bg-white/95 lg:border-slate-100 lg:shadow-2xl lg:rounded-full lg:px-8 lg:py-5 lg:border' : 'bg-transparent border-transparent lg:bg-white/10 lg:border-white/20 lg:backdrop-blur-3xl lg:rounded-full lg:px-8 lg:py-5 lg:border'} ${mobileMenuOpen ? 'opacity-0' : 'opacity-100'} lg:opacity-100 transform-gpu will-change-[background-color,border-color,padding,border-radius] bg-transparent border-transparent shadow-none`}>
+        <div className={`max-w-7xl mx-auto flex items-center justify-between pointer-events-auto transition-[background-color,border-color,box-shadow] duration-500 lg:px-8 lg:py-4 lg:rounded-full lg:border ${scrolled ? 'lg:bg-white/95 lg:border-slate-100 lg:shadow-2xl' : 'bg-transparent border-transparent lg:bg-white/10 lg:border-white/20 lg:backdrop-blur-3xl'} ${mobileMenuOpen ? 'opacity-0' : 'opacity-100'} lg:opacity-100 bg-transparent border-transparent shadow-none`}>
           <Link
             to="/"
             onClick={() => handleNav('home')}
@@ -99,7 +84,7 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, startAnimation = true }) =
             <Menu size={24} />
           </button>
         </div>
-      </motion.nav>
+      </header>
 
       <AnimatePresence>
         {mobileMenuOpen && (
