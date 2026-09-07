@@ -4,6 +4,7 @@ import * as RouterDOM from 'react-router-dom';
 const { BrowserRouter, Routes, Route, Navigate, Link, useLocation, useNavigate } = RouterDOM as any;
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { ArrowUp } from 'lucide-react';
 import IntroPortal from './components/IntroPortal';
 import Navbar from './components/Navbar';
 import ExitPreviewButton from './components/ExitPreviewButton';
@@ -293,6 +294,10 @@ const MainApp: React.FC = () => {
     navigate(path);
   };
 
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+  };
+
   const handleIntroComplete = () => {
     setShowIntro(false);
   };
@@ -410,6 +415,19 @@ const MainApp: React.FC = () => {
                       <li className="text-slate-400">Replies within 12 hours</li>
                     </ul>
                   </div>
+                </div>
+
+                {/* BACK TO TOP */}
+                <div className="flex justify-center mb-16">
+                  <button
+                    type="button"
+                    onClick={scrollToTop}
+                    className="group inline-flex items-center gap-3 px-8 py-4 rounded-full border border-slate-200 bg-slate-50 hover:bg-white hover:border-blue-600 text-slate-600 hover:text-blue-600 text-[11px] font-black uppercase tracking-[0.3em] transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-1 active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-600/30 cursor-pointer"
+                    aria-label="Take me to the top"
+                  >
+                    <span>Take me to the top</span>
+                    <ArrowUp size={15} className="transition-transform duration-300 group-hover:-translate-y-1 text-blue-600" />
+                  </button>
                 </div>
 
                 {/* LEGAL / COMPLIANCE POLICIES */}
