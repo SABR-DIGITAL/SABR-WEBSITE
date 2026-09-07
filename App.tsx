@@ -411,9 +411,41 @@ const MainApp: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="flex flex-col gap-2 items-center">
-                  <p className="text-[12px] text-slate-300 uppercase tracking-[0.6em] font-black">© 2025 SABR DIGITAL STUDIO</p>
-                  <div className="w-24 h-1.5 bg-blue-600 rounded-full mt-10"></div>
+                {/* LEGAL / COMPLIANCE POLICIES */}
+                <div className="border-t border-slate-100 pt-10 mt-12 flex flex-col items-center">
+                  <nav aria-label="Legal policies" className="flex flex-wrap justify-center items-center gap-x-6 sm:gap-x-10 gap-y-3 mb-8">
+                    <a
+                      href="/documents/privacy-policy.pdf"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[11px] uppercase tracking-[0.3em] font-bold text-slate-400 hover:text-blue-600 transition-colors py-1 px-2 focus:outline-none focus:ring-2 focus:ring-blue-600/30 rounded"
+                    >
+                      Privacy Policy
+                    </a>
+                    <span className="text-slate-200 hidden sm:inline" aria-hidden="true">•</span>
+                    <a
+                      href="/documents/terms-of-service.pdf"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[11px] uppercase tracking-[0.3em] font-bold text-slate-400 hover:text-blue-600 transition-colors py-1 px-2 focus:outline-none focus:ring-2 focus:ring-blue-600/30 rounded"
+                    >
+                      Terms of Service
+                    </a>
+                    <span className="text-slate-200 hidden sm:inline" aria-hidden="true">•</span>
+                    <a
+                      href="/documents/cookie-policy.pdf"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[11px] uppercase tracking-[0.3em] font-bold text-slate-400 hover:text-blue-600 transition-colors py-1 px-2 focus:outline-none focus:ring-2 focus:ring-blue-600/30 rounded"
+                    >
+                      Cookie Policy
+                    </a>
+                  </nav>
+
+                  <div className="flex flex-col gap-2 items-center">
+                    <p className="text-[12px] text-slate-300 uppercase tracking-[0.6em] font-black">© 2025 SABR DIGITAL STUDIO</p>
+                    <div className="w-24 h-1.5 bg-blue-600 rounded-full mt-8"></div>
+                  </div>
                 </div>
               </div>
             </footer>
