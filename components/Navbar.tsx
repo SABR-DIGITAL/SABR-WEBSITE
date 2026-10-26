@@ -27,6 +27,7 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, startAnimation = true }) =
   }, []);
 
   const isProjects = location.pathname === '/projects';
+  const isHomeUnscrolled = currentPage === 'home' && !scrolled;
 
   const links: { name: string, id: Page }[] = [
     { name: 'Projects', id: 'work' },
@@ -43,26 +44,26 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, startAnimation = true }) =
       <header 
         className={`fixed top-0 left-0 right-0 z-[100] px-4 md:px-8 py-4 pointer-events-none transition-opacity duration-700 ${startAnimation ? 'opacity-100' : 'opacity-0'}`}
       >
-        <div className={`max-w-7xl mx-auto flex items-center justify-between pointer-events-auto transition-[background-color,border-color,box-shadow] duration-500 lg:px-8 lg:py-4 lg:rounded-full lg:border ${scrolled ? 'lg:bg-white/95 lg:border-slate-100 lg:shadow-2xl' : 'bg-transparent border-transparent lg:bg-white/10 lg:border-white/20 lg:backdrop-blur-3xl'} ${mobileMenuOpen ? 'opacity-0' : 'opacity-100'} lg:opacity-100 bg-transparent border-transparent shadow-none`}>
+        <div className={`max-w-7xl mx-auto flex items-center justify-between pointer-events-auto transition-[background-color,border-color,box-shadow] duration-500 lg:px-8 lg:py-4 lg:rounded-full lg:border ${scrolled ? 'lg:bg-white/95 lg:border-slate-100 lg:shadow-2xl' : isHomeUnscrolled ? 'bg-transparent border-transparent lg:bg-black/25 lg:border-white/20 lg:backdrop-blur-3xl' : 'bg-transparent border-transparent lg:bg-white/10 lg:border-white/20 lg:backdrop-blur-3xl'} ${mobileMenuOpen ? 'opacity-0' : 'opacity-100'} lg:opacity-100 bg-transparent border-transparent shadow-none`}>
           <Link
             to="/"
             onClick={() => handleNav('home')}
             aria-label="SABR Digital home"
             className="hidden lg:flex flex-col text-left group focus:outline-none focus:ring-0 appearance-none"
           >
-            <span className="font-syne text-xl md:text-2xl tracking-[0.05em] font-black text-slate-950 flex items-center">
+            <span className={`font-syne text-xl md:text-2xl tracking-[0.05em] font-black flex items-center ${isHomeUnscrolled ? 'text-white' : 'text-slate-950'}`}>
               SABR<span className="text-shimmer-blue ml-1.5">DIGITAL</span>
             </span>
             <span className="text-[7px] uppercase font-black tracking-[0.45em] text-blue-400">Web Design Studio</span>
           </Link>
-          
+
           <nav aria-label="Primary" className="hidden lg:flex items-center gap-12">
             {links.map((item) => (
               <Link
                 key={item.id}
                 to={PAGE_PATHS[item.id]}
                 onClick={() => handleNav(item.id)}
-                className={`relative text-[10px] uppercase tracking-[0.5em] transition-all font-black focus:outline-none ${(currentPage === item.id && !isProjects) || (isProjects && item.id === 'work') ? 'text-blue-600' : 'text-blue-500/60 hover:text-blue-600'}`}
+                className={`relative text-[10px] uppercase tracking-[0.5em] transition-all font-black focus:outline-none ${(currentPage === item.id && !isProjects) || (isProjects && item.id === 'work') ? 'text-blue-600' : isHomeUnscrolled ? 'text-blue-200/80 hover:text-white' : 'text-blue-500/60 hover:text-blue-600'}`}
               >
                 {item.name}
                 {((currentPage === item.id && !isProjects) || (isProjects && item.id === 'work')) && <div className="absolute -bottom-2 left-0 w-full h-0.5 bg-blue-600 rounded-full"></div>}
