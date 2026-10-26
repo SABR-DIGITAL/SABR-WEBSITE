@@ -34,16 +34,10 @@ const Hero: React.FC<HeroProps> = ({ navigateTo, startAnimation = true }) => {
         { opacity: 1, y: 0, filter: 'blur(0px)', duration: 1.2 }
       );
 
-      tl.fromTo(".hero-work-block", 
-        { clipPath: 'inset(0 100% 0 0)' },
-        { clipPath: 'inset(0 0% 0 0)', duration: 1.5 },
-        "-=1.0"
-      );
-
-      tl.fromTo(".hero-reveal-bottom", 
+      tl.fromTo(".hero-reveal-bottom",
         { opacity: 0, y: 30 },
         { opacity: 1, y: 0, duration: 1, stagger: 0.08 },
-        "-=1.2"
+        "-=0.7"
       );
 
       let delayedCall: gsap.core.Tween;
@@ -79,25 +73,31 @@ const Hero: React.FC<HeroProps> = ({ navigateTo, startAnimation = true }) => {
   }, [startAnimation]);
 
   return (
-    <section ref={containerRef} className="relative h-[100dvh] flex flex-col items-center sm:items-start px-6 lg:px-24 overflow-hidden bg-[#fdfbf7]">
-      <div className="h-24 md:h-32 shrink-0 w-full"></div>
+    <section ref={containerRef} className="relative h-[100dvh] flex flex-col items-center sm:items-start px-6 lg:px-24 overflow-hidden bg-[#0b0d10]">
+      <div className="absolute inset-0 z-0">
+        <img
+          src="/images/hero-bg.jpg"
+          alt="Misty countryside at sunrise"
+          className="w-full h-full object-cover"
+          loading="eager"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/75"></div>
+      </div>
 
-      <div className="flex-1 w-full flex flex-col items-center sm:items-start justify-start gap-6 md:gap-10 pb-12 md:pb-24">
+      <div className="relative z-10 h-24 md:h-32 shrink-0 w-full"></div>
+
+      <div className="relative z-10 flex-1 w-full flex flex-col items-center sm:items-start justify-start gap-6 md:gap-10 pb-12 md:pb-24">
         <div className="w-full flex flex-col items-center sm:items-start">
-          <h1 className="font-syne text-[clamp(1.5rem,8vw,4.4rem)] leading-[1.05] tracking-[-0.04em] uppercase flex flex-col items-center sm:items-start text-center sm:text-left text-[#050608] w-full transform-gpu will-change-transform">
-            <span className="hero-title-top font-extrabold mb-4 md:mb-6 px-4 sm:px-0 opacity-0">Built to Perform</span>
-            <div className="hero-work-block relative w-screen ml-[-24px] lg:ml-[-96px] flex items-center justify-center sm:justify-start overflow-hidden will-change-[clip-path]" style={{ clipPath: 'inset(0 100% 0 0)' }}>
-              {/* Updated gradient to match Navbar 'text-shimmer-blue' exactly for perfect sync */}
-              <div className="absolute inset-0 bg-gradient-to-r from-[#2563eb] via-[#38bdf8] via-[#ffffff] via-[#38bdf8] to-[#2563eb] -z-10 animate-hyper-shimmer bg-[length:200%_auto] will-change-[background-position]"></div>
-              <span className="px-6 sm:pl-6 lg:pl-24 sm:pr-4 md:pr-10 py-5 md:py-8 block text-white tracking-tighter whitespace-nowrap text-[clamp(0.9rem,4vw,4rem)]">Designed to Dominate</span>
-            </div>
+          <h1 className="font-syne text-[clamp(1.5rem,8vw,4.4rem)] leading-[1.05] tracking-[-0.04em] uppercase flex flex-col items-center sm:items-start text-center sm:text-left text-white w-full transform-gpu will-change-transform">
+            <span className="hero-title-top font-extrabold mb-4 md:mb-6 px-4 sm:px-0 opacity-0 drop-shadow-[0_4px_20px_rgba(0,0,0,0.5)]">Built to Perform</span>
+            <span className="hero-title-top font-extrabold px-4 sm:px-0 opacity-0 text-shimmer-blue drop-shadow-[0_4px_20px_rgba(0,0,0,0.5)]">Designed to Dominate</span>
           </h1>
         </div>
 
         <div className="hero-reveal-bottom w-full flex flex-col items-center sm:items-start gap-10 md:gap-14 transform-gpu opacity-0">
           {/* FIXED HEIGHT CONTAINER WITH LARGER MINIMALIST FONT */}
           <div className="h-[120px] md:h-[160px] flex items-center max-w-4xl overflow-hidden">
-            <p ref={phraseRef} className="font-inter text-2xl md:text-4xl text-slate-800 font-medium leading-[1.1] tracking-[-0.02em] text-center sm:text-left will-change-[opacity,transform]">
+            <p ref={phraseRef} className="font-inter text-2xl md:text-4xl text-white font-medium leading-[1.1] tracking-[-0.02em] text-center sm:text-left drop-shadow-[0_2px_12px_rgba(0,0,0,0.55)] will-change-[opacity,transform]">
               {phrases[phraseIndex]}
             </p>
           </div>
@@ -124,18 +124,6 @@ const Hero: React.FC<HeroProps> = ({ navigateTo, startAnimation = true }) => {
           </div>
         </div>
       </div>
-
-      <style>{`
-        @keyframes hyper-shimmer {
-          0% { background-position: 0% center; }
-          100% { background-position: 200% center; }
-        }
-        .animate-hyper-shimmer {
-          animation: hyper-shimmer 5s linear infinite;
-          transform: translateZ(0);
-          opacity: 0.95;
-        }
-      `}</style>
     </section>
   );
 };

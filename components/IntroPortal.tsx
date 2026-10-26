@@ -134,7 +134,7 @@ const IntroPortal: React.FC<IntroPortalProps> = ({ onComplete }) => {
 
         {/* The size lives on the h1 so the em-based gap between the two words
             scales with the type instead of with the inherited body size. */}
-        <h1 className="ip-lockup flex items-baseline justify-center gap-[0.22em] whitespace-nowrap text-[clamp(2.1rem,9vw,6rem)] font-black tracking-tighter">
+        <h1 className="ip-lockup flex items-baseline justify-center gap-[0.22em] whitespace-nowrap text-[clamp(1.4rem,7.8vw,3.3rem)] sm:text-[clamp(2.1rem,8vw,6rem)] font-black tracking-tighter">
           <span className="block overflow-hidden">
             <span className="ip-word ip-word-1 block text-white leading-none">SABR</span>
           </span>
