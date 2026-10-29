@@ -2,6 +2,11 @@
   command = "npm run build"
   publish = "dist"
 
+[[redirects]]
+  from = "/api/score"
+  to = "/.netlify/functions/score"
+  status = 200
+
 # SPA fallback so every crawled URL resolves to the app shell
 [[redirects]]
   from = "/*"

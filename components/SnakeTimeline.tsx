@@ -14,7 +14,7 @@ const BuildJourney = [
     id: '01',
     icon: <Search size={18} />,
     title: 'The Discovery & Planning',
-    color: '#2563eb',
+    color: '#059669',
     bullets: [
       'We learn about your business, services, and target audience.',
       'We review competitors to see what’s working in your market.',
@@ -25,7 +25,7 @@ const BuildJourney = [
     id: '02',
     icon: <PenTool size={18} />,
     title: 'The Project Lock-In',
-    color: '#2563eb',
+    color: '#059669',
     bullets: [
       'Contracts are signed to confirm deliverables, timelines, and ownership.',
       'We collect the necessary details like images, brand colours, pricing ETC.',
@@ -36,7 +36,7 @@ const BuildJourney = [
     id: '03',
     icon: <Cpu size={18} />,
     title: 'The Design & Build',
-    color: '#2563eb',
+    color: '#059669',
     bullets: [
       'We start to create your custom site tailored to your brand’s vision and style.',
       'Mobile optimisation and technical integrations are built in.',
@@ -47,7 +47,7 @@ const BuildJourney = [
     id: '04',
     icon: <Eye size={18} />,
     title: 'The Review & Refinement',
-    color: '#2563eb',
+    color: '#059669',
     bullets: [
       'You review the build and request revisions within scope of the contract.',
       'We polish visuals, layout, and performance details.',
@@ -58,7 +58,7 @@ const BuildJourney = [
     id: '05',
     icon: <Rocket size={18} />,
     title: 'The Launch & Handover',
-    color: '#2563eb',
+    color: '#059669',
     bullets: [
       'Final payment clears before final deployment begins.',
       'You choose your preferred hosting and deployment path.',
@@ -174,7 +174,7 @@ const SnakeTimeline: React.FC<{ navigateTo: (page: Page) => void }> = ({ navigat
   return (
     <div
       ref={rootRef}
-      className="bg-[#fdfbf7] min-h-screen text-slate-950 overflow-x-hidden selection:bg-blue-600/30"
+      className="bg-[#fdfbf7] min-h-screen text-slate-950 overflow-x-hidden selection:bg-emerald-600/30"
     >
       {/* HERO — same wording, same scale as the other page headers. */}
       <section className="px-6 md:px-10 lg:px-16 pt-32 md:pt-44 pb-16 md:pb-24">
@@ -202,7 +202,7 @@ const SnakeTimeline: React.FC<{ navigateTo: (page: Page) => void }> = ({ navigat
       {/* THE FIVE STEPS — one rail, five rows, no slabs. */}
       <section className="px-6 md:px-10 lg:px-16 pb-24 md:pb-32">
         <div ref={stepsRef} className="max-w-6xl mx-auto relative">
-          {/* Static hairline plus the blue line that fills over it. */}
+          {/* Static hairline plus the emerald line that fills over it. */}
           <div
             aria-hidden="true"
             className="absolute left-[15px] md:left-[19px] top-3 bottom-3 w-px bg-slate-200"
@@ -210,14 +210,14 @@ const SnakeTimeline: React.FC<{ navigateTo: (page: Page) => void }> = ({ navigat
           <div
             ref={railRef}
             aria-hidden="true"
-            className="absolute left-[15px] md:left-[19px] top-3 bottom-3 w-px bg-blue-600 origin-top will-change-transform"
+            className="absolute left-[15px] md:left-[19px] top-3 bottom-3 w-px bg-emerald-600 origin-top will-change-transform"
           />
 
           <div className="space-y-14 md:space-y-20">
             {BuildJourney.map((step) => (
               <div key={step.id} className="step-row relative pl-14 md:pl-20">
                 {/* Marker */}
-                <div className="step-part absolute left-0 top-1 w-8 h-8 md:w-10 md:h-10 rounded-full bg-[#fdfbf7] border border-slate-200 flex items-center justify-center text-blue-600">
+                <div className="step-part absolute left-0 top-1 w-8 h-8 md:w-10 md:h-10 rounded-full bg-[#fdfbf7] border border-slate-200 flex items-center justify-center text-emerald-600">
                   {step.icon}
                 </div>
 
@@ -255,17 +255,7 @@ const SnakeTimeline: React.FC<{ navigateTo: (page: Page) => void }> = ({ navigat
         </div>
       </section>
 
-      {/* PICK YOUR PATH — back to the original: a full-bleed black band, the
-          heading centred with hairlines either side of the question, the two
-          OPTION cards on the left and the numbered badges on the right.
-          What is different is that it fits on one screen. In the original both
-          paths were stacked down the page, five numbered rows each, so you had
-          to scroll through roughly two and a half screens to see the choice.
-          Here the card you pick *is* the switch — it lights up with the white
-          border and the dot exactly as OPTION 02 did — and only that path's
-          five points are on the right. Everything vertical is clamped against
-          vh, so on a short laptop screen the whole thing squeezes rather than
-          spilling over the fold. */}
+      {/* PICK YOUR PATH */}
       <section className="relative bg-[#0A0D14] text-white">
         <div className="max-w-6xl mx-auto px-6 md:px-10 lg:px-16 min-h-[100svh] flex flex-col justify-center pt-[clamp(2.5rem,6vh,5rem)] pb-[clamp(2.5rem,6vh,4rem)]">
           <div className="fade-up text-center">
@@ -299,23 +289,23 @@ const SnakeTimeline: React.FC<{ navigateTo: (page: Page) => void }> = ({ navigat
                     role="tab"
                     aria-selected={isActive}
                     onClick={() => setDeploymentMode(mode)}
-                    className={`fade-up text-left rounded-[1.5rem] md:rounded-[1.75rem] px-5 md:px-8 py-[clamp(0.9rem,2.2vh,1.6rem)] border transition-colors duration-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50 ${
+                    className={`fade-up text-left rounded-[1.5rem] md:rounded-[1.75rem] px-5 md:px-8 py-[clamp(0.9rem,2.2vh,1.6rem)] border transition-colors duration-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50 ${
                       isActive
-                        ? 'border-white bg-[#111A2B]'
+                        ? 'border-emerald-400/80 bg-[#0e1d16]'
                         : 'border-white/10 bg-white/[0.02] hover:border-white/30'
                     }`}
                   >
                     <span className="flex items-center justify-between gap-4">
                       <span
                         className={`text-[9px] md:text-[10px] font-bold uppercase tracking-[0.45em] transition-colors duration-500 ${
-                          isActive ? 'text-white/50' : 'text-blue-500'
+                          isActive ? 'text-emerald-300' : 'text-emerald-500/80'
                         }`}
                       >
                         {option.option}
                       </span>
                       <span
                         aria-hidden="true"
-                        className={`w-2.5 h-2.5 rounded-full bg-white transition-opacity duration-500 ${
+                        className={`w-2.5 h-2.5 rounded-full bg-emerald-400 transition-opacity duration-500 ${
                           isActive ? 'opacity-100' : 'opacity-0'
                         }`}
                       />
@@ -331,8 +321,7 @@ const SnakeTimeline: React.FC<{ navigateTo: (page: Page) => void }> = ({ navigat
               })}
             </div>
 
-            {/* The chosen path. Keyed on the mode so the five rows run their own
-                little entrance each time the card changes. */}
+            {/* The chosen path */}
             <ul
               key={deploymentMode}
               className="lg:col-span-7 flex flex-col justify-center gap-[clamp(0.4rem,1.5vh,1.15rem)]"
@@ -345,7 +334,7 @@ const SnakeTimeline: React.FC<{ navigateTo: (page: Page) => void }> = ({ navigat
                 >
                   <span
                     aria-hidden="true"
-                    className="shrink-0 grid place-items-center w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl border border-white/10 bg-white/[0.03] font-syne text-base md:text-lg font-black text-blue-500"
+                    className="shrink-0 grid place-items-center w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl border border-emerald-500/20 bg-emerald-950/20 font-syne text-base md:text-lg font-black text-emerald-400"
                   >
                     {point.id}
                   </span>
@@ -362,15 +351,11 @@ const SnakeTimeline: React.FC<{ navigateTo: (page: Page) => void }> = ({ navigat
             </ul>
           </div>
 
-          {/* The close of the page. It used to hover over the whole document on
-              a portal, which meant it followed you through every section; it now
-              sits in the flow at the very bottom, inside the space the band was
-              already reserving for it, so PICK YOUR PATH still fits one screen. */}
           <div className="mt-[clamp(1.5rem,3.5vh,2.75rem)] flex justify-center">
             <button
               type="button"
               onClick={() => navigateTo('contact')}
-              className="cta-hover group inline-flex items-center gap-3 md:gap-4 pl-6 md:pl-8 pr-5 md:pr-6 py-3.5 md:py-4 rounded-full bg-white text-slate-950 font-bold uppercase text-[10px] md:text-[11px] tracking-[0.25em] whitespace-nowrap shadow-[0_18px_45px_-12px_rgba(0,0,0,0.55)] hover:bg-blue-600 hover:text-white transition-colors duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/60"
+              className="cta-hover group inline-flex items-center gap-3 md:gap-4 pl-6 md:pl-8 pr-5 md:pr-6 py-3.5 md:py-4 rounded-full bg-white text-slate-950 font-bold uppercase text-[10px] md:text-[11px] tracking-[0.25em] whitespace-nowrap shadow-[0_18px_45px_-12px_rgba(0,0,0,0.55)] hover:bg-emerald-600 hover:text-white transition-colors duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/60"
             >
               CONTACT US NOW
               <MoveRight
@@ -384,16 +369,16 @@ const SnakeTimeline: React.FC<{ navigateTo: (page: Page) => void }> = ({ navigat
 
       <style>{`
         .text-shimmer-blue {
-          background: linear-gradient(90deg, #2563eb 0%, #38bdf8 25%, #2563eb 50%, #38bdf8 75%, #2563eb 100%);
+          background: linear-gradient(90deg, #059669 0%, #34d399 25%, #ffffff 50%, #6ee7b7 75%, #059669 100%);
           background-size: 200% auto;
-          color: #2563eb;
+          color: #059669;
           background-clip: text;
           text-fill-color: transparent;
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
-          animation: blue-shine 5s linear infinite;
+          animation: emerald-shine 5s linear infinite;
         }
-        @keyframes blue-shine { to { background-position: 200% center; } }
+        @keyframes emerald-shine { to { background-position: 200% center; } }
 
         /* Header and switched content use fill-mode animations rather than
            scroll triggers, so they can never be left stuck at opacity 0. */
@@ -404,8 +389,6 @@ const SnakeTimeline: React.FC<{ navigateTo: (page: Page) => void }> = ({ navigat
         .pt-rise { animation: pt-rise 0.75s cubic-bezier(0.22, 1, 0.36, 1) both; }
         .path-in { animation: pt-rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
 
-        /* The closing button lifts into place a beat after the page settles, so
-           it does not arrive on top of the header animation. */
         @keyframes cta-hover-in {
           from { opacity: 0; transform: translate3d(0, 40%, 0); }
           to { opacity: 1; transform: none; }

@@ -1,16 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import * as RouterDOM from 'react-router-dom';
-import * as FramerMotion from 'framer-motion';
-import { Mail, Phone, MapPin, Send, CheckCircle, MoveLeft, Sprout, Sun } from 'lucide-react';
+import { 
+  Phone, 
+  Mail, 
+  MapPin, 
+  Send, 
+  CheckCircle2, 
+  Clock, 
+  ShieldCheck, 
+  HelpCircle, 
+  Calendar 
+} from 'lucide-react';
 import Navbar from './Navbar';
 import Footer from './Footer';
 
-// Robust export resolution
-const { Link } = RouterDOM as any;
-const { motion, AnimatePresence } = FramerMotion as any;
+const Link = (RouterDOM as any).Link || (RouterDOM as any).default?.Link;
 
-const Contact: React.FC = () => {
-  const [isSent, setIsSent] = useState(false);
+export const Contact: React.FC = () => {
+  const [submitted, setSubmitted] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    phone: '',
+    email: '',
+    postcode: '',
+    service: 'patios',
+    budget: '10k-25k',
+    message: ''
+  });
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -18,181 +34,298 @@ const Contact: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setTimeout(() => {
-      setIsSent(true);
-    }, 800);
+    setSubmitted(true);
   };
 
+  const faqs = [
+    {
+      q: "How soon can you conduct a property survey?",
+      a: "Our lead estimator typically visits your property within 3 to 5 business days of your enquiry. We bring material samples and take precise laser measurements."
+    },
+    {
+      q: "How does the fixed-price quotation work?",
+      a: "After inspecting the site levels, drainage, and access, we produce a comprehensive, itemised schedule of works. The price quoted is the price you pay — zero hidden extras."
+    },
+    {
+      q: "What warranty do you provide?",
+      a: "All our paved terraces and structural stone masonry are backed by a 10-year structural guarantee, installed strictly to British Standard BS 7533."
+    },
+    {
+      q: "Do you handle planning or conservation approvals?",
+      a: "Yes. Most residential garden builds fall under Permitted Development, but for listed properties or AONB conservation areas in Wiltshire, we handle drawings and planning applications."
+    }
+  ];
+
   return (
-    <div className="min-h-screen bg-[#F4F1EA] font-inter selection:bg-[#BC4B26] selection:text-white pb-32">
+    <div className="min-h-screen bg-[#FBF9F5] text-stone-900 font-sans selection:bg-[#C86A3D] selection:text-white">
       <Navbar />
 
-      {/* Hero Header */}
-      <section className="relative h-[45vh] flex items-center pt-24 px-8 overflow-hidden">
-        <div className="absolute inset-0 z-0 scale-105 grayscale brightness-[0.3]">
-          <img 
-            src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&q=65&w=1600" 
-            alt="Forestry Work" 
-            className="w-full h-full object-cover"
-            loading="lazy"
-            decoding="async"
-          />
-          <div className="absolute inset-0 bg-[#1A3C28]/40"></div>
-        </div>
-        <div className="max-w-7xl mx-auto w-full relative z-10 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="inline-flex items-center gap-3 px-6 py-2 bg-[#BC4B26]/20 backdrop-blur-md rounded-full border border-white/20 mb-8"
-          >
-            <Sun size={14} className="text-[#BC4B26]" />
-            <span className="text-white font-black text-[10px] uppercase tracking-[0.5em]">Consultations Available</span>
-          </motion.div>
-          <motion.h1 
-            initial={{ opacity: 0, scale: 0.98 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1, ease: "easeOut" }}
-            className="text-white font-oswald text-5xl md:text-8xl font-bold tracking-tight uppercase leading-none"
-          >
-            START YOUR <br /> <span className="text-[#BC4B26] italic">JOURNEY.</span>
-          </motion.h1>
+      {/* HEADER BANNER */}
+      <section className="bg-[#162E20] text-white py-20 px-6 md:px-12 border-b border-white/10">
+        <div className="max-w-7xl mx-auto space-y-4">
+          <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[0.25em] text-[#E08A5B] font-bold">
+            <span>Free On-Site Consultations</span>
+          </div>
+          <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-tight">
+            Start Your Garden Project.
+          </h1>
+          <p className="text-stone-300 text-sm sm:text-base max-w-2xl leading-relaxed">
+            Request an on-site survey and design discussion. We inspect levels, review material choices, and provide a binding fixed-price quotation.
+          </p>
         </div>
       </section>
 
-      <section className="py-24 px-6 md:px-12">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-24 items-start">
+      {/* MAIN TWO-COLUMN CONTACT SECTION */}
+      <section className="py-20 px-6 md:px-12 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
           
-          {/* Left: Contact Info */}
-          <motion.div 
-            initial={{ opacity: 0, x: -100 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 1.2, ease: "expo.out" }}
-            viewport={{ once: true }}
-            className="space-y-16"
-          >
+          {/* Left Column: Direct Info & FAQs (5 cols) */}
+          <div className="lg:col-span-5 space-y-10">
             <div>
-              <div className="w-12 h-1.5 bg-[#BC4B26] mb-10"></div>
-              <h2 className="text-[#1A3C28] font-oswald text-4xl md:text-5xl font-bold uppercase tracking-tight mb-8">Let's talk land.</h2>
-              <p className="text-[#4A403A] text-lg leading-relaxed italic max-w-md border-l-4 border-[#BC4B26]/20 pl-8 opacity-80">
-                "From site clearance to architectural garden builds, our specialist team provides fixed-price quotes with expert guidance."
+              <span className="text-xs font-mono uppercase tracking-[0.2em] text-[#C86A3D] font-bold block mb-1">
+                Direct Contact
+              </span>
+              <h2 className="font-serif text-3xl font-bold text-[#162E20]">
+                We’re Here to Help.
+              </h2>
+              <p className="text-stone-600 text-sm leading-relaxed mt-2.5">
+                Whether you have an architect’s masterplan or are exploring ideas for your lawn and terrace, speak directly with our Wiltshire team.
               </p>
             </div>
 
-            <div className="space-y-8">
-              <div className="flex items-center gap-8 group p-8 bg-white/50 border border-[#1A3C28]/5 hover:bg-white hover:shadow-2xl transition-all duration-500 rounded-sm transform-gpu hover:-translate-y-1">
-                <div className="w-16 h-16 bg-[#1A3C28] flex items-center justify-center text-white group-hover:scale-110 transition-transform">
-                  <Phone size={24} />
+            {/* Direct Cards */}
+            <div className="space-y-4">
+              <a
+                href="tel:01672552140"
+                className="p-5 bg-white rounded-xl border border-stone-200/90 shadow-sm flex items-center gap-4 hover:border-[#C86A3D] transition-colors group"
+              >
+                <div className="w-12 h-12 rounded-lg bg-[#162E20]/5 text-[#C86A3D] flex items-center justify-center shrink-0 group-hover:bg-[#C86A3D] group-hover:text-white transition-colors">
+                  <Phone size={20} />
                 </div>
                 <div>
-                  <p className="text-[#BC4B26] font-black text-[9px] uppercase tracking-[0.4em] mb-1">Direct Line</p>
-                  <p className="text-[#1A3C28] font-black text-2xl font-inter">123-456-7890</p>
+                  <div className="text-[10px] font-mono uppercase tracking-wider text-stone-500 font-bold">Direct Line</div>
+                  <div className="font-serif text-xl font-bold text-[#162E20]">01672 552 140</div>
+                  <div className="text-xs text-stone-500">Mon–Fri: 07:30 – 17:30</div>
+                </div>
+              </a>
+
+              <div className="p-5 bg-white rounded-xl border border-stone-200/90 shadow-sm flex items-center gap-4">
+                <div className="w-12 h-12 rounded-lg bg-[#162E20]/5 text-[#C86A3D] flex items-center justify-center shrink-0">
+                  <Mail size={20} />
+                </div>
+                <div>
+                  <div className="text-[10px] font-mono uppercase tracking-wider text-stone-500 font-bold">Studio Enquiries</div>
+                  <div className="text-sm font-bold text-[#162E20]">enquiries@oakandashlandscapes.co.uk</div>
+                  <div className="text-xs text-stone-500">Replies within 24 hours</div>
                 </div>
               </div>
 
-              <div className="flex items-center gap-8 group p-8 bg-white/50 border border-[#1A3C28]/5 hover:bg-white hover:shadow-2xl transition-all duration-500 rounded-sm transform-gpu hover:-translate-y-1">
-                <div className="w-16 h-16 bg-[#1A3C28] flex items-center justify-center text-white group-hover:scale-110 transition-transform">
-                  <Mail size={24} />
+              <div className="p-5 bg-white rounded-xl border border-stone-200/90 shadow-sm flex items-start gap-4">
+                <div className="w-12 h-12 rounded-lg bg-[#162E20]/5 text-[#C86A3D] flex items-center justify-center shrink-0 mt-0.5">
+                  <MapPin size={20} />
                 </div>
                 <div>
-                  <p className="text-[#BC4B26] font-black text-[9px] uppercase tracking-[0.4em] mb-1">Email Studio</p>
-                  <p className="text-[#1A3C28] font-black text-xl break-all">studio@oakandash.demo</p>
+                  <div className="text-[10px] font-mono uppercase tracking-wider text-stone-500 font-bold">Workshop &amp; Sample Yard</div>
+                  <div className="text-sm font-bold text-[#162E20]">The Old Stone Mill</div>
+                  <div className="text-xs text-stone-500 leading-relaxed">
+                    High Street, Marlborough, Wiltshire, SN8 1AA
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* Architectural Map Preview */}
-            <div className="relative h-80 grayscale overflow-hidden border border-[#1A3C28]/10 group shadow-2xl rounded-sm transform-gpu">
-              <img 
-                src="https://images.unsplash.com/photo-1526778548025-fa2f459cd5ce?auto=format&fit=crop&q=65&w=800" 
-                alt="Location map" 
-                className="w-full h-full object-cover opacity-30 transition-transform duration-[2s] group-hover:scale-110"
-                loading="lazy"
-                decoding="async"
-              />
-              <div className="absolute inset-0 flex items-center justify-center bg-[#1A3C28]/5">
-                 <div className="p-8 bg-white shadow-2xl flex items-center gap-4 rounded-sm">
-                    <div className="w-10 h-10 bg-[#BC4B26] flex items-center justify-center text-white"><MapPin size={20} /></div>
-                    <p className="text-[#1A3C28] font-black text-[10px] uppercase tracking-[0.4em]">Visit the yard by appointment</p>
-                 </div>
+            {/* Areas Covered */}
+            <div className="p-6 bg-[#F5F2EB] rounded-xl border border-stone-200/90 space-y-2">
+              <h4 className="text-xs font-mono uppercase tracking-wider text-[#162E20] font-bold">
+                Areas We Regularly Serve:
+              </h4>
+              <p className="text-stone-600 text-xs leading-relaxed">
+                Marlborough · Pewsey Vale · Devizes · Salisbury · Bath &amp; North East Somerset · Cirencester · Tetbury · Chippenham · Swindon &amp; Cotswolds.
+              </p>
+            </div>
+
+            {/* FAQ List */}
+            <div className="space-y-4 pt-4 border-t border-stone-200">
+              <h3 className="font-serif text-xl font-bold text-[#162E20] flex items-center gap-2">
+                <HelpCircle size={18} className="text-[#C86A3D]" />
+                <span>Frequently Asked Questions</span>
+              </h3>
+              <div className="space-y-3">
+                {faqs.map((faq, fIdx) => (
+                  <div key={fIdx} className="p-4 bg-white rounded-lg border border-stone-200 space-y-1">
+                    <h5 className="font-bold text-xs text-[#162E20]">{faq.q}</h5>
+                    <p className="text-stone-600 text-xs leading-relaxed">{faq.a}</p>
+                  </div>
+                ))}
               </div>
             </div>
-          </motion.div>
 
-          {/* Right: The Form */}
-          <motion.div 
-            initial={{ opacity: 0, x: 100 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 1.5, ease: "expo.out" }}
-            viewport={{ once: true }}
-            className="bg-white p-10 md:p-20 shadow-[0_50px_100px_rgba(0,0,0,0.1)] relative border-t-8 border-[#BC4B26] rounded-sm transform-gpu"
-          >
-            <AnimatePresence mode="wait">
-              {isSent ? (
-                <motion.div 
-                  key="success"
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="text-center py-20 flex flex-col items-center gap-10"
-                >
-                  <div className="w-24 h-24 bg-[#1A3C28] text-white flex items-center justify-center shadow-2xl animate-bounce">
-                    <CheckCircle size={48} />
+          </div>
+
+          {/* Right Column: Interactive Consultation Request Form (7 cols) */}
+          <div className="lg:col-span-7">
+            <div className="bg-white p-8 sm:p-10 rounded-2xl border border-stone-200 shadow-xl relative">
+              
+              {submitted ? (
+                <div className="py-16 text-center space-y-6">
+                  <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-700 mx-auto flex items-center justify-center">
+                    <CheckCircle2 size={36} />
                   </div>
-                  <div className="space-y-4">
-                    <h3 className="text-[#1A3C28] font-oswald text-3xl font-bold uppercase tracking-tight">ENQUIRY RECEIVED</h3>
-                    <p className="text-[#4A403A] font-medium italic opacity-70">"Thank you. Our land management specialist will contact you within 24 hours."</p>
+                  <div className="space-y-2 max-w-md mx-auto">
+                    <h3 className="font-serif text-2xl font-bold text-[#162E20]">
+                      Consultation Request Received
+                    </h3>
+                    <p className="text-stone-600 text-sm leading-relaxed">
+                      Thank you, {formData.name || 'there'}. Our senior estimator will review your details and contact you within 24 hours to arrange your property survey.
+                    </p>
                   </div>
-                  <Link to="/demo/landscaping" className="px-12 py-5 bg-[#BC4B26] text-white font-black text-[10px] uppercase tracking-widest hover:bg-[#1A3C28] transition-all">Return to Home</Link>
-                </motion.div>
+                  <div className="pt-4">
+                    <button
+                      onClick={() => setSubmitted(false)}
+                      className="px-6 py-2.5 bg-[#162E20] text-white rounded-lg text-xs font-semibold uppercase tracking-wider hover:bg-[#C86A3D] transition-colors"
+                    >
+                      Submit Another Enquiry
+                    </button>
+                  </div>
+                </div>
               ) : (
-                <motion.form 
-                  key="form"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  onSubmit={handleSubmit} 
-                  className="space-y-12 relative z-10"
-                >
-                  <div className="space-y-8">
-                    <h3 className="text-[#1A3C28] font-oswald text-2xl font-bold uppercase tracking-tight border-b border-[#1A3C28]/5 pb-6">Request A Site Visit</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                      <div className="space-y-4">
-                        <label className="text-[10px] uppercase tracking-[0.6em] text-[#4A403A] font-black block">Full Name</label>
-                        <input required type="text" placeholder="John Oak" className="w-full bg-[#F4F1EA]/30 border-b border-[#1A3C28]/20 p-4 text-[#1A3C28] focus:outline-none focus:border-[#BC4B26] transition-all font-bold text-lg" />
-                      </div>
-                      <div className="space-y-4">
-                        <label className="text-[10px] uppercase tracking-[0.6em] text-[#4A403A] font-black block">Project Location</label>
-                        <input required type="text" placeholder="Postcode / Area" className="w-full bg-[#F4F1EA]/30 border-b border-[#1A3C28]/20 p-4 text-[#1A3C28] focus:outline-none focus:border-[#BC4B26] transition-all font-bold text-lg" />
-                      </div>
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div>
+                    <h3 className="font-serif text-2xl font-bold text-[#162E20]">
+                      Request Your Free Property Survey
+                    </h3>
+                    <p className="text-stone-500 text-xs sm:text-sm mt-1">
+                      Fill out the form below. No obligation, no high-pressure sales.
+                    </p>
+                  </div>
+
+                  {/* Name & Phone */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-mono uppercase tracking-wider text-stone-700 font-semibold block">
+                        Your Full Name *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={formData.name}
+                        onChange={e => setFormData({ ...formData, name: e.target.value })}
+                        placeholder="e.g. John Henderson"
+                        className="w-full px-4 py-3 bg-[#FBF9F5] border border-stone-300 rounded-lg text-sm text-stone-900 focus:outline-none focus:border-[#C86A3D] focus:ring-1 focus:ring-[#C86A3D] transition-all"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-mono uppercase tracking-wider text-stone-700 font-semibold block">
+                        Contact Telephone *
+                      </label>
+                      <input
+                        type="tel"
+                        required
+                        value={formData.phone}
+                        onChange={e => setFormData({ ...formData, phone: e.target.value })}
+                        placeholder="e.g. 07700 900123"
+                        className="w-full px-4 py-3 bg-[#FBF9F5] border border-stone-300 rounded-lg text-sm text-stone-900 focus:outline-none focus:border-[#C86A3D] focus:ring-1 focus:ring-[#C86A3D] transition-all"
+                      />
                     </div>
                   </div>
 
-                  <div className="space-y-4">
-                    <label className="text-[10px] uppercase tracking-[0.6em] text-[#4A403A] font-black block">Specialist Service</label>
-                    <select required className="w-full bg-[#F4F1EA]/30 border-b border-[#1A3C28]/20 p-4 text-[#1A3C28] focus:outline-none focus:border-[#BC4B26] transition-all font-bold appearance-none">
-                      <option value="">Select Service...</option>
-                      <option value="mulching">Forestry Mulching</option>
-                      <option value="harvesting">Timber Harvesting</option>
-                      <option value="planning">Management Planning</option>
-                      <option value="landscape">Full Architectural Landscape</option>
-                    </select>
+                  {/* Email & Postcode */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-mono uppercase tracking-wider text-stone-700 font-semibold block">
+                        Email Address *
+                      </label>
+                      <input
+                        type="email"
+                        required
+                        value={formData.email}
+                        onChange={e => setFormData({ ...formData, email: e.target.value })}
+                        placeholder="e.g. john@example.co.uk"
+                        className="w-full px-4 py-3 bg-[#FBF9F5] border border-stone-300 rounded-lg text-sm text-stone-900 focus:outline-none focus:border-[#C86A3D] focus:ring-1 focus:ring-[#C86A3D] transition-all"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-mono uppercase tracking-wider text-stone-700 font-semibold block">
+                        Project Postcode *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={formData.postcode}
+                        onChange={e => setFormData({ ...formData, postcode: e.target.value })}
+                        placeholder="e.g. SN8 1AA"
+                        className="w-full px-4 py-3 bg-[#FBF9F5] border border-stone-300 rounded-lg text-sm text-stone-900 focus:outline-none focus:border-[#C86A3D] focus:ring-1 focus:ring-[#C86A3D] transition-all uppercase"
+                      />
+                    </div>
                   </div>
 
-                  <div className="space-y-4">
-                    <label className="text-[10px] uppercase tracking-[0.6em] text-[#4A403A] font-black block">Message / Scope</label>
-                    <textarea rows={4} placeholder="Describe the land and your objectives..." className="w-full bg-[#F4F1EA]/30 border-b border-[#1A3C28]/20 p-4 text-[#1A3C28] focus:outline-none focus:border-[#BC4B26] transition-all font-bold text-lg resize-none" />
+                  {/* Service & Budget */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-mono uppercase tracking-wider text-stone-700 font-semibold block">
+                        Primary Requirement
+                      </label>
+                      <select
+                        value={formData.service}
+                        onChange={e => setFormData({ ...formData, service: e.target.value })}
+                        className="w-full px-4 py-3 bg-[#FBF9F5] border border-stone-300 rounded-lg text-sm text-stone-900 focus:outline-none focus:border-[#C86A3D] transition-all"
+                      >
+                        <option value="patios">Porcelain &amp; Natural Stone Patios</option>
+                        <option value="transformation">Full Garden Transformation</option>
+                        <option value="outdoor-living">Outdoor Living &amp; Pergolas</option>
+                        <option value="masonry">Stone Walling &amp; Masonry</option>
+                        <option value="lawns">Turfing &amp; Drainage Solutions</option>
+                      </select>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-mono uppercase tracking-wider text-stone-700 font-semibold block">
+                        Anticipated Project Budget
+                      </label>
+                      <select
+                        value={formData.budget}
+                        onChange={e => setFormData({ ...formData, budget: e.target.value })}
+                        className="w-full px-4 py-3 bg-[#FBF9F5] border border-stone-300 rounded-lg text-sm text-stone-900 focus:outline-none focus:border-[#C86A3D] transition-all"
+                      >
+                        <option value="under-10k">Under £10,000</option>
+                        <option value="10k-25k">£10,000 – £25,000</option>
+                        <option value="25k-50k">£25,000 – £50,000</option>
+                        <option value="50k-plus">£50,000+</option>
+                      </select>
+                    </div>
                   </div>
 
-                  <button 
+                  {/* Message */}
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-mono uppercase tracking-wider text-stone-700 font-semibold block">
+                      Tell Us About Your Garden &amp; Objectives
+                    </label>
+                    <textarea
+                      rows={4}
+                      value={formData.message}
+                      onChange={e => setFormData({ ...formData, message: e.target.value })}
+                      placeholder="e.g. We have a sloping rear garden and would like to replace an old timber deck with a modern porcelain terrace and raised cedar planter beds..."
+                      className="w-full px-4 py-3 bg-[#FBF9F5] border border-stone-300 rounded-lg text-sm text-stone-900 focus:outline-none focus:border-[#C86A3D] focus:ring-1 focus:ring-[#C86A3D] transition-all resize-none"
+                    />
+                  </div>
+
+                  <button
                     type="submit"
-                    className="w-full py-8 bg-[#BC4B26] text-white font-black uppercase tracking-[0.6em] text-[13px] flex items-center justify-center gap-6 transition-all transform active:scale-95 shadow-2xl hover:bg-[#1A3C28]"
+                    className="w-full py-4 bg-[#C86A3D] hover:bg-[#b5582c] text-white font-semibold text-xs uppercase tracking-wider rounded-lg transition-all duration-300 shadow-lg flex items-center justify-center gap-2 hover:scale-[1.01] active:scale-95 cursor-pointer"
                   >
-                    Send Enquiry <Send size={20} />
+                    <span>Send Consultation Request</span>
+                    <Send size={15} />
                   </button>
-                </motion.form>
+
+                  <p className="text-[11px] text-stone-400 text-center">
+                    Your details are strictly confidential. We never share contact information with third parties.
+                  </p>
+                </form>
               )}
-            </AnimatePresence>
-          </motion.div>
+
+            </div>
+          </div>
+
         </div>
       </section>
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, Suspense, lazy, useLayoutEffect } from 'react';
+import React, { useState, useEffect, useRef, Suspense, lazy, useLayoutEffect, Component } from 'react';
 // Fix react-router-dom missing exports
 import * as RouterDOM from 'react-router-dom';
 const { BrowserRouter, Routes, Route, Navigate, Link, useLocation, useNavigate } = RouterDOM as any;
@@ -12,7 +12,7 @@ import ExitPreviewButton from './components/ExitPreviewButton';
 // Home components
 import Hero from './components/Hero';
 import StatsSection from './components/StatsSection';
-import DigitalForge from './components/DigitalForge';
+import WebsiteScoreScanner from './components/WebsiteScoreScanner';
 import WhyWebsiteSection from './components/WhyWebsiteSection';
 
 // Lazy Loaded Pages
@@ -45,10 +45,22 @@ const PhysioTeam = lazy(() => import('./components/demos/physio/PhysioTeam'));
 const PhysioFAQ = lazy(() => import('./components/demos/physio/PhysioFAQ'));
 const PhysioContact = lazy(() => import('./components/demos/physio/PhysioContact'));
 
+// Luxury Spa Demo (Verholy-inspired)
+const SpaHome = lazy(() => import('./components/demos/spa/SpaHome'));
+const SpaSuites = lazy(() => import('./components/demos/spa/SpaSuites'));
+const SpaTreatments = lazy(() => import('./components/demos/spa/SpaTreatments'));
+const SpaDining = lazy(() => import('./components/demos/spa/SpaDining'));
+const SpaActivities = lazy(() => import('./components/demos/spa/SpaActivities'));
+const SpaPhilosophy = lazy(() => import('./components/demos/spa/SpaPhilosophy'));
+const SpaTransfers = lazy(() => import('./components/demos/spa/SpaTransfers'));
+const SpaContact = lazy(() => import('./components/demos/spa/SpaContact'));
+const SpaBooking = lazy(() => import('./components/demos/spa/SpaBooking'));
+
 // Traditional Sections
 const SnakeTimeline = lazy(() => import('./components/SnakeTimeline'));
 const FAQSection = lazy(() => import('./components/FAQSection'));
 const ContactForm = lazy(() => import('./components/ContactForm'));
+import AboutFounderSection from './components/AboutFounderSection';
 
 // The inner pages of a demo are the ones a visitor clicks through next, so once
 // a demo's landing page is on screen we quietly fetch the rest of that demo.
@@ -80,6 +92,16 @@ const DEMO_SIBLING_CHUNKS: Record<string, Array<() => Promise<unknown>>> = {
     () => import('./components/demos/physio/PhysioTeam'),
     () => import('./components/demos/physio/PhysioFAQ'),
     () => import('./components/demos/physio/PhysioContact')
+  ],
+  spa: [
+    () => import('./components/demos/spa/SpaSuites'),
+    () => import('./components/demos/spa/SpaTreatments'),
+    () => import('./components/demos/spa/SpaDining'),
+    () => import('./components/demos/spa/SpaActivities'),
+    () => import('./components/demos/spa/SpaPhilosophy'),
+    () => import('./components/demos/spa/SpaTransfers'),
+    () => import('./components/demos/spa/SpaContact'),
+    () => import('./components/demos/spa/SpaBooking')
   ]
 };
 
@@ -95,13 +117,14 @@ const warmDemoSiblings = (slug: string) => {
 
 gsap.registerPlugin(ScrollTrigger);
 
-export type Page = 'home' | 'work' | 'process' | 'faq' | 'contact';
+export type Page = 'home' | 'work' | 'about' | 'process' | 'faq' | 'contact';
 
 // Real, crawlable URLs — one per section, so every page can be indexed,
 // shared and shown as a sitelink under the search result.
 export const PAGE_PATHS: Record<Page, string> = {
   home: '/',
   work: '/projects',
+  about: '/#about',
   process: '/process',
   faq: '/faq',
   contact: '/contact'
@@ -110,6 +133,7 @@ export const PAGE_PATHS: Record<Page, string> = {
 const PATH_PAGES: Record<string, Page> = {
   '/': 'home',
   '/projects': 'work',
+  '/about': 'home',
   '/process': 'process',
   '/faq': 'faq',
   '/contact': 'contact'
@@ -135,10 +159,55 @@ const ScrollToTop = () => {
     if ('scrollRestoration' in window.history) {
       window.history.scrollRestoration = 'manual';
     }
+    if (hash === '#about') {
+      setTimeout(() => {
+        const el = document.getElementById('about');
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth' });
+          return;
+        }
+      }, 150);
+      return;
+    }
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' as any });
   }, [pathname, hash, key]);
   return null;
 };
+
+const ComponentBase: any = Component;
+
+class ErrorBoundary extends ComponentBase {
+  state = { hasError: false, error: null };
+
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error };
+  }
+  componentDidCatch(error: Error, errorInfo: any) {
+    console.error('Captured by ErrorBoundary:', error, errorInfo);
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="min-h-screen bg-[#F4F1EA] flex flex-col items-center justify-center p-8 text-center">
+          <div className="max-w-md bg-white p-8 rounded-2xl shadow-xl border border-stone-200">
+            <h2 className="text-xl font-bold text-stone-900 mb-2">Notice</h2>
+            <p className="text-sm text-stone-600 mb-6">A page component encountered an issue. Click below to continue.</p>
+            <button
+              onClick={() => {
+                this.setState({ hasError: false, error: null });
+                window.location.reload();
+              }}
+              className="px-6 py-2.5 bg-emerald-600 text-white rounded-full text-xs uppercase font-bold tracking-wider hover:bg-emerald-500 transition-colors"
+            >
+              Refresh View
+            </button>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 const LoadingFallback = () => (
   <div className="min-h-screen bg-slate-950 flex items-center justify-center">
@@ -161,6 +230,10 @@ const SEO_META: Record<Page, { title: string; description: string }> = {
   work: {
     title: 'Our Work | Website Projects & Live Demos | SABR Digital',
     description: 'Click through websites we have designed for trades, salons, clinics and cafes, then picture the same care applied to your own business.'
+  },
+  about: {
+    title: 'About Us | Architectural Web Engineering | SABR Digital',
+    description: 'Learn about SABR Digital. We build high-performing digital flagships with zero bloat and complete client ownership.'
   },
   process: {
     title: 'How We Work | The Web Design Process | SABR Digital',
@@ -286,6 +359,18 @@ const MainApp: React.FC = () => {
   }, [isDemo, location.pathname]);
 
   const navigateTo = (page: Page) => {
+    if (page === 'about') {
+      if (location.pathname === '/') {
+        const el = document.getElementById('about');
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth' });
+          return;
+        }
+      } else {
+        navigate('/#about');
+        return;
+      }
+    }
     const path = PAGE_PATHS[page];
     if (path === location.pathname) {
       window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
@@ -306,7 +391,8 @@ const MainApp: React.FC = () => {
     <>
       <Hero navigateTo={navigateTo} startAnimation={isRevealed} />
       <StatsSection />
-      <DigitalForge navigateTo={navigateTo} />
+      <WebsiteScoreScanner navigateTo={navigateTo} />
+      <AboutFounderSection navigateTo={navigateTo} />
       <WhyWebsiteSection />
     </>
   );
@@ -324,39 +410,51 @@ const MainApp: React.FC = () => {
       <div className="flex flex-col min-h-screen relative z-10">
         <main className="relative flex-grow">
           <div ref={contentRef} className="w-full">
-            <Suspense fallback={<LoadingFallback />}>
-              <Routes>
-                <Route path="/" element={renderHomeContent()} />
-                <Route path="/process" element={<SnakeTimeline navigateTo={navigateTo} />} />
-                <Route path="/faq" element={<FAQSection navigateTo={navigateTo} />} />
-                <Route path="/contact" element={<ContactForm />} />
-                <Route path="/projects" element={<ProjectsGallery />} />
-                <Route path="/demo/equestrian" element={<EquestrianHome />} />
-                <Route path="/demo/equestrian/lessons" element={<EquestrianLessons />} />
-                <Route path="/demo/equestrian/horses" element={<EquestrianHorses />} />
-                <Route path="/demo/equestrian/facilities" element={<EquestrianFacilities />} />
-                <Route path="/demo/equestrian/faqs" element={<EquestrianFaqs />} />
-                <Route path="/demo/equestrian/contact" element={<EquestrianContact />} />
-                <Route path="/demo/equestrian/book" element={<EquestrianBooking />} />
-                <Route path="/demo/landscaping" element={<LandscaperHome />} />
-                <Route path="/demo/landscaping/services" element={<LandscaperServices />} />
-                <Route path="/demo/landscaping/about" element={<LandscaperAbout />} />
-                <Route path="/demo/landscaping/gallery" element={<LandscaperGallery />} />
-                <Route path="/demo/landscaping/contact" element={<LandscaperContact />} />
-                <Route path="/demo/cafe" element={<CafeHome />} />
-                <Route path="/demo/cafe/menu" element={<CafeMenu />} />
-                <Route path="/demo/cafe/locations" element={<CafeLocations />} />
-                <Route path="/demo/cafe/about" element={<CafeAbout />} />
-                <Route path="/demo/cafe/contact" element={<CafeContact />} />
-                <Route path="/demo/cafe/book" element={<CafeBooking />} />
-                <Route path="/demo/physio" element={<PhysioHome />} />
-                <Route path="/demo/physio/prices" element={<PhysioPrices />} />
-                <Route path="/demo/physio/team" element={<PhysioTeam />} />
-                <Route path="/demo/physio/faq" element={<PhysioFAQ />} />
-                <Route path="/demo/physio/contact" element={<PhysioContact />} />
-                <Route path="*" element={<Navigate to="/" replace />} />
-              </Routes>
-            </Suspense>
+            <ErrorBoundary>
+              <Suspense fallback={<LoadingFallback />}>
+                <Routes>
+                  <Route path="/" element={renderHomeContent()} />
+                  <Route path="/about" element={<Navigate to="/#about" replace />} />
+                  <Route path="/process" element={<SnakeTimeline navigateTo={navigateTo} />} />
+                  <Route path="/faq" element={<FAQSection navigateTo={navigateTo} />} />
+                  <Route path="/contact" element={<ContactForm />} />
+                  <Route path="/projects" element={<ProjectsGallery />} />
+                  <Route path="/demo/equestrian" element={<EquestrianHome />} />
+                  <Route path="/demo/equestrian/lessons" element={<EquestrianLessons />} />
+                  <Route path="/demo/equestrian/horses" element={<EquestrianHorses />} />
+                  <Route path="/demo/equestrian/facilities" element={<EquestrianFacilities />} />
+                  <Route path="/demo/equestrian/faqs" element={<EquestrianFaqs />} />
+                  <Route path="/demo/equestrian/contact" element={<EquestrianContact />} />
+                  <Route path="/demo/equestrian/book" element={<EquestrianBooking />} />
+                  <Route path="/demo/landscaping" element={<LandscaperHome />} />
+                  <Route path="/demo/landscaping/services" element={<LandscaperServices />} />
+                  <Route path="/demo/landscaping/about" element={<LandscaperAbout />} />
+                  <Route path="/demo/landscaping/gallery" element={<LandscaperGallery />} />
+                  <Route path="/demo/landscaping/contact" element={<LandscaperContact />} />
+                  <Route path="/demo/cafe" element={<CafeHome />} />
+                  <Route path="/demo/cafe/menu" element={<CafeMenu />} />
+                  <Route path="/demo/cafe/locations" element={<CafeLocations />} />
+                  <Route path="/demo/cafe/about" element={<CafeAbout />} />
+                  <Route path="/demo/cafe/contact" element={<CafeContact />} />
+                  <Route path="/demo/cafe/book" element={<CafeBooking />} />
+                  <Route path="/demo/physio" element={<PhysioHome />} />
+                  <Route path="/demo/physio/prices" element={<PhysioPrices />} />
+                  <Route path="/demo/physio/team" element={<PhysioTeam />} />
+                  <Route path="/demo/physio/faq" element={<PhysioFAQ />} />
+                  <Route path="/demo/physio/contact" element={<PhysioContact />} />
+                  <Route path="/demo/spa" element={<SpaHome />} />
+                  <Route path="/demo/spa/suites" element={<SpaSuites />} />
+                  <Route path="/demo/spa/treatments" element={<SpaTreatments />} />
+                  <Route path="/demo/spa/dining" element={<SpaDining />} />
+                  <Route path="/demo/spa/activities" element={<SpaActivities />} />
+                  <Route path="/demo/spa/philosophy" element={<SpaPhilosophy />} />
+                  <Route path="/demo/spa/transfers" element={<SpaTransfers />} />
+                  <Route path="/demo/spa/contact" element={<SpaContact />} />
+                  <Route path="/demo/spa/book" element={<SpaBooking />} />
+                  <Route path="*" element={<Navigate to="/" replace />} />
+                </Routes>
+              </Suspense>
+            </ErrorBoundary>
           </div>
 
           {!isDemo && (
@@ -366,16 +464,16 @@ const MainApp: React.FC = () => {
                   to="/"
                   className="inline-block font-syne text-4xl sm:text-6xl md:text-7xl tracking-tighter font-black mb-16 text-slate-950 uppercase hover:opacity-70 transition-opacity focus:outline-none leading-none"
                 >
-                  SABR <span className="text-blue-600 italic">DIGITAL</span>
+                  SABR <span className="text-emerald-600 italic">DIGITAL</span>
                 </Link>
                 <nav aria-label="Footer" className="flex flex-wrap justify-center gap-16 mb-24">
-                   {(['work', 'process', 'faq', 'contact'] as Page[]).map(p => (
+                   {(['work', 'about', 'process', 'faq', 'contact'] as Page[]).map(p => (
                      <Link
                        key={p}
                        to={PAGE_PATHS[p]}
-                       className="text-[12px] uppercase tracking-[0.6em] text-slate-400 hover:text-blue-600 transition-all font-black"
+                       className="text-[12px] uppercase tracking-[0.6em] text-slate-400 hover:text-emerald-600 transition-all font-black"
                      >
-                       {p === 'work' ? 'Projects' : p === 'process' ? 'Process' : p === 'faq' ? 'FAQ' : 'Contact'}
+                       {p === 'work' ? 'Projects' : p === 'about' ? 'About' : p === 'process' ? 'Process' : p === 'faq' ? 'FAQ' : 'Contact'}
                      </Link>
                    ))}
                 </nav>
@@ -384,7 +482,7 @@ const MainApp: React.FC = () => {
                 {/* LOCAL SEO: services, coverage and direct contact routes */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-14 md:gap-10 text-left max-w-5xl mx-auto mb-20 border-t border-slate-100 pt-20">
                   <div>
-                    <h2 className="text-[10px] uppercase tracking-[0.5em] text-blue-600 font-black mb-6">Web Design Services</h2>
+                    <h2 className="text-[10px] uppercase tracking-[0.5em] text-emerald-600 font-black mb-6">Web Design Services</h2>
                     <ul className="space-y-3 text-slate-400 text-sm font-medium">
                       <li>Small business web design</li>
                       <li>Website redesign &amp; rebuilds</li>
@@ -393,22 +491,22 @@ const MainApp: React.FC = () => {
                     </ul>
                   </div>
                   <div>
-                    <h2 className="text-[10px] uppercase tracking-[0.5em] text-blue-600 font-black mb-6">Areas We Cover</h2>
+                    <h2 className="text-[10px] uppercase tracking-[0.5em] text-emerald-600 font-black mb-6">Areas We Cover</h2>
                     <p className="text-slate-400 text-sm font-medium leading-relaxed">
                       We work with tradespeople, salons, clinics, cafes and other small businesses,
                       wherever they are based. Everything is handled remotely, by call and email.
                     </p>
                   </div>
                   <div>
-                    <h2 className="text-[10px] uppercase tracking-[0.5em] text-blue-600 font-black mb-6">Talk To Us</h2>
+                    <h2 className="text-[10px] uppercase tracking-[0.5em] text-emerald-600 font-black mb-6">Talk To Us</h2>
                     <ul className="space-y-3 text-sm font-medium">
                       <li>
-                        <a href="mailto:Sabrdigitalwilts@gmail.com" className="text-slate-400 hover:text-blue-600 transition-colors break-words">
+                        <a href="mailto:Sabrdigitalwilts@gmail.com" className="text-slate-400 hover:text-emerald-600 transition-colors break-words">
                           Sabrdigitalwilts@gmail.com
                         </a>
                       </li>
                       <li>
-                        <a href="https://wa.me/447398103339" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-blue-600 transition-colors">
+                        <a href="https://wa.me/447398103339" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-emerald-600 transition-colors">
                           WhatsApp 07398 103339
                         </a>
                       </li>
@@ -422,11 +520,11 @@ const MainApp: React.FC = () => {
                   <button
                     type="button"
                     onClick={scrollToTop}
-                    className="group inline-flex items-center gap-3 px-8 py-4 rounded-full border border-slate-200 bg-slate-50 hover:bg-white hover:border-blue-600 text-slate-600 hover:text-blue-600 text-[11px] font-black uppercase tracking-[0.3em] transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-1 active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-600/30 cursor-pointer"
+                    className="group inline-flex items-center gap-3 px-8 py-4 rounded-full border border-slate-200 bg-slate-50 hover:bg-white hover:border-emerald-600 text-slate-600 hover:text-emerald-600 text-[11px] font-black uppercase tracking-[0.3em] transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-1 active:scale-95 focus:outline-none focus:ring-2 focus:ring-emerald-600/30 cursor-pointer"
                     aria-label="Take me to the top"
                   >
                     <span>Take me to the top</span>
-                    <ArrowUp size={15} className="transition-transform duration-300 group-hover:-translate-y-1 text-blue-600" />
+                    <ArrowUp size={15} className="transition-transform duration-300 group-hover:-translate-y-1 text-emerald-600" />
                   </button>
                 </div>
 
@@ -437,7 +535,7 @@ const MainApp: React.FC = () => {
                       href="/documents/privacy-policy.pdf"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-[11px] uppercase tracking-[0.3em] font-bold text-slate-400 hover:text-blue-600 transition-colors py-1 px-2 focus:outline-none focus:ring-2 focus:ring-blue-600/30 rounded"
+                      className="text-[11px] uppercase tracking-[0.3em] font-bold text-slate-400 hover:text-emerald-600 transition-colors py-1 px-2 focus:outline-none focus:ring-2 focus:ring-emerald-600/30 rounded"
                     >
                       Privacy Policy
                     </a>
@@ -446,7 +544,7 @@ const MainApp: React.FC = () => {
                       href="/documents/terms-of-service.pdf"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-[11px] uppercase tracking-[0.3em] font-bold text-slate-400 hover:text-blue-600 transition-colors py-1 px-2 focus:outline-none focus:ring-2 focus:ring-blue-600/30 rounded"
+                      className="text-[11px] uppercase tracking-[0.3em] font-bold text-slate-400 hover:text-emerald-600 transition-colors py-1 px-2 focus:outline-none focus:ring-2 focus:ring-emerald-600/30 rounded"
                     >
                       Terms of Service
                     </a>
@@ -455,7 +553,7 @@ const MainApp: React.FC = () => {
                       href="/documents/cookie-policy.pdf"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-[11px] uppercase tracking-[0.3em] font-bold text-slate-400 hover:text-blue-600 transition-colors py-1 px-2 focus:outline-none focus:ring-2 focus:ring-blue-600/30 rounded"
+                      className="text-[11px] uppercase tracking-[0.3em] font-bold text-slate-400 hover:text-emerald-600 transition-colors py-1 px-2 focus:outline-none focus:ring-2 focus:ring-emerald-600/30 rounded"
                     >
                       Cookie Policy
                     </a>
@@ -463,7 +561,7 @@ const MainApp: React.FC = () => {
 
                   <div className="flex flex-col gap-2 items-center">
                     <p className="text-[12px] text-slate-300 uppercase tracking-[0.6em] font-black">© 2025 SABR DIGITAL STUDIO</p>
-                    <div className="w-24 h-1.5 bg-blue-600 rounded-full mt-8"></div>
+                    <div className="w-24 h-1.5 bg-emerald-600 rounded-full mt-8"></div>
                   </div>
                 </div>
               </div>

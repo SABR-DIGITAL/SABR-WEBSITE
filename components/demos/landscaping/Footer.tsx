@@ -1,37 +1,125 @@
-
 import React from 'react';
 import * as RouterDOM from 'react-router-dom';
-const { Link } = RouterDOM as any;
-import { MoveLeft } from 'lucide-react';
+import { Phone, Mail, MapPin, ArrowRight, MoveLeft, ShieldCheck, Award } from 'lucide-react';
 
-const Footer: React.FC = () => {
+const Link = (RouterDOM as any).Link || (RouterDOM as any).default?.Link;
+
+export const Footer: React.FC = () => {
   return (
-    <footer className="bg-[#1A3C28] py-24 md:py-32 px-6 md:px-12 text-white border-t border-white/5 relative z-10">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-20">
-        <div className="space-y-10">
+    <footer className="bg-[#122419] text-stone-300 pt-20 pb-16 px-6 md:px-12 border-t border-white/10 relative z-10 font-sans">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-14">
+        
+        {/* Brand & Mission */}
+        <div className="space-y-5">
           <div className="flex flex-col">
-            <span className="font-oswald font-bold text-3xl uppercase tracking-tighter leading-none">OAK & ASH</span>
-            <span className="font-black text-[10px] uppercase tracking-[0.4em] text-[#BC4B26]">LANDSCAPING</span>
+            <span className="font-serif font-extrabold text-2xl text-white tracking-tight">
+              OAK &amp; ASH
+            </span>
+            <span className="text-[9px] uppercase font-bold tracking-[0.35em] text-[#E08A5B]">
+              ARCHITECTURAL LANDSCAPES
+            </span>
           </div>
-          <p className="text-white/40 text-sm font-medium leading-relaxed max-w-xs">Providing expert forestry and land management solutions on private estates since 1976.</p>
-        </div>
-        <div className="space-y-8">
-          <h4 className="font-oswald font-bold text-xl uppercase tracking-tight">Our Location</h4>
-          <p className="text-white/60 text-sm font-medium leading-relaxed border-l border-white/10 pl-6">The Old Timber Yard <br /> Forest Estate, SN1</p>
-        </div>
-        <div className="space-y-8">
-          <h4 className="font-oswald font-bold text-xl uppercase tracking-tight">Contact</h4>
-          <div className="space-y-2">
-            <p className="text-white/60 text-sm font-medium">studio@oakandash.demo</p>
-            <p className="text-[#BC4B26] font-bold text-lg">123-456-7890</p>
+          <p className="text-stone-400 text-sm leading-relaxed">
+            Crafting luxury porcelain terraces, bespoke Cotswold dry-stone masonry, and multi-seasonal garden transformations across Wiltshire, Bath, and the South West since 1988.
+          </p>
+          <div className="flex items-center gap-4 text-xs text-stone-400 pt-2">
+            <div className="flex items-center gap-1.5 text-stone-300 font-medium">
+              <Award size={15} className="text-[#E08A5B]" />
+              <span>RHS Silver Medalists</span>
+            </div>
+            <div className="flex items-center gap-1.5 text-stone-300 font-medium">
+              <ShieldCheck size={15} className="text-[#E08A5B]" />
+              <span>£10m Insured</span>
+            </div>
           </div>
         </div>
+
+        {/* Navigation Links */}
+        <div className="space-y-4">
+          <h4 className="text-xs font-mono uppercase tracking-[0.25em] text-[#E08A5B] font-bold">
+            Navigation
+          </h4>
+          <ul className="space-y-2.5 text-sm">
+            <li>
+              <Link to="/demo/landscaping" className="hover:text-white transition-colors">
+                Home Overview
+              </Link>
+            </li>
+            <li>
+              <Link to="/demo/landscaping/services" className="hover:text-white transition-colors">
+                Landscaping Services
+              </Link>
+            </li>
+            <li>
+              <Link to="/demo/landscaping/about" className="hover:text-white transition-colors">
+                Our Craft &amp; Team
+              </Link>
+            </li>
+            <li>
+              <Link to="/demo/landscaping/gallery" className="hover:text-white transition-colors">
+                Project Showcase
+              </Link>
+            </li>
+            <li>
+              <Link to="/demo/landscaping/contact" className="hover:text-white transition-colors">
+                Request Free Quote
+              </Link>
+            </li>
+          </ul>
+        </div>
+
+        {/* Core Services */}
+        <div className="space-y-4">
+          <h4 className="text-xs font-mono uppercase tracking-[0.25em] text-[#E08A5B] font-bold">
+            Specialisms
+          </h4>
+          <ul className="space-y-2.5 text-sm text-stone-400">
+            <li>Porcelain &amp; Natural Stone Patios</li>
+            <li>Bespoke Outdoor Kitchens &amp; Pergolas</li>
+            <li>Dry-Stone Walling &amp; Masonry</li>
+            <li>Architectural Garden Planting</li>
+            <li>Groundwork &amp; Sub-Surface Drainage</li>
+          </ul>
+        </div>
+
+        {/* Contact & Workshop */}
+        <div className="space-y-4">
+          <h4 className="text-xs font-mono uppercase tracking-[0.25em] text-[#E08A5B] font-bold">
+            Get In Touch
+          </h4>
+          <div className="space-y-3 text-sm">
+            <a 
+              href="tel:01672552140" 
+              className="flex items-center gap-3 text-white font-semibold hover:text-[#E08A5B] transition-colors"
+            >
+              <Phone size={15} className="text-[#E08A5B] shrink-0" />
+              <span>01672 552 140</span>
+            </a>
+            <div className="flex items-center gap-3 text-stone-300">
+              <Mail size={15} className="text-[#E08A5B] shrink-0" />
+              <span className="text-xs">enquiries@oakandashlandscapes.co.uk</span>
+            </div>
+            <div className="flex items-start gap-3 text-stone-400 text-xs leading-relaxed">
+              <MapPin size={15} className="text-[#E08A5B] shrink-0 mt-0.5" />
+              <span>The Old Stone Mill, Marlborough, Wiltshire, SN8 1AA</span>
+            </div>
+          </div>
+        </div>
+
       </div>
-      <div className="max-w-7xl mx-auto mt-24 pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8">
-        <p className="text-[9px] font-black text-white/20 uppercase tracking-[0.4em]">© 2025 OAK & ASH LANDSCAPING | BUILT BY SABR DIGITAL</p>
-        <Link to="/projects" className="text-[9px] font-black uppercase tracking-[0.4em] text-white flex items-center gap-3 hover:text-[#BC4B26] transition-colors group">
-          <MoveLeft size={14} className="group-hover:-translate-x-1 transition-transform" /> Exit Demo
-        </Link>
+
+      {/* Bottom Bar */}
+      <div className="max-w-7xl mx-auto mt-16 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-6 text-xs text-stone-400">
+        <p>© 2025 Oak &amp; Ash Landscapes. Engineered by SABR Digital.</p>
+        <div className="flex items-center gap-6">
+          <Link
+            to="/projects"
+            className="inline-flex items-center gap-2 text-stone-300 hover:text-white transition-colors group"
+          >
+            <MoveLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
+            <span>Return to Portfolio</span>
+          </Link>
+        </div>
       </div>
     </footer>
   );

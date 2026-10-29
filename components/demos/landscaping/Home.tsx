@@ -1,338 +1,425 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect } from 'react';
 import * as RouterDOM from 'react-router-dom';
-import * as FramerMotion from 'framer-motion';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ArrowRight, Quote, MoveLeft } from 'lucide-react';
+import { 
+  ArrowRight, 
+  CheckCircle2, 
+  Phone, 
+  ShieldCheck, 
+  Award, 
+  Layers, 
+  Sparkles, 
+  Ruler, 
+  Compass, 
+  Quote 
+} from 'lucide-react';
 import Navbar from './Navbar';
 import Footer from './Footer';
 
-// Robust export resolution
-const { Link } = RouterDOM as any;
-const { motion, AnimatePresence } = FramerMotion as any;
+const Link = (RouterDOM as any).Link || (RouterDOM as any).default?.Link;
 
-gsap.registerPlugin(ScrollTrigger);
-
-const testimonials = [
-  {
-    quote: "They did an amazing job clearing our land and preparing the site for our new development. Their management plan was flawless and the execution was highly professional.",
-    author: "Kevin Young",
-    company: "Walker & Young Developments"
-  },
-  {
-    quote: "A masterclass in ecological land management. Oak & Ash transformed our overgrown woodland into a thriving, accessible asset for our private estate.",
-    author: "Sarah Jenkins",
-    company: "Highwood Estates"
-  },
-  {
-    quote: "Precision, reliability, and architectural vision. The team delivered a complex hardscaping and forestry project with incredible attention to detail.",
-    author: "David Harrison",
-    company: "Harrison Build Group"
-  }
-];
-
-const Home: React.FC = () => {
-  const heroRef = useRef<HTMLDivElement>(null);
-  const bgRef = useRef<HTMLDivElement>(null);
-  const sideImgRef = useRef<HTMLDivElement>(null);
-  const testimonialSectionRef = useRef<HTMLDivElement>(null);
-  const testimonialBgRef = useRef<HTMLDivElement>(null);
-  
-  const [testiIndex, setTestiIndex] = useState(0);
-
+export const Home: React.FC = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
-
-    const ctx = gsap.context(() => {
-      // Hero Parallax
-      gsap.to(bgRef.current, {
-        y: '20%',
-        ease: 'none',
-        force3D: true,
-        scrollTrigger: {
-          trigger: heroRef.current,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: 0.5,
-          fastScrollEnd: true
-        }
-      });
-
-      gsap.to(sideImgRef.current, {
-        y: '-10%',
-        ease: 'none',
-        force3D: true,
-        scrollTrigger: {
-          trigger: heroRef.current,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: 1,
-          fastScrollEnd: true
-        }
-      });
-
-      // Testimonial Background Parallax (The Mountain Image)
-      gsap.fromTo(testimonialBgRef.current, 
-        { y: '-15%' },
-        {
-          y: '15%',
-          ease: 'none',
-          force3D: true,
-          scrollTrigger: {
-            trigger: testimonialSectionRef.current,
-            start: 'top bottom',
-            end: 'bottom top',
-            scrub: 0.8,
-            fastScrollEnd: true
-          }
-        }
-      );
-    });
-
-    // Auto-rotate testimonials
-    const timer = setInterval(() => {
-      setTestiIndex(prev => (prev + 1) % testimonials.length);
-    }, 6000);
-
-    return () => {
-      ctx.revert();
-      clearInterval(timer);
-    };
   }, []);
 
+  const featuredProjects = [
+    {
+      title: "Marlborough Estate Terrace",
+      category: "Porcelain Paving & Ambient Lighting",
+      location: "Marlborough, Wiltshire",
+      img: "https://images.unsplash.com/photo-1558904541-efa8c1965f1e?auto=format&fit=crop&q=80&w=1200",
+      description: "140m² large-format Italian porcelain patio with flush threshold transitions, integrated LED step lighting, and architectural ornamental grasses."
+    },
+    {
+      title: "Cotswold Sunken Terrace & Fire Pit",
+      category: "Dry-Stone Masonry & Outdoor Living",
+      location: "Cirencester, Cotswolds",
+      img: "https://images.unsplash.com/photo-1598902108854-10e335adac99?auto=format&fit=crop&q=80&w=1200",
+      description: "Hand-dressed Cotswold stone retaining walls, sunken fire pit seating terrace, and bespoke charcoal aluminum louvered pergola."
+    },
+    {
+      title: "Salisbury Architectural Garden",
+      category: "Complete Garden Transformation",
+      location: "Salisbury, Wiltshire",
+      img: "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&q=80&w=1200",
+      description: "Complete garden overhaul with raised western red cedar planters, multi-seasonal structural planting, and precision Rolawn turfing."
+    }
+  ];
+
+  const coreServices = [
+    {
+      number: "01",
+      title: "Porcelain & Stone Paving",
+      desc: "Ultra-durable Italian porcelain and hand-selected natural sandstone terraces engineered with laser-level sub-bases and frost-proof resin jointing.",
+      img: "https://images.unsplash.com/photo-1598902108854-10e335adac99?auto=format&fit=crop&q=80&w=800"
+    },
+    {
+      number: "02",
+      title: "Architectural Garden Design",
+      desc: "Comprehensive 3D concept masterplans, structural evergreen planting palettes, and specimen trees designed for year-round beauty and low maintenance.",
+      img: "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&q=80&w=800"
+    },
+    {
+      number: "03",
+      title: "Outdoor Living & Pergolas",
+      desc: "Bioclimatic louvered pergolas, bespoke outdoor kitchens, integrated fire pits, and ambient architectural lighting for year-round entertaining.",
+      img: "https://images.unsplash.com/photo-1590073242678-70ee3fc28e8e?auto=format&fit=crop&q=80&w=800"
+    },
+    {
+      number: "04",
+      title: "Stone Masonry & Walling",
+      desc: "Traditional dry-stone fieldstone retaining walls, rendered brick planters, and acoustic slatted timber boundary screening built with artisan care.",
+      img: "https://images.unsplash.com/photo-1584479898061-15742e14f50d?auto=format&fit=crop&q=80&w=800"
+    }
+  ];
+
+  const trustPoints = [
+    {
+      icon: Ruler,
+      title: "3D CAD Masterplanning",
+      desc: "Visualise every angle of your new garden with precision 3D CAD renders before breaking ground."
+    },
+    {
+      icon: Award,
+      title: "In-House Master Craftsmen",
+      desc: "Zero casual subcontractors. Every patio, wall, and lawn is built by our permanent, qualified trades team."
+    },
+    {
+      icon: ShieldCheck,
+      title: "10-Year Structural Guarantee",
+      desc: "We build to strict British Standards (BS 7533), ensuring your terrace never sinks, cracks, or moves."
+    },
+    {
+      icon: Compass,
+      title: "Fixed-Price Certainty",
+      desc: "Comprehensive itemised quotes with no hidden surprises, delivered on schedule with dedicated project management."
+    }
+  ];
+
   return (
-    <div className="min-h-screen bg-[#F4F1EA] font-inter selection:bg-[#BC4B26] selection:text-white pb-0 overflow-x-hidden">
+    <div className="min-h-screen bg-[#FBF9F5] text-stone-900 font-sans selection:bg-[#C86A3D] selection:text-white">
       <Navbar />
 
-      {/* Hero Section */}
-      <section ref={heroRef} id="home" className="relative min-h-[90vh] flex flex-col items-center justify-center pt-12 lg:pt-0 overflow-visible px-6 md:px-12">
-        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-          <div 
-            ref={bgRef}
-            className="absolute -inset-y-[30%] inset-x-0 bg-cover bg-center bg-no-repeat grayscale-[15%] brightness-[0.6] transform-gpu will-change-transform"
-            style={{ 
-              backgroundImage: "url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&q=65&w=1600')"
-            }}
-          >
-            <div className="absolute inset-0 bg-[#1A3C28]/30"></div>
-          </div>
+      {/* HERO SECTION */}
+      <section className="relative min-h-[85vh] flex items-center bg-[#162E20] text-white px-6 md:px-12 py-20 overflow-hidden">
+        {/* Ambient Dark Image Backdrop */}
+        <div className="absolute inset-0 z-0">
+          <img
+            src="https://images.unsplash.com/photo-1558904541-efa8c1965f1e?auto=format&fit=crop&q=80&w=1600"
+            alt="Modern luxury landscaped garden terrace"
+            className="w-full h-full object-cover opacity-35 object-center"
+            loading="eager"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#162E20]/95 via-[#162E20]/85 to-transparent" />
         </div>
 
-        <div className="max-w-7xl mx-auto w-full relative z-10 flex flex-col lg:flex-row items-center gap-12 xl:gap-24">
-          <motion.div 
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, ease: "circOut" }}
-            className="flex-1 space-y-4 md:space-y-6 text-center lg:text-left z-20"
-          >
-            <p className="text-[#BC4B26] font-black text-[12px] md:text-[14px] uppercase tracking-[0.8em]">Since 1976</p>
-            <h1 className="text-white font-oswald text-4xl sm:text-5xl md:text-6xl lg:text-[clamp(3rem,6vw,5rem)] font-bold leading-[1.1] tracking-tight uppercase max-w-xl mx-auto lg:mx-0">
-              FORESTRY & <br /> 
-              <span className="bg-[#F4F1EA] text-[#1A3C28] px-4 py-1 inline-block mt-2">LAND MGMT.</span>
+        <div className="max-w-7xl mx-auto w-full relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+          
+          {/* Hero Copy (Left 7 cols) */}
+          <div className="lg:col-span-7 space-y-6 text-left">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-[#E08A5B] text-xs font-mono uppercase tracking-[0.2em] font-semibold">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#E08A5B]" />
+              <span>WILTSHIRE &amp; COTSWOLD GARDEN ARCHITECTURE</span>
+            </div>
+
+            <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-[1.08]">
+              Architectural Gardens. <br />
+              <span className="italic text-[#E08A5B] font-normal">Built to Endure.</span>
             </h1>
-          </motion.div>
 
-          <div className="flex-1 relative w-full lg:min-h-[500px] flex items-center justify-center lg:justify-end">
-            <div 
-              ref={sideImgRef}
-              className="relative w-full aspect-[4/3] lg:max-w-xl rounded-sm overflow-hidden shadow-2xl z-10 hidden md:block transform-gpu will-change-transform"
-            >
-              <img 
-                src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&q=65&w=1200" 
-                className="w-full h-[120%] object-cover absolute top-[-10%]" 
-                alt="Forestry Road"
-                loading="eager"
-                fetchPriority="high"
-                decoding="async"
-              />
-            </div>
-
-            <motion.div 
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 1.2, delay: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              className="bg-[#F4F1EA] p-8 md:p-12 lg:p-14 w-full md:max-w-md shadow-[0_40px_100px_rgba(0,0,0,0.2)] z-[50] lg:absolute lg:top-1/2 lg:-translate-y-1/2 lg:-left-12 xl:-left-20 border border-[#1A3C28]/5 pointer-events-auto"
-            >
-              <div className="w-10 h-1 bg-[#BC4B26] mb-6"></div>
-              <h2 className="text-[#1A3C28] font-oswald text-2xl md:text-3xl font-bold uppercase tracking-tight mb-4">GET A FREE QUOTE</h2>
-              <p className="text-[#4A403A] text-sm font-medium mb-8 leading-relaxed opacity-80">
-                "We provide professional forestry, clearance and architectural landscaping services. Request your fixed-price site consultation today."
-              </p>
-              <div className="mb-8">
-                <p className="text-[10px] uppercase font-black tracking-widest text-[#BC4B26] mb-1">Direct Line</p>
-                <p className="text-[#1A3C28] font-black text-xl">123-456-7890</p>
-              </div>
-              <Link 
-                to="/demo/landscaping/contact"
-                className="relative z-[60] w-full py-5 bg-[#BC4B26] text-white font-black text-[10px] uppercase tracking-[0.4em] flex items-center justify-center gap-4 hover:bg-[#1A3C28] transition-all transform hover:scale-[1.02] active:scale-95 shadow-lg cursor-pointer"
-              >
-                Free Quote <ArrowRight size={16} />
-              </Link>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* Services Grid */}
-      <section id="services" className="py-32 md:py-48 px-6 md:px-12 bg-[#F4F1EA]">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-24 space-y-4">
-            <p className="text-[#BC4B26] font-black text-[10px] uppercase tracking-[0.6em]">Professional Solutions</p>
-            <h2 className="text-[#1A3C28] font-oswald text-3xl md:text-5xl font-bold uppercase tracking-tight">Forestry Services</h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
-            {[
-              { title: "Forestry Mulching", img: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&q=65&w=800" },
-              { title: "Management Plans", img: "https://images.unsplash.com/photo-1473448912268-2022ce9509d8?auto=format&fit=crop&q=65&w=800" },
-              { title: "Timber Harvesting", img: "https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&q=65&w=800" }
-            ].map((s: any, i: number) => (
-              <Link to="/demo/landscaping/contact" key={i}>
-                <motion.div 
-                  whileInView={{ opacity: 1, y: 0 }}
-                  initial={{ opacity: 0, y: 40 }}
-                  transition={{ duration: 0.8, delay: i * 0.15 }}
-                  viewport={{ once: true, margin: "-100px" }}
-                  whileHover={{ y: -10 }}
-                  className="group relative aspect-square overflow-hidden cursor-pointer shadow-xl rounded-sm transform-gpu"
-                >
-                  <img src={s.img} alt={s.title} className="w-full h-full object-cover grayscale-[30%] group-hover:grayscale-0 group-hover:scale-110 transition-all duration-[1s]" loading="lazy" decoding="async" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-80"></div>
-                  <div className="absolute bottom-0 left-0 right-0 p-8 bg-[#BC4B26]/0 group-hover:bg-[#BC4B26] transition-colors duration-500">
-                    <h3 className="text-white font-oswald text-xl font-bold uppercase tracking-tight">{s.title}</h3>
-                  </div>
-                </motion.div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* About Section */}
-      <section id="about" className="py-32 md:py-48 px-6 md:px-12 bg-white">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-16 lg:gap-32">
-          <div className="w-full md:w-1/2">
-            <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 1 }}
-              viewport={{ once: true, margin: "-100px" }}
-              className="relative p-10 md:p-14 bg-[#F4F1EA] border border-[#1A3C28]/5 shadow-2xl rounded-sm"
-            >
-              <div className="overflow-hidden mb-10 rounded-sm bg-slate-200">
-                <img src="https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&q=65&w=800" alt="Forestry Team" className="w-full h-auto grayscale" loading="lazy" decoding="async" />
-              </div>
-              <h3 className="text-[#1A3C28] font-oswald text-3xl font-bold uppercase tracking-tight mb-4">Professional Expertise</h3>
-              <p className="text-[#4A403A] text-sm leading-relaxed mb-8 opacity-70">
-                "Our team combines decades of environmental knowledge with modern architectural building techniques."
-              </p>
-              <Link to="/demo/landscaping/contact" className="text-[#BC4B26] font-black text-[10px] uppercase tracking-[0.4em] flex items-center gap-3 group">
-                Work With Us <ArrowRight size={14} className="group-hover:translate-x-2 transition-transform" />
-              </Link>
-            </motion.div>
-          </div>
-          <div className="w-full md:w-1/2 space-y-10">
-            <h2 className="text-[#1A3C28] font-oswald text-4xl md:text-5xl lg:text-5xl font-bold uppercase tracking-tighter leading-none">OAK & ASH <br /> <span className="text-[#BC4B26] italic">LEGACY.</span></h2>
-            <p className="text-[#4A403A] text-xl leading-relaxed opacity-80 border-l-4 border-[#BC4B26] pl-10">
-              Founded in 1976, we have managed some of the most complex forestry and private estate landscaping projects on record.
+            <p className="text-stone-300 text-base sm:text-lg leading-relaxed max-w-xl font-normal">
+              Specialists in luxury porcelain terraces, Cotswold stone masonry, and complete garden transformations. We turn uninspiring outdoor spaces into functional, timeless extensions of your home.
             </p>
-            <div className="grid grid-cols-2 gap-8 pt-4">
-              <div>
-                <p className="text-4xl md:text-5xl font-bold text-[#1A3C28] mb-2 font-oswald">1,200+</p>
-                <p className="text-[10px] font-black text-[#4A403A] uppercase tracking-widest opacity-40">Projects Completed</p>
+
+            {/* Value Indicators */}
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 pt-2 text-xs text-stone-300 font-medium">
+              <div className="flex items-center gap-2">
+                <CheckCircle2 size={15} className="text-[#E08A5B]" />
+                <span>Fixed-Price Quotes</span>
               </div>
-              <div>
-                <p className="text-4xl md:text-5xl font-bold text-[#1A3C28] mb-2 font-oswald">45+</p>
-                <p className="text-[10px] font-black text-[#4A403A] uppercase tracking-widest opacity-40">Expert Crew Members</p>
+              <div className="flex items-center gap-2">
+                <CheckCircle2 size={15} className="text-[#E08A5B]" />
+                <span>10-Year Guarantee</span>
               </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle2 size={15} className="text-[#E08A5B]" />
+                <span>RHS Qualified Team</span>
+              </div>
+            </div>
+
+            {/* CTAs */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-4">
+              <Link
+                to="/demo/landscaping/contact"
+                className="px-8 py-4 bg-[#C86A3D] hover:bg-[#b5582c] text-white font-semibold text-xs uppercase tracking-wider rounded-lg transition-all duration-300 shadow-xl flex items-center justify-center gap-3 hover:scale-105 active:scale-95"
+              >
+                <span>Request Free Consultation</span>
+                <ArrowRight size={15} />
+              </Link>
+              <Link
+                to="/demo/landscaping/gallery"
+                className="px-8 py-4 bg-white/10 hover:bg-white/20 text-white border border-white/20 rounded-lg text-xs uppercase tracking-wider font-semibold transition-all flex items-center justify-center gap-2 backdrop-blur-sm"
+              >
+                <span>View Recent Projects</span>
+              </Link>
             </div>
           </div>
-        </div>
-      </section>
 
-      {/* Testimonials - Perfectly Symmetrical & Fixed Height to prevent cutting */}
-      <section ref={testimonialSectionRef} className="relative py-40 md:py-56 overflow-hidden">
-        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-          <div 
-            ref={testimonialBgRef}
-            className="absolute -inset-y-[40%] inset-x-0 bg-cover bg-center bg-no-repeat grayscale brightness-[0.3] transform-gpu will-change-transform"
-            style={{ 
-              backgroundImage: "url('https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&q=65&w=1600')"
-            }}
-          ></div>
-        </div>
-        
-        <div className="max-w-7xl mx-auto px-6 relative z-10 flex items-center justify-center">
-          <div className="bg-white/95 backdrop-blur-md w-full max-w-4xl min-h-[500px] md:min-h-[580px] flex flex-col justify-center items-center text-center relative border border-white/20 shadow-2xl rounded-sm transform-gpu overflow-hidden px-10 md:px-24 py-16">
-            
-            <div className="w-16 h-16 md:w-20 md:h-20 bg-[#BC4B26] rounded-full flex items-center justify-center text-white shadow-2xl mb-8 md:mb-12 shrink-0 relative z-20">
-              <Quote size={32} />
-            </div>
-            
-            <div className="relative w-full flex-grow flex items-center justify-center">
-              <AnimatePresence mode="wait">
-                <motion.div 
-                  key={testiIndex}
-                  initial={{ opacity: 0, y: 15, filter: 'blur(8px)' }}
-                  animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                  exit={{ opacity: 0, y: -15, filter: 'blur(8px)' }}
-                  transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                  className="w-full flex flex-col items-center justify-center"
+          {/* Hero Quick Card (Right 5 cols) */}
+          <div className="lg:col-span-5 flex justify-center lg:justify-end">
+            <div className="w-full max-w-md bg-white p-7 sm:p-9 rounded-2xl shadow-2xl border border-stone-200 text-stone-900 relative">
+              <div className="w-10 h-1 bg-[#C86A3D] mb-5 rounded-full" />
+              <h3 className="font-serif text-2xl font-bold text-[#162E20] mb-2">
+                Book a Free Site Visit
+              </h3>
+              <p className="text-stone-600 text-xs sm:text-sm leading-relaxed mb-6">
+                We assess your site levels, soil conditions, and spatial orientation to provide a fixed-price design and build estimate within 48 hours.
+              </p>
+
+              <div className="p-4 bg-stone-50 rounded-xl border border-stone-200 mb-6 space-y-2">
+                <div className="text-[10px] font-mono uppercase tracking-wider text-stone-500 font-semibold">
+                  Direct Estimator Line
+                </div>
+                <a
+                  href="tel:01672552140"
+                  className="font-serif text-2xl font-bold text-[#162E20] hover:text-[#C86A3D] transition-colors block"
                 >
-                  <p className="text-[#1A3C28] text-xl md:text-3xl lg:text-[2.4rem] font-medium leading-tight italic mb-8 md:mb-12 opacity-95 max-w-3xl">
-                    "{testimonials[testiIndex].quote}"
-                  </p>
-                  
-                  <div className="space-y-2 mt-auto">
-                    <p className="text-[#BC4B26] font-black text-[12px] uppercase tracking-[0.5em]">
-                      {testimonials[testiIndex].author}
-                    </p>
-                    <p className="text-[#4A403A] text-[10px] font-black uppercase tracking-[0.6em] opacity-40">
-                      {testimonials[testiIndex].company}
-                    </p>
-                  </div>
-                </motion.div>
-              </AnimatePresence>
-            </div>
+                  01672 552 140
+                </a>
+                <div className="text-[11px] text-stone-500">
+                  Monday – Friday · 07:30 – 17:30
+                </div>
+              </div>
 
-            <div className="flex gap-3 mt-10 shrink-0 relative z-20">
-              {testimonials.map((_: any, i: number) => (
-                <div 
-                  key={i} 
-                  className={`h-1.5 rounded-full transition-all duration-700 ${testiIndex === i ? 'bg-[#BC4B26] w-10' : 'bg-[#1A3C28]/10 w-2'}`}
-                />
-              ))}
+              <Link
+                to="/demo/landscaping/contact"
+                className="w-full py-3.5 bg-[#162E20] hover:bg-[#C86A3D] text-white font-semibold text-xs uppercase tracking-wider rounded-lg transition-all duration-300 shadow-md flex items-center justify-center gap-2.5 text-center"
+              >
+                <span>Get Started Online</span>
+                <ArrowRight size={14} />
+              </Link>
             </div>
           </div>
+
         </div>
       </section>
 
-      {/* Work Gallery */}
-      <section id="gallery" className="py-32 md:py-48 px-6 md:px-12 bg-[#F4F1EA] overflow-hidden">
-        <div className="max-w-7xl mx-auto mb-20 text-center">
-          <h2 className="text-[#1A3C28] font-oswald text-4xl md:text-6xl font-bold uppercase tracking-tight">Work Gallery</h2>
+      {/* FEATURED WORK SHOWCASE */}
+      <section className="py-24 px-6 md:px-12 max-w-7xl mx-auto">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+          <div className="space-y-3">
+            <span className="text-xs font-mono uppercase tracking-[0.25em] text-[#C86A3D] font-bold">
+              Portfolio
+            </span>
+            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#162E20] tracking-tight">
+              Recent Transformations.
+            </h2>
+          </div>
+          <Link
+            to="/demo/landscaping/gallery"
+            className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-[#C86A3D] hover:text-[#162E20] font-bold transition-colors"
+          >
+            <span>View All Completed Projects</span>
+            <ArrowRight size={14} />
+          </Link>
         </div>
-        <div className="flex gap-8 overflow-x-auto pb-10 no-scrollbar snap-x px-4">
-          {[
-            "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&q=65&w=1200",
-            "https://images.unsplash.com/photo-1473448912268-2022ce9509d8?auto=format&fit=crop&q=65&w=1200",
-            "https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&get=80&w=1200",
-            "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&q=65&w=1200",
-            "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&q=65&w=1600"
-          ].map((img, i) => (
-            <div key={i} className="min-w-[320px] md:min-w-[600px] aspect-video rounded-sm overflow-hidden snap-center shadow-xl border border-white/10 group">
-              <img src={img} alt={`Gallery ${i}`} className="w-full h-full object-cover grayscale-[40%] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-[1.2s] ease-out" loading="lazy" decoding="async" />
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {featuredProjects.map((project, idx) => (
+            <div 
+              key={idx}
+              className="group bg-white rounded-xl border border-stone-200/90 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 flex flex-col"
+            >
+              <div className="relative aspect-[4/3] overflow-hidden bg-stone-800">
+                <img
+                  src={project.img}
+                  alt={project.title}
+                  className="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-105"
+                  loading="lazy"
+                />
+                <div className="absolute top-4 left-4 px-3 py-1 bg-black/60 backdrop-blur-md rounded-md text-[10px] font-mono uppercase text-white tracking-wider">
+                  {project.location}
+                </div>
+              </div>
+              <div className="p-6 sm:p-7 flex-grow flex flex-col justify-between space-y-4">
+                <div>
+                  <span className="text-[10px] font-mono uppercase tracking-wider text-[#C86A3D] font-bold block mb-1">
+                    {project.category}
+                  </span>
+                  <h3 className="font-serif text-xl font-bold text-[#162E20] group-hover:text-[#C86A3D] transition-colors">
+                    {project.title}
+                  </h3>
+                  <p className="text-stone-600 text-xs sm:text-sm leading-relaxed mt-2.5">
+                    {project.description}
+                  </p>
+                </div>
+                <Link
+                  to="/demo/landscaping/contact"
+                  className="inline-flex items-center gap-2 text-xs font-semibold text-[#162E20] group-hover:text-[#C86A3D] transition-colors pt-3 border-t border-stone-100"
+                >
+                  <span>Discuss Similar Project</span>
+                  <ArrowRight size={13} />
+                </Link>
+              </div>
             </div>
           ))}
         </div>
       </section>
 
-      <Footer />
+      {/* CORE CAPABILITIES GRID */}
+      <section className="py-24 px-6 md:px-12 bg-[#F5F2EB] border-y border-stone-200/80">
+        <div className="max-w-7xl mx-auto">
+          
+          <div className="text-center max-w-2xl mx-auto mb-16 space-y-3">
+            <span className="text-xs font-mono uppercase tracking-[0.25em] text-[#C86A3D] font-bold">
+              Disciplines
+            </span>
+            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#162E20] tracking-tight">
+              Master Landscaping Services.
+            </h2>
+            <p className="text-stone-600 text-sm sm:text-base leading-relaxed">
+              Every detail engineered from deep groundwork and proper drainage to precision cutting and finishing masonry.
+            </p>
+          </div>
 
-      <style>{`
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-      `}</style>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {coreServices.map((service, idx) => (
+              <div 
+                key={idx}
+                className="bg-white rounded-xl overflow-hidden border border-stone-200/90 shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col"
+              >
+                <div className="aspect-[16/10] bg-stone-800 overflow-hidden relative">
+                  <img
+                    src={service.img}
+                    alt={service.title}
+                    className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+                    loading="lazy"
+                  />
+                  <div className="absolute top-3 left-3 w-8 h-8 rounded-full bg-[#162E20] text-white flex items-center justify-center font-mono text-xs font-bold shadow-md">
+                    {service.number}
+                  </div>
+                </div>
+                <div className="p-6 flex-grow flex flex-col justify-between space-y-3">
+                  <div>
+                    <h3 className="font-serif text-lg font-bold text-[#162E20]">
+                      {service.title}
+                    </h3>
+                    <p className="text-stone-600 text-xs sm:text-sm leading-relaxed mt-2">
+                      {service.desc}
+                    </p>
+                  </div>
+                  <Link
+                    to="/demo/landscaping/services"
+                    className="inline-flex items-center gap-1.5 text-xs font-bold text-[#C86A3D] hover:text-[#162E20] transition-colors pt-2"
+                  >
+                    <span>View Specifications</span>
+                    <ArrowRight size={13} />
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+
+        </div>
+      </section>
+
+      {/* WHY OAK & ASH (THE STANDARD OF EXCELLENCE) */}
+      <section className="py-24 px-6 md:px-12 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+          
+          <div className="lg:col-span-5 space-y-6">
+            <span className="text-xs font-mono uppercase tracking-[0.25em] text-[#C86A3D] font-bold">
+              The Oak &amp; Ash Standard
+            </span>
+            <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#162E20] tracking-tight leading-tight">
+              Why Discerning Homeowners Choose Our Tradesmen.
+            </h2>
+            <p className="text-stone-600 text-sm sm:text-base leading-relaxed">
+              We treat outdoor construction with the exact same architectural rigor as an interior extension. From calculating fall gradients to diamond-blade mitering, our focus on precision is uncompromising.
+            </p>
+            <div className="pt-2">
+              <Link
+                to="/demo/landscaping/about"
+                className="inline-flex items-center gap-2.5 px-6 py-3 bg-[#162E20] hover:bg-[#C86A3D] text-white text-xs uppercase tracking-wider font-semibold rounded-lg transition-all shadow-md"
+              >
+                <span>Read Our Heritage &amp; Standards</span>
+                <ArrowRight size={14} />
+              </Link>
+            </div>
+          </div>
+
+          <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {trustPoints.map((point, idx) => {
+              const Icon = point.icon;
+              return (
+                <div key={idx} className="p-6 sm:p-7 bg-white rounded-xl border border-stone-200/90 shadow-sm space-y-3">
+                  <div className="w-10 h-10 rounded-lg bg-[#162E20]/5 text-[#C86A3D] flex items-center justify-center">
+                    <Icon size={20} />
+                  </div>
+                  <h3 className="font-serif text-base font-bold text-[#162E20]">
+                    {point.title}
+                  </h3>
+                  <p className="text-stone-600 text-xs sm:text-sm leading-relaxed">
+                    {point.desc}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+
+        </div>
+      </section>
+
+      {/* CLIENT TESTIMONIALS */}
+      <section className="py-20 px-6 md:px-12 bg-[#162E20] text-white">
+        <div className="max-w-4xl mx-auto text-center space-y-8">
+          <div className="w-12 h-12 bg-[#C86A3D] rounded-full mx-auto flex items-center justify-center text-white shadow-lg">
+            <Quote size={22} />
+          </div>
+          
+          <blockquote className="font-serif text-xl sm:text-2xl md:text-3xl font-normal italic leading-relaxed text-stone-100">
+            &ldquo;Oak &amp; Ash completely transformed our sloping Marlborough garden. The porcelain terrace, integrated steps, and sunken seating area have become our favourite part of the house. Clean, polite, and finished exactly on budget.&rdquo;
+          </blockquote>
+
+          <div className="space-y-1">
+            <p className="font-serif text-lg font-bold text-[#E08A5B]">
+              Robert &amp; Charlotte Hayes
+            </p>
+            <p className="text-xs font-mono uppercase tracking-widest text-stone-400">
+              Private Residential Estate · Marlborough, Wiltshire
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* FINAL CALL TO ACTION */}
+      <section className="py-20 px-6 md:px-12 bg-[#FBF9F5] text-center border-t border-stone-200">
+        <div className="max-w-3xl mx-auto space-y-6">
+          <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#162E20]">
+            Ready to Plan Your Garden Transformation?
+          </h2>
+          <p className="text-stone-600 text-sm sm:text-base leading-relaxed max-w-xl mx-auto">
+            Book a complimentary on-site survey. We inspect your grounds, discuss your requirements, and provide a fixed-price itemised quotation.
+          </p>
+          <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Link
+              to="/demo/landscaping/contact"
+              className="w-full sm:w-auto px-8 py-4 bg-[#C86A3D] hover:bg-[#b5582c] text-white font-semibold text-xs uppercase tracking-wider rounded-lg transition-all shadow-lg hover:scale-105 active:scale-95"
+            >
+              <span>Book Your Consultation</span>
+            </Link>
+            <a
+              href="tel:01672552140"
+              className="w-full sm:w-auto px-8 py-4 bg-white hover:bg-stone-50 text-[#162E20] border border-stone-300 font-semibold text-xs uppercase tracking-wider rounded-lg transition-all shadow-sm flex items-center justify-center gap-2"
+            >
+              <Phone size={14} className="text-[#C86A3D]" />
+              <span>Call 01672 552 140</span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <Footer />
     </div>
   );
 };

@@ -15,6 +15,7 @@ const demoChunks: Record<string, () => Promise<unknown>> = {
   landscaping: () => import('../components/demos/landscaping/Home'),
   equestrian: () => import('../components/demos/equestrian/EquestrianHome'),
   physio: () => import('../components/demos/physio/PhysioHome'),
+  spa: () => import('../components/demos/spa/SpaHome'),
   cafe: () => import('../components/demos/cafe/CafeHome')
 };
 
@@ -55,14 +56,14 @@ const projects: Project[] = [
   {
     id: 'landscaping',
     wordmark: 'Oak & Ash',
-    industry: 'Landscaping',
-    headline: ['Work won', 'from the van.'],
+    industry: 'Architectural Landscaping',
+    headline: ['Architectural craft,', 'built to endure.'],
     path: '/demo/landscaping',
-    heroImage: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&q=65&w=1600',
-    accent: '#BC4B26',
+    heroImage: 'https://images.unsplash.com/photo-1558904541-efa8c1965f1e?auto=format&fit=crop&q=80&w=1600',
+    accent: '#C86A3D',
     description:
-      'Enquiries for this trade arrive while nobody is near a desk. The site answers the usual questions, shows the standard of the work and takes the details without a phone call.',
-    features: ['Services breakdown', 'Photo gallery', 'Enquiry form']
+      'Showcasing luxury porcelain terraces, Cotswold stone masonry and garden builds for high-end homeowners. An online flagship that wins five-figure contracts without friction.',
+    features: ['5 dedicated pages', 'Interactive project gallery', 'Fixed-price consultation booking']
   },
   {
     id: 'equestrian',
@@ -87,6 +88,18 @@ const projects: Project[] = [
     description:
       'People arrive in pain and want to know two things: who will see them, and what it costs. Every fee, every physiotherapist and the next free slot sit on the first screen.',
     features: ['Fees up front', 'Team profiles', 'Questions answered']
+  },
+  {
+    id: 'spa',
+    wordmark: 'Verdant Relax Park',
+    industry: 'Luxury Spa & Resort',
+    headline: ['Mineral baths,', 'quiet pines.'],
+    path: '/demo/spa',
+    heroImage: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&q=80&w=1600',
+    accent: '#94A3B8',
+    description:
+      'A luxury forest sanctuary where suites, thermal mineral baths, and wood-fired dining are explored with editorial transitions and seamless online booking.',
+    features: ['Interactive suite browser', 'Thermal treatment rituals', 'Instant stay reservation']
   },
   {
     id: 'cafe',
@@ -243,7 +256,7 @@ const ProjectRow: React.FC<{ project: Project; index: number }> = ({ project, in
             {String(index + 1).padStart(2, '0')}
           </span>
           <span className="w-8 h-px bg-slate-300" />
-          <span className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.45em] text-blue-600">
+          <span className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.45em] text-emerald-700">
             {project.industry}
           </span>
         </div>
@@ -263,7 +276,7 @@ const ProjectRow: React.FC<{ project: Project; index: number }> = ({ project, in
               key={f}
               className="flex items-center gap-3 py-3 border-b border-slate-200 text-[10px] md:text-[11px] font-black uppercase tracking-[0.28em] text-slate-600"
             >
-              <span className="block w-1 h-1 rounded-full bg-blue-600 shrink-0" />
+              <span className="block w-1 h-1 rounded-full bg-emerald-600 shrink-0" />
               {f}
             </li>
           ))}
@@ -274,7 +287,7 @@ const ProjectRow: React.FC<{ project: Project; index: number }> = ({ project, in
           onMouseEnter={() => warmDemo(project.id, project.heroImage)}
           onFocus={() => warmDemo(project.id, project.heroImage)}
           onTouchStart={() => warmDemo(project.id, project.heroImage)}
-          className="reveal-item group/btn inline-flex items-center gap-5 pl-8 pr-2 py-2 rounded-full bg-slate-950 hover:bg-blue-600 transition-colors duration-500"
+          className="reveal-item group/btn inline-flex items-center gap-5 pl-8 pr-2 py-2 rounded-full bg-slate-950 hover:bg-emerald-600 transition-colors duration-500"
         >
           <span className="text-[10px] font-black uppercase tracking-[0.35em] text-white">View demo</span>
           <span className="w-11 h-11 rounded-full bg-white flex items-center justify-center text-slate-950 transition-transform duration-500 group-hover/btn:rotate-45">
@@ -311,7 +324,7 @@ const ProjectsGallery: React.FC = () => {
         {/* HERO */}
         <div className="mb-28 md:mb-40">
           <p
-            className="pg-rise mb-6 text-[9px] md:text-[11px] font-black uppercase tracking-[0.45em] text-blue-600"
+            className="pg-rise mb-6 text-[9px] md:text-[11px] font-black uppercase tracking-[0.45em] text-emerald-700"
             style={{ animationDelay: '0ms' }}
           >
             Web Design Portfolio
@@ -324,11 +337,11 @@ const ProjectsGallery: React.FC = () => {
             <span className="text-shimmer-blue italic">GET RESULTS.</span>
           </h1>
           <div
-            className="pg-rise max-w-3xl border-l-[6px] md:border-l-[8px] border-blue-100 pl-8 md:pl-14"
+            className="pg-rise max-w-3xl border-l-[6px] md:border-l-[8px] border-emerald-100 pl-8 md:pl-14"
             style={{ animationDelay: '160ms' }}
           >
             <p className="text-lg md:text-xl lg:text-2xl text-slate-500 font-medium italic leading-relaxed">
-              Four working websites, built the way we build for clients. Open any one of them and use it as a
+              Five working websites, built the way we build for clients. Open any one of them and use it as a
               customer would.
             </p>
           </div>
@@ -343,7 +356,7 @@ const ProjectsGallery: React.FC = () => {
 
         {/* CTA */}
         <div className="mt-32 md:mt-48 pt-20 md:pt-28 border-t border-slate-200 text-center">
-          <p className="text-[9px] md:text-[11px] font-black uppercase tracking-[0.45em] text-blue-600 mb-8">
+          <p className="text-[9px] md:text-[11px] font-black uppercase tracking-[0.45em] text-emerald-700 mb-8">
             Next step
           </p>
           <h2 className="font-syne text-[clamp(2.5rem,10vw,5rem)] font-black text-slate-950 tracking-tighter uppercase leading-[0.9] mb-12 md:mb-14">
@@ -352,7 +365,7 @@ const ProjectsGallery: React.FC = () => {
           </h2>
           <Link
             to="/contact"
-            className="group/cta inline-flex items-center gap-5 pl-9 pr-2 py-2 rounded-full bg-blue-600 hover:bg-slate-950 transition-colors duration-500 shadow-[0_25px_60px_-25px_rgba(37,99,235,0.55)]"
+            className="group/cta inline-flex items-center gap-5 pl-9 pr-2 py-2 rounded-full bg-emerald-600 hover:bg-slate-950 transition-colors duration-500 shadow-[0_25px_60px_-25px_rgba(5,150,105,0.45)]"
           >
             <span className="text-[10px] md:text-[11px] font-black uppercase tracking-[0.35em] text-white">
               Start your build

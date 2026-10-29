@@ -1,25 +1,15 @@
-
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { Page } from '../App';
-import { Sparkles, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 interface HeroProps { 
   navigateTo: (page: Page) => void; 
   startAnimation?: boolean;
 }
 
-const phrases = [
-  "SABR builds high-performing sites that help your business grow.",
-  "Meticulously crafted for perfect detail and better results.",
-  "Professional online experiences designed for tomorrow's business.",
-  "Websites optimized to turn visitors into long-term customers."
-];
-
 const Hero: React.FC<HeroProps> = ({ navigateTo, startAnimation = true }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const phraseRef = useRef<HTMLParagraphElement>(null);
-  const [phraseIndex, setPhraseIndex] = useState(0);
 
   useEffect(() => {
     if (!startAnimation) return;
@@ -30,99 +20,72 @@ const Hero: React.FC<HeroProps> = ({ navigateTo, startAnimation = true }) => {
       });
       
       tl.fromTo(".hero-title-top", 
-        { opacity: 0, y: 40, filter: 'blur(15px)' },
-        { opacity: 1, y: 0, filter: 'blur(0px)', duration: 1.2 }
+        { opacity: 0, y: 35, filter: 'blur(10px)' },
+        { opacity: 1, y: 0, filter: 'blur(0px)', duration: 1.1 }
       );
 
       tl.fromTo(".hero-reveal-bottom",
-        { opacity: 0, y: 30 },
-        { opacity: 1, y: 0, duration: 1, stagger: 0.08 },
-        "-=0.7"
+        { opacity: 0, y: 25 },
+        { opacity: 1, y: 0, duration: 0.9, stagger: 0.08 },
+        "-=0.6"
       );
-
-      let delayedCall: gsap.core.Tween;
-
-      const rotatePhrases = () => {
-        if (!phraseRef.current) return;
-        
-        gsap.to(phraseRef.current, {
-          opacity: 0,
-          y: -15,
-          duration: 0.4,
-          ease: "power2.in",
-          onComplete: () => {
-            setPhraseIndex((prev) => (prev + 1) % phrases.length);
-            gsap.fromTo(phraseRef.current, 
-              { opacity: 0, y: 15 },
-              { opacity: 1, y: 0, duration: 0.6, ease: "expo.out", force3D: true, onComplete: () => {
-                delayedCall = gsap.delayedCall(5.5, rotatePhrases);
-              }}
-            );
-          }
-        });
-      };
-
-      delayedCall = gsap.delayedCall(5.5, rotatePhrases);
-
-      return () => {
-        delayedCall?.kill();
-      };
     }, containerRef);
 
     return () => ctx.revert();
   }, [startAnimation]);
 
   return (
-    <section ref={containerRef} className="relative h-[100dvh] flex flex-col items-center sm:items-start px-6 lg:px-24 overflow-hidden bg-[#0b0d10]">
+    <section ref={containerRef} className="relative h-[100dvh] flex items-center px-6 lg:px-24 overflow-hidden bg-[#0b0d10]">
+      {/* Background Image with Lighter Top Overlay */}
       <div className="absolute inset-0 z-0">
         <img
           src="/images/hero-bg.jpg"
-          alt="Misty countryside at sunrise"
+          alt="Misty Wiltshire countryside at sunrise"
           className="w-full h-full object-cover"
           loading="eager"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/75"></div>
+        {/* Lightened overlay at top to let the sunrise landscape breathe */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/45 to-black/75"></div>
       </div>
 
-      <div className="relative z-10 h-24 md:h-32 shrink-0 w-full"></div>
+      {/* Vertically Centered Content Container */}
+      <div className="relative z-10 w-full max-w-4xl mx-auto sm:mx-0 flex flex-col items-center sm:items-start text-center sm:text-left justify-center gap-6 md:gap-8 pt-8">
+        
 
-      <div className="relative z-10 flex-1 w-full flex flex-col items-center sm:items-start justify-start gap-6 md:gap-10 pb-12 md:pb-24">
-        <div className="w-full flex flex-col items-center sm:items-start">
-          <h1 className="font-syne text-[clamp(1.5rem,8vw,4.4rem)] leading-[1.05] tracking-[-0.04em] uppercase flex flex-col items-center sm:items-start text-center sm:text-left text-white w-full transform-gpu will-change-transform">
-            <span className="hero-title-top font-extrabold mb-4 md:mb-6 px-4 sm:px-0 opacity-0 drop-shadow-[0_4px_20px_rgba(0,0,0,0.5)]">Built to Perform</span>
-            <span className="hero-title-top font-extrabold px-4 sm:px-0 opacity-0 text-shimmer-blue drop-shadow-[0_4px_20px_rgba(0,0,0,0.5)]">Designed to Dominate</span>
-          </h1>
+        {/* HERO TITLE: Dense, bold, not all capitals */}
+        <h1 className="font-syne text-[clamp(2.6rem,7vw,4.4rem)] font-black leading-[0.98] tracking-[-0.035em] text-white transform-gpu will-change-transform">
+          <span className="hero-title-top inline-block opacity-0 drop-shadow-[0_4px_16px_rgba(0,0,0,0.5)]">
+            Rooted in <span className="text-shimmer-blue italic font-black">Wiltshire.</span>
+          </span>
+        </h1>
+
+        {/* SUBTEXT: Reduced by 20%, clean legible font */}
+        <div className="hero-reveal-bottom opacity-0 max-w-2xl">
+          <p className="font-inter text-lg sm:text-xl md:text-2xl text-stone-100 font-normal leading-relaxed tracking-normal drop-shadow-[0_2px_10px_rgba(0,0,0,0.6)]">
+            Custom designs for Ambitous brands.
+          </p>
         </div>
 
-        <div className="hero-reveal-bottom w-full flex flex-col items-center sm:items-start gap-10 md:gap-14 transform-gpu opacity-0">
-          {/* FIXED HEIGHT CONTAINER WITH LARGER MINIMALIST FONT */}
-          <div className="h-[120px] md:h-[160px] flex items-center max-w-4xl overflow-hidden">
-            <p ref={phraseRef} className="font-inter text-2xl md:text-4xl text-white font-medium leading-[1.1] tracking-[-0.02em] text-center sm:text-left drop-shadow-[0_2px_12px_rgba(0,0,0,0.55)] will-change-[opacity,transform]">
-              {phrases[phraseIndex]}
-            </p>
-          </div>
+        {/* ACTION BUTTONS: One warm off-white solid + one refined ghost button, smaller, softer radius */}
+        <div className="hero-reveal-bottom opacity-0 flex flex-col sm:flex-row gap-4 items-center sm:items-start pt-2">
+          {/* Primary Warm Off-White Button */}
+          <button 
+            onClick={() => navigateTo('contact')}
+            className="w-full sm:w-auto px-7 py-3.5 bg-[#f5f2eb] hover:bg-white text-stone-900 rounded-xl font-semibold text-xs sm:text-sm tracking-wide transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2.5 cursor-pointer"
+          >
+            <span>Start Your Project</span>
+            <ArrowRight size={15} />
+          </button>
 
-          <div className="flex flex-col sm:flex-row gap-6 items-center sm:items-start">
-            <button 
-              onClick={() => navigateTo('contact')}
-              className="relative px-16 py-8 md:py-9 bg-blue-600 text-white font-black text-[11px] md:text-[12px] uppercase tracking-[0.4em] rounded-2xl transition-all duration-500 shadow-[0_20px_40px_rgba(37,99,235,0.2)] flex items-center justify-center gap-4 group hover:bg-blue-700 hover:-translate-y-2 hover:rotate-[-1deg] active:scale-95 transform-gpu overflow-hidden"
-            >
-              {/* QUIRKY HOVER BG EFFECT */}
-              <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out"></div>
-              <span className="relative z-10 flex items-center gap-4">
-                Start Project
-                <Sparkles size={16} className="group-hover:rotate-[120deg] group-hover:scale-150 transition-all duration-700" />
-              </span>
-            </button>
-            <button 
-              onClick={() => navigateTo('work')}
-              className="px-16 py-8 md:py-9 bg-white border border-slate-200 text-slate-950 font-black text-[11px] md:text-[12px] uppercase tracking-[0.4em] rounded-2xl transition-all duration-500 flex items-center justify-center gap-3 group hover:border-blue-600 hover:text-blue-600 hover:-translate-y-2 hover:rotate-[1deg] hover:shadow-2xl active:scale-95 transform-gpu"
-            >
-              The Work
-              <ArrowRight size={16} className="group-hover:translate-x-4 group-hover:scale-125 transition-all duration-500" />
-            </button>
-          </div>
+          {/* Outlined Ghost Button */}
+          <button 
+            onClick={() => navigateTo('work')}
+            className="w-full sm:w-auto px-7 py-3.5 bg-white/10 hover:bg-white/20 text-white/95 border border-white/25 hover:border-white/40 rounded-xl font-medium text-xs sm:text-sm tracking-wide transition-all duration-300 backdrop-blur-sm hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
+          >
+            <span>The Work</span>
+          </button>
         </div>
+
       </div>
     </section>
   );

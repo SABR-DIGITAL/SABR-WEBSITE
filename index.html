@@ -13,7 +13,7 @@
     <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
     <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large" />
     <link rel="canonical" href="https://sabrdigital.co.uk/" />
-    <meta name="theme-color" content="#2563eb" />
+    <meta name="theme-color" content="#059669" />
     <meta name="format-detection" content="telephone=no" />
 
     <!-- AUDIENCE -->
@@ -400,15 +400,18 @@
     <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png">
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="manifest" href="/site.webmanifest">
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600;800&family=Syne:wght@800&family=Oswald:wght@700&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&family=Inter:wght@400;700;900&family=Manrope:wght@300;400;600;800&family=Oswald:wght@700&family=Syne:wght@800&display=swap" rel="stylesheet">
     <style>
+      .font-cormorant { font-family: 'Cormorant Garamond', Georgia, serif; }
+      .font-cinzel { font-family: 'Cinzel', serif; }
       :root {
-        --sabr-blue: #2563eb;
-        --sabr-sky: #38bdf8;
-        --sabr-navy: #1e3a8a;
+        --sabr-emerald: #059669;
+        --sabr-green: #10b981;
+        --sabr-sage: #6ee7b7;
+        --sabr-navy: #0f241d;
         --sabr-white: #ffffff;
         --sabr-cream: #fdfbf7;
-        --sabr-ice: #f0f9ff;
+        --sabr-ice: #f0fdf4;
       }
       
       html, body {
@@ -452,25 +455,26 @@
       .font-oswald { font-family: 'Oswald', sans-serif; }
       .font-inter { font-family: 'Inter', sans-serif; }
       
-      .text-shimmer-blue {
+      .text-shimmer-blue, .text-shimmer-emerald {
         background: linear-gradient(
           90deg, 
-          #2563eb 0%, 
-          #38bdf8 25%, 
+          #059669 0%, 
+          #34d399 25%, 
           #ffffff 50%, 
-          #38bdf8 75%, 
-          #2563eb 100%
+          #6ee7b7 75%, 
+          #059669 100%
         );
         background-size: 200% auto;
-        color: var(--sabr-blue);
+        color: #059669;
         background-clip: text;
         text-fill-color: transparent;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        animation: blue-shine 5s linear infinite;
+        animation: emerald-shine 6s linear infinite;
         will-change: background-position;
       }
 
+      @keyframes emerald-shine { to { background-position: 200% center; } }
       @keyframes blue-shine { to { background-position: 200% center; } }
 
       .fluid-bg-canvas {

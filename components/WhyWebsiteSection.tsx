@@ -36,8 +36,8 @@ const sabrPros: SabrPro[] = [
     id: 1,
     title: "Local Conversion",
     icon: <Users size={16} />,
-    color: "text-blue-600",
-    bg: "bg-blue-50",
+    color: "text-emerald-600",
+    bg: "bg-emerald-50",
     meaning: "Your website is built to turn nearby visitors into real enquiries — not just traffic.",
     matters: "Most local customers choose from the first few businesses they trust online.",
     outcomes: ["More phone calls", "Higher Google visibility", "Visitors find services faster", "Less reliance on ads", "Stronger local trust"]
@@ -96,8 +96,8 @@ const sabrPros: SabrPro[] = [
     id: 6,
     title: "24/7 Lead Capture",
     icon: <Zap size={16} />,
-    color: "text-blue-50",
-    bg: "bg-blue-500",
+    color: "text-emerald-50",
+    bg: "bg-emerald-600",
     meaning: "Your website works as a full-time sales tool — capturing enquiries day and night.",
     matters: "A large percentage of leads happen outside working hours.",
     outcomes: ["Enquiries while you sleep", "Automated quote requests", "Booking capture", "No missed opportunities", "Time saved on messaging"]
@@ -199,16 +199,16 @@ const WhyWebsiteSection: React.FC = () => {
           <div className="space-y-6 md:space-y-8">
             <div className="space-y-4">
               <div className="flex items-center gap-4">
-                <div className="w-10 h-[2px] bg-blue-600"></div>
-                <span className="text-blue-600 font-black text-[11px] uppercase tracking-[0.8em]">SABR PRO'S</span>
+                <div className="w-10 h-[2px] bg-emerald-600"></div>
+                <span className="text-emerald-600 font-black text-[11px] uppercase tracking-[0.8em]">SABR PRO'S</span>
               </div>
               
               {/* TABLET-READY CLAMPED FONT SIZES */}
               <h2 className="font-syne text-3xl sm:text-4xl md:text-[clamp(2.5rem,6vw,5rem)] font-black tracking-tighter uppercase leading-[0.9] text-slate-950">
-                WHY <br /> <span className="text-blue-600 italic">DOMINATE</span> <br /> ONLINE?
+                WHY <br /> <span className="text-emerald-600 italic">DOMINATE</span> <br /> ONLINE?
               </h2>
               
-              <div className="max-w-md border-l-4 border-blue-50 pl-8">
+              <div className="max-w-md border-l-4 border-emerald-50 pl-8">
                 <p className="text-slate-400 font-bold text-[13px] uppercase tracking-[0.4em] italic leading-relaxed">
                   "Explore our architectural pillars. Click a PRO item on the left to review its technical blueprint."
                 </p>
@@ -218,11 +218,7 @@ const WhyWebsiteSection: React.FC = () => {
         </div>
       </div>
 
-      {/* DETAIL MODAL
-          Rendered straight into <body>. Anywhere inside the page tree an ancestor
-          transform (GSAP page transitions, a will-change, a filter) becomes the
-          containing block for position: fixed, which is what let this panel sit
-          half off-screen. A portal removes that possibility for good. */}
+      {/* DETAIL MODAL */}
       {createPortal(
         <AnimatePresence>
         {selectedPro && (
@@ -245,19 +241,19 @@ const WhyWebsiteSection: React.FC = () => {
               <div className="px-8 sm:px-12 py-6 sm:py-8 flex items-center justify-between border-b border-slate-100 bg-white shrink-0 z-30">
                 <div className="flex flex-col text-left shrink-0">
                   <span className="font-syne text-lg sm:text-2xl tracking-[0.05em] font-black text-slate-950 flex items-center leading-none uppercase">
-                    SABR<span className="text-blue-600 ml-1.5">PRO</span>
+                    SABR<span className="text-emerald-600 ml-1.5">PRO</span>
                   </span>
-                  <span className="text-[7px] sm:text-[8px] uppercase font-black tracking-[0.6em] text-blue-400 mt-1.5">Technical Blueprint</span>
+                  <span className="text-[7px] sm:text-[8px] uppercase font-black tracking-[0.6em] text-emerald-600 mt-1.5">Technical Blueprint</span>
                 </div>
                 <div className="flex items-center gap-3 sm:gap-6">
                   <div className="hidden sm:flex items-center gap-2 sm:gap-4 px-3 sm:px-5 py-2 sm:py-2.5 bg-slate-50 border border-slate-100 rounded-full shadow-inner">
-                    <button onClick={handlePrev} className="p-1 hover:text-blue-600 focus:outline-none transition-colors"><ChevronLeft size={14} className="sm:w-4 sm:h-4" /></button>
+                    <button onClick={handlePrev} className="p-1 hover:text-emerald-600 focus:outline-none transition-colors"><ChevronLeft size={14} className="sm:w-4 sm:h-4" /></button>
                     <span className="text-[9px] sm:text-[10px] font-black text-slate-950 uppercase tracking-[0.1em] sm:tracking-[0.2em] min-w-[35px] sm:min-w-[45px] text-center">{activeIndex + 1} / {sabrPros.length}</span>
-                    <button onClick={handleNext} className="p-1 hover:text-blue-600 focus:outline-none transition-colors"><ChevronRight size={14} className="sm:w-4 sm:h-4" /></button>
+                    <button onClick={handleNext} className="p-1 hover:text-emerald-600 focus:outline-none transition-colors"><ChevronRight size={14} className="sm:w-4 sm:h-4" /></button>
                   </div>
                   <button 
                     onClick={() => setSelectedPro(null)} 
-                    className="h-8 sm:h-10 px-4 sm:px-0 sm:w-10 rounded-full bg-slate-950 text-white flex items-center justify-center hover:bg-blue-600 transition-all shadow-xl active:scale-90 gap-2"
+                    className="h-8 sm:h-10 px-4 sm:px-0 sm:w-10 rounded-full bg-slate-950 text-white flex items-center justify-center hover:bg-emerald-600 transition-all shadow-xl active:scale-90 gap-2"
                   >
                     <span className="sm:hidden text-[9px] font-black uppercase tracking-widest">Exit</span>
                     <X size={14} className="hidden sm:block sm:w-5 sm:h-5" />
@@ -282,7 +278,7 @@ const WhyWebsiteSection: React.FC = () => {
                         {React.cloneElement(selectedPro.icon as React.ReactElement<{ size?: number }>, { size: 40 })}
                       </div>
                       <div className="space-y-4">
-                        <span className="text-blue-600 font-black text-[10px] uppercase tracking-[0.6em] block">PRO Item</span>
+                        <span className="text-emerald-600 font-black text-[10px] uppercase tracking-[0.6em] block">PRO Item</span>
                         <h2 className="font-syne text-3xl md:text-4xl font-black text-slate-950 uppercase tracking-tighter leading-[0.85] flex flex-col">
                           {selectedPro.title.split(' ').map((word, wIdx) => (
                             <span key={wIdx} className="block whitespace-nowrap">{word}</span>
@@ -295,16 +291,16 @@ const WhyWebsiteSection: React.FC = () => {
                     <div className="flex-1 space-y-16">
                       <section className="space-y-6">
                         <div className="flex items-center gap-4">
-                          <div className="w-8 h-[2px] bg-blue-600/30"></div>
-                          <h4 className="text-[10px] font-black text-blue-600 uppercase tracking-[0.5em]">What it means</h4>
+                          <div className="w-8 h-[2px] bg-emerald-600/30"></div>
+                          <h4 className="text-[10px] font-black text-emerald-600 uppercase tracking-[0.5em]">What it means</h4>
                         </div>
                         <p className="text-xl md:text-3xl font-bold text-slate-800 italic leading-tight tracking-tight">"{selectedPro.meaning}"</p>
                       </section>
 
                       <section className="space-y-6">
                         <div className="flex items-center gap-4">
-                          <div className="w-8 h-[2px] bg-blue-600/30"></div>
-                          <h4 className="text-[10px] font-black text-blue-600 uppercase tracking-[0.5em]">Why it matters</h4>
+                          <div className="w-8 h-[2px] bg-emerald-600/30"></div>
+                          <h4 className="text-[10px] font-black text-emerald-600 uppercase tracking-[0.5em]">Why it matters</h4>
                         </div>
                         <p className="text-lg md:text-xl text-slate-500 font-medium leading-relaxed max-w-2xl">{selectedPro.matters}</p>
                       </section>
@@ -313,8 +309,8 @@ const WhyWebsiteSection: React.FC = () => {
                         <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.5em]">Expected Outcomes</h4>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                           {selectedPro.outcomes.map((outcome, i) => (
-                            <div key={i} className="flex items-center gap-4 p-5 bg-slate-50 rounded-2xl border border-transparent hover:border-blue-100 hover:bg-white transition-all group shadow-sm hover:shadow-md">
-                              <div className="w-6 h-6 rounded-full bg-white flex items-center justify-center text-blue-600 shadow-sm shrink-0 group-hover:scale-110 transition-transform"><CheckCircle2 size={14} /></div>
+                            <div key={i} className="flex items-center gap-4 p-5 bg-slate-50 rounded-2xl border border-transparent hover:border-emerald-100 hover:bg-white transition-all group shadow-sm hover:shadow-md">
+                              <div className="w-6 h-6 rounded-full bg-white flex items-center justify-center text-emerald-600 shadow-sm shrink-0 group-hover:scale-110 transition-transform"><CheckCircle2 size={14} /></div>
                               <span className="font-black text-[12px] uppercase tracking-wider text-slate-600 group-hover:text-slate-950 transition-colors">{outcome}</span>
                             </div>
                           ))}

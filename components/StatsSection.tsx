@@ -1,322 +1,450 @@
-
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
-// THE RISK OF SILENCE
-//
-// Same three statistics, same cream-and-blue vibe as before — the drama is all
-// in how it arrives. Each figure is a ring that draws itself round while the
-// number counts up, a lit dot rides the end of the stroke, and a shockwave
-// leaves the ring the moment it lands. Nothing in here tracks the pointer and
-// there is no grid: the rings are the only movement on the section.
+export const StatsSection: React.FC = () => {
+  const sectionRef = useRef<HTMLElement>(null);
+  const stage1Ref = useRef<HTMLDivElement>(null);
+  const stage2Ref = useRef<HTMLDivElement>(null);
+  const dots1Ref = useRef<HTMLDivElement>(null);
+  const dots2Ref = useRef<HTMLDivElement>(null);
 
-const RING_RADIUS = 86;
-const CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
+  const [activeStage, setActiveStage] = useState<1 | 2>(1);
+  const activeStageRef = useRef<1 | 2>(1);
 
-interface StatProps {
-  percentage: number;
-  label: string;
-  sub: string;
-  /** Stroke colours — the ring runs from the first to the second. */
-  from: string;
-  to: string;
-  index: number;
-}
+  const [count1, setCount1] = useState(0);
+  const [count2, setCount2] = useState(0);
 
-const StatRing: React.FC<StatProps> = ({ percentage, label, sub, from, to, index }) => {
-  const [count, setCount] = useState(0);
-  const rootRef = useRef<HTMLDivElement>(null);
-  const arcRef = useRef<SVGCircleElement>(null);
-  const tipRef = useRef<SVGGElement>(null);
-  const waveRef = useRef<HTMLSpanElement>(null);
-  const gradientId = `stat-grad-${index}`;
+  const hasPlayed1Ref = useRef(false);
+  const hasPlayed2Ref = useRef(false);
+  const isTransitioningRef = useRef(false);
 
-  useEffect(() => {
-    const reduce =
-      typeof window.matchMedia === 'function' &&
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // STAGE 1 ANIMATION: Counts up to 88, turns 88 dots RED, 12 remain WHITE
+  const runStage1Animation = useCallback(() => {
+    const dots = dots1Ref.current?.querySelectorAll('.customer-dot-1');
+    const abandonDots = dots ? Array.from(dots).slice(0, 88) : [];
+    const retainedDots = dots ? Array.from(dots).slice(88) : [];
 
-    const arc = arcRef.current;
-    const endOffset = CIRCUMFERENCE * (1 - percentage / 100);
-
-    // With motion turned down, everything simply is where it lands.
-    if (reduce) {
-      setCount(percentage);
-      if (arc) arc.style.strokeDashoffset = String(endOffset);
-      gsap.set(rootRef.current, { opacity: 1, y: 0, scale: 1 });
-      gsap.set(tipRef.current, { rotate: -90 + (percentage / 100) * 360 });
-      return;
+    if (dots) {
+      gsap.set(dots, { backgroundColor: '#ffffff', opacity: 0.9, scale: 1 });
+      if (retainedDots.length) {
+        gsap.set(retainedDots, {
+          backgroundColor: '#ffffff',
+          boxShadow: '0 0 10px rgba(255, 255, 255, 0.85)',
+          scale: 1.15
+        });
+      }
     }
 
+    const counterProxy = { count: 0 };
+    const tl = gsap.timeline();
+
+    tl.to(counterProxy, {
+      count: 88,
+      duration: 1.4,
+      ease: 'power2.out',
+      onUpdate: () => setCount1(Math.round(counterProxy.count))
+    });
+
+    if (abandonDots.length) {
+      tl.to(
+        abandonDots,
+        {
+          backgroundColor: '#ef4444',
+          scale: 0.85,
+          opacity: 0.9,
+          duration: 0.35,
+          stagger: { each: 0.014, from: 'start', ease: 'power1.out' }
+        },
+        0.05
+      );
+    }
+
+    if (retainedDots.length) {
+      tl.to(
+        retainedDots,
+        {
+          scale: 1.25,
+          backgroundColor: '#ffffff',
+          boxShadow: '0 0 14px rgba(255, 255, 255, 0.95)',
+          duration: 0.35,
+          stagger: 0.025,
+          ease: 'back.out(2)'
+        },
+        '-=0.5'
+      ).to(retainedDots, { scale: 1.15, duration: 0.25 });
+    }
+  }, []);
+
+  // STAGE 2 ANIMATION: Counts up to 74, turns 74 dots radiant GREEN, 26 remain neutral WHITE
+  const runStage2Animation = useCallback(() => {
+    const dots = dots2Ref.current?.querySelectorAll('.customer-dot-2');
+    const returnDots = dots ? Array.from(dots).slice(0, 74) : [];
+    const otherDots = dots ? Array.from(dots).slice(74) : [];
+
+    if (dots) {
+      gsap.set(dots, { backgroundColor: '#ffffff', opacity: 0.8, scale: 0.9 });
+    }
+
+    const counterProxy = { count: 0 };
+    const tl = gsap.timeline();
+
+    tl.to(counterProxy, {
+      count: 74,
+      duration: 1.4,
+      ease: 'power2.out',
+      onUpdate: () => setCount2(Math.round(counterProxy.count))
+    });
+
+    if (returnDots.length) {
+      tl.to(
+        returnDots,
+        {
+          backgroundColor: '#10b981', // Emerald green
+          boxShadow: '0 0 12px rgba(16, 185, 129, 0.9)',
+          scale: 1.15,
+          opacity: 1,
+          duration: 0.35,
+          stagger: { each: 0.014, from: 'start', ease: 'power1.out' }
+        },
+        0.05
+      );
+    }
+
+    if (otherDots.length) {
+      tl.to(
+        otherDots,
+        {
+          backgroundColor: '#ffffff',
+          scale: 0.9,
+          opacity: 0.5,
+          duration: 0.3
+        },
+        0.1
+      );
+    }
+  }, []);
+
+  // GENTLE GLIDE TRANSITION BETWEEN STAGES
+  const transitionTo = useCallback((targetStage: 1 | 2) => {
+    if (activeStageRef.current === targetStage || isTransitioningRef.current) return;
+    isTransitioningRef.current = true;
+    activeStageRef.current = targetStage;
+    setActiveStage(targetStage);
+
+    if (targetStage === 2) {
+      // Glide Stage 1 out upward
+      gsap.to(stage1Ref.current, {
+        y: -30,
+        opacity: 0,
+        duration: 0.45,
+        ease: 'power2.inOut',
+        pointerEvents: 'none'
+      });
+
+      // Glide Stage 2 in from below
+      gsap.fromTo(
+        stage2Ref.current,
+        { y: 30, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.55,
+          ease: 'power2.out',
+          pointerEvents: 'auto',
+          onStart: () => {
+            runStage2Animation();
+          },
+          onComplete: () => {
+            isTransitioningRef.current = false;
+          }
+        }
+      );
+    } else {
+      // Glide Stage 2 out downward
+      gsap.to(stage2Ref.current, {
+        y: 30,
+        opacity: 0,
+        duration: 0.45,
+        ease: 'power2.inOut',
+        pointerEvents: 'none'
+      });
+
+      // Glide Stage 1 in from above
+      gsap.fromTo(
+        stage1Ref.current,
+        { y: -30, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.55,
+          ease: 'power2.out',
+          pointerEvents: 'auto',
+          onStart: () => {
+            runStage1Animation();
+          },
+          onComplete: () => {
+            isTransitioningRef.current = false;
+          }
+        }
+      );
+    }
+  }, [runStage1Animation, runStage2Animation]);
+
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+
+    // 1. Initial trigger when section enters viewport: Start Stage 1 animation
+    const checkInitial = () => {
+      const rect = el.getBoundingClientRect();
+      const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+      if (rect.top <= windowHeight * 0.75 && !hasPlayed1Ref.current) {
+        hasPlayed1Ref.current = true;
+        runStage1Animation();
+      }
+    };
+    checkInitial();
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !hasPlayed1Ref.current) {
+            hasPlayed1Ref.current = true;
+            runStage1Animation();
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+    observer.observe(el);
+
+    // 2. ScrollTrigger for pinned center transition:
+    // When the section is centered on screen, scrolling past center point glides Stage 1 out and Stage 2 in
     const ctx = gsap.context(() => {
-      gsap.set(arc, { strokeDashoffset: CIRCUMFERENCE });
-      gsap.set(tipRef.current, { rotate: -90, transformOrigin: '50% 50%' });
-
       ScrollTrigger.create({
-        trigger: rootRef.current,
-        start: 'top 82%',
-        fastScrollEnd: true,
-        onEnter: () => {
-          const tl = gsap.timeline({ delay: index * 0.16 });
-
-          // The whole tile arrives, straight on — no tilt.
-          tl.fromTo(
-            rootRef.current,
-            { opacity: 0, y: 64, scale: 0.9 },
-            { opacity: 1, y: 0, scale: 1, duration: 1.15, ease: 'expo.out', force3D: true },
-            0
-          );
-
-          // The stroke draws, the dot rides its end, the number keeps pace.
-          tl.to(arc, { strokeDashoffset: endOffset, duration: 2.1, ease: 'power3.inOut' }, 0.12);
-          tl.to(
-            tipRef.current,
-            { rotate: -90 + (percentage / 100) * 360, duration: 2.1, ease: 'power3.inOut' },
-            0.12
-          );
-          tl.to(
-            { val: 0 },
-            {
-              val: percentage,
-              duration: 2.1,
-              ease: 'power3.inOut',
-              onUpdate: function () {
-                setCount(Math.round(this.targets()[0].val));
-              }
-            },
-            0.12
-          );
-
-          // And it lands: one shockwave out of the ring.
-          tl.fromTo(
-            waveRef.current,
-            { opacity: 0.55, scale: 0.82 },
-            { opacity: 0, scale: 1.45, duration: 1.5, ease: 'power2.out' },
-            1.95
-          );
+        trigger: el,
+        start: 'top top',
+        end: 'bottom bottom',
+        onUpdate: (self) => {
+          // Switch to Stage 2 once the user scrolls past ~42% through the pinned runway
+          if (self.progress >= 0.42 && activeStageRef.current !== 2) {
+            transitionTo(2);
+          } else if (self.progress < 0.42 && activeStageRef.current !== 1) {
+            transitionTo(1);
+          }
         }
       });
-    }, rootRef);
+    }, el);
 
-    return () => ctx.revert();
-  }, [percentage, index]);
+    return () => {
+      observer.disconnect();
+      ctx.revert();
+    };
+  }, [runStage1Animation, transitionTo]);
 
-  return (
-    <div
-      ref={rootRef}
-      className="stat-tile group flex flex-col items-center gap-8 opacity-0"
-      style={{ transform: 'translateZ(0)' }}
-    >
-      <div className="relative w-52 h-52 md:w-56 md:h-56 lg:w-60 lg:h-60 grid place-items-center">
-        {/* Soft light under the ring, always breathing. */}
-        <span
-          aria-hidden="true"
-          className="stat-breathe absolute inset-6 rounded-full blur-[38px] opacity-35 group-hover:opacity-70 transition-opacity duration-700"
-          style={{ background: `radial-gradient(circle, ${from} 0%, transparent 68%)` }}
-        />
-
-        {/* The shockwave, fired once as the count lands. */}
-        <span
-          ref={waveRef}
-          aria-hidden="true"
-          className="absolute inset-0 rounded-full opacity-0"
-          style={{ border: `1px solid ${from}` }}
-        />
-
-        {/* A dashed collar, turning very slowly. */}
-        <span
-          aria-hidden="true"
-          className="stat-spin absolute inset-[-14px] rounded-full border border-dashed border-slate-200 group-hover:border-blue-300 transition-colors duration-700"
-        />
-
-        <svg viewBox="0 0 200 200" className="absolute inset-0 w-full h-full -rotate-90">
-          <defs>
-            <linearGradient id={gradientId} x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stopColor={from} />
-              <stop offset="100%" stopColor={to} />
-            </linearGradient>
-          </defs>
-          <circle
-            cx="100"
-            cy="100"
-            r={RING_RADIUS}
-            fill="none"
-            stroke="#E7EEF8"
-            strokeWidth="7"
-          />
-          <circle
-            ref={arcRef}
-            cx="100"
-            cy="100"
-            r={RING_RADIUS}
-            fill="none"
-            stroke={`url(#${gradientId})`}
-            strokeWidth="7"
-            strokeLinecap="round"
-            strokeDasharray={CIRCUMFERENCE}
-            strokeDashoffset={CIRCUMFERENCE}
-          />
-        </svg>
-
-        {/* The lit dot that rides the end of the stroke. */}
-        <svg viewBox="0 0 200 200" className="absolute inset-0 w-full h-full pointer-events-none">
-          <g ref={tipRef}>
-            <circle cx="100" cy={100 - RING_RADIUS} r="7" fill={from} opacity="0.22" />
-            <circle cx="100" cy={100 - RING_RADIUS} r="3.4" fill={from} />
-          </g>
-        </svg>
-
-        <div className="relative z-10 text-center">
-          <div className="font-syne text-5xl md:text-6xl font-black tracking-tighter tabular-nums text-slate-950">
-            {count}
-            <span className="text-xl ml-1 font-bold" style={{ color: from }}>
-              %
-            </span>
-          </div>
-          <div
-            className="mt-3 h-[3px] w-8 mx-auto rounded-full group-hover:w-16 transition-all duration-700"
-            style={{ backgroundColor: from }}
-          />
-        </div>
-      </div>
-
-      <div className="text-center max-w-[280px]">
-        <h4 className="text-slate-950 font-black text-[15px] md:text-[16px] uppercase tracking-[0.5em] mb-4 group-hover:text-blue-600 transition-colors duration-500">
-          {label}
-        </h4>
-        <p className="text-slate-400 font-bold text-[13px] leading-relaxed tracking-tight italic opacity-80 group-hover:opacity-100 transition-opacity duration-500">
-          &ldquo;{sub}&rdquo;
-        </p>
-      </div>
-    </div>
-  );
-};
-
-const STATS: Omit<StatProps, 'index'>[] = [
-  {
-    percentage: 38,
-    label: 'TRUST',
-    sub: 'of people judge your business credibility based on your website at a glance.',
-    from: '#2563EB',
-    to: '#60A5FA'
-  },
-  {
-    percentage: 70,
-    label: 'RESEARCH',
-    sub: 'of customers check a website before visiting, even if they found you on social media.',
-    from: '#06B6D4',
-    to: '#67E8F9'
-  },
-  {
-    percentage: 88,
-    label: 'EXPERIENCE',
-    sub: "won't return after a bad website experience—even if your physical craft is great.",
-    from: '#4F46E5',
-    to: '#818CF8'
-  }
-];
-
-const StatsSection: React.FC = () => {
   return (
     <section
-      className="relative py-24 md:py-28 px-6 bg-[#fdfbf7] border-y border-slate-100 overflow-hidden"
+      ref={sectionRef}
+      className="relative min-h-[175vh] bg-[#fcfaf7] border-b border-stone-200/50"
     >
-      {/* Background: two soft, still washes. No grid, and nothing that reacts to
-          the pointer — the rings are the only thing moving in here. */}
-      <div aria-hidden="true" className="absolute inset-0 pointer-events-none">
-        <div className="risk-orb risk-orb-a absolute -top-24 -left-16 w-[46vw] h-[46vw] rounded-full" />
-        <div className="risk-orb risk-orb-b absolute -bottom-32 -right-10 w-[40vw] h-[40vw] rounded-full" />
-      </div>
+      {/* Sticky viewport-centered stage: locks the content cleanly in center while scrolling past */}
+      <div className="sticky top-0 h-screen flex flex-col justify-center items-center px-6 lg:px-20 overflow-hidden">
+        
+        {/* STACKED GRID CONTAINER: Both stages share identical footprint so there is zero layout jump */}
+        <div className="grid grid-cols-1 grid-rows-1 w-full max-w-5xl mx-auto">
+          
+          {/* ========================================================= */}
+          {/* STAGE 1: BAD WEBSITE (88/100 Drop-off, Red Dots)          */}
+          {/* ========================================================= */}
+          <div
+            ref={stage1Ref}
+            className="col-start-1 row-start-1 w-full space-y-6 md:space-y-7 transition-all will-change-transform"
+          >
+            {/* SECTION HEADLINE */}
+            <div className="text-center">
+              <h2 className="font-serif text-[clamp(2rem,4.5vw,3.2rem)] font-normal text-slate-900 tracking-tight leading-[1.05]">
+                The cost of being overlooked.
+              </h2>
+            </div>
 
-      <div className="relative max-w-6xl mx-auto">
-        <div className="mb-16 md:mb-20 text-center flex flex-col items-center">
-          <div className="risk-eyebrow flex items-center gap-4 mb-7">
-            <span className="h-[2px] w-10 bg-blue-600 origin-right risk-rule" />
-            <span className="text-blue-600 font-black text-[11px] uppercase tracking-[0.8em]">
-              USER PSYCHOLOGY
-            </span>
-            <span className="h-[2px] w-10 bg-blue-600 origin-left risk-rule" />
+            {/* COMPACT TWO-COLUMN ROW */}
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-center">
+              
+              {/* LEFT: 100 CUSTOMER DOTS MATRIX (88 Red Dots, 12 White) */}
+              <div className="md:col-span-5 flex flex-col items-center justify-center">
+                <div
+                  ref={dots1Ref}
+                  onClick={runStage1Animation}
+                  title="Click to replay visitor drop-off animation"
+                  className="p-5 sm:p-6 bg-[#0e1117] rounded-2xl border border-stone-800 shadow-xl cursor-pointer select-none hover:border-stone-700 transition-colors"
+                >
+                  <div className="grid grid-cols-10 gap-2 sm:gap-2.5 place-items-center">
+                    {Array.from({ length: 100 }).map((_, i) => {
+                      const isLost = i < 88;
+                      return (
+                        <span
+                          key={i}
+                          className="customer-dot-1 block w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full transition-transform will-change-transform"
+                          style={{
+                            backgroundColor: isLost ? '#ef4444' : '#ffffff',
+                            boxShadow: !isLost ? '0 0 10px rgba(255, 255, 255, 0.85)' : undefined,
+                            transform: !isLost ? 'scale(1.15)' : 'scale(0.85)',
+                            opacity: 0.9
+                          }}
+                        />
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Micro Indicator: Red = 88 Lost, White = 12 Retained */}
+                <div className="flex items-center gap-6 mt-3 text-[11px] font-mono text-stone-600">
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-red-500 shadow-sm" />
+                    <span className="text-red-600 font-semibold">88 Lost</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-white border border-stone-400 shadow-sm" />
+                    <span className="text-slate-800 font-semibold">12 Retained</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* RIGHT: THE STATISTIC */}
+              <div className="md:col-span-7 space-y-3.5 text-center md:text-left">
+                <div className="flex items-baseline justify-center md:justify-start gap-2">
+                  <span className="font-serif text-6xl sm:text-7xl md:text-8xl font-light text-slate-900 tracking-tight leading-none tabular-nums">
+                    {count1}
+                  </span>
+                  <span className="font-serif text-3xl sm:text-4xl md:text-5xl text-red-600 font-light">
+                    / 100
+                  </span>
+                </div>
+
+                <p className="font-serif text-2xl sm:text-3xl lg:text-[2rem] text-slate-900 font-normal leading-snug">
+                  &ldquo;88 of every 100 won’t come back after a bad website experience.&rdquo;
+                </p>
+
+                <p className="font-inter text-slate-600 text-sm sm:text-base font-normal leading-relaxed max-w-xl">
+                  First impressions are formed in milliseconds. When a website takes seconds to load or feels clumsy on mobile, high-intent prospects move on to a competitor without second thought.
+                </p>
+              </div>
+
+            </div>
           </div>
 
-          <h2 className="font-syne text-[clamp(2rem,8vw,4.5rem)] font-black text-slate-950 tracking-tighter uppercase leading-[0.88]">
-            <span className="risk-mask">
-              <span className="risk-mask-in">THE RISK OF</span>
-            </span>
-            <span className="risk-mask">
-              <span className="risk-mask-in" style={{ animationDelay: '150ms' }}>
-                <span className="risk-shimmer italic">SILENCE.</span>
-              </span>
-            </span>
-          </h2>
+          {/* ========================================================= */}
+          {/* STAGE 2: GOOD WEBSITE (74% Return, Green Dots)            */}
+          {/* ========================================================= */}
+          <div
+            ref={stage2Ref}
+            className="col-start-1 row-start-1 w-full space-y-6 md:space-y-7 opacity-0 pointer-events-none transition-all will-change-transform"
+          >
+            {/* SECTION HEADLINE */}
+            <div className="text-center">
+              <h2 className="font-serif text-[clamp(2rem,4.5vw,3.2rem)] font-normal text-slate-900 tracking-tight leading-[1.05]">
+                The power of mobile-first design.
+              </h2>
+            </div>
 
-          <p className="risk-fade mt-7 max-w-xl text-slate-500 font-bold text-[13px] md:text-sm leading-relaxed tracking-tight">
-            An empty search result is a decision made without you in the room.
-          </p>
+            {/* COMPACT TWO-COLUMN ROW - EXACT SAME LAYOUT AS COUNTERPART */}
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-center">
+              
+              {/* LEFT: 100 CUSTOMER DOTS MATRIX (74 Green Dots, 26 White) */}
+              <div className="md:col-span-5 flex flex-col items-center justify-center">
+                <div
+                  ref={dots2Ref}
+                  onClick={runStage2Animation}
+                  title="Click to replay return visitor animation"
+                  className="p-5 sm:p-6 bg-[#0e1117] rounded-2xl border border-stone-800 shadow-xl cursor-pointer select-none hover:border-emerald-900/60 transition-colors"
+                >
+                  <div className="grid grid-cols-10 gap-2 sm:gap-2.5 place-items-center">
+                    {Array.from({ length: 100 }).map((_, i) => {
+                      const isReturn = i < 74;
+                      return (
+                        <span
+                          key={i}
+                          className="customer-dot-2 block w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full transition-transform will-change-transform"
+                          style={{
+                            backgroundColor: isReturn ? '#10b981' : '#ffffff',
+                            boxShadow: isReturn ? '0 0 12px rgba(16, 185, 129, 0.9)' : undefined,
+                            transform: isReturn ? 'scale(1.15)' : 'scale(0.85)',
+                            opacity: isReturn ? 1 : 0.6
+                          }}
+                        />
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Micro Indicator: Green = 74 Retained, White = 26 Other */}
+                <div className="flex items-center gap-6 mt-3 text-[11px] font-mono text-stone-600">
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-sm" />
+                    <span className="text-emerald-600 font-semibold">74 Retained</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-white border border-stone-400 shadow-sm" />
+                    <span className="text-slate-800 font-semibold">26 General</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* RIGHT: THE 74% STATISTIC */}
+              <div className="md:col-span-7 space-y-3.5 text-center md:text-left">
+                <div className="flex items-baseline justify-center md:justify-start gap-2">
+                  <span className="font-serif text-6xl sm:text-7xl md:text-8xl font-light text-slate-900 tracking-tight leading-none tabular-nums">
+                    {count2}%
+                  </span>
+                  <span className="font-serif text-3xl sm:text-4xl md:text-5xl text-emerald-600 font-light">
+                    / 100
+                  </span>
+                </div>
+
+                <p className="font-serif text-2xl sm:text-3xl lg:text-[2rem] text-slate-900 font-normal leading-snug">
+                  &ldquo;74% of users are more likely to return to a website if it is mobile-friendly and easy to use.&rdquo;
+                </p>
+
+                <p className="font-inter text-slate-600 text-sm sm:text-base font-normal leading-relaxed max-w-xl">
+                  Speed, clarity, and intuitive mobile ergonomics inspire instant trust. When prospects find what they need in seconds, they stay longer, explore deeper, and convert into paying clients.
+                </p>
+              </div>
+
+            </div>
+          </div>
+
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-16 md:gap-8 lg:gap-24 justify-items-center items-start">
-          {STATS.map((stat, i) => (
-            <StatRing key={stat.label} {...stat} index={i} />
-          ))}
+        {/* SUBTLE INTERACTIVE STAGE CONTROLS */}
+        <div className="flex items-center justify-center gap-3 pt-6 select-none">
+          <button
+            type="button"
+            onClick={() => transitionTo(1)}
+            className={`px-4 py-1.5 rounded-full text-[11px] font-mono uppercase tracking-wider transition-all duration-300 cursor-pointer ${
+              activeStage === 1
+                ? 'bg-red-500/15 text-red-700 border border-red-500/30 font-bold shadow-sm'
+                : 'bg-white/80 text-stone-500 border border-stone-200 hover:text-stone-800'
+            }`}
+          >
+            <span>1. Bad Experience · 88% Lost</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => transitionTo(2)}
+            className={`px-4 py-1.5 rounded-full text-[11px] font-mono uppercase tracking-wider transition-all duration-300 cursor-pointer ${
+              activeStage === 2
+                ? 'bg-emerald-500/15 text-emerald-700 border border-emerald-500/30 font-bold shadow-sm'
+                : 'bg-white/80 text-stone-500 border border-stone-200 hover:text-stone-800'
+            }`}
+          >
+            <span>2. Mobile-Friendly · 74% Return</span>
+          </button>
         </div>
+
       </div>
-
-      <style>{`
-        .risk-orb { filter: blur(70px); opacity: 0.5; }
-        .risk-orb-a { background: radial-gradient(circle, rgba(37,99,235,0.22), transparent 65%); }
-        .risk-orb-b { background: radial-gradient(circle, rgba(6,182,212,0.18), transparent 68%); }
-
-        /* Heading: each line out of its own mask, then the rules draw outwards. */
-        .risk-mask { display: block; overflow: hidden; padding-bottom: 0.1em; margin-bottom: -0.1em; }
-        @keyframes risk-mask-rise {
-          from { transform: translate3d(0, 108%, 0); }
-          to { transform: none; }
-        }
-        .risk-mask-in { display: block; animation: risk-mask-rise 1.15s cubic-bezier(0.22, 1, 0.36, 1) both; }
-
-        @keyframes risk-rule-in {
-          from { transform: scaleX(0); }
-          to { transform: scaleX(1); }
-        }
-        .risk-rule { display: block; animation: risk-rule-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.35s both; }
-
-        @keyframes risk-fade-in {
-          from { opacity: 0; transform: translate3d(0, 16px, 0); }
-          to { opacity: 1; transform: none; }
-        }
-        .risk-eyebrow { animation: risk-fade-in 0.8s cubic-bezier(0.22, 1, 0.36, 1) both; }
-        .risk-fade { animation: risk-fade-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.55s both; }
-
-        /* SILENCE. gets the light moving through it. */
-        .risk-shimmer {
-          background: linear-gradient(90deg, #2563eb 0%, #38bdf8 22%, #2563eb 46%, #4f46e5 70%, #2563eb 100%);
-          background-size: 220% auto;
-          -webkit-background-clip: text;
-          background-clip: text;
-          -webkit-text-fill-color: transparent;
-          color: #2563eb;
-          animation: risk-shine 6s linear infinite;
-        }
-        @keyframes risk-shine { to { background-position: 220% center; } }
-
-        @keyframes stat-breathe {
-          0%, 100% { transform: scale(1); opacity: 0.3; }
-          50% { transform: scale(1.14); opacity: 0.55; }
-        }
-        .stat-breathe { animation: stat-breathe 7s ease-in-out infinite; }
-
-        @keyframes stat-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        .stat-spin { animation: stat-spin 44s linear infinite; }
-
-        @media (prefers-reduced-motion: reduce) {
-          .stat-breathe, .stat-spin, .risk-shimmer,
-          .risk-mask-in, .risk-rule, .risk-eyebrow, .risk-fade { animation: none; }
-          .risk-shimmer { -webkit-text-fill-color: #2563eb; }
-        }
-      `}</style>
     </section>
   );
 };

@@ -1,73 +1,222 @@
 import React, { useEffect } from 'react';
-// Fix react-router-dom missing exports
 import * as RouterDOM from 'react-router-dom';
-const { Link } = RouterDOM as any;
-import { motion as framerMotion } from 'framer-motion';
-import { MoveLeft, Award, ShieldCheck, History } from 'lucide-react';
+import { 
+  ArrowRight, 
+  Award, 
+  ShieldCheck, 
+  CheckCircle2, 
+  Compass, 
+  Hammer, 
+  Users 
+} from 'lucide-react';
 import Navbar from './Navbar';
 import Footer from './Footer';
 
-// Fix motion types by casting to any
-const motion = framerMotion as any;
+const Link = (RouterDOM as any).Link || (RouterDOM as any).default?.Link;
 
-const About: React.FC = () => {
-  useEffect(() => window.scrollTo(0, 0), []);
+export const About: React.FC = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  const team = [
+    {
+      name: "David Henderson",
+      role: "Founder & Master Stonemason",
+      experience: "35+ Years on Site",
+      bio: "Trained in traditional Cotswold dry-stone masonry and modern porcelain engineering. David personally oversees quality standards on every high-end build."
+    },
+    {
+      name: "Claire Sutton (RHS)",
+      role: "Lead Landscape Architect",
+      experience: "15 Years Experience",
+      bio: "RHS Silver-Gilt medalist. Specialises in architectural perennial planting palettes, 3D CAD masterplans, and seamless indoor-outdoor residential flow."
+    },
+    {
+      name: "James Bailey",
+      role: "Construction Director",
+      experience: "18 Years Experience",
+      bio: "Expert in deep sub-base structural stabilization, laser-graded drainage networks, and high-specification porcelain installation."
+    }
+  ];
+
+  const standards = [
+    {
+      title: "British Standard Compliance",
+      desc: "Every sub-base, mortar bed, and drainage run is installed strictly to BS 7533 standards for paved surfaces."
+    },
+    {
+      title: "Zero Subcontracting Policy",
+      desc: "Our permanent, uniformed team carries out the work. No third-party hand-offs or unaccountable contractors."
+    },
+    {
+      title: "Direct Sourced Materials",
+      desc: "We import our 20mm outdoor porcelain direct from certified Italian factories and hand-select British stone from local quarries."
+    },
+    {
+      title: "Fixed-Price Binding Estimates",
+      desc: "Your contract specifies exact materials, timelines, and payment milestones. Zero budget drift."
+    }
+  ];
 
   return (
-    <div className="min-h-screen bg-[#F4F1EA] font-inter selection:bg-[#BC4B26] selection:text-white">
+    <div className="min-h-screen bg-[#FBF9F5] text-stone-900 font-sans selection:bg-[#C86A3D] selection:text-white">
       <Navbar />
-      
-      <section className="relative py-40 px-6 bg-[#1A3C28] text-white overflow-hidden">
-        <div className="max-w-7xl mx-auto relative z-10">
-          <motion.div initial={{ opacity: 0, x: -50 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }}>
-            <p className="text-[#BC4B26] font-black text-[12px] uppercase tracking-[0.8em] mb-8">Established 1976</p>
-            <h1 className="font-oswald text-6xl md:text-9xl font-bold uppercase tracking-tighter leading-[0.85]">
-              CRAFTED BY <br /> <span className="italic">LEGACY.</span>
-            </h1>
-          </motion.div>
+
+      {/* HEADER BANNER */}
+      <section className="bg-[#162E20] text-white py-20 px-6 md:px-12 border-b border-white/10">
+        <div className="max-w-7xl mx-auto space-y-4">
+          <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[0.25em] text-[#E08A5B] font-bold">
+            <span>Our Heritage &amp; Ethos</span>
+          </div>
+          <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-tight">
+            Craftsmanship Rooted in Wiltshire.
+          </h1>
+          <p className="text-stone-300 text-sm sm:text-base max-w-2xl leading-relaxed">
+            Founded in 1988, Oak &amp; Ash combines time-honoured masonry traditions with modern architectural garden engineering.
+          </p>
         </div>
-        <div className="absolute top-0 right-0 w-1/3 h-full bg-[#BC4B26]/10 skew-x-[-12deg] translate-x-20"></div>
       </section>
 
-      <section className="py-40 px-6 max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-32 items-center">
-          <div className="space-y-12">
-            <div className="w-16 h-1.5 bg-[#BC4B26]"></div>
-            <h2 className="font-oswald text-4xl md:text-6xl font-bold text-[#1A3C28] uppercase tracking-tight">Three Generations of Excellence.</h2>
-            <p className="text-[#4A403A] text-xl font-medium italic leading-relaxed opacity-90 border-l-4 border-[#BC4B26] pl-10">
-              "Oak & Ash began with a single chainsaw and a passion for ancient woodlands. Today, we manage thousands of acres with the same respect for the land."
+      {/* STORY & MISSION */}
+      <section className="py-24 px-6 md:px-12 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+          
+          <div className="lg:col-span-6 space-y-6">
+            <span className="text-xs font-mono uppercase tracking-[0.25em] text-[#C86A3D] font-bold">
+              The Oak &amp; Ash Story
+            </span>
+            <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#162E20] tracking-tight leading-tight">
+              An Outdoor Space Should Be Built with the Precision of an Interior.
+            </h2>
+            <p className="text-stone-600 text-sm sm:text-base leading-relaxed">
+              For more than three decades, our crews have worked across Wiltshire, Bath, Somerset, and the Cotswolds. What started as a dedicated stone walling practice has grown into one of the region’s premier architectural landscaping studios.
             </p>
-            <p className="text-[#4A403A]/70 leading-relaxed text-lg">
-              Our methods have evolved from manual timber extraction to precision ecological management, but our core philosophy remains: leave the land better than we found it. We bridge the gap between architectural vision and forestry reality.
+            <p className="text-stone-600 text-sm sm:text-base leading-relaxed">
+              We reject short-cuts. While lesser contractors lay paving on sand or dot-and-dab mortar, our foundations are built to commercial civil engineering tolerances. That is why our terraces remain level, pristine, and structurally sound through decades of British frost and rain.
             </p>
-            <div className="grid grid-cols-2 gap-10">
-              <div className="p-8 bg-white border border-[#1A3C28]/5 shadow-xl rounded-sm">
-                <History className="text-[#BC4B26] mb-4" />
-                <h4 className="font-oswald font-bold text-lg uppercase tracking-widest text-[#1A3C28]">45+ Years</h4>
-                <p className="text-[9px] text-[#4A403A] font-black uppercase tracking-widest opacity-40">Operational Legacy</p>
+
+            <div className="pt-2 flex items-center gap-6">
+              <div className="p-4 bg-white rounded-xl border border-stone-200">
+                <div className="font-serif text-3xl font-bold text-[#162E20]">35+</div>
+                <div className="text-[10px] font-mono uppercase tracking-wider text-stone-500 mt-1">Years in Practice</div>
               </div>
-              <div className="p-8 bg-white border border-[#1A3C28]/5 shadow-xl rounded-sm">
-                <Award className="text-[#BC4B26] mb-4" />
-                <h4 className="font-oswald font-bold text-lg uppercase tracking-widest text-[#1A3C28]">Accredited</h4>
-                <p className="text-[9px] text-[#4A403A] font-black uppercase tracking-widest opacity-40">NPTC & LANTRA Certified</p>
+              <div className="p-4 bg-white rounded-xl border border-stone-200">
+                <div className="font-serif text-3xl font-bold text-[#162E20]">850+</div>
+                <div className="text-[10px] font-mono uppercase tracking-wider text-stone-500 mt-1">Gardens Built</div>
+              </div>
+              <div className="p-4 bg-white rounded-xl border border-stone-200">
+                <div className="font-serif text-3xl font-bold text-[#162E20]">100%</div>
+                <div className="text-[10px] font-mono uppercase tracking-wider text-stone-500 mt-1">In-House Staff</div>
               </div>
             </div>
           </div>
-          <div className="relative">
-            <img 
-              src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&q=65&w=1200" 
-              className="w-full grayscale shadow-[0_50px_100px_rgba(0,0,0,0.1)] rounded-sm"
-              alt="Legacy Forestry"
-              loading="lazy"
-              decoding="async"
-            />
-            <div className="absolute -bottom-10 -left-10 bg-[#BC4B26] p-12 text-white hidden md:block rounded-sm shadow-2xl">
-              <ShieldCheck size={48} />
-              <p className="mt-4 font-black uppercase text-[10px] tracking-widest">Fully Insured £10m</p>
+
+          <div className="lg:col-span-6">
+            <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl border border-stone-200 bg-stone-900">
+              <img
+                src="https://images.unsplash.com/photo-1598902108854-10e335adac99?auto=format&fit=crop&q=80&w=1200"
+                alt="Crafting a stone patio terrace"
+                className="w-full h-full object-cover"
+                loading="lazy"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent flex flex-col justify-end p-6 text-white">
+                <div className="font-serif text-lg font-bold">Marlborough Workshop &amp; Yard</div>
+                <div className="text-xs text-stone-300">Natural stone dressing &amp; sample library</div>
+              </div>
             </div>
+          </div>
+
+        </div>
+      </section>
+
+      {/* STANDARDS & ACCREDITATIONS */}
+      <section className="py-20 px-6 md:px-12 bg-[#F5F2EB] border-y border-stone-200">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center max-w-2xl mx-auto mb-16 space-y-3">
+            <span className="text-xs font-mono uppercase tracking-[0.25em] text-[#C86A3D] font-bold">
+              Uncompromising Quality
+            </span>
+            <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#162E20]">
+              The Core Principles of Every Build.
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {standards.map((std, idx) => (
+              <div key={idx} className="p-6 bg-white rounded-xl border border-stone-200 shadow-sm space-y-3">
+                <div className="w-8 h-8 rounded-full bg-[#162E20] text-white flex items-center justify-center font-mono text-xs font-bold">
+                  0{idx + 1}
+                </div>
+                <h3 className="font-serif text-lg font-bold text-[#162E20]">
+                  {std.title}
+                </h3>
+                <p className="text-stone-600 text-xs sm:text-sm leading-relaxed">
+                  {std.desc}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
+
+      {/* LEADERSHIP & KEY TRADESMEN */}
+      <section className="py-24 px-6 md:px-12 max-w-7xl mx-auto">
+        <div className="text-center max-w-2xl mx-auto mb-16 space-y-3">
+          <span className="text-xs font-mono uppercase tracking-[0.25em] text-[#C86A3D] font-bold">
+            The Craft Team
+          </span>
+          <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#162E20]">
+            The Hands Behind the Work.
+          </h2>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {team.map((member, idx) => (
+            <div key={idx} className="bg-white p-7 rounded-xl border border-stone-200 shadow-sm space-y-4">
+              <div className="w-12 h-12 rounded-xl bg-[#162E20]/5 text-[#C86A3D] flex items-center justify-center font-serif text-xl font-bold">
+                {member.name.charAt(0)}
+              </div>
+              <div>
+                <h3 className="font-serif text-xl font-bold text-[#162E20]">
+                  {member.name}
+                </h3>
+                <p className="text-xs font-mono uppercase tracking-wider text-[#C86A3D] font-bold mt-0.5">
+                  {member.role}
+                </p>
+                <div className="text-[11px] text-stone-500 mt-1">
+                  {member.experience}
+                </div>
+              </div>
+              <p className="text-stone-600 text-xs sm:text-sm leading-relaxed pt-2 border-t border-stone-100">
+                {member.bio}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="py-20 px-6 md:px-12 bg-[#162E20] text-white text-center">
+        <div className="max-w-3xl mx-auto space-y-6">
+          <h2 className="font-serif text-3xl sm:text-4xl font-bold">
+            Work with Our Senior Stonemasons &amp; Designers.
+          </h2>
+          <p className="text-stone-300 text-sm sm:text-base leading-relaxed">
+            Every client works directly with our founding directors from initial concept to completion.
+          </p>
+          <div className="pt-2">
+            <Link
+              to="/demo/landscaping/contact"
+              className="px-8 py-4 bg-[#C86A3D] hover:bg-[#b5582c] text-white font-semibold text-xs uppercase tracking-wider rounded-lg transition-all shadow-lg inline-flex items-center gap-2"
+            >
+              <span>Schedule Your Property Survey</span>
+              <ArrowRight size={14} />
+            </Link>
+          </div>
+        </div>
+      </section>
+
       <Footer />
     </div>
   );

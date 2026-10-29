@@ -52,7 +52,7 @@ const channels: Channel[] = [
     href: `mailto:${EMAIL}?subject=Website%20enquiry`,
     external: false,
     logo: <Mail className="w-7 h-7 md:w-8 md:h-8" strokeWidth={2.2} />,
-    tile: 'bg-[#2563eb] text-white',
+    tile: 'bg-[#059669] text-white',
     size: 'text-[clamp(1.1rem,4.4vw,2.35rem)]'
   },
   {
@@ -81,14 +81,14 @@ const ContactForm: React.FC = () => {
       <div className="w-full max-w-5xl mx-auto">
 
         <p
-          className="contact-rise text-[10px] md:text-[11px] font-black uppercase tracking-[0.5em] text-blue-600 mb-7"
+          className="contact-rise text-[10px] md:text-[11px] font-black uppercase tracking-[0.5em] text-emerald-600 mb-7"
           style={{ animationDelay: '0ms' }}
         >
           Contact
         </p>
 
         {/* Same scale and treatment as the projects page hero: black first line,
-            shimmering blue italic second line. */}
+            shimmering emerald italic second line. */}
         <h1
           id="contact-heading"
           className="contact-rise font-syne text-[clamp(2.5rem,10vw,5rem)] font-black text-slate-950 tracking-tighter uppercase leading-[0.9] mb-8"
@@ -125,7 +125,7 @@ const ContactForm: React.FC = () => {
                   {c.label}
                 </span>
                 <span
-                  className={`block font-syne font-black text-slate-950 tracking-[-0.03em] leading-none break-words transition-colors duration-300 group-hover:text-blue-600 ${c.size}`}
+                  className={`block font-syne font-black text-slate-950 tracking-[-0.03em] leading-none break-words transition-colors duration-300 group-hover:text-emerald-600 ${c.size}`}
                 >
                   {c.value}
                 </span>

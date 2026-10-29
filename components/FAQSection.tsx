@@ -101,9 +101,9 @@ const FAQSection: React.FC<FAQSectionProps> = ({ navigateTo }) => {
             <motion.div 
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="flex items-center gap-4 px-6 py-4 bg-white rounded-2xl shadow-xl border border-blue-50 self-start lg:self-center shrink-0"
+              className="flex items-center gap-4 px-6 py-4 bg-white rounded-2xl shadow-xl border border-emerald-50 self-start lg:self-center shrink-0"
             >
-              <div className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center animate-pulse">
+              <div className="w-10 h-10 rounded-full bg-emerald-600 text-white flex items-center justify-center animate-pulse">
                 <MousePointer2 size={18} />
               </div>
               <div className="space-y-0.5">
@@ -113,7 +113,7 @@ const FAQSection: React.FC<FAQSectionProps> = ({ navigateTo }) => {
             </motion.div>
           </div>
           
-          <div className="max-w-4xl border-l-[8px] border-blue-100 pl-8 md:pl-16">
+          <div className="max-w-4xl border-l-[8px] border-emerald-100 pl-8 md:pl-16">
             <p className="text-lg md:text-xl lg:text-3xl text-slate-400 font-medium italic leading-relaxed">
               The questions we get asked most often, answered in plain English. If yours is not here, send us a message and we will answer it properly.
             </p>
@@ -134,27 +134,31 @@ const FAQSection: React.FC<FAQSectionProps> = ({ navigateTo }) => {
                   
                   {/* Front Face - Minimalist White */}
                   <div className="absolute inset-0 [backface-visibility:hidden] rounded-[4rem] bg-white border border-slate-100 flex flex-col justify-center md:justify-between items-center md:items-start p-10 md:p-14 text-center md:text-left">
-                    <div className="w-20 h-20 rounded-2xl bg-slate-50 flex items-center justify-center text-blue-600 border border-slate-100 transition-all duration-500 mb-8 md:mb-0">
+                    <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-slate-50 flex items-center justify-center text-emerald-600 border border-slate-100 transition-all duration-500 mb-8 md:mb-0">
                       {faq.icon}
                     </div>
-                    <div className="space-y-6">
-                      <h3 className="font-syne font-black text-slate-950 text-2xl md:text-3xl leading-[1.1] tracking-tight uppercase">
+                    <div className="space-y-5">
+                      <h3 className="font-syne font-bold text-slate-900 text-xl md:text-2xl leading-snug tracking-tight">
                         {faq.q}
                       </h3>
-                      <div className="flex items-center justify-center md:justify-start gap-4 text-blue-600 text-[11px] font-black uppercase tracking-[0.5em]">
-                        READ THE ANSWER <ChevronRight size={18} className="transition-transform" />
+                      <div className="flex items-center justify-center md:justify-start gap-3 text-emerald-600 text-[10px] md:text-[11px] font-bold uppercase tracking-[0.35em]">
+                        <span>Read the answer</span>
+                        <ChevronRight size={16} className="transition-transform group-hover:translate-x-1" />
                       </div>
                     </div>
                   </div>
 
-                  {/* Back Face - Pure Minimalist Blue */}
-                  <div className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] rounded-[4rem] bg-blue-600 flex flex-col justify-center items-center p-14 shadow-2xl text-center">
+                  {/* Back Face - Pure Minimalist Emerald with Clean Legible Typography */}
+                  <div className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] rounded-[4rem] bg-emerald-600 flex flex-col justify-center items-center p-10 sm:p-14 shadow-2xl text-center">
                     <div className="relative z-10 w-full">
-                      <p className="font-syne font-black text-white text-lg md:text-[19px] leading-[1.45] mb-10 max-w-[330px] mx-auto">
+                      <div className="text-[10px] font-mono uppercase tracking-[0.35em] text-emerald-100 mb-4 font-semibold">
+                        Answer
+                      </div>
+                      <p className="font-inter font-normal text-white text-[15px] sm:text-[16.5px] leading-relaxed tracking-normal max-w-[320px] mx-auto mb-8">
                         {faq.a}
                       </p>
-                      <div className="pt-8 border-t border-white/10 w-full max-w-[80px] mx-auto">
-                        <span className="text-white/30 font-black text-[9px] uppercase tracking-[0.4em]">SABR DIGITAL</span>
+                      <div className="pt-6 border-t border-white/15 w-full max-w-[80px] mx-auto">
+                        <span className="text-white/40 font-mono text-[9px] uppercase tracking-[0.3em]">SABR DIGITAL</span>
                       </div>
                     </div>
                   </div>
@@ -169,7 +173,7 @@ const FAQSection: React.FC<FAQSectionProps> = ({ navigateTo }) => {
           {/* Use navigateTo prop to go to contact section */}
           <button 
             onClick={() => navigateTo('contact')}
-            className="px-14 md:px-20 py-8 md:py-10 bg-blue-600 text-white font-black rounded-full uppercase text-[13px] md:text-[15px] tracking-[0.6em] shadow-xl hover:bg-slate-950 transition-all transform hover:scale-110 active:scale-95 duration-500"
+            className="px-14 md:px-20 py-8 md:py-10 bg-emerald-600 text-white font-black rounded-full uppercase text-[13px] md:text-[15px] tracking-[0.6em] shadow-xl hover:bg-slate-950 transition-all transform hover:scale-110 active:scale-95 duration-500"
           >
             STILL HAVE A QUESTION? MESSAGE US.
           </button>
