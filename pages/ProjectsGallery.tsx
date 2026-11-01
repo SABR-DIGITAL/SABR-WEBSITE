@@ -206,17 +206,17 @@ const ProjectRow: React.FC<{ project: Project; index: number }> = ({ project, in
         card,
         {
           clipPath: 'inset(0% 0% 0% 0%)',
-          duration: 1.15,
+          duration: 0.9,
           ease: 'expo.out',
           onComplete: () => gsap.set(card, { clearProps: 'clipPath' })
         },
         0
       );
-      if (shot) tl.to(shot, { scale: 1, duration: 1.7, ease: 'expo.out', force3D: true }, 0);
+      if (shot) tl.to(shot, { scale: 1, duration: 1.2, ease: 'expo.out', force3D: true }, 0);
       tl.to(
         items,
-        { y: 0, opacity: 1, duration: 0.85, stagger: 0.08, ease: 'power3.out', force3D: true },
-        0.25
+        { y: 0, opacity: 1, duration: 0.7, stagger: 0.07, ease: 'power3.out', force3D: true },
+        0.18
       );
 
       // A few pixels of drift as the row crosses the screen. Enough to feel

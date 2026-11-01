@@ -2,13 +2,16 @@ import React, { useLayoutEffect, useRef, useState } from 'react';
 
 interface IntroPortalProps {
   onComplete: () => void;
+  // The line under the wordmark. The AI Optimisation site reuses this same
+  // title card with its own caption.
+  caption?: string;
 }
 
 // Hard stop. However badly anything else goes, the site becomes reachable.
-const FAILSAFE_MS = 7200;
+const FAILSAFE_MS = 4000;
 // How long we will wait for Syne before starting. Long enough that the webfont
 // almost always wins, short enough that nobody notices the pause.
-const FONT_WAIT_MS = 900;
+const FONT_WAIT_MS = 500;
 
 // A title card, not a light show.
 //
@@ -26,14 +29,16 @@ const FONT_WAIT_MS = 900;
 //
 // Timing, from the moment the sequence starts:
 //   0.00  the hairline opens outward
-//   0.30  SABR climbs out from behind its mask
-//   0.46  DIGITAL follows
-//   0.30  the whole lockup settles from 1.055 to 1 across 3.4s
-//   1.25  the caption drifts up
-//   2.85  the caption steps back, the hairline closes
-//   3.05  the plate lifts, the type riding up faster than the plate does
-//   4.40  done
-const IntroPortal: React.FC<IntroPortalProps> = ({ onComplete }) => {
+//   0.16  SABR climbs out from behind its mask
+//   0.25  DIGITAL follows
+//   0.16  the whole lockup settles from 1.055 to 1 across 1.9s
+//   0.69  the caption drifts up
+//   1.57  the caption steps back, the hairline closes
+//   1.68  the plate lifts, the type riding up faster than the plate does
+//   2.43  done
+// (Tightened from 4.4s: same choreography, so the site is in front of the
+// visitor sooner.)
+const IntroPortal: React.FC<IntroPortalProps> = ({ onComplete, caption = 'Web design studio' }) => {
   const [go, setGo] = useState(false);
 
   // Held in refs so nothing here depends on a re-render. The guard means the
@@ -62,7 +67,7 @@ const IntroPortal: React.FC<IntroPortalProps> = ({ onComplete }) => {
     // all that is needed here is the timer.
     if (reduceMotion) {
       setGo(true);
-      const hold = window.setTimeout(finish, 1500);
+      const hold = window.setTimeout(finish, 800);
       return () => {
         window.clearTimeout(hold);
         window.clearTimeout(failsafe);
@@ -148,7 +153,7 @@ const IntroPortal: React.FC<IntroPortalProps> = ({ onComplete }) => {
         </h1>
 
         <p className="ip-caption mt-8 md:mt-12 text-[9px] md:text-[11px] font-bold uppercase tracking-[0.55em] text-[#8A93A6] text-center">
-          Web design studio
+          {caption}
         </p>
       </div>
 
@@ -202,13 +207,13 @@ const IntroPortal: React.FC<IntroPortalProps> = ({ onComplete }) => {
           to   { transform: translate3d(0, -100%, 0); }
         }
 
-        .ip-go .ip-rule    { animation: ip-rule 3.55s linear both; }
-        .ip-go .ip-word-1  { animation: ip-word 1.8s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both; }
-        .ip-go .ip-word-2  { animation: ip-word 1.8s cubic-bezier(0.16, 1, 0.3, 1) 0.46s both; }
-        .ip-go .ip-lockup  { animation: ip-settle 3.4s cubic-bezier(0.33, 1, 0.68, 1) 0.3s both; }
-        .ip-go .ip-caption { animation: ip-caption 2.15s linear 1.25s both; }
-        .ip-go .ip-stage   { animation: ip-stage 1.35s cubic-bezier(0.87, 0, 0.13, 1) 3.05s both; }
-        .ip-go.ip-root     { animation: ip-curtain 1.35s cubic-bezier(0.87, 0, 0.13, 1) 3.05s both; }
+        .ip-go .ip-rule    { animation: ip-rule 1.95s linear both; }
+        .ip-go .ip-word-1  { animation: ip-word 1s cubic-bezier(0.16, 1, 0.3, 1) 0.16s both; }
+        .ip-go .ip-word-2  { animation: ip-word 1s cubic-bezier(0.16, 1, 0.3, 1) 0.25s both; }
+        .ip-go .ip-lockup  { animation: ip-settle 1.9s cubic-bezier(0.33, 1, 0.68, 1) 0.16s both; }
+        .ip-go .ip-caption { animation: ip-caption 1.2s linear 0.69s both; }
+        .ip-go .ip-stage   { animation: ip-stage 0.75s cubic-bezier(0.87, 0, 0.13, 1) 1.68s both; }
+        .ip-go.ip-root     { animation: ip-curtain 0.75s cubic-bezier(0.87, 0, 0.13, 1) 1.68s both; }
 
         @media (prefers-reduced-motion: reduce) {
           .ip-word, .ip-rule, .ip-caption { transform: none; opacity: 1; }

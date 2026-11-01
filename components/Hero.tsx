@@ -20,14 +20,16 @@ const Hero: React.FC<HeroProps> = ({ navigateTo, startAnimation = true }) => {
       });
       
       tl.fromTo(".hero-title-top", 
-        { opacity: 0, y: 35, filter: 'blur(10px)' },
-        { opacity: 1, y: 0, filter: 'blur(0px)', duration: 1.1 }
+        // No blur filter here: blurring a headline this size repaints it every
+        // frame and was the main stutter as the page arrived.
+        { opacity: 0, y: 35 },
+        { opacity: 1, y: 0, duration: 0.8 }
       );
 
       tl.fromTo(".hero-reveal-bottom",
         { opacity: 0, y: 25 },
-        { opacity: 1, y: 0, duration: 0.9, stagger: 0.08 },
-        "-=0.6"
+        { opacity: 1, y: 0, duration: 0.7, stagger: 0.08 },
+        "-=0.5"
       );
     }, containerRef);
 
@@ -39,10 +41,14 @@ const Hero: React.FC<HeroProps> = ({ navigateTo, startAnimation = true }) => {
       {/* Background Image with Lighter Top Overlay */}
       <div className="absolute inset-0 z-0">
         <img
-          src="/images/hero-bg.jpg"
+          src="/images/hero-bg-1920.jpg"
+          srcSet="/images/hero-bg-1280.jpg 1280w, /images/hero-bg-1920.jpg 1920w, /images/hero-bg.jpg 3840w"
+          sizes="100vw"
           alt="Misty Wiltshire countryside at sunrise"
           className="w-full h-full object-cover"
           loading="eager"
+          decoding="async"
+          fetchPriority="high"
         />
         {/* Lightened overlay at top to let the sunrise landscape breathe */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/45 to-black/75"></div>
@@ -53,7 +59,7 @@ const Hero: React.FC<HeroProps> = ({ navigateTo, startAnimation = true }) => {
         
 
         {/* HERO TITLE: Dense, bold, not all capitals */}
-        <h1 className="font-syne text-[clamp(2.6rem,7vw,4.4rem)] font-black leading-[0.98] tracking-[-0.035em] text-white transform-gpu will-change-transform">
+        <h1 className="font-syne text-[clamp(2.6rem,7vw,4.4rem)] font-black leading-[0.98] tracking-[-0.035em] text-white">
           <span className="hero-title-top inline-block opacity-0 drop-shadow-[0_4px_16px_rgba(0,0,0,0.5)]">
             Rooted in <span className="text-shimmer-blue italic font-black">Wiltshire.</span>
           </span>

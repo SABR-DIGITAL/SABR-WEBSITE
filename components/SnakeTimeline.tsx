@@ -145,8 +145,8 @@ const SnakeTimeline: React.FC<{ navigateTo: (page: Page) => void }> = ({ navigat
         gsap.to(parts, {
           y: 0,
           opacity: 1,
-          duration: 0.8,
-          stagger: 0.07,
+          duration: 0.65,
+          stagger: 0.06,
           ease: 'power3.out',
           force3D: true,
           scrollTrigger: { trigger: row, start: 'top 86%', once: true, fastScrollEnd: true }
@@ -158,7 +158,7 @@ const SnakeTimeline: React.FC<{ navigateTo: (page: Page) => void }> = ({ navigat
         gsap.to(el, {
           y: 0,
           opacity: 1,
-          duration: 0.9,
+          duration: 0.7,
           ease: 'power3.out',
           force3D: true,
           scrollTrigger: { trigger: el, start: 'top 90%', once: true, fastScrollEnd: true }
