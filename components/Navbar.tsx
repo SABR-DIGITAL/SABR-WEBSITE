@@ -4,6 +4,7 @@ import { Page, PAGE_PATHS } from '../App';
 import * as RouterDOM from 'react-router-dom';
 const { Link, useLocation } = RouterDOM as any;
 import { Menu, X } from 'lucide-react';
+import SiteSwitcher from './SiteSwitcher';
 import { motion as framerMotion, AnimatePresence } from 'framer-motion';
 
 // Fix motion types by casting to any
@@ -53,11 +54,12 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, startAnimation = true }) =
         } ${mobileMenuOpen ? 'opacity-0' : 'opacity-100'} lg:opacity-100 shadow-none`}>
           
           {/* BRAND LOGO WITH WILTSHIRE WEB DESIGN STUDIO */}
+          <div className="relative hidden lg:flex items-center gap-1.5">
           <Link
             to="/"
             onClick={() => handleNav('home')}
             aria-label="SABR Digital home"
-            className="hidden lg:flex flex-col text-left group focus:outline-none focus:ring-0 appearance-none"
+            className="flex flex-col text-left group focus:outline-none focus:ring-0 appearance-none"
           >
             <span className={`font-syne text-xl tracking-[0.05em] font-black flex items-center ${isHomeUnscrolled ? 'text-white' : 'text-slate-900'}`}>
               SABR<span className="text-shimmer-blue ml-1.5">DIGITAL</span>
@@ -66,6 +68,8 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, startAnimation = true }) =
               Wiltshire Web Design Studio
             </span>
           </Link>
+          <SiteSwitcher current="web-design" onDark={isHomeUnscrolled} />
+          </div>
 
           {/* SLEEK NAVIGATION LINKS */}
           <nav aria-label="Primary" className="hidden lg:flex items-center gap-10">
@@ -124,9 +128,12 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, startAnimation = true }) =
             className="fixed inset-0 z-[200] bg-[#fcfaf7] flex flex-col p-8 sm:p-14 lg:hidden overflow-y-auto"
           >
             <div className="flex justify-between items-center mb-16">
-              <div className="flex flex-col">
-                <span className="font-syne text-2xl font-black text-slate-900">SABR DIGITAL</span>
-                <span className="text-[9px] uppercase font-bold tracking-[0.3em] text-emerald-700">Wiltshire Web Design Studio</span>
+              <div className="relative flex items-center gap-1.5">
+                <div className="flex flex-col">
+                  <span className="font-syne text-2xl font-black text-slate-900">SABR DIGITAL</span>
+                  <span className="text-[9px] uppercase font-bold tracking-[0.3em] text-emerald-700">Wiltshire Web Design Studio</span>
+                </div>
+                <SiteSwitcher current="web-design" />
               </div>
               <button 
                 onClick={() => setMobileMenuOpen(false)} 

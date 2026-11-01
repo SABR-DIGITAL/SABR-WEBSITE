@@ -6,9 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- PRIMARY SEO -->
-    <title>SABR Digital | Web Design for Small Businesses</title>
-    <meta name="description" content="We design and build fast, easy-to-find websites for small businesses. Most sites go live in two to three weeks." />
-    <meta name="keywords" content="web design, web designer, website design, web designer near me, small business website design, SEO web design, freelance web designer, ecommerce web design, mobile-first web design" />
+    <!-- The intro gateway now owns "/" and leads to two separate sites: the
+         web design studio (moved to /web-design) and AI Optimisation (new,
+         at /ai-optimisation). This static head describes the gateway; each
+         sub-site updates title/description/canonical/OG itself once its own
+         JS mounts (see App.tsx's useSeoMeta and aio/useAIOSeo.ts). -->
+    <title>SABR Digital | Web Design and AI Optimisation, Wiltshire</title>
+    <meta name="description" content="SABR Digital is a Wiltshire web design studio with two sites: hand-built websites for small businesses, and AI Optimisation to help businesses get found and understood by AI tools." />
+    <meta name="keywords" content="web design, web designer, website design, Wiltshire web design, AI optimisation, AIO, generative engine optimisation, ChatGPT SEO, AI search visibility, small business website design" />
     <meta name="author" content="SABR Digital" />
     <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
     <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large" />
@@ -27,22 +32,65 @@
     <meta property="og:site_name" content="SABR Digital" />
     <meta property="og:locale" content="en_GB" />
     <meta property="og:url" content="https://sabrdigital.co.uk/" />
-    <meta property="og:title" content="SABR Digital | Web Design for Small Businesses" />
-    <meta property="og:description" content="Websites for small businesses. Clean design, quick loading, easy to find on Google. Live in two to three weeks." />
+    <meta property="og:title" content="SABR Digital | Web Design and AI Optimisation, Wiltshire" />
+    <meta property="og:description" content="A Wiltshire studio with two sites: hand-built websites for small businesses, and AI Optimisation to help businesses get found and understood by AI tools." />
     <meta property="og:image" content="https://sabrdigital.co.uk/preview.jpg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="SABR Digital - small business web design studio" />
+    <meta property="og:image:alt" content="SABR Digital - web design and AI optimisation studio, Wiltshire" />
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:url" content="https://sabrdigital.co.uk/" />
-    <meta property="twitter:title" content="SABR Digital | Web Design for Small Businesses" />
-    <meta property="twitter:description" content="Websites for small businesses. Clean design, quick loading, easy to find on Google. Live in two to three weeks." />
+    <meta property="twitter:title" content="SABR Digital | Web Design and AI Optimisation, Wiltshire" />
+    <meta property="twitter:description" content="A Wiltshire studio with two sites: hand-built websites for small businesses, and AI Optimisation to help businesses get found and understood by AI tools." />
     <meta property="twitter:image" content="https://sabrdigital.co.uk/preview.jpg" />
-    <meta property="twitter:image:alt" content="SABR Digital - small business web design studio" />
+    <meta property="twitter:image:alt" content="SABR Digital - web design and AI optimisation studio, Wiltshire" />
 
     <!-- STRUCTURED DATA -->
+    <!-- Parent organisation, for the intro gateway at "/" — lists both sites. -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "@id": "https://sabrdigital.co.uk/#organization",
+      "name": "SABR Digital",
+      "url": "https://sabrdigital.co.uk/",
+      "logo": "https://sabrdigital.co.uk/icon-512.png",
+      "image": "https://sabrdigital.co.uk/preview.jpg",
+      "email": "Sabrdigitalwilts@gmail.com",
+      "founder": {
+        "@type": "Person",
+        "name": "Raphael"
+      },
+      "areaServed": {
+        "@type": "AdministrativeArea",
+        "name": "Wiltshire, United Kingdom"
+      },
+      "sameAs": [
+        "https://instagram.com/sabrdigital"
+      ],
+      "subOrganization": [
+        {
+          "@type": "Organization",
+          "@id": "https://sabrdigital.co.uk/web-design/#business",
+          "name": "SABR Digital Web Design Studio",
+          "url": "https://sabrdigital.co.uk/web-design/",
+          "description": "Hand-built, fast, accessible websites for small businesses in Wiltshire and across the UK."
+        },
+        {
+          "@type": "Organization",
+          "@id": "https://sabrdigital.co.uk/ai-optimisation/#business",
+          "name": "SABR Digital AI Optimisation",
+          "url": "https://sabrdigital.co.uk/ai-optimisation/",
+          "description": "Helps businesses improve how clearly AI tools such as ChatGPT, Gemini, Perplexity and Google AI Overviews understand and recommend them."
+        }
+      ]
+    }
+    </script>
+
+    <!-- The web design studio's own detailed structured data — unchanged in
+         substance, URLs updated to its new address at /web-design. -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -52,11 +100,11 @@
             "ProfessionalService",
             "LocalBusiness"
           ],
-          "@id": "https://sabrdigital.co.uk/#business",
+          "@id": "https://sabrdigital.co.uk/web-design/#business",
           "name": "SABR Digital",
           "alternateName": "SABR Digital Web Design Studio",
           "description": "SABR Digital is a small web design studio. We design and build websites for tradespeople, salons, clinics, cafes and other small businesses.",
-          "url": "https://sabrdigital.co.uk/",
+          "url": "https://sabrdigital.co.uk/web-design/",
           "image": "https://sabrdigital.co.uk/preview.jpg",
           "logo": {
             "@type": "ImageObject",
@@ -117,7 +165,7 @@
                   "description": "Bespoke, mobile-first websites designed and hand-built for small businesses.",
                   "areaServed": "GB",
                   "provider": {
-                    "@id": "https://sabrdigital.co.uk/#business"
+                    "@id": "https://sabrdigital.co.uk/web-design/#business"
                   }
                 }
               },
@@ -129,7 +177,7 @@
                   "description": "Rebuilds of slow or dated websites with modern performance, accessibility and conversion standards.",
                   "areaServed": "GB",
                   "provider": {
-                    "@id": "https://sabrdigital.co.uk/#business"
+                    "@id": "https://sabrdigital.co.uk/web-design/#business"
                   }
                 }
               },
@@ -141,7 +189,7 @@
                   "description": "Technical SEO, structured data and local search setup so customers find your business first.",
                   "areaServed": "GB",
                   "provider": {
-                    "@id": "https://sabrdigital.co.uk/#business"
+                    "@id": "https://sabrdigital.co.uk/web-design/#business"
                   }
                 }
               },
@@ -153,7 +201,7 @@
                   "description": "Managed edge hosting, domain setup and ongoing maintenance for small businesses.",
                   "areaServed": "GB",
                   "provider": {
-                    "@id": "https://sabrdigital.co.uk/#business"
+                    "@id": "https://sabrdigital.co.uk/web-design/#business"
                   }
                 }
               }
@@ -163,18 +211,18 @@
         },
         {
           "@type": "WebSite",
-          "@id": "https://sabrdigital.co.uk/#website",
-          "url": "https://sabrdigital.co.uk/",
+          "@id": "https://sabrdigital.co.uk/web-design/#website",
+          "url": "https://sabrdigital.co.uk/web-design/",
           "name": "SABR Digital",
           "description": "Web design studio building websites for small businesses.",
           "inLanguage": "en-GB",
           "publisher": {
-            "@id": "https://sabrdigital.co.uk/#business"
+            "@id": "https://sabrdigital.co.uk/web-design/#business"
           }
         },
         {
           "@type": "ItemList",
-          "@id": "https://sabrdigital.co.uk/#navigation",
+          "@id": "https://sabrdigital.co.uk/web-design/#navigation",
           "name": "SABR Digital main menu",
           "itemListElement": [
             {
@@ -182,49 +230,49 @@
               "position": 1,
               "name": "Home",
               "description": "We design and build fast, easy-to-find websites for small businesses. Most sites go live in two to three weeks.",
-              "url": "https://sabrdigital.co.uk/"
+              "url": "https://sabrdigital.co.uk/web-design/"
             },
             {
               "@type": "SiteNavigationElement",
               "position": 2,
               "name": "Our Work",
               "description": "Click through websites we have designed for trades, salons, clinics and cafes, then picture the same care applied to your own business.",
-              "url": "https://sabrdigital.co.uk/projects"
+              "url": "https://sabrdigital.co.uk/web-design/projects"
             },
             {
               "@type": "SiteNavigationElement",
               "position": 3,
               "name": "How We Work",
               "description": "First chat, design, build, review, launch, aftercare. Here is exactly what happens when you ask us for a website, and how long each part takes.",
-              "url": "https://sabrdigital.co.uk/process"
+              "url": "https://sabrdigital.co.uk/web-design/process"
             },
             {
               "@type": "SiteNavigationElement",
               "position": 4,
               "name": "FAQs",
               "description": "What a website costs, how long it takes, who owns it, how hosting works and how we help you get found on Google. Straight answers, no jargon.",
-              "url": "https://sabrdigital.co.uk/faq"
+              "url": "https://sabrdigital.co.uk/web-design/faq"
             },
             {
               "@type": "SiteNavigationElement",
               "position": 5,
               "name": "Contact",
               "description": "Send a WhatsApp or an email and we will reply within 12 hours. A free, no-pressure chat about your website.",
-              "url": "https://sabrdigital.co.uk/contact"
+              "url": "https://sabrdigital.co.uk/web-design/contact"
             }
           ]
         },
         {
           "@type": "WebPage",
-          "@id": "https://sabrdigital.co.uk/#webpage",
-          "url": "https://sabrdigital.co.uk/",
+          "@id": "https://sabrdigital.co.uk/web-design/#webpage",
+          "url": "https://sabrdigital.co.uk/web-design/",
           "name": "SABR Digital | Web Design for Small Businesses",
           "description": "We design and build fast, easy-to-find websites for small businesses. Most sites go live in two to three weeks.",
           "isPartOf": {
-            "@id": "https://sabrdigital.co.uk/#website"
+            "@id": "https://sabrdigital.co.uk/web-design/#website"
           },
           "about": {
-            "@id": "https://sabrdigital.co.uk/#business"
+            "@id": "https://sabrdigital.co.uk/web-design/#business"
           },
           "inLanguage": "en-GB",
           "primaryImageOfPage": {
@@ -234,71 +282,71 @@
         },
         {
           "@type": "WebPage",
-          "@id": "https://sabrdigital.co.uk/projects#webpage",
-          "url": "https://sabrdigital.co.uk/projects",
+          "@id": "https://sabrdigital.co.uk/web-design/projects#webpage",
+          "url": "https://sabrdigital.co.uk/web-design/projects",
           "name": "Our Work | Website Projects & Live Demos | SABR Digital",
           "description": "Click through websites we have designed for trades, salons, clinics and cafes, then picture the same care applied to your own business.",
           "isPartOf": {
-            "@id": "https://sabrdigital.co.uk/#website"
+            "@id": "https://sabrdigital.co.uk/web-design/#website"
           },
           "about": {
-            "@id": "https://sabrdigital.co.uk/#business"
+            "@id": "https://sabrdigital.co.uk/web-design/#business"
           },
           "inLanguage": "en-GB"
         },
         {
           "@type": "WebPage",
-          "@id": "https://sabrdigital.co.uk/process#webpage",
-          "url": "https://sabrdigital.co.uk/process",
+          "@id": "https://sabrdigital.co.uk/web-design/process#webpage",
+          "url": "https://sabrdigital.co.uk/web-design/process",
           "name": "How We Work | The Web Design Process | SABR Digital",
           "description": "First chat, design, build, review, launch, aftercare. Here is exactly what happens when you ask us for a website, and how long each part takes.",
           "isPartOf": {
-            "@id": "https://sabrdigital.co.uk/#website"
+            "@id": "https://sabrdigital.co.uk/web-design/#website"
           },
           "about": {
-            "@id": "https://sabrdigital.co.uk/#business"
+            "@id": "https://sabrdigital.co.uk/web-design/#business"
           },
           "inLanguage": "en-GB"
         },
         {
           "@type": "WebPage",
-          "@id": "https://sabrdigital.co.uk/faq#webpage",
-          "url": "https://sabrdigital.co.uk/faq",
+          "@id": "https://sabrdigital.co.uk/web-design/faq#webpage",
+          "url": "https://sabrdigital.co.uk/web-design/faq",
           "name": "Web Design FAQs | Prices, Timings & Hosting | SABR Digital",
           "description": "What a website costs, how long it takes, who owns it, how hosting works and how we help you get found on Google. Straight answers, no jargon.",
           "isPartOf": {
-            "@id": "https://sabrdigital.co.uk/#website"
+            "@id": "https://sabrdigital.co.uk/web-design/#website"
           },
           "about": {
-            "@id": "https://sabrdigital.co.uk/#business"
+            "@id": "https://sabrdigital.co.uk/web-design/#business"
           },
           "inLanguage": "en-GB",
           "mainEntity": {
-            "@id": "https://sabrdigital.co.uk/faq#faq"
+            "@id": "https://sabrdigital.co.uk/web-design/faq#faq"
           }
         },
         {
           "@type": "WebPage",
-          "@id": "https://sabrdigital.co.uk/contact#webpage",
-          "url": "https://sabrdigital.co.uk/contact",
+          "@id": "https://sabrdigital.co.uk/web-design/contact#webpage",
+          "url": "https://sabrdigital.co.uk/web-design/contact",
           "name": "Contact SABR Digital | Start Your Website",
           "description": "Send a WhatsApp or an email and we will reply within 12 hours. A free, no-pressure chat about your website.",
           "isPartOf": {
-            "@id": "https://sabrdigital.co.uk/#website"
+            "@id": "https://sabrdigital.co.uk/web-design/#website"
           },
           "about": {
-            "@id": "https://sabrdigital.co.uk/#business"
+            "@id": "https://sabrdigital.co.uk/web-design/#business"
           },
           "inLanguage": "en-GB"
         },
         {
           "@type": "FAQPage",
-          "@id": "https://sabrdigital.co.uk/faq#faq",
-          "url": "https://sabrdigital.co.uk/faq",
+          "@id": "https://sabrdigital.co.uk/web-design/faq#faq",
+          "url": "https://sabrdigital.co.uk/web-design/faq",
           "name": "Web design FAQs",
           "inLanguage": "en-GB",
           "isPartOf": {
-            "@id": "https://sabrdigital.co.uk/#website"
+            "@id": "https://sabrdigital.co.uk/web-design/#website"
           },
           "mainEntity": [
             {
@@ -400,7 +448,11 @@
     <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png">
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="manifest" href="/site.webmanifest">
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&family=Inter:wght@400;700;900&family=Manrope:wght@300;400;600;800&family=Oswald:wght@700&family=Syne:wght@800&display=swap" rel="stylesheet">
+    <!-- Fonts load without blocking first paint. Every font uses display=swap
+         and the title cards already wait briefly for Syne before animating. -->
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&family=Inter:wght@400;700;900&family=Manrope:wght@300;400;600;800&family=Oswald:wght@700&family=Syne:wght@800&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&family=Inter:wght@400;700;900&family=Manrope:wght@300;400;600;800&family=Oswald:wght@700&family=Syne:wght@800&display=swap" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&family=Inter:wght@400;700;900&family=Manrope:wght@300;400;600;800&family=Oswald:wght@700&family=Syne:wght@800&display=swap"></noscript>
     <style>
       .font-cormorant { font-family: 'Cormorant Garamond', Georgia, serif; }
       .font-cinzel { font-family: 'Cinzel', serif; }
@@ -508,22 +560,12 @@
 
     <noscript>
       <div style="max-width:760px;margin:0 auto;padding:48px 24px;font-family:sans-serif;color:#1e3a8a;">
-        <h1>SABR Digital &mdash; web design for small businesses</h1>
-        <p>We are a small web design studio. We design and build websites for tradespeople, salons, clinics, cafes and other small businesses. Most sites go live two to three weeks after the first call.</p>
-        <h2>Pages</h2>
+        <h1>SABR Digital &mdash; web design and AI optimisation, Wiltshire</h1>
+        <p>SABR Digital is a Wiltshire studio running two separate websites: a web design studio for small businesses, and AI Optimisation, which helps businesses get found and understood by AI tools such as ChatGPT, Gemini, Perplexity and Google AI Overviews.</p>
+        <h2>Choose a site</h2>
         <ul>
-          <li><a href="/">Home</a> &mdash; what we do and how we work</li>
-          <li><a href="/projects">Our work</a> &mdash; live demo sites you can click through</li>
-          <li><a href="/process">How we work</a> &mdash; first chat to launch, step by step</li>
-          <li><a href="/faq">FAQs</a> &mdash; prices, timings, hosting, domains and ownership</li>
-          <li><a href="/contact">Contact</a> &mdash; email or WhatsApp, answered within 12 hours</li>
-        </ul>
-        <h2>What we do</h2>
-        <ul>
-          <li>Websites for small businesses</li>
-          <li>Redesigns and rebuilds of slow or dated sites</li>
-          <li>SEO and local search setup so nearby customers find you</li>
-          <li>Hosting, domains and ongoing website care</li>
+          <li><a href="/web-design/">SABR Digital Web Design Studio</a> &mdash; hand-built websites for small businesses</li>
+          <li><a href="/ai-optimisation/">SABR Digital AI Optimisation</a> &mdash; helping AI tools understand and recommend your business</li>
         </ul>
         <h2>Get in touch</h2>
         <p>Email: <a href="mailto:Sabrdigitalwilts@gmail.com">Sabrdigitalwilts@gmail.com</a><br />
@@ -533,76 +575,85 @@
     </noscript>
 
     <script type="module">
-      import * as THREE from 'three';
-      const canvas = document.getElementById('fluid-bg');
-      const renderer = new THREE.WebGLRenderer({
-        canvas,
-        alpha: true,
-        antialias: false,
-        powerPreference: "high-performance",
-        stencil: false,
-        depth: false
-      });
-      /* This is a 15%-opacity pastel gradient with no detail in it, so there is
-         nothing for extra device pixels to resolve. At devicePixelRatio 2 on a
-         laptop screen it was pushing five million fragments a frame and handing
-         the compositor a full-viewport layer to re-blend on every one of them,
-         which is felt as scroll stutter across the whole site rather than as a
-         slow background. */
-      renderer.setPixelRatio(1);
-      const scene = new THREE.Scene();
-      const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-      const material = new THREE.ShaderMaterial({
-        uniforms: { uTime: { value: 0 } },
-        vertexShader: `varying vec2 vUv; void main() { vUv = uv; gl_Position = vec4(position, 1.0); }`,
-        fragmentShader: `
-          precision lowp float;
-          uniform float uTime;
-          varying vec2 vUv;
-          void main() {
-            vec2 uv = vUv;
-            float t = uTime * 0.05;
-            float wave = sin(uv.x * 1.5 + t) * cos(uv.y * 1.2 + t);
-            vec3 c1 = vec3(0.99, 0.98, 0.97);
-            vec3 c2 = vec3(0.92, 0.96, 1.0);
-            vec3 color = mix(c1, c2, wave * 0.15 + 0.15);
-            gl_FragColor = vec4(color, 1.0);
-          }
-        `
-      });
-      scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material));
-      let animationId;
-      const stillOnly = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      /* The wave phase advances at 0.05 rad/s, so between two 60Hz frames it
-         moves 0.0008 rad — nothing you can see. Drawing at 12fps looks identical
-         and leaves the compositor free during scroll. */
-      const FRAME_MS = 1000 / 12;
-      let lastDraw = -Infinity;
+      /* The soft background wash only ever shows on the web design studio:
+         the gateway and the AI Optimisation site paint opaque backgrounds
+         over it. So Three.js (and the WebGL context) is only fetched there,
+         keeping those two pages light. */
+      if (location.pathname === '/web-design' || location.pathname.startsWith('/web-design/')) {
+        import('three').then((THREE) => {
+        const canvas = document.getElementById('fluid-bg');
+        const renderer = new THREE.WebGLRenderer({
+          canvas,
+          alpha: true,
+          antialias: false,
+          powerPreference: "high-performance",
+          stencil: false,
+          depth: false
+        });
+        /* This is a 15%-opacity pastel gradient with no detail in it, so there is
+           nothing for extra device pixels to resolve. At devicePixelRatio 2 on a
+           laptop screen it was pushing five million fragments a frame and handing
+           the compositor a full-viewport layer to re-blend on every one of them,
+           which is felt as scroll stutter across the whole site rather than as a
+           slow background. */
+        renderer.setPixelRatio(1);
+        const scene = new THREE.Scene();
+        const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+        const material = new THREE.ShaderMaterial({
+          uniforms: { uTime: { value: 0 } },
+          vertexShader: `varying vec2 vUv; void main() { vUv = uv; gl_Position = vec4(position, 1.0); }`,
+          fragmentShader: `
+            precision lowp float;
+            uniform float uTime;
+            varying vec2 vUv;
+            void main() {
+              vec2 uv = vUv;
+              float t = uTime * 0.05;
+              float wave = sin(uv.x * 1.5 + t) * cos(uv.y * 1.2 + t);
+              vec3 c1 = vec3(0.99, 0.98, 0.97);
+              vec3 c2 = vec3(0.92, 0.96, 1.0);
+              vec3 color = mix(c1, c2, wave * 0.15 + 0.15);
+              gl_FragColor = vec4(color, 1.0);
+            }
+          `
+        });
+        scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material));
+        let animationId;
+        const stillOnly = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        /* The wave phase advances at 0.05 rad/s, so between two 60Hz frames it
+           moves 0.0008 rad — nothing you can see. Drawing at 12fps looks identical
+           and leaves the compositor free during scroll. */
+        const FRAME_MS = 1000 / 12;
+        let lastDraw = -Infinity;
 
-      function draw(seconds) {
-        material.uniforms.uTime.value = seconds;
-        renderer.render(scene, camera);
+        function draw(seconds) {
+          material.uniforms.uTime.value = seconds;
+          renderer.render(scene, camera);
+        }
+
+        function resize() {
+          renderer.setSize(window.innerWidth, window.innerHeight, false);
+          // Let the next animation frame through immediately so the new size is
+          // painted without waiting out the throttle interval.
+          lastDraw = -Infinity;
+          if (stillOnly) draw(0);
+        }
+        window.addEventListener('resize', resize, { passive: true });
+        resize();
+
+        function animate(time) {
+          animationId = requestAnimationFrame(animate);
+          if (document.hidden) return;
+          if (time - lastDraw < FRAME_MS) return;
+          lastDraw = time;
+          draw(time * 0.001);
+        }
+
+        if (!stillOnly) animate(0);
+        });
+      } else {
+        document.getElementById('fluid-bg')?.remove();
       }
-
-      function resize() {
-        renderer.setSize(window.innerWidth, window.innerHeight, false);
-        // Let the next animation frame through immediately so the new size is
-        // painted without waiting out the throttle interval.
-        lastDraw = -Infinity;
-        if (stillOnly) draw(0);
-      }
-      window.addEventListener('resize', resize, { passive: true });
-      resize();
-
-      function animate(time) {
-        animationId = requestAnimationFrame(animate);
-        if (document.hidden) return;
-        if (time - lastDraw < FRAME_MS) return;
-        lastDraw = time;
-        draw(time * 0.001);
-      }
-
-      if (!stillOnly) animate(0);
     </script>
       <script type="module" src="/index.tsx"></script>
   </body>

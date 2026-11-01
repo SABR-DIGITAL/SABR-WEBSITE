@@ -3,36 +3,82 @@
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://sabrdigital.co.uk/</loc>
-    <lastmod>2026-08-07</lastmod>
+    <lastmod>2026-11-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://sabrdigital.co.uk/preview.jpg</image:loc>
+      <image:title>SABR Digital - web design and AI optimisation studio, Wiltshire</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://sabrdigital.co.uk/web-design/</loc>
+    <lastmod>2026-11-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
     <image:image>
       <image:loc>https://sabrdigital.co.uk/preview.jpg</image:loc>
       <image:title>SABR Digital - small business web design studio</image:title>
     </image:image>
   </url>
   <url>
-    <loc>https://sabrdigital.co.uk/projects</loc>
-    <lastmod>2026-08-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://sabrdigital.co.uk/process</loc>
+    <loc>https://sabrdigital.co.uk/web-design/projects</loc>
     <lastmod>2026-08-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://sabrdigital.co.uk/faq</loc>
+    <loc>https://sabrdigital.co.uk/web-design/process</loc>
+    <lastmod>2026-08-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://sabrdigital.co.uk/web-design/faq</loc>
+    <lastmod>2026-08-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://sabrdigital.co.uk/web-design/contact</loc>
     <lastmod>2026-08-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://sabrdigital.co.uk/contact</loc>
-    <lastmod>2026-08-07</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://sabrdigital.co.uk/ai-optimisation/</loc>
+    <lastmod>2026-11-01</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://sabrdigital.co.uk/ai-optimisation/what-is-aio</loc>
+    <lastmod>2026-11-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://sabrdigital.co.uk/ai-optimisation/services</loc>
+    <lastmod>2026-11-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://sabrdigital.co.uk/ai-optimisation/free-ai-audit</loc>
+    <lastmod>2026-11-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://sabrdigital.co.uk/ai-optimisation/faqs</loc>
+    <lastmod>2026-11-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://sabrdigital.co.uk/ai-optimisation/contact</loc>
+    <lastmod>2026-11-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
 </urlset>

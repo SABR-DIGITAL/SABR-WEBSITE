@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -13,12 +13,14 @@ export const StatsSection: React.FC = () => {
 
   const activeStageRef = useRef<1 | 2>(1);
 
-  const [count1, setCount1] = useState(0);
-  const [count2, setCount2] = useState(0);
+  // The counters are written straight to the DOM. Driving them through React
+  // state re-rendered this whole section, all 200 dots included, on every
+  // animation frame, which was the main source of lag here.
+  const count1Ref = useRef<HTMLSpanElement>(null);
+  const count2Ref = useRef<HTMLSpanElement>(null);
 
   const hasPlayed1Ref = useRef(false);
   const hasPlayed2Ref = useRef(false);
-  const isTransitioningRef = useRef(false);
 
   // STAGE 1 ANIMATION: Counts up to 88, turns 88 dots RED, 12 remain WHITE
   const runStage1Animation = useCallback(() => {
@@ -44,7 +46,9 @@ export const StatsSection: React.FC = () => {
       count: 88,
       duration: 1.4,
       ease: 'power2.out',
-      onUpdate: () => setCount1(Math.round(counterProxy.count))
+      onUpdate: () => {
+        if (count1Ref.current) count1Ref.current.textContent = String(Math.round(counterProxy.count));
+      }
     });
 
     if (abandonDots.length) {
@@ -94,7 +98,9 @@ export const StatsSection: React.FC = () => {
       count: 77,
       duration: 1.4,
       ease: 'power2.out',
-      onUpdate: () => setCount2(Math.round(counterProxy.count))
+      onUpdate: () => {
+        if (count2Ref.current) count2Ref.current.textContent = `${Math.round(counterProxy.count)}%`;
+      }
     });
 
     if (returnDots.length) {
@@ -128,8 +134,10 @@ export const StatsSection: React.FC = () => {
 
   // SEQUENTIAL CROSS-FADE: Stage 1 fades fully out, THEN stage 2 fades in — no overlap, no jump
   const transitionTo = useCallback((targetStage: 1 | 2) => {
-    if (activeStageRef.current === targetStage || isTransitioningRef.current) return;
-    isTransitioningRef.current = true;
+    // No "already transitioning" lock: if the visitor scrolls back mid-fade,
+    // the running tweens are killed and the fade reverses from where it is,
+    // instead of being ignored and leaving the wrong stage on screen.
+    if (activeStageRef.current === targetStage) return;
     activeStageRef.current = targetStage;
 
     const outEl = targetStage === 2 ? stage1Ref.current : stage2Ref.current;
@@ -138,11 +146,7 @@ export const StatsSection: React.FC = () => {
 
     gsap.killTweensOf([stage1Ref.current, stage2Ref.current]);
 
-    const tl = gsap.timeline({
-      onComplete: () => {
-        isTransitioningRef.current = false;
-      }
-    });
+    const tl = gsap.timeline();
 
     tl.to(outEl, {
       opacity: 0,
@@ -249,13 +253,13 @@ export const StatsSection: React.FC = () => {
                   title="Click to replay visitor drop-off animation"
                   className="p-5 sm:p-6 bg-[#0e1117] rounded-2xl border border-stone-800 shadow-xl cursor-pointer select-none hover:border-stone-700 transition-colors"
                 >
-                  <div className="grid grid-cols-10 gap-2 sm:gap-2.5 place-items-center">
+                  <div className="grid grid-cols-10 gap-2 sm:gap-2.5 place-items-center [contain:layout_paint]">
                     {Array.from({ length: 100 }).map((_, i) => {
                       const isLost = i < 88;
                       return (
                         <span
                           key={i}
-                          className="customer-dot-1 block w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full transition-transform will-change-transform"
+                          className="customer-dot-1 block w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full"
                           style={{
                             backgroundColor: isLost ? '#ef4444' : '#ffffff',
                             boxShadow: !isLost ? '0 0 10px rgba(255, 255, 255, 0.85)' : undefined,
@@ -285,7 +289,7 @@ export const StatsSection: React.FC = () => {
               <div className="md:col-span-7 space-y-3.5 text-center md:text-left">
                 <div className="flex items-baseline justify-center md:justify-start gap-2">
                   <span className="font-serif text-6xl sm:text-7xl md:text-8xl font-light text-slate-900 tracking-tight leading-none tabular-nums">
-                    {count1}
+                    <span ref={count1Ref}>0</span>
                   </span>
                   <span className="font-serif text-3xl sm:text-4xl md:text-5xl text-red-600 font-light">
                     / 100
@@ -329,13 +333,13 @@ export const StatsSection: React.FC = () => {
                   title="Click to replay return visitor animation"
                   className="p-5 sm:p-6 bg-[#0e1117] rounded-2xl border border-stone-800 shadow-xl cursor-pointer select-none hover:border-emerald-900/60 transition-colors"
                 >
-                  <div className="grid grid-cols-10 gap-2 sm:gap-2.5 place-items-center">
+                  <div className="grid grid-cols-10 gap-2 sm:gap-2.5 place-items-center [contain:layout_paint]">
                     {Array.from({ length: 100 }).map((_, i) => {
                       const isReturn = i < 77;
                       return (
                         <span
                           key={i}
-                          className="customer-dot-2 block w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full transition-transform will-change-transform"
+                          className="customer-dot-2 block w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full"
                           style={{
                             backgroundColor: isReturn ? '#10b981' : '#ffffff',
                             boxShadow: isReturn ? '0 0 12px rgba(16, 185, 129, 0.9)' : undefined,
@@ -365,7 +369,7 @@ export const StatsSection: React.FC = () => {
               <div className="md:col-span-7 space-y-3.5 text-center md:text-left">
                 <div className="flex items-baseline justify-center md:justify-start gap-2">
                   <span className="font-serif text-6xl sm:text-7xl md:text-8xl font-light text-slate-900 tracking-tight leading-none tabular-nums">
-                    {count2}%
+                    <span ref={count2Ref}>0%</span>
                   </span>
                   <span className="font-serif text-3xl sm:text-4xl md:text-5xl text-emerald-600 font-light">
                     / 100

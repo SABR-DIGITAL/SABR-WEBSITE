@@ -5,7 +5,9 @@ export default {
     './index.tsx',
     './App.tsx',
     './components/**/*.{ts,tsx}',
-    './pages/**/*.{ts,tsx}'
+    './pages/**/*.{ts,tsx}',
+    './gateway/**/*.{ts,tsx}',
+    './aio/**/*.{ts,tsx}'
   ],
   theme: {
     extend: {

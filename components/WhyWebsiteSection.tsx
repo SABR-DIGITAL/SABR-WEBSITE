@@ -228,14 +228,14 @@ const WhyWebsiteSection: React.FC = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setSelectedPro(null)}
-              className="absolute inset-0 bg-slate-950/90 backdrop-blur-xl transform-gpu"
+              className="absolute inset-0 bg-slate-950/[0.92]"
             />
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 30 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 30 }}
               transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-              className="relative w-full max-w-5xl max-h-full bg-white rounded-[2.5rem] md:rounded-[3.5rem] shadow-[0_50px_100px_rgba(0,0,0,0.5)] border border-white/10 overflow-hidden flex flex-col z-20 transform-gpu will-change-transform"
+              className="relative w-full max-w-5xl max-h-full bg-white rounded-[2.5rem] md:rounded-[3.5rem] shadow-[0_50px_100px_rgba(0,0,0,0.5)] border border-white/10 overflow-hidden flex flex-col z-20"
             >
               {/* MODAL HEADER - FIXED AND CLEAN */}
               <div className="px-8 sm:px-12 py-6 sm:py-8 flex items-center justify-between border-b border-slate-100 bg-white shrink-0 z-30">

@@ -6,6 +6,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowUp } from 'lucide-react';
 import IntroPortal from './components/IntroPortal';
+import { cameFromOtherSite } from './components/introSkip';
 import Navbar from './components/Navbar';
 import ExitPreviewButton from './components/ExitPreviewButton';
 
@@ -220,7 +221,9 @@ const LoadingFallback = () => (
 
 // Keeps the document title, description and canonical URL aligned with the
 // active page so shared links and search snippets read like a person wrote them.
-const SITE_URL = 'https://sabrdigital.co.uk';
+// This app is mounted at /web-design (see the basename on the router below), so
+// canonical/OG URLs need that prefix even though every in-app path stays relative.
+const SITE_URL = 'https://sabrdigital.co.uk/web-design';
 
 const SEO_META: Record<Page, { title: string; description: string }> = {
   home: {
@@ -288,7 +291,9 @@ const MainApp: React.FC = () => {
   // Deep links straight into a demo skip the agency intro — the demo has its own
   // opening sequence and two title cards stacked on top of each other reads as a bug.
   const [showIntro, setShowIntro] = useState(
-    () => !window.location.pathname.startsWith('/demo')
+    // Mounted under /web-design, so the raw browser path is /web-design/demo/...
+    // Switching over from the AI Optimisation site skips it too.
+    () => !window.location.pathname.includes('/demo') && !cameFromOtherSite('web-design')
   );
   const [isRevealed, setIsRevealed] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -573,8 +578,13 @@ const MainApp: React.FC = () => {
   );
 };
 
+// Mounted at /web-design so it can sit alongside the new intro gateway (at "/")
+// and the AI Optimisation site (at /ai-optimisation) on the same domain. The
+// basename is stripped from location.pathname automatically, and every Link/
+// navigate() call below is resolved against it too, so nothing else in this
+// file needed to change.
 const App: React.FC = () => (
-  <BrowserRouter>
+  <BrowserRouter basename="/web-design">
     <MainApp />
   </BrowserRouter>
 );
