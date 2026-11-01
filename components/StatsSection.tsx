@@ -4,6 +4,42 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
+// The grid gets its own compositor layer and paint containment, so the dot
+// animation repaints only this small area. The padding (offset by a negative
+// margin) leaves room for the glows so they are not clipped at the edges.
+const DOT_GRID_CLASS =
+  'grid grid-cols-10 gap-2 sm:gap-2.5 place-items-center p-3 -m-3 [contain:layout_paint] will-change-transform';
+
+interface DotProps {
+  className: string;
+  fill: string;
+  glow: string;
+  fillOn: boolean;
+  glowOn: boolean;
+  scale: number;
+  opacity: number;
+}
+
+// A white base with a coloured fill and a soft glow stacked on top. Animating
+// the opacity of those layers looks the same as tweening background-color and
+// box-shadow, but costs far less to draw.
+const Dot: React.FC<DotProps> = ({ className, fill, glow, fillOn, glowOn, scale, opacity }) => (
+  <span
+    className={`${className} relative block w-3.5 h-3.5 sm:w-4 sm:h-4`}
+    style={{ transform: `scale(${scale})`, opacity }}
+  >
+    <span
+      className="dot-glow absolute -inset-2.5 rounded-full pointer-events-none"
+      style={{ background: `radial-gradient(circle, ${glow} 30%, transparent 70%)`, opacity: glowOn ? 1 : 0 }}
+    />
+    <span className="absolute inset-0 rounded-full bg-white" />
+    <span
+      className="dot-fill absolute inset-0 rounded-full"
+      style={{ backgroundColor: fill, opacity: fillOn ? 1 : 0 }}
+    />
+  </span>
+);
+
 export const StatsSection: React.FC = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const stage1Ref = useRef<HTMLDivElement>(null);
@@ -22,25 +58,33 @@ export const StatsSection: React.FC = () => {
   const hasPlayed1Ref = useRef(false);
   const hasPlayed2Ref = useRef(false);
 
-  // STAGE 1 ANIMATION: Counts up to 88, turns 88 dots RED, 12 remain WHITE
-  const runStage1Animation = useCallback(() => {
-    const dots = dots1Ref.current?.querySelectorAll('.customer-dot-1');
-    const abandonDots = dots ? Array.from(dots).slice(0, 88) : [];
-    const retainedDots = dots ? Array.from(dots).slice(88) : [];
+  // Running dot timelines, killed before a replay so overlapping runs never
+  // fight over the same dots.
+  const dotsTl1Ref = useRef<gsap.core.Timeline | null>(null);
+  const dotsTl2Ref = useRef<gsap.core.Timeline | null>(null);
 
-    if (dots) {
-      gsap.set(dots, { backgroundColor: '#ffffff', opacity: 0.9, scale: 1 });
-      if (retainedDots.length) {
-        gsap.set(retainedDots, {
-          backgroundColor: '#ffffff',
-          boxShadow: '0 0 10px rgba(255, 255, 255, 0.85)',
-          scale: 1.15
-        });
-      }
-    }
+  // STAGE 1 ANIMATION: Counts up to 88, turns 88 dots RED, 12 remain WHITE.
+  // Only transform and opacity are tweened. Colour changes are cross-fades of a
+  // pre-coloured fill layer and glows are pre-drawn gradients, so nothing
+  // expensive (box-shadow blur, background-color) is repainted per frame.
+  const runStage1Animation = useCallback(() => {
+    const root = dots1Ref.current;
+    if (!root) return;
+    const dots: HTMLElement[] = Array.prototype.slice.call(root.querySelectorAll<HTMLElement>('.customer-dot-1'));
+    const lost = dots.slice(0, 88);
+    const retained = dots.slice(88);
+    const fills = (els: HTMLElement[]) => els.map((d) => d.querySelector('.dot-fill'));
+    const glows = (els: HTMLElement[]) => els.map((d) => d.querySelector('.dot-glow'));
+
+    dotsTl1Ref.current?.kill();
+    gsap.set(dots, { scale: 1, force3D: false });
+    gsap.set(fills(lost), { opacity: 0 });
+    gsap.set(retained, { scale: 1.15 });
+    gsap.set(glows(retained), { opacity: 0.85 });
 
     const counterProxy = { count: 0 };
-    const tl = gsap.timeline();
+    const tl = gsap.timeline({ defaults: { force3D: false } });
+    dotsTl1Ref.current = tl;
 
     tl.to(counterProxy, {
       count: 88,
@@ -51,48 +95,32 @@ export const StatsSection: React.FC = () => {
       }
     });
 
-    if (abandonDots.length) {
-      tl.to(
-        abandonDots,
-        {
-          backgroundColor: '#ef4444',
-          scale: 0.85,
-          opacity: 0.9,
-          duration: 0.35,
-          stagger: { each: 0.014, from: 'start', ease: 'power1.out' }
-        },
-        0.05
-      );
-    }
+    const stagger = { each: 0.014, from: 'start' as const, ease: 'power1.out' };
+    tl.to(fills(lost), { opacity: 1, duration: 0.35, stagger }, 0.05)
+      .to(lost, { scale: 0.85, duration: 0.35, stagger }, 0.05);
 
-    if (retainedDots.length) {
-      tl.to(
-        retainedDots,
-        {
-          scale: 1.25,
-          backgroundColor: '#ffffff',
-          boxShadow: '0 0 14px rgba(255, 255, 255, 0.95)',
-          duration: 0.35,
-          stagger: 0.025,
-          ease: 'back.out(2)'
-        },
-        '-=0.5'
-      ).to(retainedDots, { scale: 1.15, duration: 0.25 });
-    }
+    tl.to(retained, { scale: 1.25, duration: 0.35, stagger: 0.025, ease: 'back.out(2)' }, '-=0.5')
+      .to(glows(retained), { opacity: 1, duration: 0.35, stagger: 0.025 }, '<')
+      .to(retained, { scale: 1.15, duration: 0.25 });
   }, []);
 
   // STAGE 2 ANIMATION: Counts up to 77, turns 77 dots radiant GREEN, 23 remain neutral WHITE
   const runStage2Animation = useCallback(() => {
-    const dots = dots2Ref.current?.querySelectorAll('.customer-dot-2');
-    const returnDots = dots ? Array.from(dots).slice(0, 77) : [];
-    const otherDots = dots ? Array.from(dots).slice(77) : [];
+    const root = dots2Ref.current;
+    if (!root) return;
+    const dots: HTMLElement[] = Array.prototype.slice.call(root.querySelectorAll<HTMLElement>('.customer-dot-2'));
+    const returning = dots.slice(0, 77);
+    const others = dots.slice(77);
+    const fills = returning.map((d) => d.querySelector('.dot-fill'));
+    const glows = returning.map((d) => d.querySelector('.dot-glow'));
 
-    if (dots) {
-      gsap.set(dots, { backgroundColor: '#ffffff', opacity: 0.8, scale: 0.9 });
-    }
+    dotsTl2Ref.current?.kill();
+    gsap.set(dots, { opacity: 0.8, scale: 0.9, force3D: false });
+    gsap.set([...fills, ...glows], { opacity: 0 });
 
     const counterProxy = { count: 0 };
-    const tl = gsap.timeline();
+    const tl = gsap.timeline({ defaults: { force3D: false } });
+    dotsTl2Ref.current = tl;
 
     tl.to(counterProxy, {
       count: 77,
@@ -103,33 +131,12 @@ export const StatsSection: React.FC = () => {
       }
     });
 
-    if (returnDots.length) {
-      tl.to(
-        returnDots,
-        {
-          backgroundColor: '#10b981', // Emerald green
-          boxShadow: '0 0 12px rgba(16, 185, 129, 0.9)',
-          scale: 1.15,
-          opacity: 1,
-          duration: 0.35,
-          stagger: { each: 0.014, from: 'start', ease: 'power1.out' }
-        },
-        0.05
-      );
-    }
+    const stagger = { each: 0.014, from: 'start' as const, ease: 'power1.out' };
+    tl.to(returning, { scale: 1.15, opacity: 1, duration: 0.35, stagger }, 0.05)
+      .to(fills, { opacity: 1, duration: 0.35, stagger }, 0.05)
+      .to(glows, { opacity: 1, duration: 0.35, stagger }, 0.05);
 
-    if (otherDots.length) {
-      tl.to(
-        otherDots,
-        {
-          backgroundColor: '#ffffff',
-          scale: 0.9,
-          opacity: 0.5,
-          duration: 0.3
-        },
-        0.1
-      );
-    }
+    tl.to(others, { opacity: 0.5, duration: 0.3 }, 0.1);
   }, []);
 
   // SEQUENTIAL CROSS-FADE: Stage 1 fades fully out, THEN stage 2 fades in — no overlap, no jump
@@ -214,6 +221,8 @@ export const StatsSection: React.FC = () => {
     return () => {
       observer.disconnect();
       ctx.revert();
+      dotsTl1Ref.current?.kill();
+      dotsTl2Ref.current?.kill();
     };
   }, [runStage1Animation, transitionTo]);
 
@@ -253,19 +262,19 @@ export const StatsSection: React.FC = () => {
                   title="Click to replay visitor drop-off animation"
                   className="p-5 sm:p-6 bg-[#0e1117] rounded-2xl border border-stone-800 shadow-xl cursor-pointer select-none hover:border-stone-700 transition-colors"
                 >
-                  <div className="grid grid-cols-10 gap-2 sm:gap-2.5 place-items-center [contain:layout_paint]">
+                  <div className={DOT_GRID_CLASS}>
                     {Array.from({ length: 100 }).map((_, i) => {
                       const isLost = i < 88;
                       return (
-                        <span
+                        <Dot
                           key={i}
-                          className="customer-dot-1 block w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full"
-                          style={{
-                            backgroundColor: isLost ? '#ef4444' : '#ffffff',
-                            boxShadow: !isLost ? '0 0 10px rgba(255, 255, 255, 0.85)' : undefined,
-                            transform: !isLost ? 'scale(1.15)' : 'scale(0.85)',
-                            opacity: 0.9
-                          }}
+                          className="customer-dot-1"
+                          fill="#ef4444"
+                          glow="rgba(255, 255, 255, 0.85)"
+                          fillOn={isLost}
+                          glowOn={!isLost}
+                          scale={isLost ? 0.85 : 1.15}
+                          opacity={0.9}
                         />
                       );
                     })}
@@ -333,19 +342,19 @@ export const StatsSection: React.FC = () => {
                   title="Click to replay return visitor animation"
                   className="p-5 sm:p-6 bg-[#0e1117] rounded-2xl border border-stone-800 shadow-xl cursor-pointer select-none hover:border-emerald-900/60 transition-colors"
                 >
-                  <div className="grid grid-cols-10 gap-2 sm:gap-2.5 place-items-center [contain:layout_paint]">
+                  <div className={DOT_GRID_CLASS}>
                     {Array.from({ length: 100 }).map((_, i) => {
                       const isReturn = i < 77;
                       return (
-                        <span
+                        <Dot
                           key={i}
-                          className="customer-dot-2 block w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full"
-                          style={{
-                            backgroundColor: isReturn ? '#10b981' : '#ffffff',
-                            boxShadow: isReturn ? '0 0 12px rgba(16, 185, 129, 0.9)' : undefined,
-                            transform: isReturn ? 'scale(1.15)' : 'scale(0.85)',
-                            opacity: isReturn ? 1 : 0.6
-                          }}
+                          className="customer-dot-2"
+                          fill="#10b981"
+                          glow="rgba(16, 185, 129, 0.9)"
+                          fillOn={isReturn}
+                          glowOn={isReturn}
+                          scale={isReturn ? 1.15 : 0.85}
+                          opacity={isReturn ? 1 : 0.6}
                         />
                       );
                     })}
