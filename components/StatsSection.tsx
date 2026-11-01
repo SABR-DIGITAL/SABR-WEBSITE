@@ -11,7 +11,6 @@ export const StatsSection: React.FC = () => {
   const dots1Ref = useRef<HTMLDivElement>(null);
   const dots2Ref = useRef<HTMLDivElement>(null);
 
-  const [activeStage, setActiveStage] = useState<1 | 2>(1);
   const activeStageRef = useRef<1 | 2>(1);
 
   const [count1, setCount1] = useState(0);
@@ -78,11 +77,11 @@ export const StatsSection: React.FC = () => {
     }
   }, []);
 
-  // STAGE 2 ANIMATION: Counts up to 74, turns 74 dots radiant GREEN, 26 remain neutral WHITE
+  // STAGE 2 ANIMATION: Counts up to 77, turns 77 dots radiant GREEN, 23 remain neutral WHITE
   const runStage2Animation = useCallback(() => {
     const dots = dots2Ref.current?.querySelectorAll('.customer-dot-2');
-    const returnDots = dots ? Array.from(dots).slice(0, 74) : [];
-    const otherDots = dots ? Array.from(dots).slice(74) : [];
+    const returnDots = dots ? Array.from(dots).slice(0, 77) : [];
+    const otherDots = dots ? Array.from(dots).slice(77) : [];
 
     if (dots) {
       gsap.set(dots, { backgroundColor: '#ffffff', opacity: 0.8, scale: 0.9 });
@@ -92,7 +91,7 @@ export const StatsSection: React.FC = () => {
     const tl = gsap.timeline();
 
     tl.to(counterProxy, {
-      count: 74,
+      count: 77,
       duration: 1.4,
       ease: 'power2.out',
       onUpdate: () => setCount2(Math.round(counterProxy.count))
@@ -127,70 +126,39 @@ export const StatsSection: React.FC = () => {
     }
   }, []);
 
-  // GENTLE GLIDE TRANSITION BETWEEN STAGES
+  // SEQUENTIAL CROSS-FADE: Stage 1 fades fully out, THEN stage 2 fades in — no overlap, no jump
   const transitionTo = useCallback((targetStage: 1 | 2) => {
     if (activeStageRef.current === targetStage || isTransitioningRef.current) return;
     isTransitioningRef.current = true;
     activeStageRef.current = targetStage;
-    setActiveStage(targetStage);
 
-    if (targetStage === 2) {
-      // Glide Stage 1 out upward
-      gsap.to(stage1Ref.current, {
-        y: -30,
-        opacity: 0,
+    const outEl = targetStage === 2 ? stage1Ref.current : stage2Ref.current;
+    const inEl = targetStage === 2 ? stage2Ref.current : stage1Ref.current;
+    const runInAnimation = targetStage === 2 ? runStage2Animation : runStage1Animation;
+
+    gsap.killTweensOf([stage1Ref.current, stage2Ref.current]);
+
+    const tl = gsap.timeline({
+      onComplete: () => {
+        isTransitioningRef.current = false;
+      }
+    });
+
+    tl.to(outEl, {
+      opacity: 0,
+      duration: 0.4,
+      ease: 'power1.inOut',
+      pointerEvents: 'none'
+    }).set(inEl, { pointerEvents: 'auto' }, '>').to(
+      inEl,
+      {
+        opacity: 1,
         duration: 0.45,
-        ease: 'power2.inOut',
-        pointerEvents: 'none'
-      });
-
-      // Glide Stage 2 in from below
-      gsap.fromTo(
-        stage2Ref.current,
-        { y: 30, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.55,
-          ease: 'power2.out',
-          pointerEvents: 'auto',
-          onStart: () => {
-            runStage2Animation();
-          },
-          onComplete: () => {
-            isTransitioningRef.current = false;
-          }
-        }
-      );
-    } else {
-      // Glide Stage 2 out downward
-      gsap.to(stage2Ref.current, {
-        y: 30,
-        opacity: 0,
-        duration: 0.45,
-        ease: 'power2.inOut',
-        pointerEvents: 'none'
-      });
-
-      // Glide Stage 1 in from above
-      gsap.fromTo(
-        stage1Ref.current,
-        { y: -30, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.55,
-          ease: 'power2.out',
-          pointerEvents: 'auto',
-          onStart: () => {
-            runStage1Animation();
-          },
-          onComplete: () => {
-            isTransitioningRef.current = false;
-          }
-        }
-      );
-    }
+        ease: 'power1.out',
+        onStart: runInAnimation
+      },
+      '>'
+    );
   }, [runStage1Animation, runStage2Animation]);
 
   useEffect(() => {
@@ -261,7 +229,7 @@ export const StatsSection: React.FC = () => {
           {/* ========================================================= */}
           <div
             ref={stage1Ref}
-            className="col-start-1 row-start-1 w-full space-y-6 md:space-y-7 transition-all will-change-transform"
+            className="col-start-1 row-start-1 w-full space-y-6 md:space-y-7 will-change-[opacity]"
           >
             {/* SECTION HEADLINE */}
             <div className="text-center">
@@ -329,7 +297,7 @@ export const StatsSection: React.FC = () => {
                 </p>
 
                 <p className="font-inter text-slate-600 text-sm sm:text-base font-normal leading-relaxed max-w-xl">
-                  First impressions are formed in milliseconds. When a website takes seconds to load or feels clumsy on mobile, high-intent prospects move on to a competitor without second thought.
+                  First impressions are formed in milliseconds. When a website takes too long to load, feels cluttered, or breaks down on mobile, high-intent prospects don&rsquo;t wait around — they bounce straight to a competitor, taking their trust, their budget, and their loyalty with them for good.
                 </p>
               </div>
 
@@ -337,23 +305,23 @@ export const StatsSection: React.FC = () => {
           </div>
 
           {/* ========================================================= */}
-          {/* STAGE 2: GOOD WEBSITE (74% Return, Green Dots)            */}
+          {/* STAGE 2: GOOD WEBSITE (77% Return, Green Dots)            */}
           {/* ========================================================= */}
           <div
             ref={stage2Ref}
-            className="col-start-1 row-start-1 w-full space-y-6 md:space-y-7 opacity-0 pointer-events-none transition-all will-change-transform"
+            className="col-start-1 row-start-1 w-full space-y-6 md:space-y-7 opacity-0 pointer-events-none will-change-[opacity]"
           >
             {/* SECTION HEADLINE */}
             <div className="text-center">
               <h2 className="font-serif text-[clamp(2rem,4.5vw,3.2rem)] font-normal text-slate-900 tracking-tight leading-[1.05]">
-                The power of mobile-first design.
+                The power of an amazing experience.
               </h2>
             </div>
 
             {/* COMPACT TWO-COLUMN ROW - EXACT SAME LAYOUT AS COUNTERPART */}
             <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-center">
-              
-              {/* LEFT: 100 CUSTOMER DOTS MATRIX (74 Green Dots, 26 White) */}
+
+              {/* LEFT: 100 CUSTOMER DOTS MATRIX (77 Green Dots, 23 White) */}
               <div className="md:col-span-5 flex flex-col items-center justify-center">
                 <div
                   ref={dots2Ref}
@@ -363,7 +331,7 @@ export const StatsSection: React.FC = () => {
                 >
                   <div className="grid grid-cols-10 gap-2 sm:gap-2.5 place-items-center">
                     {Array.from({ length: 100 }).map((_, i) => {
-                      const isReturn = i < 74;
+                      const isReturn = i < 77;
                       return (
                         <span
                           key={i}
@@ -380,20 +348,20 @@ export const StatsSection: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Micro Indicator: Green = 74 Retained, White = 26 Other */}
+                {/* Micro Indicator: Green = 77 Retained, White = 23 Other */}
                 <div className="flex items-center gap-6 mt-3 text-[11px] font-mono text-stone-600">
                   <div className="flex items-center gap-1.5">
                     <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-sm" />
-                    <span className="text-emerald-600 font-semibold">74 Retained</span>
+                    <span className="text-emerald-600 font-semibold">77 Retained</span>
                   </div>
                   <div className="flex items-center gap-1.5">
                     <span className="w-2.5 h-2.5 rounded-full bg-white border border-stone-400 shadow-sm" />
-                    <span className="text-slate-800 font-semibold">26 General</span>
+                    <span className="text-slate-800 font-semibold">23 General</span>
                   </div>
                 </div>
               </div>
 
-              {/* RIGHT: THE 74% STATISTIC */}
+              {/* RIGHT: THE 77% STATISTIC */}
               <div className="md:col-span-7 space-y-3.5 text-center md:text-left">
                 <div className="flex items-baseline justify-center md:justify-start gap-2">
                   <span className="font-serif text-6xl sm:text-7xl md:text-8xl font-light text-slate-900 tracking-tight leading-none tabular-nums">
@@ -405,43 +373,17 @@ export const StatsSection: React.FC = () => {
                 </div>
 
                 <p className="font-serif text-2xl sm:text-3xl lg:text-[2rem] text-slate-900 font-normal leading-snug">
-                  &ldquo;74% of users are more likely to return to a website if it is mobile-friendly and easy to use.&rdquo;
+                  &ldquo;77% of customers will return if your website is amazing and easy to navigate.&rdquo;
                 </p>
 
                 <p className="font-inter text-slate-600 text-sm sm:text-base font-normal leading-relaxed max-w-xl">
-                  Speed, clarity, and intuitive mobile ergonomics inspire instant trust. When prospects find what they need in seconds, they stay longer, explore deeper, and convert into paying clients.
+                  Speed, clarity, and effortless navigation build instant trust. When visitors can find exactly what they need within seconds, they linger longer, explore further, and convert into loyal, paying clients — turning a single visit into a lasting relationship.
                 </p>
               </div>
 
             </div>
           </div>
 
-        </div>
-
-        {/* SUBTLE INTERACTIVE STAGE CONTROLS */}
-        <div className="flex items-center justify-center gap-3 pt-6 select-none">
-          <button
-            type="button"
-            onClick={() => transitionTo(1)}
-            className={`px-4 py-1.5 rounded-full text-[11px] font-mono uppercase tracking-wider transition-all duration-300 cursor-pointer ${
-              activeStage === 1
-                ? 'bg-red-500/15 text-red-700 border border-red-500/30 font-bold shadow-sm'
-                : 'bg-white/80 text-stone-500 border border-stone-200 hover:text-stone-800'
-            }`}
-          >
-            <span>1. Bad Experience · 88% Lost</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => transitionTo(2)}
-            className={`px-4 py-1.5 rounded-full text-[11px] font-mono uppercase tracking-wider transition-all duration-300 cursor-pointer ${
-              activeStage === 2
-                ? 'bg-emerald-500/15 text-emerald-700 border border-emerald-500/30 font-bold shadow-sm'
-                : 'bg-white/80 text-stone-500 border border-stone-200 hover:text-stone-800'
-            }`}
-          >
-            <span>2. Mobile-Friendly · 74% Return</span>
-          </button>
         </div>
 
       </div>
