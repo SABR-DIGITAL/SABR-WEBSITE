@@ -4,6 +4,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Every entry point (gateway, and the first viewport of either
+         destination site) paints dark. Declared this early, the browser's
+         own placeholder background for the still-loading document is dark
+         too, instead of its light default — otherwise that default shows as
+         a flash between the gateway's panel-fill finishing and this page's
+         own CSS taking over. -->
+    <meta name="color-scheme" content="dark" />
 
     <!-- PRIMARY SEO -->
     <!-- The intro gateway now owns "/" and leads to two separate sites: the
@@ -471,7 +478,15 @@
         padding: 0;
         width: 100%;
         min-height: 100%;
-        background: #ffffff; /* Neutral shell colour; the app paints its own cream */
+        /* Every entry point — the gateway, and the first viewport of either
+           destination site's hero — paints dark. A white shell would flash
+           between the gateway's panel-fill animation finishing and this
+           site's own CSS/JS taking over, right when the hand-off needs to
+           read as one continuous move. Matches the color-scheme meta tag
+           above, which covers the moment before this stylesheet is even
+           parsed. */
+        background: #0A0D14;
+        color-scheme: dark;
         color: var(--sabr-navy);
         font-family: 'Manrope', sans-serif;
         text-rendering: optimizeLegibility;
@@ -579,7 +594,13 @@
          the gateway and the AI Optimisation site paint opaque backgrounds
          over it. So Three.js (and the WebGL context) is only fetched there,
          keeping those two pages light. */
-      if (location.pathname === '/web-design' || location.pathname.startsWith('/web-design/')) {
+      /* Exposed so the gateway can start it after handing over to the
+         studio inside the same page (index.tsx) — there is no fresh page
+         load for the path check below to see in that case. */
+      let fluidStarted = false;
+      window.__sabrStartFluidBg = () => {
+        if (fluidStarted) return;
+        fluidStarted = true;
         import('three').then((THREE) => {
         const canvas = document.getElementById('fluid-bg');
         const renderer = new THREE.WebGLRenderer({
@@ -651,8 +672,9 @@
 
         if (!stillOnly) animate(0);
         });
-      } else {
-        document.getElementById('fluid-bg')?.remove();
+      };
+      if (location.pathname === '/web-design' || location.pathname.startsWith('/web-design/')) {
+        window.__sabrStartFluidBg();
       }
     </script>
       <script type="module" src="/index.tsx"></script>

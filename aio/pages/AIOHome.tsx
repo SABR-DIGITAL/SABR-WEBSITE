@@ -16,40 +16,90 @@ const PREVIEW_FAQS = [
   }
 ];
 
-const AIOHome: React.FC = () => {
+interface AIOHomeProps {
+  startAnimation?: boolean;
+}
+
+const AIOHome: React.FC<AIOHomeProps> = ({ startAnimation = true }) => {
   useAIOSeo({
     title: 'SABR Digital AI Optimisation | Get Found by AI, Not Just Google',
     description: 'We help businesses improve how clearly AI tools like ChatGPT, Gemini, Perplexity and Google AI Overviews understand and recommend them.',
     path: '/'
   });
 
+  // The hero photo is already in frame from the moment this page paints —
+  // it is the exact file the gateway's split-screen panel just grew to fill,
+  // with the same overlay, so there is nothing for the image itself to
+  // animate. Only the text and buttons ease in afterwards, staggered the
+  // same way the web design studio's Hero.tsx reveals its own.
+  const reveal = (delayMs: number): React.CSSProperties => ({
+    transitionDelay: `${delayMs}ms`
+  });
+  const revealClass = `transition-[opacity,transform] duration-700 ease-out ${
+    startAnimation ? 'translate-y-0 opacity-100' : 'translate-y-5 opacity-0'
+  }`;
+
   return (
     <main className="bg-[#fdfbf7]">
-      <section className="flex min-h-[90dvh] flex-col items-center justify-center bg-[#0f241d] px-6 pb-20 pt-36 text-center md:px-10">
-        <p className="mb-6 text-[11px] font-black uppercase tracking-[0.5em] text-emerald-300">
-          SABR Digital AI Optimisation
-        </p>
-        <h1 className="font-syne max-w-4xl text-[clamp(2.2rem,8vw,4.5rem)] font-black uppercase leading-[0.95] tracking-tight text-white">
-          Get found by AI,<br />not just Google.
-        </h1>
-        <p className="mt-8 max-w-2xl text-lg leading-relaxed text-emerald-50/80 md:text-xl">
-          ChatGPT, Gemini, Perplexity and Google's AI Overviews are answering the questions your customers used to
-          type into Google. We help your business show up in those answers — written and structured so AI tools
-          can understand what you do, who you serve, and why you're worth recommending.
-        </p>
-        <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-          <Link
-            to={AIO_PAGE_PATHS.audit}
-            className="inline-flex items-center gap-2 rounded-full bg-emerald-500 px-8 py-4 text-[12px] font-black uppercase tracking-[0.25em] text-[#0f241d] shadow-lg transition-transform hover:scale-105 active:scale-95"
+      <section className="relative flex h-[100dvh] flex-col items-center justify-center overflow-hidden bg-[#0f241d] px-6 pb-20 pt-36 text-center md:px-10">
+        {/* Same photo and overlay as the gateway's AI Optimisation panel
+            (gateway/GatewayPage.tsx), so arriving from there hands off to an
+            identical frame instead of a visible jump. */}
+        <img
+          src="/images/aio-panel-1735.jpg"
+          srcSet="/images/aio-panel-1100.jpg 1100w, /images/aio-panel-1735.jpg 1735w"
+          sizes="100vw"
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 h-full w-full object-cover"
+          loading="eager"
+          decoding="async"
+          fetchPriority="high"
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0"
+          style={{
+            background:
+              'linear-gradient(180deg, rgba(7,19,15,0.55) 0%, rgba(7,19,15,0.72) 55%, rgba(7,19,15,0.88) 100%)'
+          }}
+        />
+
+        <div className="relative z-10 flex flex-col items-center">
+          <p
+            style={reveal(0)}
+            className={`${revealClass} mb-6 text-[11px] font-black uppercase tracking-[0.5em] text-emerald-300`}
           >
-            Get a free AI audit <ArrowRight size={16} />
-          </Link>
-          <Link
-            to={AIO_PAGE_PATHS['what-is-aio']}
-            className="inline-flex items-center gap-2 rounded-full border border-white/25 px-8 py-4 text-[12px] font-black uppercase tracking-[0.25em] text-white transition-colors hover:bg-white/10"
+            SABR Digital AI Optimisation
+          </p>
+          <h1
+            style={reveal(90)}
+            className={`${revealClass} font-syne max-w-4xl text-[clamp(2.2rem,8vw,4.5rem)] font-black uppercase leading-[0.95] tracking-tight text-white`}
           >
-            What is AIO?
-          </Link>
+            Get found by AI,<br />not just Google.
+          </h1>
+          <p
+            style={reveal(180)}
+            className={`${revealClass} mt-8 max-w-2xl text-lg leading-relaxed text-emerald-50/80 md:text-xl`}
+          >
+            ChatGPT, Gemini, Perplexity and Google's AI Overviews are answering the questions your customers used to
+            type into Google. We help your business show up in those answers — written and structured so AI tools
+            can understand what you do, who you serve, and why you're worth recommending.
+          </p>
+          <div style={reveal(270)} className={`${revealClass} mt-10 flex flex-wrap items-center justify-center gap-4`}>
+            <Link
+              to={AIO_PAGE_PATHS.audit}
+              className="inline-flex items-center gap-2 rounded-full bg-emerald-500 px-8 py-4 text-[12px] font-black uppercase tracking-[0.25em] text-[#0f241d] shadow-lg transition-transform hover:scale-105 active:scale-95"
+            >
+              Get a free AI audit <ArrowRight size={16} />
+            </Link>
+            <Link
+              to={AIO_PAGE_PATHS['what-is-aio']}
+              className="inline-flex items-center gap-2 rounded-full border border-white/25 px-8 py-4 text-[12px] font-black uppercase tracking-[0.25em] text-white transition-colors hover:bg-white/10"
+            >
+              What is AIO?
+            </Link>
+          </div>
         </div>
       </section>
 
