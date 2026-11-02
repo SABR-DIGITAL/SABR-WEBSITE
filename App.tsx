@@ -6,7 +6,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowUp } from 'lucide-react';
 import IntroPortal from './components/IntroPortal';
-import { cameFromOtherSite } from './components/introSkip';
+import { arrivedFromWithinSite } from './components/introSkip';
 import Navbar from './components/Navbar';
 import ExitPreviewButton from './components/ExitPreviewButton';
 
@@ -292,8 +292,9 @@ const MainApp: React.FC = () => {
   // opening sequence and two title cards stacked on top of each other reads as a bug.
   const [showIntro, setShowIntro] = useState(
     // Mounted under /web-design, so the raw browser path is /web-design/demo/...
-    // Switching over from the AI Optimisation site skips it too.
-    () => !window.location.pathname.includes('/demo') && !cameFromOtherSite('web-design')
+    // Arriving from the gateway (its panel-fill animation is the transition)
+    // or switching over from the AI Optimisation site skips it too.
+    () => !window.location.pathname.includes('/demo') && !arrivedFromWithinSite('web-design')
   );
   const [isRevealed, setIsRevealed] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -318,20 +319,38 @@ const MainApp: React.FC = () => {
 
   useEffect(() => {
     if (!showIntro && !isDemo) {
-      // Trigger internal animations immediately after intro is gone
-      setIsRevealed(true);
+      // Trigger internal animations once the intro is gone. Two frames in, so
+      // the hidden state has definitely been painted and the navbar's opacity
+      // transition actually runs instead of snapping straight to visible.
+      let raf2 = 0;
+      const raf1 = requestAnimationFrame(() => {
+        raf2 = requestAnimationFrame(() => setIsRevealed(true));
+      });
 
       const timer = setTimeout(() => {
         ScrollTrigger.refresh();
       }, 500);
 
-      return () => clearTimeout(timer);
+      return () => {
+        cancelAnimationFrame(raf1);
+        cancelAnimationFrame(raf2);
+        clearTimeout(timer);
+      };
     }
   }, [showIntro, isDemo]);
 
-  // Soft cross-fade between pages now that each one is a real route.
+  // Soft cross-fade between pages now that each one is a real route. Not on
+  // the first page of a visit, though: fading the whole page in from 0 would
+  // show the cream page background through the hero photo — a grey flash
+  // straight after the gateway's panel has filled the screen with that same
+  // photo. The first page is revealed by the intro, or by the hero's own text
+  // fade, instead.
+  const firstPath = useRef(location.pathname);
+  const hasNavigated = useRef(false);
+  if (location.pathname !== firstPath.current) hasNavigated.current = true;
   useEffect(() => {
     if (!contentRef.current) return;
+    if (!hasNavigated.current) return;
 
     // A leftover GSAP transform on this wrapper would become the containing
     // block for the fixed Exit Preview button, so demos start from a clean slate.

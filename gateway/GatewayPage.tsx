@@ -1,31 +1,113 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { ArrowRight } from 'lucide-react';
+
+export type GatewaySite = 'web-design' | 'ai-optimisation';
+type Site = GatewaySite;
+
+// How long the panel-fill takes. The destination site is only swapped in
+// underneath once this has finished, so the growth is never cut short.
+const EXIT_MS = 650;
+// However slow the network, never leave someone staring at the expanded
+// panel: past this, the handover goes ahead without waiting on the photo.
+const IMAGE_WAIT_MS = 2500;
+
+// Each destination's hero photo, exactly as its hero <img> declares it. The
+// gateway panels use the same srcset and sizes, so the browser has already
+// picked, downloaded and decoded the very file the hero is about to ask for.
+const HERO: Record<Site, { src: string; srcSet: string }> = {
+  'web-design': {
+    src: '/images/hero-bg-1920.jpg',
+    srcSet: '/images/hero-bg-1280.jpg 1280w, /images/hero-bg-1920.jpg 1920w, /images/hero-bg.jpg 3840w'
+  },
+  'ai-optimisation': {
+    src: '/images/aio-panel-1735.jpg',
+    srcSet: '/images/aio-panel-1100.jpg 1100w, /images/aio-panel-1735.jpg 1735w'
+  }
+};
+
+const HREF: Record<Site, string> = {
+  'web-design': '/web-design/',
+  'ai-optimisation': '/ai-optimisation/'
+};
+
+const wait = (ms: number) => new Promise<void>((resolve) => window.setTimeout(resolve, ms));
+
+// Resolves once the hero photo is decoded and ready to paint in one frame,
+// so it can never draw in progressively after the swap.
+const decodeHero = (site: Site) => {
+  const img = new Image();
+  img.sizes = '100vw';
+  img.srcset = HERO[site].srcSet;
+  img.src = HERO[site].src;
+  const ready = typeof img.decode === 'function' ? img.decode() : Promise.resolve();
+  return Promise.race([ready.catch(() => undefined), wait(IMAGE_WAIT_MS)]);
+};
+
+interface GatewayPageProps {
+  loadSite?: Record<Site, () => Promise<{ default: React.ComponentType }>>;
+  onEnter?: (site: Site, Component: React.ComponentType, href: string) => void;
+}
 
 // The intro gateway. Two real, crawlable destinations exist in the markup
 // from the very first paint. The title card on top is a decorative overlay
 // only, driven entirely by CSS (no JS, no onComplete gate) and never takes
 // pointer events, so the page is usable before, during and after it runs.
 //
-// The panels are deliberately static: no hover growth, no layout shift.
-// Phones and tablets stack them top and bottom; desktop sits them side by side.
-const GatewayPage: React.FC = () => {
+// Picking a side is one continuous move with no page load in it: the
+// chosen panel's heading and button fade away while the panel grows to fill
+// the viewport (up/down when stacked, left/right side by side) and the
+// other slides off. index.tsx then renders that site underneath — same photo,
+// same overlay, same framing — and fades this panel off the top of it, so
+// all that visibly changes is the site's navbar, text and buttons fading in.
+// The links stay real <a> tags: with modifier keys, or if the handover fails
+// for any reason, they behave as ordinary links.
+const GatewayPage: React.FC<GatewayPageProps> = ({ loadSite, onEnter }) => {
+  const [exit, setExit] = useState<Site | null>(null);
+  const exitingRef = useRef<Site | null>(null);
+
+  const select = (site: Site) => (event: React.MouseEvent<HTMLAnchorElement>) => {
+    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    if (exitingRef.current) return;
+    exitingRef.current = site;
+    setExit(site);
+
+    const href = HREF[site];
+    const reduceMotion =
+      typeof window.matchMedia === 'function' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (!loadSite || !onEnter) {
+      window.setTimeout(() => window.location.assign(href), reduceMotion ? 0 : EXIT_MS);
+      return;
+    }
+
+    Promise.all([loadSite[site](), decodeHero(site), wait(reduceMotion ? 0 : EXIT_MS)])
+      .then(([mod]) => onEnter(site, mod.default, href))
+      .catch(() => window.location.assign(href));
+  };
+
   return (
-    <div className="gw-root relative h-[100dvh] w-full overflow-hidden bg-[#0A0D14]">
+    <div
+      className={`gw-root relative h-[100dvh] w-full overflow-hidden bg-[#0A0D14] ${
+        exit ? `gw-exit-${exit}` : ''
+      }`}
+    >
       {/* Real document heading for assistive tech and search engines. The
           title-card wordmark below is decorative and hidden from both. */}
       <h1 className="sr-only">SABR Digital — Web Design and AI Optimisation, Wiltshire</h1>
 
-      <main className="relative flex h-full w-full flex-col lg:flex-row">
+      <main className="relative h-full w-full">
         <section
           aria-labelledby="gw-design-heading"
-          className="gw-panel relative flex h-1/2 w-full flex-col items-center justify-center overflow-hidden px-6 text-center lg:h-full lg:w-1/2"
+          className="gw-panel gw-panel-web relative flex flex-col items-center justify-center overflow-hidden px-6 text-center"
         >
           {/* The studio site's own hero photograph, so this half reads as
               the existing site from the first glance. */}
           <img
             src="/images/hero-bg-1920.jpg"
             srcSet="/images/hero-bg-1280.jpg 1280w, /images/hero-bg-1920.jpg 1920w, /images/hero-bg.jpg 3840w"
-            sizes="(min-width: 1024px) 50vw, 100vw"
+            sizes="100vw"
             alt=""
             aria-hidden="true"
             className="absolute inset-0 h-full w-full object-cover"
@@ -33,9 +115,12 @@ const GatewayPage: React.FC = () => {
             decoding="async"
             fetchPriority="high"
           />
-          <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/55 to-black/80" />
+          {/* Same overlay strength as the web design studio's own hero
+              (components/Hero.tsx), so picking this side hands off to an
+              identical frame instead of a visible jump in contrast. */}
+          <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/45 to-black/75" />
 
-          <div className="relative z-10 flex flex-col items-center gap-5 lg:gap-8">
+          <div className="gw-copy relative z-10 flex flex-col items-center gap-5 lg:gap-8">
             <h2
               id="gw-design-heading"
               className="gw-title font-syne font-black uppercase leading-[0.95] tracking-tighter text-white drop-shadow-[0_4px_16px_rgba(0,0,0,0.5)]"
@@ -45,6 +130,7 @@ const GatewayPage: React.FC = () => {
             </h2>
             <a
               href="/web-design/"
+              onClick={select('web-design')}
               className="group inline-flex items-center gap-2.5 rounded-xl bg-[#f5f2eb] px-7 py-3.5 text-xs font-semibold tracking-wide text-stone-900 shadow-lg transition-colors duration-300 hover:bg-white focus:outline-none focus-visible:ring-4 focus-visible:ring-emerald-400/50 sm:text-sm"
             >
               Visit the web design studio
@@ -55,30 +141,32 @@ const GatewayPage: React.FC = () => {
 
         <section
           aria-labelledby="gw-aio-heading"
-          className="gw-panel relative flex h-1/2 w-full flex-col items-center justify-center overflow-hidden bg-[#0f241d] px-6 text-center lg:h-full lg:w-1/2"
+          className="gw-panel gw-panel-aio relative flex flex-col items-center justify-center overflow-hidden bg-[#0f241d] px-6 text-center"
         >
-          {/* Emerald glow and a faint grid: depth without an image. */}
+          {/* The AI Optimisation site's own hero image. */}
+          <img
+            src="/images/aio-panel-1735.jpg"
+            srcSet="/images/aio-panel-1100.jpg 1100w, /images/aio-panel-1735.jpg 1735w"
+            sizes="100vw"
+            alt=""
+            aria-hidden="true"
+            className="absolute inset-0 h-full w-full object-cover"
+            loading="eager"
+            decoding="async"
+          />
+          {/* Same overlay strength as the AI Optimisation site's own hero
+              (aio/pages/AIOHome.tsx), so picking this side hands off to an
+              identical frame instead of a visible jump in contrast. */}
           <div
             aria-hidden="true"
             className="pointer-events-none absolute inset-0"
             style={{
               background:
-                'radial-gradient(70% 60% at 50% 50%, rgba(16,185,129,0.28) 0%, rgba(15,36,29,0) 70%), linear-gradient(180deg, #0f241d 0%, #07130f 100%)'
-            }}
-          />
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 opacity-[0.07]"
-            style={{
-              backgroundImage:
-                'linear-gradient(rgba(255,255,255,0.8) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.8) 1px, transparent 1px)',
-              backgroundSize: '44px 44px',
-              maskImage: 'radial-gradient(60% 60% at 50% 50%, #000 0%, transparent 100%)',
-              WebkitMaskImage: 'radial-gradient(60% 60% at 50% 50%, #000 0%, transparent 100%)'
+                'linear-gradient(180deg, rgba(7,19,15,0.55) 0%, rgba(7,19,15,0.72) 55%, rgba(7,19,15,0.88) 100%)'
             }}
           />
 
-          <div className="relative z-10 flex flex-col items-center gap-5 lg:gap-8">
+          <div className="gw-copy relative z-10 flex flex-col items-center gap-5 lg:gap-8">
             <h2
               id="gw-aio-heading"
               className="gw-title font-syne font-black uppercase leading-[0.95] tracking-tighter text-white"
@@ -88,6 +176,7 @@ const GatewayPage: React.FC = () => {
             </h2>
             <a
               href="/ai-optimisation/"
+              onClick={select('ai-optimisation')}
               className="group inline-flex items-center gap-2.5 rounded-xl bg-emerald-500 px-7 py-3.5 text-xs font-semibold tracking-wide text-[#07130f] shadow-lg shadow-emerald-900/40 transition-colors duration-300 hover:bg-emerald-400 focus:outline-none focus-visible:ring-4 focus-visible:ring-emerald-300/50 sm:text-sm"
             >
               Visit AI Optimisation
@@ -96,10 +185,11 @@ const GatewayPage: React.FC = () => {
           </div>
         </section>
 
-        {/* Hairline seam between the two halves. */}
+        {/* Hairline seam between the two halves. Fades once a side is picked
+            so it doesn't sit as a stray line across the growing panel. */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute left-0 right-0 top-1/2 h-px bg-gradient-to-r from-transparent via-emerald-400/60 to-transparent lg:inset-y-0 lg:left-1/2 lg:right-auto lg:top-0 lg:h-full lg:w-px lg:bg-gradient-to-b"
+          className="gw-seam pointer-events-none absolute left-0 right-0 top-1/2 h-px bg-gradient-to-r from-transparent via-emerald-400/60 to-transparent lg:inset-y-0 lg:left-1/2 lg:right-auto lg:top-0 lg:h-full lg:w-px lg:bg-gradient-to-b"
         />
       </main>
 
@@ -145,6 +235,55 @@ const GatewayPage: React.FC = () => {
           .gw-title { font-size: clamp(1.4rem, 5.5vw, 3.25rem); }
         }
 
+        /* The real panels. Each is pinned to its own edge so that growing it
+           to fill the screen (on pick) never has to move its own origin —
+           only the sibling has to get out of the way. Width/height transition
+           alongside the sibling's transform, so the pick reads as one
+           continuous slide rather than a resize plus a separate exit. */
+        .gw-panel {
+          position: absolute;
+          left: 0;
+          right: 0;
+          transition: width 0.65s cubic-bezier(0.76, 0, 0.24, 1), height 0.65s cubic-bezier(0.76, 0, 0.24, 1),
+            transform 0.65s cubic-bezier(0.76, 0, 0.24, 1);
+          will-change: width, height, transform;
+        }
+        .gw-panel-web { top: 0; height: 50%; }
+        .gw-panel-aio { bottom: 0; height: 50%; }
+
+        @media (min-width: 1024px) {
+          .gw-panel { left: auto; right: auto; top: 0; bottom: 0; height: auto; }
+          .gw-panel-web { left: 0; width: 50%; }
+          .gw-panel-aio { right: 0; width: 50%; }
+        }
+
+        /* Picked web design: its panel grows to fill, AI Optimisation's
+           panel slides fully out of the way in the same direction it already
+           sits in (down on narrow screens, right on wide ones). */
+        .gw-exit-web-design .gw-panel-web { height: 100%; }
+        .gw-exit-web-design .gw-panel-aio { transform: translate3d(0, 100%, 0); }
+        @media (min-width: 1024px) {
+          .gw-exit-web-design .gw-panel-web { width: 100%; }
+          .gw-exit-web-design .gw-panel-aio { transform: translate3d(100%, 0, 0); }
+        }
+
+        /* Picked AI Optimisation: the mirror image. */
+        .gw-exit-ai-optimisation .gw-panel-aio { height: 100%; }
+        .gw-exit-ai-optimisation .gw-panel-web { transform: translate3d(0, -100%, 0); }
+        @media (min-width: 1024px) {
+          .gw-exit-ai-optimisation .gw-panel-aio { width: 100%; }
+          .gw-exit-ai-optimisation .gw-panel-web { transform: translate3d(-100%, 0, 0); }
+        }
+
+        /* The panel's own heading and button step back first, so by the time
+           it fills the screen it is just the photo — exactly the frame the
+           destination hero starts from. */
+        .gw-copy { transition: opacity 0.28s cubic-bezier(0.33, 1, 0.68, 1), transform 0.28s cubic-bezier(0.33, 1, 0.68, 1); }
+        .gw-root[class*="gw-exit-"] .gw-copy { opacity: 0; transform: translate3d(0, -8px, 0); }
+
+        .gw-root[class*="gw-exit-"] .gw-seam { opacity: 0; transition: opacity 0.2s linear; }
+        .gw-root[class*="gw-exit-"] a { pointer-events: none; }
+
         /* Stacked (phones and tablets): halves are top and bottom. */
         .gw-half-a { left: 0; right: 0; top: 0; height: 50%; }
         .gw-half-b { left: 0; right: 0; bottom: 0; height: 50%; }
@@ -188,6 +327,7 @@ const GatewayPage: React.FC = () => {
 
         @media (prefers-reduced-motion: reduce) {
           .gw-curtain { display: none; }
+          .gw-panel, .gw-seam, .gw-copy { transition: none; }
         }
       `}</style>
     </div>

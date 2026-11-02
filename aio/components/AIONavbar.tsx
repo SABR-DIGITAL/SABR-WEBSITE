@@ -19,13 +19,21 @@ const links = [
   { name: 'FAQs', to: AIO_PAGE_PATHS.faqs }
 ];
 
-const AIONavbar: React.FC = () => {
+interface AIONavbarProps {
+  startAnimation?: boolean;
+}
+
+const AIONavbar: React.FC<AIONavbarProps> = ({ startAnimation = true }) => {
   const [open, setOpen] = useState(false);
   const { pathname } = useLocation();
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-[100] px-4 py-4 md:px-8">
+      <header
+        className={`fixed top-0 left-0 right-0 z-[100] px-4 py-4 transition-opacity duration-700 md:px-8 ${
+          startAnimation ? 'opacity-100' : 'opacity-0'
+        }`}
+      >
         <div className="mx-auto flex max-w-7xl items-center justify-between rounded-full border border-stone-200/70 bg-white/90 px-5 py-3 shadow-sm backdrop-blur-md md:px-7">
           <div className="relative flex items-center gap-1.5">
           <Link to="/" onClick={() => setOpen(false)} aria-label="SABR Digital AI Optimisation home" className="flex flex-col text-left focus:outline-none">

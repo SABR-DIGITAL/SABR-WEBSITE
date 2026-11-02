@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import * as RouterDOM from 'react-router-dom';
 const { BrowserRouter, Routes, Route, Navigate } = RouterDOM as any;
 import IntroPortal from '../components/IntroPortal';
-import { cameFromOtherSite } from '../components/introSkip';
+import { arrivedFromWithinSite } from '../components/introSkip';
 import AIONavbar from './components/AIONavbar';
 import AIOFooter from './components/AIOFooter';
 import AIOHome from './pages/AIOHome';
@@ -12,12 +12,16 @@ import FreeAIAudit from './pages/FreeAIAudit';
 import AIOFaqs from './pages/AIOFaqs';
 import AIOContact from './pages/AIOContact';
 
-const AIOLayout: React.FC = () => (
+interface AIOLayoutProps {
+  startAnimation: boolean;
+}
+
+const AIOLayout: React.FC<AIOLayoutProps> = ({ startAnimation }) => (
   <div className="flex min-h-screen flex-col bg-[#fdfbf7]">
-    <AIONavbar />
+    <AIONavbar startAnimation={startAnimation} />
     <div className="flex-1">
       <Routes>
-        <Route path="/" element={<AIOHome />} />
+        <Route path="/" element={<AIOHome startAnimation={startAnimation} />} />
         <Route path="/what-is-aio" element={<WhatIsAIO />} />
         <Route path="/services" element={<AIOServices />} />
         <Route path="/free-ai-audit" element={<FreeAIAudit />} />
@@ -35,12 +39,34 @@ const AIOLayout: React.FC = () => (
 // the three site roots gets mounted per page load.
 const AIOApp: React.FC = () => {
   // Same title card as the web design studio, captioned for this site. It
-  // plays on arrival from the gateway, not when switching over from the studio.
-  const [showIntro, setShowIntro] = useState(() => !cameFromOtherSite('ai-optimisation'));
+  // plays only on a fresh arrival — the gateway's panel-fill animation (and a
+  // same-site hop from the studio) already is the transition, so this would
+  // otherwise just be a second intro stacked on top of the first.
+  const [showIntro, setShowIntro] = useState(() => !arrivedFromWithinSite('ai-optimisation'));
+  // The hero photo is already on screen (it's the same image the gateway
+  // panel just grew to fill), so only the navbar and hero text need to ease
+  // in — a beat after mount, once there is no intro curtain sitting on top
+  // of them to lift instead.
+  const [isRevealed, setIsRevealed] = useState(false);
+
+  useEffect(() => {
+    if (showIntro) return;
+    // Two frames in, so the hidden state has definitely been painted and the
+    // fade actually runs rather than snapping straight to visible.
+    let raf2 = 0;
+    const raf1 = requestAnimationFrame(() => {
+      raf2 = requestAnimationFrame(() => setIsRevealed(true));
+    });
+    return () => {
+      cancelAnimationFrame(raf1);
+      cancelAnimationFrame(raf2);
+    };
+  }, [showIntro]);
+
   return (
     <BrowserRouter basename="/ai-optimisation">
       {showIntro && <IntroPortal caption="AI Optimisation" onComplete={() => setShowIntro(false)} />}
-      <AIOLayout />
+      <AIOLayout startAnimation={isRevealed} />
     </BrowserRouter>
   );
 };
