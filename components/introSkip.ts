@@ -1,13 +1,41 @@
-type Site = 'web-design' | 'ai-optimisation';
+import type React from 'react';
+
+export type Site = 'web-design' | 'ai-optimisation';
 
 // Set when the gateway hands over to a destination site inside the same page
-// (see index.tsx). There is no new page load in that case, so the referrer
-// check below cannot see it.
+// (see index.tsx), or when the user switches between Web Design and AI
+// Optimisation via the in-page swoosh transition. There is no new page load in
+// those cases, so the referrer check below cannot see it.
 let gatewayHandoff = false;
 export const markGatewayHandoff = () => {
   gatewayHandoff = true;
 };
 export const isGatewayHandoff = () => gatewayHandoff;
+
+type SwitchHandler = (target: Site, href: string) => void;
+let switchHandler: SwitchHandler | null = null;
+
+export const registerSiteSwitcher = (fn: SwitchHandler | null) => {
+  switchHandler = fn;
+};
+
+export const triggerSiteSwitch = (
+  target: Site,
+  href: string,
+  event?: React.MouseEvent<HTMLAnchorElement>
+) => {
+  if (event) {
+    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+      return;
+    }
+    event.preventDefault();
+  }
+  if (switchHandler) {
+    switchHandler(target, href);
+  } else {
+    window.location.assign(href);
+  }
+};
 
 // True when this page load came from somewhere else inside SABR Digital: the
 // split-screen gateway (whose own panel-fill animation already plays the

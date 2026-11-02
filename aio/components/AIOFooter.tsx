@@ -2,6 +2,7 @@ import React from 'react';
 import { AIO_PAGE_PATHS } from './AIONavbar';
 import * as RouterDOM from 'react-router-dom';
 const { Link } = RouterDOM as any;
+import { triggerSiteSwitch } from '../../components/introSkip';
 
 const EMAIL = 'Sabrdigitalwilts@gmail.com';
 
@@ -31,7 +32,11 @@ const AIOFooter: React.FC = () => (
       <p className="mx-auto mt-10 max-w-xl text-sm leading-relaxed text-emerald-100/60">
         AI Optimisation is a separate service from the SABR Digital web design studio, run by the same team.
         Need a new website instead?{' '}
-        <a href="/web-design/" className="font-semibold text-emerald-200 underline underline-offset-4 hover:text-white">
+        <a
+          href="/web-design/"
+          onClick={(e) => triggerSiteSwitch('web-design', '/web-design/', e)}
+          className="font-semibold text-emerald-200 underline underline-offset-4 hover:text-white"
+        >
           Visit the web design studio
         </a>.
       </p>

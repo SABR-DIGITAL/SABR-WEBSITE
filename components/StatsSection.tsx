@@ -8,7 +8,7 @@ gsap.registerPlugin(ScrollTrigger);
 // animation repaints only this small area. The padding (offset by a negative
 // margin) leaves room for the glows so they are not clipped at the edges.
 const DOT_GRID_CLASS =
-  'grid grid-cols-10 gap-2 sm:gap-2.5 place-items-center p-3 -m-3 [contain:layout_paint] will-change-transform';
+  'grid grid-cols-10 gap-1.5 sm:gap-2 md:gap-2.5 place-items-center p-2.5 -m-2.5 sm:p-3 sm:-m-3 [contain:layout_paint] will-change-transform';
 
 interface DotProps {
   className: string;
@@ -25,11 +25,11 @@ interface DotProps {
 // box-shadow, but costs far less to draw.
 const Dot: React.FC<DotProps> = ({ className, fill, glow, fillOn, glowOn, scale, opacity }) => (
   <span
-    className={`${className} relative block w-3.5 h-3.5 sm:w-4 sm:h-4`}
+    className={`${className} relative block w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-3.5 md:h-3.5 lg:w-4 lg:h-4`}
     style={{ transform: `scale(${scale})`, opacity }}
   >
     <span
-      className="dot-glow absolute -inset-2.5 rounded-full pointer-events-none"
+      className="dot-glow absolute -inset-1.5 sm:-inset-2.5 rounded-full pointer-events-none"
       style={{ background: `radial-gradient(circle, ${glow} 30%, transparent 70%)`, opacity: glowOn ? 1 : 0 }}
     />
     <span className="absolute inset-0 rounded-full bg-white" />
@@ -232,7 +232,7 @@ export const StatsSection: React.FC = () => {
       className="relative min-h-[175vh] bg-[#fcfaf7] border-b border-stone-200/50"
     >
       {/* Sticky viewport-centered stage: locks the content cleanly in center while scrolling past */}
-      <div className="sticky top-0 h-screen flex flex-col justify-center items-center px-6 lg:px-20 overflow-hidden">
+      <div className="sticky top-0 h-[100dvh] flex flex-col justify-center items-center px-4 sm:px-6 lg:px-20 py-3 sm:py-6 overflow-hidden">
         
         {/* STACKED GRID CONTAINER: Both stages share identical footprint so there is zero layout jump */}
         <div className="grid grid-cols-1 grid-rows-1 w-full max-w-5xl mx-auto">
@@ -242,17 +242,17 @@ export const StatsSection: React.FC = () => {
           {/* ========================================================= */}
           <div
             ref={stage1Ref}
-            className="col-start-1 row-start-1 w-full space-y-6 md:space-y-7 will-change-[opacity]"
+            className="col-start-1 row-start-1 w-full space-y-2.5 sm:space-y-4 md:space-y-7 will-change-[opacity]"
           >
             {/* SECTION HEADLINE */}
             <div className="text-center">
-              <h2 className="font-serif text-[clamp(2rem,4.5vw,3.2rem)] font-normal text-slate-900 tracking-tight leading-[1.05]">
+              <h2 className="font-serif text-[clamp(1.45rem,4.5vw,3.2rem)] font-normal text-slate-900 tracking-tight leading-[1.08]">
                 The cost of being overlooked.
               </h2>
             </div>
 
             {/* COMPACT TWO-COLUMN ROW */}
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-center">
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-3 sm:gap-5 md:gap-12 items-center">
               
               {/* LEFT: 100 CUSTOMER DOTS MATRIX (88 Red Dots, 12 White) */}
               <div className="md:col-span-5 flex flex-col items-center justify-center">
@@ -260,7 +260,7 @@ export const StatsSection: React.FC = () => {
                   ref={dots1Ref}
                   onClick={runStage1Animation}
                   title="Click to replay visitor drop-off animation"
-                  className="p-5 sm:p-6 bg-[#0e1117] rounded-2xl border border-stone-800 shadow-xl cursor-pointer select-none hover:border-stone-700 transition-colors"
+                  className="p-3 sm:p-4 md:p-6 bg-[#0e1117] rounded-xl sm:rounded-2xl border border-stone-800 shadow-xl cursor-pointer select-none hover:border-stone-700 transition-colors"
                 >
                   <div className={DOT_GRID_CLASS}>
                     {Array.from({ length: 100 }).map((_, i) => {
@@ -282,34 +282,34 @@ export const StatsSection: React.FC = () => {
                 </div>
 
                 {/* Micro Indicator: Red = 88 Lost, White = 12 Retained */}
-                <div className="flex items-center gap-6 mt-3 text-[11px] font-mono text-stone-600">
+                <div className="flex items-center gap-4 sm:gap-6 mt-1.5 sm:mt-3 text-[10px] sm:text-[11px] font-mono text-stone-600">
                   <div className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-full bg-red-500 shadow-sm" />
+                    <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-red-500 shadow-sm" />
                     <span className="text-red-600 font-semibold">88 Lost</span>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-full bg-white border border-stone-400 shadow-sm" />
+                    <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-white border border-stone-400 shadow-sm" />
                     <span className="text-slate-800 font-semibold">12 Retained</span>
                   </div>
                 </div>
               </div>
 
               {/* RIGHT: THE STATISTIC */}
-              <div className="md:col-span-7 space-y-3.5 text-center md:text-left">
-                <div className="flex items-baseline justify-center md:justify-start gap-2">
-                  <span className="font-serif text-6xl sm:text-7xl md:text-8xl font-light text-slate-900 tracking-tight leading-none tabular-nums">
+              <div className="md:col-span-7 space-y-1.5 sm:space-y-2.5 md:space-y-3.5 text-center md:text-left">
+                <div className="flex items-baseline justify-center md:justify-start gap-1.5 sm:gap-2">
+                  <span className="font-serif text-4xl sm:text-6xl md:text-8xl font-light text-slate-900 tracking-tight leading-none tabular-nums">
                     <span ref={count1Ref}>0</span>
                   </span>
-                  <span className="font-serif text-3xl sm:text-4xl md:text-5xl text-red-600 font-light">
+                  <span className="font-serif text-xl sm:text-3xl md:text-5xl text-red-600 font-light">
                     / 100
                   </span>
                 </div>
 
-                <p className="font-serif text-2xl sm:text-3xl lg:text-[2rem] text-slate-900 font-normal leading-snug">
+                <p className="font-serif text-base sm:text-xl md:text-3xl lg:text-[2rem] text-slate-900 font-normal leading-snug">
                   &ldquo;88 of every 100 won’t come back after a bad website experience.&rdquo;
                 </p>
 
-                <p className="font-inter text-slate-600 text-sm sm:text-base font-normal leading-relaxed max-w-xl">
+                <p className="font-inter text-slate-600 text-xs sm:text-sm md:text-base font-normal leading-relaxed max-w-xl mx-auto md:mx-0">
                   First impressions are formed in milliseconds. When a website takes too long to load, feels cluttered, or breaks down on mobile, high-intent prospects don&rsquo;t wait around — they bounce straight to a competitor, taking their trust, their budget, and their loyalty with them for good.
                 </p>
               </div>
@@ -322,17 +322,17 @@ export const StatsSection: React.FC = () => {
           {/* ========================================================= */}
           <div
             ref={stage2Ref}
-            className="col-start-1 row-start-1 w-full space-y-6 md:space-y-7 opacity-0 pointer-events-none will-change-[opacity]"
+            className="col-start-1 row-start-1 w-full space-y-2.5 sm:space-y-4 md:space-y-7 opacity-0 pointer-events-none will-change-[opacity]"
           >
             {/* SECTION HEADLINE */}
             <div className="text-center">
-              <h2 className="font-serif text-[clamp(2rem,4.5vw,3.2rem)] font-normal text-slate-900 tracking-tight leading-[1.05]">
+              <h2 className="font-serif text-[clamp(1.45rem,4.5vw,3.2rem)] font-normal text-slate-900 tracking-tight leading-[1.08]">
                 The power of an amazing experience.
               </h2>
             </div>
 
             {/* COMPACT TWO-COLUMN ROW - EXACT SAME LAYOUT AS COUNTERPART */}
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-center">
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-3 sm:gap-5 md:gap-12 items-center">
 
               {/* LEFT: 100 CUSTOMER DOTS MATRIX (77 Green Dots, 23 White) */}
               <div className="md:col-span-5 flex flex-col items-center justify-center">
@@ -340,7 +340,7 @@ export const StatsSection: React.FC = () => {
                   ref={dots2Ref}
                   onClick={runStage2Animation}
                   title="Click to replay return visitor animation"
-                  className="p-5 sm:p-6 bg-[#0e1117] rounded-2xl border border-stone-800 shadow-xl cursor-pointer select-none hover:border-emerald-900/60 transition-colors"
+                  className="p-3 sm:p-4 md:p-6 bg-[#0e1117] rounded-xl sm:rounded-2xl border border-stone-800 shadow-xl cursor-pointer select-none hover:border-emerald-900/60 transition-colors"
                 >
                   <div className={DOT_GRID_CLASS}>
                     {Array.from({ length: 100 }).map((_, i) => {
@@ -362,34 +362,34 @@ export const StatsSection: React.FC = () => {
                 </div>
 
                 {/* Micro Indicator: Green = 77 Retained, White = 23 Other */}
-                <div className="flex items-center gap-6 mt-3 text-[11px] font-mono text-stone-600">
+                <div className="flex items-center gap-4 sm:gap-6 mt-1.5 sm:mt-3 text-[10px] sm:text-[11px] font-mono text-stone-600">
                   <div className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-sm" />
+                    <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-emerald-500 shadow-sm" />
                     <span className="text-emerald-600 font-semibold">77 Retained</span>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-full bg-white border border-stone-400 shadow-sm" />
+                    <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-white border border-stone-400 shadow-sm" />
                     <span className="text-slate-800 font-semibold">23 General</span>
                   </div>
                 </div>
               </div>
 
               {/* RIGHT: THE 77% STATISTIC */}
-              <div className="md:col-span-7 space-y-3.5 text-center md:text-left">
-                <div className="flex items-baseline justify-center md:justify-start gap-2">
-                  <span className="font-serif text-6xl sm:text-7xl md:text-8xl font-light text-slate-900 tracking-tight leading-none tabular-nums">
+              <div className="md:col-span-7 space-y-1.5 sm:space-y-2.5 md:space-y-3.5 text-center md:text-left">
+                <div className="flex items-baseline justify-center md:justify-start gap-1.5 sm:gap-2">
+                  <span className="font-serif text-4xl sm:text-6xl md:text-8xl font-light text-slate-900 tracking-tight leading-none tabular-nums">
                     <span ref={count2Ref}>0%</span>
                   </span>
-                  <span className="font-serif text-3xl sm:text-4xl md:text-5xl text-emerald-600 font-light">
+                  <span className="font-serif text-xl sm:text-3xl md:text-5xl text-emerald-600 font-light">
                     / 100
                   </span>
                 </div>
 
-                <p className="font-serif text-2xl sm:text-3xl lg:text-[2rem] text-slate-900 font-normal leading-snug">
-                  &ldquo;77% of customers will return if your website is amazing and easy to navigate.&rdquo;
+                <p className="font-serif text-base sm:text-xl md:text-3xl lg:text-[2rem] text-slate-900 font-normal leading-snug">
+                  &ldquo;77% of customers will return if your website is easy to navigate and has a captivating factor.&rdquo;
                 </p>
 
-                <p className="font-inter text-slate-600 text-sm sm:text-base font-normal leading-relaxed max-w-xl">
+                <p className="font-inter text-slate-600 text-xs sm:text-sm md:text-base font-normal leading-relaxed max-w-xl mx-auto md:mx-0">
                   Speed, clarity, and effortless navigation build instant trust. When visitors can find exactly what they need within seconds, they linger longer, explore further, and convert into loyal, paying clients — turning a single visit into a lasting relationship.
                 </p>
               </div>

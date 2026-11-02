@@ -3,6 +3,9 @@ import * as RouterDOM from 'react-router-dom';
 const { Link, useLocation } = RouterDOM as any;
 import { Menu, X } from 'lucide-react';
 import SiteSwitcher from '../../components/SiteSwitcher';
+import { motion as framerMotion, AnimatePresence } from 'framer-motion';
+
+const motion = framerMotion as any;
 
 export const AIO_PAGE_PATHS: Record<string, string> = {
   home: '/',
@@ -30,21 +33,38 @@ const AIONavbar: React.FC<AIONavbarProps> = ({ startAnimation = true }) => {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-[100] px-4 py-4 transition-opacity duration-700 md:px-8 ${
+        className={`fixed top-0 left-0 right-0 z-[100] px-4 md:px-8 py-4 pointer-events-none transition-opacity duration-700 ${
           startAnimation ? 'opacity-100' : 'opacity-0'
         }`}
       >
-        <div className="mx-auto flex max-w-7xl items-center justify-between rounded-full border border-stone-200/70 bg-white/90 px-5 py-3 shadow-sm backdrop-blur-md md:px-7">
-          <div className="relative flex items-center gap-1.5">
-          <Link to="/" onClick={() => setOpen(false)} aria-label="SABR Digital AI Optimisation home" className="flex flex-col text-left focus:outline-none">
-            <span className="font-syne text-lg font-black tracking-[0.04em] text-slate-950">
-              SABR <span className="text-emerald-600">DIGITAL</span>
-            </span>
-            <span className="text-[7px] font-bold uppercase tracking-[0.35em] text-emerald-700">
+        <div
+          className={`max-w-7xl mx-auto flex items-center justify-between pointer-events-auto transition-all duration-500 bg-transparent border-transparent shadow-none lg:rounded-full lg:border lg:border-stone-200/70 lg:bg-white/90 lg:px-7 lg:py-3.5 lg:shadow-sm lg:backdrop-blur-md ${
+            open ? 'opacity-0' : 'opacity-100'
+          } lg:opacity-100`}
+        >
+          {/* BRAND LOGO WITH AI OPTIMISATION (DESKTOP ONLY, MATCHING WEB DESIGN NAVBAR) */}
+          <div className="relative hidden lg:flex flex-col items-start">
+            <div className="flex items-center gap-1">
+              <Link
+                to="/"
+                onClick={() => setOpen(false)}
+                aria-label="SABR Digital AI Optimisation home"
+                className="flex items-center text-left focus:outline-none"
+              >
+                <span className="font-syne text-xl font-black tracking-[0.04em] text-slate-950 whitespace-nowrap">
+                  SABR <span className="text-emerald-600">DIGITAL</span>
+                </span>
+              </Link>
+              <SiteSwitcher current="ai-optimisation" />
+            </div>
+            <Link
+              to="/"
+              onClick={() => setOpen(false)}
+              tabIndex={-1}
+              className="text-[7px] font-bold uppercase tracking-[0.35em] text-emerald-700 -mt-0.5"
+            >
               AI Optimisation
-            </span>
-          </Link>
-          <SiteSwitcher current="ai-optimisation" />
+            </Link>
           </div>
 
           <nav aria-label="Primary" className="hidden items-center gap-8 lg:flex">
@@ -67,44 +87,77 @@ const AIONavbar: React.FC<AIONavbarProps> = ({ startAnimation = true }) => {
             </Link>
           </nav>
 
+          {/* MOBILE TOGGLE BUTTON (FLOATING HAMBURGER BUTTON MATCHING WEB DESIGN SECTION) */}
           <button
-            className="rounded-full border border-stone-200 bg-white p-3 text-slate-900 shadow-sm focus:outline-none lg:hidden"
+            className="lg:hidden ml-auto p-3.5 bg-white/90 backdrop-blur-md rounded-full shadow-md text-slate-900 hover:text-emerald-600 transition-colors border border-stone-200/80 focus:outline-none"
             onClick={() => setOpen(true)}
             aria-label="Open navigation menu"
           >
-            <Menu size={20} />
+            <Menu size={22} />
           </button>
         </div>
       </header>
 
-      <div
-        className={`fixed inset-0 z-[200] flex flex-col bg-[#fdfbf7] p-8 transition-transform duration-300 lg:hidden ${
-          open ? 'visible translate-x-0' : 'invisible translate-x-full pointer-events-none'
-        }`}
-        role="dialog"
-        aria-modal="true"
-        aria-hidden={!open}
-      >
-        <div className="mb-12 flex items-center justify-between">
-          <span className="font-syne text-xl font-black text-slate-950">SABR DIGITAL</span>
-          <button
-            onClick={() => setOpen(false)}
-            className="flex h-11 w-11 items-center justify-center rounded-full border border-stone-200 bg-white text-slate-900 shadow-sm focus:outline-none"
-            aria-label="Close navigation menu"
+      {/* MOBILE MENU DRAWER */}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, x: '100%' }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: '100%' }}
+            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+            className="fixed inset-0 z-[200] bg-[#fcfaf7] flex flex-col p-8 sm:p-14 lg:hidden overflow-y-auto"
+            role="dialog"
+            aria-modal="true"
           >
-            <X size={22} />
-          </button>
-        </div>
-        <nav aria-label="Mobile" className="flex flex-col gap-7">
-          <Link to="/" onClick={() => setOpen(false)} className="text-2xl font-bold text-slate-900">Home</Link>
-          {links.map((link) => (
-            <Link key={link.to} to={link.to} onClick={() => setOpen(false)} className="text-2xl font-bold text-slate-900">
-              {link.name}
-            </Link>
-          ))}
-          <Link to={AIO_PAGE_PATHS.contact} onClick={() => setOpen(false)} className="text-2xl font-bold text-slate-900">Contact</Link>
-        </nav>
-      </div>
+            <div className="flex justify-between items-center gap-4 mb-16">
+              <div className="relative flex flex-col items-start">
+                <SiteSwitcher current="ai-optimisation">
+                  <span className="font-syne text-xl sm:text-2xl font-black text-slate-900 whitespace-nowrap leading-none">
+                    SABR <span className="text-emerald-600">DIGITAL</span>
+                  </span>
+                </SiteSwitcher>
+                <span className="text-[8px] sm:text-[9px] uppercase font-bold tracking-[0.28em] text-emerald-700 mt-1">
+                  AI Optimisation
+                </span>
+              </div>
+              <button
+                onClick={() => setOpen(false)}
+                className="shrink-0 w-12 h-12 rounded-full bg-white shadow-md border border-stone-200/60 flex items-center justify-center text-slate-900 hover:text-emerald-600 transition-colors focus:outline-none"
+                aria-label="Close navigation menu"
+              >
+                <X size={24} />
+              </button>
+            </div>
+
+            <nav aria-label="Mobile" className="flex flex-col gap-8">
+              {[
+                { name: 'Home', to: AIO_PAGE_PATHS.home },
+                ...links,
+                { name: 'Free AI Audit', to: AIO_PAGE_PATHS.audit },
+                { name: 'Contact', to: AIO_PAGE_PATHS.contact }
+              ].map((link) => (
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  onClick={() => setOpen(false)}
+                  className="text-left font-serif text-3xl sm:text-4xl font-normal text-slate-900 tracking-tight hover:text-emerald-600 transition-colors leading-none"
+                >
+                  {link.name}
+                </Link>
+              ))}
+            </nav>
+
+            <div className="mt-auto pt-10 border-t border-stone-200 flex items-center justify-between">
+              <p className="text-[10px] font-mono uppercase tracking-widest text-slate-500">© 2025 SABR DIGITAL · WILTSHIRE</p>
+              <div className="flex gap-2">
+                <div className="w-2 h-2 bg-emerald-600 rounded-full animate-pulse" />
+                <div className="w-2 h-2 bg-emerald-600 rounded-full opacity-30" />
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 };

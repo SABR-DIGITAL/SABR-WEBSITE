@@ -14,7 +14,7 @@ const IMAGE_WAIT_MS = 2500;
 // Each destination's hero photo, exactly as its hero <img> declares it. The
 // gateway panels use the same srcset and sizes, so the browser has already
 // picked, downloaded and decoded the very file the hero is about to ask for.
-const HERO: Record<Site, { src: string; srcSet: string }> = {
+export const HERO: Record<Site, { src: string; srcSet: string }> = {
   'web-design': {
     src: '/images/hero-bg-1920.jpg',
     srcSet: '/images/hero-bg-1280.jpg 1280w, /images/hero-bg-1920.jpg 1920w, /images/hero-bg.jpg 3840w'
@@ -34,7 +34,7 @@ const wait = (ms: number) => new Promise<void>((resolve) => window.setTimeout(re
 
 // Resolves once the hero photo is decoded and ready to paint in one frame,
 // so it can never draw in progressively after the swap.
-const decodeHero = (site: Site) => {
+export const decodeHero = (site: Site) => {
   const img = new Image();
   img.sizes = '100vw';
   img.srcset = HERO[site].srcSet;

@@ -1,15 +1,17 @@
 import React, { useEffect, useId, useRef, useState } from 'react';
 import { ChevronDown, ArrowUpRight } from 'lucide-react';
+import { triggerSiteSwitch, type Site } from './introSkip';
+import { decodeHero } from '../gateway/GatewayPage';
 
-type Site = 'web-design' | 'ai-optimisation';
-
-const OTHER: Record<Site, { label: string; tagline: string; href: string }> = {
+const OTHER: Record<Site, { target: Site; label: string; tagline: string; href: string }> = {
   'web-design': {
+    target: 'ai-optimisation',
     label: 'AI Optimisation',
     tagline: 'Get found by AI tools',
     href: '/ai-optimisation/'
   },
   'ai-optimisation': {
+    target: 'web-design',
     label: 'Web Design Studio',
     tagline: 'Websites for small businesses',
     href: '/web-design/'
@@ -20,24 +22,27 @@ interface SiteSwitcherProps {
   current: Site;
   // Light text for when the bar sits over a dark hero, dark text otherwise.
   onDark?: boolean;
+  // Optional label rendered inside the button so tapping the wordmark or arrow opens the menu.
+  children?: React.ReactNode;
 }
 
 // The small arrow beside the SABR DIGITAL wordmark. It opens a one-item menu
 // that lines up under the wordmark (the caller's wrapper is the positioning
-// context, so it never runs off a narrow screen). The menu points
-// at the studio's other website. A plain <a> on purpose: the other
-// site is a different app with its own router, so it needs a full page load.
-// Starts downloading the other site as soon as the visitor shows interest in
-// the arrow, so the switch itself opens from cache.
-let warmed = false;
+// context, so it never runs off a narrow screen). Starts downloading and
+// decoding the other site as soon as the visitor shows interest in the arrow,
+// so the swoosh glide opens instantaneously from cache.
+const warmed = new Set<Site>();
 const warmOther = (current: Site) => {
-  if (warmed) return;
-  warmed = true;
-  const load = current === 'web-design' ? import('../aio/AIOApp') : import('../App');
-  load.catch(() => { warmed = false; });
+  const target: Site = current === 'web-design' ? 'ai-optimisation' : 'web-design';
+  if (warmed.has(target)) return;
+  warmed.add(target);
+  const load = target === 'ai-optimisation' ? import('../aio/AIOApp') : import('../App');
+  Promise.all([load, decodeHero(target)]).catch(() => {
+    warmed.delete(target);
+  });
 };
 
-const SiteSwitcher: React.FC<SiteSwitcherProps> = ({ current, onDark = false }) => {
+const SiteSwitcher: React.FC<SiteSwitcherProps> = ({ current, onDark = false, children }) => {
   const [open, setOpen] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
   const menuId = useId();
@@ -70,15 +75,30 @@ const SiteSwitcher: React.FC<SiteSwitcherProps> = ({ current, onDark = false }) 
         aria-expanded={open}
         aria-controls={menuId}
         aria-label="Switch SABR Digital website"
-        className={`flex h-8 w-8 items-center justify-center rounded-full transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50 ${
-          onDark ? 'text-emerald-300 hover:bg-white/10' : 'text-emerald-700 hover:bg-emerald-50'
-        }`}
+        className={
+          children
+            ? 'group inline-flex items-center gap-1.5 rounded-lg text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50 cursor-pointer'
+            : `flex h-7 w-7 items-center justify-center rounded-full transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50 cursor-pointer ${
+                onDark ? 'text-emerald-300 hover:bg-white/10' : 'text-emerald-700 hover:bg-emerald-50'
+              }`
+        }
       >
-        <ChevronDown
-          size={18}
-          strokeWidth={2.5}
-          className={`transition-transform duration-300 ${open ? 'rotate-180' : ''}`}
-        />
+        {children}
+        <span
+          className={
+            children
+              ? `inline-flex h-7 w-7 items-center justify-center rounded-full transition-colors duration-200 ${
+                  onDark ? 'text-emerald-300 group-hover:bg-white/10' : 'text-emerald-700 group-hover:bg-emerald-50'
+                }`
+              : 'inline-flex items-center justify-center'
+          }
+        >
+          <ChevronDown
+            size={18}
+            strokeWidth={2.5}
+            className={`transition-transform duration-300 ${open ? 'rotate-180' : ''}`}
+          />
+        </span>
       </button>
 
       <div
@@ -87,6 +107,10 @@ const SiteSwitcher: React.FC<SiteSwitcherProps> = ({ current, onDark = false }) 
       >
         <a
           href={other.href}
+          onClick={(e) => {
+            setOpen(false);
+            triggerSiteSwitch(other.target, other.href, e);
+          }}
           className="group flex items-center justify-between gap-4 rounded-xl px-4 py-3 text-left transition-colors hover:bg-emerald-50 focus:outline-none focus-visible:bg-emerald-50"
         >
           <span>

@@ -54,21 +54,28 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, startAnimation = true }) =
         } ${mobileMenuOpen ? 'opacity-0' : 'opacity-100'} lg:opacity-100 shadow-none`}>
           
           {/* BRAND LOGO WITH WILTSHIRE WEB DESIGN STUDIO */}
-          <div className="relative hidden lg:flex items-center gap-1.5">
-          <Link
-            to="/"
-            onClick={() => handleNav('home')}
-            aria-label="SABR Digital home"
-            className="flex flex-col text-left group focus:outline-none focus:ring-0 appearance-none"
-          >
-            <span className={`font-syne text-xl tracking-[0.05em] font-black flex items-center ${isHomeUnscrolled ? 'text-white' : 'text-slate-900'}`}>
-              SABR<span className="text-shimmer-blue ml-1.5">DIGITAL</span>
-            </span>
-            <span className={`text-[7px] uppercase font-bold tracking-[0.35em] ${isHomeUnscrolled ? 'text-emerald-300' : 'text-emerald-700'}`}>
+          <div className="relative hidden lg:flex flex-col items-start">
+            <div className="flex items-center gap-1">
+              <Link
+                to="/"
+                onClick={() => handleNav('home')}
+                aria-label="SABR Digital home"
+                className="flex items-center text-left group focus:outline-none focus:ring-0 appearance-none"
+              >
+                <span className={`font-syne text-xl tracking-[0.05em] font-black flex items-center whitespace-nowrap ${isHomeUnscrolled ? 'text-white' : 'text-slate-900'}`}>
+                  SABR<span className="text-shimmer-blue ml-1.5">DIGITAL</span>
+                </span>
+              </Link>
+              <SiteSwitcher current="web-design" onDark={isHomeUnscrolled} />
+            </div>
+            <Link
+              to="/"
+              onClick={() => handleNav('home')}
+              tabIndex={-1}
+              className={`text-[7px] uppercase font-bold tracking-[0.35em] -mt-0.5 ${isHomeUnscrolled ? 'text-emerald-300' : 'text-emerald-700'}`}
+            >
               Wiltshire Web Design Studio
-            </span>
-          </Link>
-          <SiteSwitcher current="web-design" onDark={isHomeUnscrolled} />
+            </Link>
           </div>
 
           {/* SLEEK NAVIGATION LINKS */}
@@ -127,17 +134,20 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, startAnimation = true }) =
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
             className="fixed inset-0 z-[200] bg-[#fcfaf7] flex flex-col p-8 sm:p-14 lg:hidden overflow-y-auto"
           >
-            <div className="flex justify-between items-center mb-16">
-              <div className="relative flex items-center gap-1.5">
-                <div className="flex flex-col">
-                  <span className="font-syne text-2xl font-black text-slate-900">SABR DIGITAL</span>
-                  <span className="text-[9px] uppercase font-bold tracking-[0.3em] text-emerald-700">Wiltshire Web Design Studio</span>
-                </div>
-                <SiteSwitcher current="web-design" />
+            <div className="flex justify-between items-center gap-4 mb-16">
+              <div className="relative flex flex-col items-start">
+                <SiteSwitcher current="web-design">
+                  <span className="font-syne text-xl sm:text-2xl font-black text-slate-900 whitespace-nowrap leading-none">
+                    SABR <span className="text-shimmer-blue">DIGITAL</span>
+                  </span>
+                </SiteSwitcher>
+                <span className="text-[8px] sm:text-[9px] uppercase font-bold tracking-[0.28em] text-emerald-700 mt-1">
+                  Wiltshire Web Design Studio
+                </span>
               </div>
               <button 
                 onClick={() => setMobileMenuOpen(false)} 
-                className="w-12 h-12 rounded-full bg-white shadow-md border border-stone-200/60 flex items-center justify-center text-slate-900 hover:text-emerald-600 transition-colors"
+                className="shrink-0 w-12 h-12 rounded-full bg-white shadow-md border border-stone-200/60 flex items-center justify-center text-slate-900 hover:text-emerald-600 transition-colors"
                 aria-label="Close navigation menu"
               >
                 <X size={24} />
