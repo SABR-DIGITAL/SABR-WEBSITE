@@ -7,9 +7,29 @@ import { Page, PAGE_PATHS } from '../App';
 
 interface AboutFounderSectionProps {
   navigateTo?: (page: Page) => void;
+  /** Overrides for reusing this section on the AI Optimisation site. */
+  headline?: React.ReactNode;
+  body?: React.ReactNode;
+  points?: string[];
+  ctaLabel?: string;
+  ctaTo?: string;
 }
 
-const AboutFounderSection: React.FC<AboutFounderSectionProps> = ({ navigateTo }) => {
+const DEFAULT_POINTS = [
+  'Face to face in Wiltshire',
+  '24/7 Fast support after launch',
+  'Fixed pricing, no surprises',
+  'Live in weeks, not months'
+];
+
+const AboutFounderSection: React.FC<AboutFounderSectionProps> = ({
+  navigateTo,
+  headline,
+  body,
+  points = DEFAULT_POINTS,
+  ctaLabel = 'Start Your Project With Us',
+  ctaTo
+}) => {
   return (
     <section id="about" className="relative py-14 md:py-20 px-6 lg:px-20 bg-[#fdfbf7] overflow-hidden border-t border-stone-200/60">
       <div className="max-w-6xl mx-auto relative z-10">
@@ -60,51 +80,39 @@ const AboutFounderSection: React.FC<AboutFounderSectionProps> = ({ navigateTo })
 
             {/* HEADLINE: Compact, high-impact typography - Not all capitals, SABR DIGITAL stays uppercase */}
             <h2 className="font-syne text-2xl sm:text-3xl lg:text-[2rem] font-bold text-slate-950 tracking-tight leading-[1.15]">
-              My name is Raphael, and I am the founder of{' '}
-              <span className="text-shimmer-blue italic font-black uppercase">SABR DIGITAL.</span>
+              {headline ?? (
+                <>
+                  My name is Raphael, and I am the founder of{' '}
+                  <span className="text-shimmer-blue italic font-black uppercase">SABR DIGITAL.</span>
+                </>
+              )}
             </h2>
 
             {/* FOUNDER STATEMENT: Concise, focused narrative */}
             <p className="text-slate-600 font-inter text-sm sm:text-base leading-relaxed font-normal">
-              Rooted in Wiltshire, I founded SABR Digital with a straightforward conviction: ambitious local businesses deserve websites that command respect and outperform generic competitors. No sluggish WordPress templates or bloated agency retainers — every site is engineered from scratch with clean TypeScript, sub-second load times, and conversion architecture built to turn visitors into paying clients from day one.
+              {body ?? 'Rooted in Wiltshire, I founded SABR Digital with a straightforward conviction: ambitious local businesses deserve websites that command respect and outperform generic competitors. No sluggish WordPress templates or bloated agency retainers — every site is engineered from scratch with clean TypeScript, sub-second load times, and conversion architecture built to turn visitors into paying clients from day one.'}
             </p>
 
-            {/* CORE STRENGTHS / DELIVERABLES: Exact 4 requested points */}
+            {/* CORE STRENGTHS / DELIVERABLES: defaults to the 4 web design studio points */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2.5 pt-2 border-t border-stone-200/70">
-              <div className="flex items-center gap-2.5">
-                <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
-                <span className="text-xs sm:text-[13px] font-semibold text-slate-800">
-                  Face to face in Wiltshire
-                </span>
-              </div>
-              <div className="flex items-center gap-2.5">
-                <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
-                <span className="text-xs sm:text-[13px] font-semibold text-slate-800">
-                  24/7 Fast support after launch
-                </span>
-              </div>
-              <div className="flex items-center gap-2.5">
-                <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
-                <span className="text-xs sm:text-[13px] font-semibold text-slate-800">
-                  Fixed pricing, no surprises
-                </span>
-              </div>
-              <div className="flex items-center gap-2.5">
-                <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
-                <span className="text-xs sm:text-[13px] font-semibold text-slate-800">
-                  Live in weeks, not months
-                </span>
-              </div>
+              {points.map((point) => (
+                <div key={point} className="flex items-center gap-2.5">
+                  <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
+                  <span className="text-xs sm:text-[13px] font-semibold text-slate-800">
+                    {point}
+                  </span>
+                </div>
+              ))}
             </div>
 
             {/* CTA BUTTON */}
             <div className="pt-2">
               <Link
-                to={PAGE_PATHS.contact}
-                onClick={() => navigateTo && navigateTo('contact')}
+                to={ctaTo ?? PAGE_PATHS.contact}
+                onClick={() => !ctaTo && navigateTo && navigateTo('contact')}
                 className="inline-flex items-center gap-2.5 px-7 py-3 bg-emerald-600 hover:bg-slate-950 text-white rounded-full font-semibold text-xs uppercase tracking-wider transition-all duration-300 shadow-md hover:scale-105 active:scale-95"
               >
-                <span>Start Your Project With Us</span>
+                <span>{ctaLabel}</span>
                 <ArrowRight size={14} />
               </Link>
             </div>

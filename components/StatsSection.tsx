@@ -40,7 +40,51 @@ const Dot: React.FC<DotProps> = ({ className, fill, glow, fillOn, glowOn, scale,
   </span>
 );
 
-export const StatsSection: React.FC = () => {
+export interface StatsStage {
+  headline: React.ReactNode;
+  /** How many of the 100 dots light up (red in stage 1, green in stage 2). */
+  count: number;
+  /** Appended to the animated counter, e.g. "%". */
+  suffix?: string;
+  quote: React.ReactNode;
+  body: React.ReactNode;
+  /** Legend labels: [highlighted dots, remaining dots]. */
+  legend: [string, string];
+}
+
+export const DEFAULT_STAGE_1: StatsStage = {
+  headline: 'The cost of being overlooked.',
+  count: 88,
+  quote: <>&ldquo;88 of every 100 won’t come back after a bad website experience.&rdquo;</>,
+  body: <>First impressions are formed in milliseconds. When a website takes too long to load, feels cluttered, or breaks down on mobile, high-intent prospects don&rsquo;t wait around — they bounce straight to a competitor, taking their trust, their budget, and their loyalty with them for good.</>,
+  legend: ['88 Lost', '12 Retained']
+};
+
+export const DEFAULT_STAGE_2: StatsStage = {
+  headline: 'The power of an amazing experience.',
+  count: 77,
+  suffix: '%',
+  quote: <>&ldquo;77% of customers will return if your website is easy to navigate and has a captivating factor.&rdquo;</>,
+  body: <>Speed, clarity, and effortless navigation build instant trust. When visitors can find exactly what they need within seconds, they linger longer, explore further, and convert into loyal, paying clients — turning a single visit into a lasting relationship.</>,
+  legend: ['77 Retained', '23 General']
+};
+
+interface StatsSectionProps {
+  stage1?: StatsStage;
+  stage2?: StatsStage;
+  /** Small print under the section, e.g. to mark figures as illustrative. */
+  footnote?: React.ReactNode;
+}
+
+export const StatsSection: React.FC<StatsSectionProps> = ({
+  stage1 = DEFAULT_STAGE_1,
+  stage2 = DEFAULT_STAGE_2,
+  footnote
+}) => {
+  const n1 = stage1.count;
+  const n2 = stage2.count;
+  const suffix1 = stage1.suffix ?? '';
+  const suffix2 = stage2.suffix ?? '';
   const sectionRef = useRef<HTMLElement>(null);
   const stage1Ref = useRef<HTMLDivElement>(null);
   const stage2Ref = useRef<HTMLDivElement>(null);
@@ -71,8 +115,8 @@ export const StatsSection: React.FC = () => {
     const root = dots1Ref.current;
     if (!root) return;
     const dots: HTMLElement[] = Array.prototype.slice.call(root.querySelectorAll<HTMLElement>('.customer-dot-1'));
-    const lost = dots.slice(0, 88);
-    const retained = dots.slice(88);
+    const lost = dots.slice(0, n1);
+    const retained = dots.slice(n1);
     const fills = (els: HTMLElement[]) => els.map((d) => d.querySelector('.dot-fill'));
     const glows = (els: HTMLElement[]) => els.map((d) => d.querySelector('.dot-glow'));
 
@@ -87,11 +131,11 @@ export const StatsSection: React.FC = () => {
     dotsTl1Ref.current = tl;
 
     tl.to(counterProxy, {
-      count: 88,
+      count: n1,
       duration: 1.4,
       ease: 'power2.out',
       onUpdate: () => {
-        if (count1Ref.current) count1Ref.current.textContent = String(Math.round(counterProxy.count));
+        if (count1Ref.current) count1Ref.current.textContent = `${Math.round(counterProxy.count)}${suffix1}`;
       }
     });
 
@@ -102,15 +146,15 @@ export const StatsSection: React.FC = () => {
     tl.to(retained, { scale: 1.25, duration: 0.35, stagger: 0.025, ease: 'back.out(2)' }, '-=0.5')
       .to(glows(retained), { opacity: 1, duration: 0.35, stagger: 0.025 }, '<')
       .to(retained, { scale: 1.15, duration: 0.25 });
-  }, []);
+  }, [n1, suffix1]);
 
   // STAGE 2 ANIMATION: Counts up to 77, turns 77 dots radiant GREEN, 23 remain neutral WHITE
   const runStage2Animation = useCallback(() => {
     const root = dots2Ref.current;
     if (!root) return;
     const dots: HTMLElement[] = Array.prototype.slice.call(root.querySelectorAll<HTMLElement>('.customer-dot-2'));
-    const returning = dots.slice(0, 77);
-    const others = dots.slice(77);
+    const returning = dots.slice(0, n2);
+    const others = dots.slice(n2);
     const fills = returning.map((d) => d.querySelector('.dot-fill'));
     const glows = returning.map((d) => d.querySelector('.dot-glow'));
 
@@ -123,11 +167,11 @@ export const StatsSection: React.FC = () => {
     dotsTl2Ref.current = tl;
 
     tl.to(counterProxy, {
-      count: 77,
+      count: n2,
       duration: 1.4,
       ease: 'power2.out',
       onUpdate: () => {
-        if (count2Ref.current) count2Ref.current.textContent = `${Math.round(counterProxy.count)}%`;
+        if (count2Ref.current) count2Ref.current.textContent = `${Math.round(counterProxy.count)}${suffix2}`;
       }
     });
 
@@ -137,7 +181,7 @@ export const StatsSection: React.FC = () => {
       .to(glows, { opacity: 1, duration: 0.35, stagger }, 0.05);
 
     tl.to(others, { opacity: 0.5, duration: 0.3 }, 0.1);
-  }, []);
+  }, [n2, suffix2]);
 
   // SEQUENTIAL CROSS-FADE: Stage 1 fades fully out, THEN stage 2 fades in — no overlap, no jump
   const transitionTo = useCallback((targetStage: 1 | 2) => {
@@ -247,7 +291,7 @@ export const StatsSection: React.FC = () => {
             {/* SECTION HEADLINE */}
             <div className="text-center">
               <h2 className="font-serif text-[clamp(1.45rem,4.5vw,3.2rem)] font-normal text-slate-900 tracking-tight leading-[1.08]">
-                The cost of being overlooked.
+                {stage1.headline}
               </h2>
             </div>
 
@@ -264,7 +308,7 @@ export const StatsSection: React.FC = () => {
                 >
                   <div className={DOT_GRID_CLASS}>
                     {Array.from({ length: 100 }).map((_, i) => {
-                      const isLost = i < 88;
+                      const isLost = i < n1;
                       return (
                         <Dot
                           key={i}
@@ -285,11 +329,11 @@ export const StatsSection: React.FC = () => {
                 <div className="flex items-center gap-4 sm:gap-6 mt-1.5 sm:mt-3 text-[10px] sm:text-[11px] font-mono text-stone-600">
                   <div className="flex items-center gap-1.5">
                     <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-red-500 shadow-sm" />
-                    <span className="text-red-600 font-semibold">88 Lost</span>
+                    <span className="text-red-600 font-semibold">{stage1.legend[0]}</span>
                   </div>
                   <div className="flex items-center gap-1.5">
                     <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-white border border-stone-400 shadow-sm" />
-                    <span className="text-slate-800 font-semibold">12 Retained</span>
+                    <span className="text-slate-800 font-semibold">{stage1.legend[1]}</span>
                   </div>
                 </div>
               </div>
@@ -298,7 +342,7 @@ export const StatsSection: React.FC = () => {
               <div className="md:col-span-7 space-y-1.5 sm:space-y-2.5 md:space-y-3.5 text-center md:text-left">
                 <div className="flex items-baseline justify-center md:justify-start gap-1.5 sm:gap-2">
                   <span className="font-serif text-4xl sm:text-6xl md:text-8xl font-light text-slate-900 tracking-tight leading-none tabular-nums">
-                    <span ref={count1Ref}>0</span>
+                    <span ref={count1Ref}>0{suffix1}</span>
                   </span>
                   <span className="font-serif text-xl sm:text-3xl md:text-5xl text-red-600 font-light">
                     / 100
@@ -306,11 +350,11 @@ export const StatsSection: React.FC = () => {
                 </div>
 
                 <p className="font-serif text-base sm:text-xl md:text-3xl lg:text-[2rem] text-slate-900 font-normal leading-snug">
-                  &ldquo;88 of every 100 won’t come back after a bad website experience.&rdquo;
+                  {stage1.quote}
                 </p>
 
                 <p className="font-inter text-slate-600 text-xs sm:text-sm md:text-base font-normal leading-relaxed max-w-xl mx-auto md:mx-0">
-                  First impressions are formed in milliseconds. When a website takes too long to load, feels cluttered, or breaks down on mobile, high-intent prospects don&rsquo;t wait around — they bounce straight to a competitor, taking their trust, their budget, and their loyalty with them for good.
+                  {stage1.body}
                 </p>
               </div>
 
@@ -327,7 +371,7 @@ export const StatsSection: React.FC = () => {
             {/* SECTION HEADLINE */}
             <div className="text-center">
               <h2 className="font-serif text-[clamp(1.45rem,4.5vw,3.2rem)] font-normal text-slate-900 tracking-tight leading-[1.08]">
-                The power of an amazing experience.
+                {stage2.headline}
               </h2>
             </div>
 
@@ -344,7 +388,7 @@ export const StatsSection: React.FC = () => {
                 >
                   <div className={DOT_GRID_CLASS}>
                     {Array.from({ length: 100 }).map((_, i) => {
-                      const isReturn = i < 77;
+                      const isReturn = i < n2;
                       return (
                         <Dot
                           key={i}
@@ -365,11 +409,11 @@ export const StatsSection: React.FC = () => {
                 <div className="flex items-center gap-4 sm:gap-6 mt-1.5 sm:mt-3 text-[10px] sm:text-[11px] font-mono text-stone-600">
                   <div className="flex items-center gap-1.5">
                     <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-emerald-500 shadow-sm" />
-                    <span className="text-emerald-600 font-semibold">77 Retained</span>
+                    <span className="text-emerald-600 font-semibold">{stage2.legend[0]}</span>
                   </div>
                   <div className="flex items-center gap-1.5">
                     <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-white border border-stone-400 shadow-sm" />
-                    <span className="text-slate-800 font-semibold">23 General</span>
+                    <span className="text-slate-800 font-semibold">{stage2.legend[1]}</span>
                   </div>
                 </div>
               </div>
@@ -378,7 +422,7 @@ export const StatsSection: React.FC = () => {
               <div className="md:col-span-7 space-y-1.5 sm:space-y-2.5 md:space-y-3.5 text-center md:text-left">
                 <div className="flex items-baseline justify-center md:justify-start gap-1.5 sm:gap-2">
                   <span className="font-serif text-4xl sm:text-6xl md:text-8xl font-light text-slate-900 tracking-tight leading-none tabular-nums">
-                    <span ref={count2Ref}>0%</span>
+                    <span ref={count2Ref}>0{suffix2}</span>
                   </span>
                   <span className="font-serif text-xl sm:text-3xl md:text-5xl text-emerald-600 font-light">
                     / 100
@@ -386,11 +430,11 @@ export const StatsSection: React.FC = () => {
                 </div>
 
                 <p className="font-serif text-base sm:text-xl md:text-3xl lg:text-[2rem] text-slate-900 font-normal leading-snug">
-                  &ldquo;77% of customers will return if your website is easy to navigate and has a captivating factor.&rdquo;
+                  {stage2.quote}
                 </p>
 
                 <p className="font-inter text-slate-600 text-xs sm:text-sm md:text-base font-normal leading-relaxed max-w-xl mx-auto md:mx-0">
-                  Speed, clarity, and effortless navigation build instant trust. When visitors can find exactly what they need within seconds, they linger longer, explore further, and convert into loyal, paying clients — turning a single visit into a lasting relationship.
+                  {stage2.body}
                 </p>
               </div>
 
@@ -398,6 +442,12 @@ export const StatsSection: React.FC = () => {
           </div>
 
         </div>
+
+        {footnote && (
+          <p className="mt-4 sm:mt-6 max-w-2xl text-center text-[10px] sm:text-[11px] font-mono text-stone-500">
+            {footnote}
+          </p>
+        )}
 
       </div>
     </section>

@@ -32,9 +32,28 @@ interface ScoreBreakdown {
 
 interface WebsiteScoreScannerProps {
   navigateTo?: (page: Page) => void;
+  /** Overrides for reusing the scanner on the AI Optimisation site. */
+  headline?: React.ReactNode;
+  subtitle?: React.ReactNode;
+  ctaLabel?: string;
+  ctaTo?: string;
+  /** Narrative shown under the results: [score >= 95, everything else]. */
+  narrative?: [string, string];
 }
 
-export const WebsiteScoreScanner: React.FC<WebsiteScoreScannerProps> = ({ navigateTo }) => {
+const DEFAULT_NARRATIVE: [string, string] = [
+  "Your digital architecture operates at an elite technical standard with exceptional speed, mobile fluidity, and generative AI readiness. Booking a strategic consultation will help you leverage this foundation to further outpace competitors.",
+  "Hidden architectural bottlenecks and unindexed AI schemas are actively depressing your search authority and visitor conversion rates. Addressing these core technical deficiencies will unlock immediate competitive dominance across Google and emerging AI discovery engines."
+];
+
+export const WebsiteScoreScanner: React.FC<WebsiteScoreScannerProps> = ({
+  navigateTo,
+  headline,
+  subtitle,
+  ctaLabel = 'Book Technical Strategy Call',
+  ctaTo,
+  narrative = DEFAULT_NARRATIVE
+}) => {
   const [url, setUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const [loadingStep, setLoadingStep] = useState('');
@@ -261,15 +280,19 @@ export const WebsiteScoreScanner: React.FC<WebsiteScoreScannerProps> = ({ naviga
           >
             {/* HEADLINE: Clean, stacked typography */}
             <h2 className="font-syne text-[clamp(2.4rem,6vw,4.5rem)] font-black uppercase tracking-tight leading-[0.96]">
-              Score<br />
-              Your<br />
-              Website<br />
-              <span className="text-shimmer-blue italic">Out of 100.</span>
+              {headline ?? (
+                <>
+                  Score<br />
+                  Your<br />
+                  Website<br />
+                  <span className="text-shimmer-blue italic">Out of 100.</span>
+                </>
+              )}
             </h2>
 
             {/* SUBTITLE */}
             <p className="font-inter text-slate-400 text-xs sm:text-sm leading-relaxed max-w-xl mx-auto font-normal">
-              Enter your domain for an immediate technical audit covering Google mobile performance, SEO architecture, UX accessibility, and AI discovery readiness.
+              {subtitle ?? 'Enter your domain for an immediate technical audit covering Google mobile performance, SEO architecture, UX accessibility, and AI discovery readiness.'}
             </p>
 
             {/* SEARCH BOX: Wide, spacious, all placeholder writing is 100% visible */}
@@ -390,18 +413,16 @@ export const WebsiteScoreScanner: React.FC<WebsiteScoreScannerProps> = ({ naviga
             {/* EDITORIAL NARRATIVE & CONVERSION ACTION BUTTONS */}
             <div className="space-y-6 text-center max-w-2xl mx-auto">
               <p className="font-inter text-slate-300 text-xs sm:text-sm leading-relaxed font-normal">
-                {report.overall >= 95
-                  ? "Your digital architecture operates at an elite technical standard with exceptional speed, mobile fluidity, and generative AI readiness. Booking a strategic consultation will help you leverage this foundation to further outpace competitors."
-                  : "Hidden architectural bottlenecks and unindexed AI schemas are actively depressing your search authority and visitor conversion rates. Addressing these core technical deficiencies will unlock immediate competitive dominance across Google and emerging AI discovery engines."}
+                {report.overall >= 95 ? narrative[0] : narrative[1]}
               </p>
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 pt-1">
                 <Link
-                  to={PAGE_PATHS.contact}
-                  onClick={() => navigateTo && navigateTo('contact')}
+                  to={ctaTo ?? PAGE_PATHS.contact}
+                  onClick={() => !ctaTo && navigateTo && navigateTo('contact')}
                   className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-semibold text-xs uppercase tracking-wider transition-all cursor-pointer shadow-lg hover:scale-105 active:scale-95 duration-200"
                 >
-                  <span>Book Technical Strategy Call</span>
+                  <span>{ctaLabel}</span>
                   <ArrowRight size={14} />
                 </Link>
 
