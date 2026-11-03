@@ -20,7 +20,7 @@ import {
 // Fix motion types by casting to any
 const motion = framerMotion as any;
 
-interface SabrPro {
+export interface SabrPro {
   id: number;
   title: string;
   icon: React.ReactNode;
@@ -31,7 +31,7 @@ interface SabrPro {
   outcomes: string[];
 }
 
-const sabrPros: SabrPro[] = [
+const defaultPros: SabrPro[] = [
   {
     id: 1,
     title: "Local Conversion",
@@ -114,7 +114,24 @@ const sabrPros: SabrPro[] = [
   }
 ];
 
-const WhyWebsiteSection: React.FC = () => {
+interface WhyWebsiteSectionProps {
+  /** Overrides for reusing this section on the AI Optimisation site. */
+  items?: SabrPro[];
+  eyebrow?: string;
+  headline?: React.ReactNode;
+  blurb?: string;
+  /** Second word of the modal's "SABR ___" wordmark. */
+  modalBrand?: string;
+}
+
+const WhyWebsiteSection: React.FC<WhyWebsiteSectionProps> = ({
+  items = defaultPros,
+  eyebrow = "SABR PRO'S",
+  headline,
+  blurb = '"Explore our architectural pillars. Click a PRO item on the left to review its technical blueprint."',
+  modalBrand = 'PRO'
+}) => {
+  const sabrPros = items;
   const [selectedPro, setSelectedPro] = useState<SabrPro | null>(null);
 
   // Lock the page while a blueprint is open, so the only thing that can scroll
@@ -200,17 +217,17 @@ const WhyWebsiteSection: React.FC = () => {
             <div className="space-y-4">
               <div className="flex items-center gap-4">
                 <div className="w-10 h-[2px] bg-emerald-600"></div>
-                <span className="text-emerald-600 font-black text-[11px] uppercase tracking-[0.8em]">SABR PRO'S</span>
+                <span className="text-emerald-600 font-black text-[11px] uppercase tracking-[0.8em]">{eyebrow}</span>
               </div>
               
               {/* TABLET-READY CLAMPED FONT SIZES */}
               <h2 className="font-syne text-3xl sm:text-4xl md:text-[clamp(2.5rem,6vw,5rem)] font-black tracking-tighter uppercase leading-[0.9] text-slate-950">
-                WHY <br /> <span className="text-emerald-600 italic">DOMINATE</span> <br /> ONLINE?
+                {headline ?? <>WHY <br /> <span className="text-emerald-600 italic">DOMINATE</span> <br /> ONLINE?</>}
               </h2>
               
               <div className="max-w-md border-l-4 border-emerald-50 pl-8">
                 <p className="text-slate-400 font-bold text-[13px] uppercase tracking-[0.4em] italic leading-relaxed">
-                  "Explore our architectural pillars. Click a PRO item on the left to review its technical blueprint."
+                  {blurb}
                 </p>
               </div>
             </div>
@@ -241,7 +258,7 @@ const WhyWebsiteSection: React.FC = () => {
               <div className="px-8 sm:px-12 py-6 sm:py-8 flex items-center justify-between border-b border-slate-100 bg-white shrink-0 z-30">
                 <div className="flex flex-col text-left shrink-0">
                   <span className="font-syne text-lg sm:text-2xl tracking-[0.05em] font-black text-slate-950 flex items-center leading-none uppercase">
-                    SABR<span className="text-emerald-600 ml-1.5">PRO</span>
+                    SABR<span className="text-emerald-600 ml-1.5">{modalBrand}</span>
                   </span>
                   <span className="text-[7px] sm:text-[8px] uppercase font-black tracking-[0.6em] text-emerald-600 mt-1.5">Technical Blueprint</span>
                 </div>
