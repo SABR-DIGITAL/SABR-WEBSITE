@@ -30,7 +30,7 @@ const DEFAULT_POINTS = [
 // already in memory and paints immediately without any decode delay.
 if (typeof window !== 'undefined') {
   const preloadImg = new Image();
-  preloadImg.decoding = 'sync';
+  preloadImg.decoding = 'async';
   preloadImg.src = '/assets/aistudio/image_c05e976f.webp';
   preloadImg.decode?.().catch(() => {});
 }
@@ -57,6 +57,16 @@ const AboutFounderSection: React.FC<AboutFounderSectionProps> = ({
       typeof window.matchMedia === 'function' &&
       window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduceMotion) return;
+
+    // Phones and tablets show this section straight away. Hiding it until a
+    // scroll trigger fires left it blank on iPhones: while the page is still
+    // busy loading, iOS Safari runs that trigger late, so visitors scrolled
+    // past the hero into an empty off-white block for several seconds. The
+    // slide-in stays on desktop, where scroll triggers fire promptly.
+    const canAnimate =
+      typeof window.matchMedia === 'function' &&
+      window.matchMedia('(hover: hover) and (pointer: fine) and (min-width: 1024px)').matches;
+    if (!canAnimate) return;
 
     const ctx = gsap.context(() => {
       gsap.set(imgCol, { x: -70, opacity: 0 });
@@ -133,7 +143,7 @@ const AboutFounderSection: React.FC<AboutFounderSectionProps> = ({
                     height={1472}
                     className="w-full h-full object-cover object-top transform transition-transform duration-700 group-hover:scale-[1.03]"
                     loading="eager"
-                    decoding="sync"
+                    decoding="async"
                     fetchPriority="high"
                   />
                 </picture>

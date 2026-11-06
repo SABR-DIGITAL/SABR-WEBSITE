@@ -307,6 +307,8 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
       }
     }
 
+    let lastFlBg = '';
+    let lastFlOp = '';
     function draw(t: number) {
       if (!ctx || !fl) return;
       const p = cur;
@@ -403,25 +405,26 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
 
       const fr = Math.max(0, 1 - Math.abs(p - 0.36) * 30);
       const fg = Math.max(0, 1 - Math.abs(p - 0.64) * 30);
-      fl.style.background = fg > fr ? '#059669' : '#ff4d3d';
-      fl.style.opacity = String(Math.max(fr, fg) * 0.04);
+      const flBg = fg > fr ? '#059669' : '#ff4d3d';
+      const flOp = String(Math.round(Math.max(fr, fg) * 0.04 * 1000) / 1000);
+      if (flBg !== lastFlBg) fl.style.background = lastFlBg = flBg;
+      if (flOp !== lastFlOp) fl.style.opacity = lastFlOp = flOp;
     }
 
+    // The text is always on screen: no fade, no slide, no GPU layer. Only the swap between the
+    // 88 copy and the 77 copy happens, instantly, and only when the stage actually changes —
+    // so iOS Safari never has to repaint (or blank) the text while momentum scrolling.
+    let shownStage = 1;
     function ui(p: number) {
       if (!t1 || !t2 || !q1 || !q2) return;
-      // Seamless handoff between Stage 1 (88) and Stage 2 (77) with no long blank gap
-      const showStage1 = p < 0.46;
-      const showStage2 = p >= 0.54;
-
-      t1.style.opacity = showStage1 ? '1' : '0';
-      t1.style.transform = showStage1 ? 'translate3d(0,0,0)' : 'translate3d(0,-10px,0)';
-      q1.style.opacity = showStage1 ? '1' : '0';
-      q1.style.transform = showStage1 ? 'translate3d(0,0,0)' : 'translate3d(0,12px,0)';
-
-      t2.style.opacity = showStage2 ? '1' : '0';
-      t2.style.transform = showStage2 ? 'translate3d(0,0,0)' : 'translate3d(0,-10px,0)';
-      q2.style.opacity = showStage2 ? '1' : '0';
-      q2.style.transform = showStage2 ? 'translate3d(0,0,0)' : 'translate3d(0,12px,0)';
+      const stageNow = p >= 0.5 ? 2 : 1;
+      if (stageNow === shownStage) return;
+      shownStage = stageNow;
+      const one = stageNow === 1;
+      t1.style.visibility = one ? 'visible' : 'hidden';
+      q1.style.visibility = one ? 'visible' : 'hidden';
+      t2.style.visibility = one ? 'hidden' : 'visible';
+      q2.style.visibility = one ? 'hidden' : 'visible';
     }
 
     function prog(): boolean {
@@ -549,7 +552,7 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
           {/* STAGE 1 TOP TITLE: Minimalistic, bold luxury serif, well below navbar and well above 88 */}
           <div
             ref={t1Ref}
-            className="absolute left-0 right-0 top-[68px] sm:top-[92px] md:top-[102px] lg:top-[108px] px-5 sm:px-8 text-center max-w-5xl mx-auto opacity-100 translate-y-0 transition-opacity duration-300 pointer-events-none z-20 transform-gpu"
+            className="absolute left-0 right-0 top-[68px] sm:top-[92px] md:top-[102px] lg:top-[108px] px-5 sm:px-8 text-center max-w-5xl mx-auto pointer-events-none z-20"
           >
             <h2 className="font-serif text-[clamp(1.35rem,2.8vw,2.45rem)] font-semibold tracking-tight text-slate-900 leading-[1.12]">
               {stage1.headline}
@@ -559,7 +562,7 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
           {/* STAGE 2 TOP TITLE: Minimalistic, bold luxury serif with classic SABR Digital shimmer, well below navbar and well above 77 */}
           <div
             ref={t2Ref}
-            className="absolute left-0 right-0 top-[68px] sm:top-[92px] md:top-[102px] lg:top-[108px] px-5 sm:px-8 text-center max-w-5xl mx-auto opacity-0 pointer-events-none transition-opacity duration-300 z-20 transform-gpu"
+            className="absolute left-0 right-0 top-[68px] sm:top-[92px] md:top-[102px] lg:top-[108px] px-5 sm:px-8 text-center max-w-5xl mx-auto invisible pointer-events-none z-20"
           >
             <h2 className="font-serif text-[clamp(1.35rem,2.8vw,2.45rem)] font-semibold tracking-tight text-slate-900 leading-[1.12]">
               {stage2.headline}
@@ -569,7 +572,7 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
           {/* STAGE 1 BOTTOM TEXT: Raised ~15% higher on mobile so the full paragraph clears the iPhone Safari bottom bar */}
           <div
             ref={q1Ref}
-            className="absolute left-0 right-0 bottom-[clamp(124px,18vh,164px)] sm:bottom-[68px] md:bottom-[80px] lg:bottom-[92px] px-5 sm:px-[6vw] text-center max-w-[820px] mx-auto opacity-100 translate-y-0 transition-opacity duration-300 pointer-events-none z-20 transform-gpu"
+            className="absolute left-0 right-0 bottom-[clamp(124px,18vh,164px)] sm:bottom-[68px] md:bottom-[80px] lg:bottom-[92px] px-5 sm:px-[6vw] text-center max-w-[820px] mx-auto pointer-events-none z-20"
           >
             <div className="font-serif text-[clamp(15px,1.85vw,23px)] leading-[1.32] font-normal text-slate-900 mb-2">
               {stage1.quote}
@@ -582,7 +585,7 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
           {/* STAGE 2 BOTTOM TEXT: Raised ~15% higher on mobile so the full paragraph clears the iPhone Safari bottom bar */}
           <div
             ref={q2Ref}
-            className="absolute left-0 right-0 bottom-[clamp(124px,18vh,164px)] sm:bottom-[68px] md:bottom-[80px] lg:bottom-[92px] px-5 sm:px-[6vw] text-center max-w-[820px] mx-auto opacity-0 pointer-events-none transition-opacity duration-300 z-20 transform-gpu"
+            className="absolute left-0 right-0 bottom-[clamp(124px,18vh,164px)] sm:bottom-[68px] md:bottom-[80px] lg:bottom-[92px] px-5 sm:px-[6vw] text-center max-w-[820px] mx-auto invisible pointer-events-none z-20"
           >
             <div className="font-serif text-[clamp(15px,1.85vw,23px)] leading-[1.32] font-normal text-slate-900 mb-2">
               {stage2.quote}
