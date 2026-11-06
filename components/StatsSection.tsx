@@ -217,21 +217,22 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
 
     function computeSafeBand(): [number, number] {
       if (!t1 || !t2 || !q1 || !q2) {
-        return [H * 0.28, H * 0.62];
+        return [H * 0.24, H * 0.56];
       }
       const isMobile = W < 700;
       const fhHalf = isMobile ? 6 : 10;
       // Generous padding above and below 88/77 so they never crowd the top title or bottom quote
-      const padTop = fhHalf + Math.max(isMobile ? 34 : 48, H * 0.055);
-      const padBot = fhHalf + Math.max(isMobile ? 36 : 52, H * 0.06);
+      const padTop = fhHalf + Math.max(isMobile ? 32 : 48, H * (isMobile ? 0.042 : 0.055));
+      const padBot = fhHalf + Math.max(isMobile ? 34 : 52, H * (isMobile ? 0.045 : 0.06));
 
       const t1Bottom = t1.offsetTop + t1.offsetHeight;
       const t2Bottom = t2.offsetTop + t2.offsetHeight;
-      const measuredTitleBottom = Math.max(t1Bottom, t2Bottom, isMobile ? 136 : 162);
+      const measuredTitleBottom = Math.max(t1Bottom, t2Bottom, isMobile ? 118 : 162);
 
-      const q1Top = q1.offsetTop > 0 ? q1.offsetTop : H - q1.offsetHeight - (isMobile ? 56 : 88);
-      const q2Top = q2.offsetTop > 0 ? q2.offsetTop : H - q2.offsetHeight - (isMobile ? 56 : 88);
-      const measuredQuoteTop = Math.min(q1Top, q2Top, H - (isMobile ? 175 : 210));
+      const mobileBottomOffset = Math.max(128, Math.round(H * 0.18));
+      const q1Top = q1.offsetTop > 0 ? q1.offsetTop : H - q1.offsetHeight - (isMobile ? mobileBottomOffset : 88);
+      const q2Top = q2.offsetTop > 0 ? q2.offsetTop : H - q2.offsetHeight - (isMobile ? mobileBottomOffset : 88);
+      const measuredQuoteTop = Math.min(q1Top, q2Top, H - (isMobile ? 245 : 210));
 
       const yTop = measuredTitleBottom + padTop;
       const yBot = Math.max(yTop + 72, measuredQuoteTop - padBot);
@@ -509,7 +510,7 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
           {/* STAGE 1 TOP TITLE: Minimalistic, bold luxury serif, well below navbar and well above 88 */}
           <div
             ref={t1Ref}
-            className="absolute left-0 right-0 top-[82px] sm:top-[92px] md:top-[102px] lg:top-[108px] px-5 sm:px-8 text-center max-w-5xl mx-auto opacity-100 translate-y-0 transition-opacity duration-300 pointer-events-none z-20 transform-gpu"
+            className="absolute left-0 right-0 top-[68px] sm:top-[92px] md:top-[102px] lg:top-[108px] px-5 sm:px-8 text-center max-w-5xl mx-auto opacity-100 translate-y-0 transition-opacity duration-300 pointer-events-none z-20 transform-gpu"
           >
             <h2 className="font-serif text-[clamp(1.35rem,2.8vw,2.45rem)] font-semibold tracking-tight text-slate-900 leading-[1.12]">
               {stage1.headline}
@@ -519,17 +520,17 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
           {/* STAGE 2 TOP TITLE: Minimalistic, bold luxury serif with classic SABR Digital shimmer, well below navbar and well above 77 */}
           <div
             ref={t2Ref}
-            className="absolute left-0 right-0 top-[82px] sm:top-[92px] md:top-[102px] lg:top-[108px] px-5 sm:px-8 text-center max-w-5xl mx-auto opacity-0 pointer-events-none transition-opacity duration-300 z-20 transform-gpu"
+            className="absolute left-0 right-0 top-[68px] sm:top-[92px] md:top-[102px] lg:top-[108px] px-5 sm:px-8 text-center max-w-5xl mx-auto opacity-0 pointer-events-none transition-opacity duration-300 z-20 transform-gpu"
           >
             <h2 className="font-serif text-[clamp(1.35rem,2.8vw,2.45rem)] font-semibold tracking-tight text-slate-900 leading-[1.12]">
               {stage2.headline}
             </h2>
           </div>
 
-          {/* STAGE 1 BOTTOM TEXT: Generous padding below the quote and below 88 so nothing ever crowds or overlaps */}
+          {/* STAGE 1 BOTTOM TEXT: Raised ~15% higher on mobile so the full paragraph clears the iPhone Safari bottom bar */}
           <div
             ref={q1Ref}
-            className="absolute left-0 right-0 bottom-[56px] sm:bottom-[68px] md:bottom-[80px] lg:bottom-[92px] px-5 sm:px-[6vw] text-center max-w-[820px] mx-auto opacity-100 translate-y-0 transition-opacity duration-300 pointer-events-none z-20 transform-gpu"
+            className="absolute left-0 right-0 bottom-[clamp(124px,18vh,164px)] sm:bottom-[68px] md:bottom-[80px] lg:bottom-[92px] px-5 sm:px-[6vw] text-center max-w-[820px] mx-auto opacity-100 translate-y-0 transition-opacity duration-300 pointer-events-none z-20 transform-gpu"
           >
             <div className="font-serif text-[clamp(15px,1.85vw,23px)] leading-[1.32] font-normal text-slate-900 mb-2">
               {stage1.quote}
@@ -539,10 +540,10 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
             </p>
           </div>
 
-          {/* STAGE 2 BOTTOM TEXT: Generous padding below the quote and below 77 so nothing ever crowds or overlaps */}
+          {/* STAGE 2 BOTTOM TEXT: Raised ~15% higher on mobile so the full paragraph clears the iPhone Safari bottom bar */}
           <div
             ref={q2Ref}
-            className="absolute left-0 right-0 bottom-[56px] sm:bottom-[68px] md:bottom-[80px] lg:bottom-[92px] px-5 sm:px-[6vw] text-center max-w-[820px] mx-auto opacity-0 pointer-events-none transition-opacity duration-300 z-20 transform-gpu"
+            className="absolute left-0 right-0 bottom-[clamp(124px,18vh,164px)] sm:bottom-[68px] md:bottom-[80px] lg:bottom-[92px] px-5 sm:px-[6vw] text-center max-w-[820px] mx-auto opacity-0 pointer-events-none transition-opacity duration-300 z-20 transform-gpu"
           >
             <div className="font-serif text-[clamp(15px,1.85vw,23px)] leading-[1.32] font-normal text-slate-900 mb-2">
               {stage2.quote}
