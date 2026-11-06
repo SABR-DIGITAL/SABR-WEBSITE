@@ -118,6 +118,13 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
     let amb: AmbientParticle[] = [];
     let rafId = 0;
     let resizeTimer: ReturnType<typeof setTimeout> | null = null;
+    let lastT = 0;
+    let pendingRebuild = false;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // Particles are grouped into a few colour/alpha buckets so each frame issues a handful of
+    // stroke() calls instead of one per figure — this is what keeps iPhones at full frame rate.
+    const BUCKETS = 10;
+    let buckets: number[][] = [];
 
     const clamp = (x: number) => Math.max(0, Math.min(1, x));
     const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
@@ -293,6 +300,11 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
           sz: 1 + Math.random() * 1.6,
         });
       }
+
+      buckets = Array.from({ length: BUCKETS }, () => [] as number[]);
+      for (let i = 0; i < N; i++) {
+        buckets[Math.min(BUCKETS - 1, Math.floor(P[i].d * BUCKETS))].push(i);
+      }
     }
 
     function draw(t: number) {
@@ -300,7 +312,7 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
       const p = cur;
       const isMobile = W < 700;
       const shk = Math.sin(clamp((p - 0.35) / 0.2) * Math.PI);
-      const shakeAmp = isMobile ? 1.0 : 2.5;
+      const shakeAmp = reduceMotion ? 0 : isMobile ? 1.0 : 2.5;
       ctx.setTransform(
         dpr,
         0,
@@ -324,50 +336,57 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
       const fh = isMobile ? 10.5 : 17.5;
       const u = fh / 20;
 
-      for (let i = 0; i < N; i++) {
-        const q = P[i];
-        // 88 is already assembled from p = 0 so the user immediately sees 88 the instant the section enters view
-        const e1 = 1;
-        const e2 = phase(p, 0.28, 0.22, q.d);
-        const e3 = phase(p, 0.52, 0.22, q.d);
-        const baseWob = isMobile ? 0.15 : 2.4;
-        const burstWob = isMobile ? 4.5 : 8;
-        const wob = Math.sin(t * 0.0006 + q.ph) * (baseWob + burstWob * e2 * (1 - e3));
+      ctx.lineWidth = Math.max(1, u * 1.1);
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
 
-        let x = lerp(q.sx, q.ax, e1) + q.dx * e2 + wob;
-        let y = lerp(q.sy, q.ay, e1) + q.dy * e2 + Math.cos(t * 0.00048 + q.ph) * wob;
-        x = lerp(x, q.bx, e3);
-        y = lerp(y, q.by, e3);
-
-        // Idle shimmer when assembled (very steady on mobile so 88 stays sharp)
-        let calm = e1 * (1 - e2) + e3;
-        calm = Math.min(1, calm);
-        const calmAmp = isMobile ? 0.12 : 0.75;
-        x += Math.sin(t * 0.0008 + q.ph) * calm * calmAmp;
-        y += Math.cos(t * 0.0008 + q.ph) * calm * calmAmp;
-
-        const al = 0.95 - 0.7 * e2 * (1 - e3);
-        ctx.globalAlpha = al;
-
-        const mv = Math.max(e2 * (1 - e2), e3 * (1 - e3)) * 4;
-        const sw = Math.sin(t * 0.0028 + q.ph) * ((isMobile ? 0.025 : 0.12) + (isMobile ? 0.55 : 0.88) * mv);
-        const tp = y - fh / 2;
-
-        ctx.strokeStyle = 'hsl(' + hue + ',' + sat + '%,' + (lig + (q.d - 0.5) * 28) + '%)';
-        ctx.lineWidth = Math.max(1, u * 1.1);
-        ctx.lineCap = 'round';
-        ctx.lineJoin = 'round';
-
+      for (let bi = 0; bi < buckets.length; bi++) {
+        const bucket = buckets[bi];
+        if (bucket.length === 0) continue;
+        const bd = (bi + 0.5) / BUCKETS;
+        const be2 = phase(p, 0.28, 0.22, bd);
+        const be3 = phase(p, 0.52, 0.22, bd);
+        ctx.globalAlpha = 0.95 - 0.7 * be2 * (1 - be3);
+        ctx.strokeStyle = 'hsl(' + hue + ',' + sat + '%,' + (lig + (bd - 0.5) * 28) + '%)';
         ctx.beginPath();
-        ctx.arc(x, tp + 3.2 * u, 2.1 * u, 0, 6.283);
-        ctx.moveTo(x, tp + 5.4 * u);
-        ctx.lineTo(x, tp + 12 * u);
-        ctx.moveTo(x - 2.8 * u - sw * 1.5 * u, tp + 10.2 * u);
-        ctx.lineTo(x, tp + 7.2 * u);
-        ctx.lineTo(x + 2.8 * u + sw * 1.5 * u, tp + 10.2 * u);
-        ctx.moveTo(x - 1.6 * u + sw * 2.6 * u, tp + 18.6 * u);
-        ctx.lineTo(x, tp + 12 * u);
-        ctx.lineTo(x + 1.6 * u - sw * 2.6 * u, tp + 18.6 * u);
+
+        for (let k = 0; k < bucket.length; k++) {
+          const q = P[bucket[k]];
+          // 88 is already assembled from p = 0 so the user immediately sees 88 the instant the section enters view
+          const e1 = 1;
+          const e2 = phase(p, 0.28, 0.22, q.d);
+          const e3 = phase(p, 0.52, 0.22, q.d);
+          const baseWob = isMobile ? 0.15 : 2.4;
+          const burstWob = isMobile ? 4.5 : 8;
+          const wob = Math.sin(t * 0.0006 + q.ph) * (baseWob + burstWob * e2 * (1 - e3));
+
+          let x = lerp(q.sx, q.ax, e1) + q.dx * e2 + wob;
+          let y = lerp(q.sy, q.ay, e1) + q.dy * e2 + Math.cos(t * 0.00048 + q.ph) * wob;
+          x = lerp(x, q.bx, e3);
+          y = lerp(y, q.by, e3);
+
+          // Idle shimmer when assembled (very steady on mobile so 88 stays sharp)
+          let calm = e1 * (1 - e2) + e3;
+          calm = Math.min(1, calm);
+          const calmAmp = isMobile ? 0.12 : 0.75;
+          x += Math.sin(t * 0.0008 + q.ph) * calm * calmAmp;
+          y += Math.cos(t * 0.0008 + q.ph) * calm * calmAmp;
+
+          const mv = Math.max(e2 * (1 - e2), e3 * (1 - e3)) * 4;
+          const sw = Math.sin(t * 0.0028 + q.ph) * ((isMobile ? 0.025 : 0.12) + (isMobile ? 0.55 : 0.88) * mv);
+          const tp = y - fh / 2;
+
+          ctx.moveTo(x + 2.1 * u, tp + 3.2 * u);
+          ctx.arc(x, tp + 3.2 * u, 2.1 * u, 0, 6.283);
+          ctx.moveTo(x, tp + 5.4 * u);
+          ctx.lineTo(x, tp + 12 * u);
+          ctx.moveTo(x - 2.8 * u - sw * 1.5 * u, tp + 10.2 * u);
+          ctx.lineTo(x, tp + 7.2 * u);
+          ctx.lineTo(x + 2.8 * u + sw * 1.5 * u, tp + 10.2 * u);
+          ctx.moveTo(x - 1.6 * u + sw * 2.6 * u, tp + 18.6 * u);
+          ctx.lineTo(x, tp + 12 * u);
+          ctx.lineTo(x + 1.6 * u - sw * 2.6 * u, tp + 18.6 * u);
+        }
         ctx.stroke();
       }
 
@@ -419,15 +438,25 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
     function loop(t: number) {
       // Read scroll position directly inside rAF so iOS Safari momentum scrolling never defers updates
       const isNear = prog();
+      // Frame-rate independent smoothing: iPhones in Low Power Mode run rAF at 30fps, which
+      // previously halved the catch-up speed and left the 88 lagging far behind the scroll.
+      const dt = lastT ? Math.min(100, t - lastT) : 16.67;
+      lastT = t;
       if (isNear) {
         const isMobile = W < 700;
-        const step = isMobile ? 0.11 : 0.055;
+        const base = isMobile ? 0.22 : 0.055;
+        const step = 1 - Math.pow(1 - base, dt / 16.67);
         cur += (tgt - cur) * step;
-        if (Math.abs(tgt - cur) < 0.0001) cur = tgt;
+        if (Math.abs(tgt - cur) < 0.0005) cur = tgt;
         draw(t);
         ui(cur);
       } else {
         cur = tgt;
+        if (pendingRebuild) {
+          pendingRebuild = false;
+          build();
+          for (let w = 0; w < 6; w++) draw(t);
+        }
       }
       rafId = requestAnimationFrame(loop);
     }
@@ -454,7 +483,9 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
     window.addEventListener('scroll', prog, { passive: true });
     window.addEventListener('resize', handleResize);
 
-    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    // Always build: the animation is driven purely by the user's own scroll, so it still runs
+    // with iOS "Reduce Motion" on (the camera shake is disabled in that case instead).
+    {
       build();
       prog();
       cur = tgt;
@@ -465,15 +496,23 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
       ui(cur);
       rafId = requestAnimationFrame(loop);
 
-      if ((document as any).fonts?.ready) {
-        (document as any).fonts.ready.then(() => {
-          build();
-          prog();
-          for (let w = 0; w < 6; w++) {
-            draw(performance.now());
-          }
-          ui(cur);
-        });
+      // Re-sample once the Inter webfont is available (the font stylesheet loads async, so
+      // fonts.ready alone can resolve too early). If the section is already on screen, defer
+      // the rebuild until it is off screen so the figures never visibly jump.
+      const fonts = (document as any).fonts;
+      if (fonts?.load) {
+        Promise.all([fonts.load('900 100px Inter'), fonts.load('800 100px Inter')])
+          .then((faces: unknown[][]) => {
+            if (!faces.some((f) => f && f.length)) return;
+            if (prog()) {
+              pendingRebuild = true;
+              return;
+            }
+            build();
+            for (let w = 0; w < 6; w++) draw(performance.now());
+            ui(cur);
+          })
+          .catch(() => {});
       }
     }
 
@@ -489,16 +528,16 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
     <section className="relative bg-white text-slate-900 pt-10 sm:pt-14 md:pt-20 pb-20 sm:pb-28 md:pb-36">
       {/* 360vh Scroll Track (260vh scrollable distance = 2x longer / 50% slower to scroll than 130vh) */}
       <div ref={trackRef} className="relative h-[360vh] bg-white">
-        {/* Sticky Stage — GPU-promoted so iOS Safari composites it immediately during momentum scroll */}
+        {/* Sticky Stage — no forced GPU layer: on iOS Safari a composited sticky layer can stop
+            the canvas repainting until momentum scrolling ends, freezing the 88 on screen */}
         <div
           ref={stageRef}
-          className="sticky top-0 h-[100vh] h-[100dvh] w-full overflow-hidden bg-white transform-gpu"
-          style={{ WebkitBackfaceVisibility: 'hidden', backfaceVisibility: 'hidden' }}
+          className="sticky top-0 h-[100vh] h-[100dvh] w-full overflow-hidden bg-white"
         >
           {/* Stick-Figure Canvas */}
           <canvas
             ref={canvasRef}
-            className="absolute inset-0 w-full h-full block transform-gpu"
+            className="absolute inset-0 w-full h-full block"
           />
 
           {/* Subtle Flash Overlay */}
