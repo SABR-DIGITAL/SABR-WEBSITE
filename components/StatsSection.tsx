@@ -113,7 +113,6 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
     let dpr = 1;
     let P: StickParticle[] = [];
     let N = 0;
-    let shown = true;
     let cur = 0;
     let tgt = 0;
     let amb: AmbientParticle[] = [];
@@ -276,10 +275,9 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
         const a = A[i % A.length];
         const b = B[i % B.length];
         const ang = Math.random() * 6.283;
-        // On mobile, keep initial scatter tight inside the viewport so figures are never off-screen white
         const r = isMobile
-          ? Math.min(W, H) * (0.14 + Math.random() * 0.16)
-          : Math.max(W, H) * (0.42 + Math.random() * 0.45);
+          ? Math.min(W, H) * (0.12 + Math.random() * 0.14)
+          : Math.max(W, H) * (0.35 + Math.random() * 0.35);
         P.push({
           ax: a[0],
           ay: a[1],
@@ -313,7 +311,7 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
 
       // Motion-trail fade onto pure white canvas background
       ctx.globalCompositeOperation = 'source-over';
-      ctx.fillStyle = isMobile ? 'rgba(255, 255, 255, 0.55)' : 'rgba(255, 255, 255, 0.32)';
+      ctx.fillStyle = isMobile ? 'rgba(255, 255, 255, 0.55)' : 'rgba(255, 255, 255, 0.34)';
       ctx.fillRect(-30, -30, W + 60, H + 60);
 
       // Colour: Crimson Red (88) -> Classic SABR Emerald Green (77)
@@ -327,11 +325,11 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
 
       for (let i = 0; i < N; i++) {
         const q = P[i];
-        // On mobile, start mostly assembled and snap into 88 immediately so it is never blank on scroll entry
-        const e1 = isMobile ? clamp(0.35 + 0.65 * phase(p, 0.0, 0.08, q.d * 0.25)) : phase(p, 0.0, 0.16, q.d * 0.7);
-        const e2 = phase(p, 0.34, 0.21, q.d);
-        const e3 = phase(p, 0.54, 0.21, q.d);
-        const baseWob = isMobile ? 0.15 : 2.6;
+        // 88 is already assembled from p = 0 so the user immediately sees 88 the instant the section enters view
+        const e1 = 1;
+        const e2 = phase(p, 0.28, 0.22, q.d);
+        const e3 = phase(p, 0.52, 0.22, q.d);
+        const baseWob = isMobile ? 0.15 : 2.4;
         const burstWob = isMobile ? 4.5 : 8;
         const wob = Math.sin(t * 0.0006 + q.ph) * (baseWob + burstWob * e2 * (1 - e3));
 
@@ -347,11 +345,10 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
         x += Math.sin(t * 0.0008 + q.ph) * calm * calmAmp;
         y += Math.cos(t * 0.0008 + q.ph) * calm * calmAmp;
 
-        let al = 0.95 - 0.7 * e2 * (1 - e3);
-        if (e1 < 1) al *= (isMobile ? 0.75 : 0.45) + (isMobile ? 0.25 : 0.55) * e1;
+        const al = 0.95 - 0.7 * e2 * (1 - e3);
         ctx.globalAlpha = al;
 
-        const mv = Math.max(e1 * (1 - e1), e2 * (1 - e2), e3 * (1 - e3)) * 4;
+        const mv = Math.max(e2 * (1 - e2), e3 * (1 - e3)) * 4;
         const sw = Math.sin(t * 0.0028 + q.ph) * ((isMobile ? 0.025 : 0.12) + (isMobile ? 0.55 : 0.88) * mv);
         const tp = y - fh / 2;
 
@@ -384,75 +381,54 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
       }
       ctx.globalAlpha = 1;
 
-      const fr = Math.max(0, 1 - Math.abs(p - 0.39) * 30);
-      const fg = Math.max(0, 1 - Math.abs(p - 0.68) * 30);
+      const fr = Math.max(0, 1 - Math.abs(p - 0.36) * 30);
+      const fg = Math.max(0, 1 - Math.abs(p - 0.64) * 30);
       fl.style.background = fg > fr ? '#059669' : '#ff4d3d';
       fl.style.opacity = String(Math.max(fr, fg) * 0.04);
     }
 
     function ui(p: number) {
       if (!t1 || !t2 || !q1 || !q2) return;
-      // Visible from p = 0 so Stage 1 is already present the instant the user scrolls to the section
-      const showStage1 = p < 0.45;
-      const showStage2 = p > 0.64;
+      // Seamless handoff between Stage 1 (88) and Stage 2 (77) with no long blank gap
+      const showStage1 = p < 0.46;
+      const showStage2 = p >= 0.54;
 
       t1.style.opacity = showStage1 ? '1' : '0';
-      t1.style.transform = showStage1 ? 'translateY(0px)' : 'translateY(-10px)';
+      t1.style.transform = showStage1 ? 'translate3d(0,0,0)' : 'translate3d(0,-10px,0)';
       q1.style.opacity = showStage1 ? '1' : '0';
-      q1.style.transform = showStage1 ? 'translateY(0px)' : 'translateY(12px)';
+      q1.style.transform = showStage1 ? 'translate3d(0,0,0)' : 'translate3d(0,12px,0)';
 
       t2.style.opacity = showStage2 ? '1' : '0';
-      t2.style.transform = showStage2 ? 'translateY(0px)' : 'translateY(-10px)';
+      t2.style.transform = showStage2 ? 'translate3d(0,0,0)' : 'translate3d(0,-10px,0)';
       q2.style.opacity = showStage2 ? '1' : '0';
-      q2.style.transform = showStage2 ? 'translateY(0px)' : 'translateY(12px)';
+      q2.style.transform = showStage2 ? 'translate3d(0,0,0)' : 'translate3d(0,12px,0)';
     }
 
-    let isApproaching = true;
-
-    function prog() {
-      if (!track) return;
+    function prog(): boolean {
+      if (!track) return false;
       const r = track.getBoundingClientRect();
-      const max = Math.max(1, track.offsetHeight - window.innerHeight);
-      // Generous lead-in so 88 is already assembled as the section scrolls into view
-      const lead = window.innerHeight * (W < 700 ? 0.9 : 0.65);
-      tgt = clamp((lead - r.top) / (max + lead * 0.6));
-      isApproaching = r.top > 0;
-      if (!shown) {
-        cur = tgt;
-      }
+      const vh = window.innerHeight || H || 800;
+      const max = Math.max(1, track.offsetHeight - vh);
+      // Hold 88 steady as the section enters the screen (r.top > 0), then progress 0 -> 1 through the sticky track
+      tgt = clamp(-r.top / max);
+      // Active whenever the track is within 1.5 viewports of the screen
+      return r.bottom > -vh * 0.5 && r.top < vh * 1.8;
     }
 
     function loop(t: number) {
-      if (shown) {
-        // While approaching the sticky zone (r.top > 0), catch up briskly so there is zero white lag on fast mobile scrolls.
-        // Once inside the sticky scroll track (r.top <= 0), use the exact 50% slower scroll interpolation (0.036).
-        const step = isApproaching && tgt < 0.22 ? 0.18 : 0.036;
+      // Read scroll position directly inside rAF so iOS Safari momentum scrolling never defers updates
+      const isNear = prog();
+      if (isNear) {
+        const isMobile = W < 700;
+        const step = isMobile ? 0.11 : 0.055;
         cur += (tgt - cur) * step;
         if (Math.abs(tgt - cur) < 0.0001) cur = tgt;
         draw(t);
         ui(cur);
+      } else {
+        cur = tgt;
       }
       rafId = requestAnimationFrame(loop);
-    }
-
-    let observer: IntersectionObserver | null = null;
-    if ('IntersectionObserver' in window) {
-      observer = new IntersectionObserver(
-        (entries) => {
-          if (entries[0]) {
-            const wasShown = shown;
-            shown = entries[0].isIntersecting;
-            if (shown && !wasShown) {
-              prog();
-              if (cur < 0.08 && tgt > 0) cur = Math.min(tgt, 0.12);
-              draw(performance.now());
-              ui(cur);
-            }
-          }
-        },
-        { rootMargin: '800px 0px 800px 0px' }
-      );
-      observer.observe(stage);
     }
 
     const handleResize = () => {
@@ -467,7 +443,9 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
         }
         build();
         prog();
-        draw(performance.now());
+        for (let w = 0; w < 4; w++) {
+          draw(performance.now());
+        }
         ui(cur);
       }, 150);
     };
@@ -478,9 +456,9 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
     if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       build();
       prog();
-      cur = Math.max(tgt, 0.08);
-      // Pre-warm canvas frames so 88 is crisp and painted on the very first frame before the user even scrolls here
-      for (let w = 0; w < 4; w++) {
+      cur = tgt;
+      // Pre-paint 6 frames on mount so the canvas has a crisp, fully opaque 88 before the user ever scrolls here
+      for (let w = 0; w < 6; w++) {
         draw(0);
       }
       ui(cur);
@@ -490,7 +468,7 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
         (document as any).fonts.ready.then(() => {
           build();
           prog();
-          for (let w = 0; w < 3; w++) {
+          for (let w = 0; w < 6; w++) {
             draw(performance.now());
           }
           ui(cur);
@@ -502,7 +480,6 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
       window.removeEventListener('scroll', prog);
       window.removeEventListener('resize', handleResize);
       if (resizeTimer) clearTimeout(resizeTimer);
-      if (observer) observer.disconnect();
       if (rafId) cancelAnimationFrame(rafId);
     };
   }, []);
@@ -511,13 +488,17 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
     <section className="relative bg-white text-slate-900 pt-10 sm:pt-14 md:pt-20 pb-20 sm:pb-28 md:pb-36">
       {/* 360vh Scroll Track (260vh scrollable distance = 2x longer / 50% slower to scroll than 130vh) */}
       <div ref={trackRef} className="relative h-[360vh] bg-white">
-        {/* Sticky Stage */}
+        {/* Sticky Stage — GPU-promoted so iOS Safari composites it immediately during momentum scroll */}
         <div
           ref={stageRef}
-          className="sticky top-0 h-[100vh] h-[100dvh] w-full overflow-hidden bg-white"
+          className="sticky top-0 h-[100vh] h-[100dvh] w-full overflow-hidden bg-white transform-gpu"
+          style={{ WebkitBackfaceVisibility: 'hidden', backfaceVisibility: 'hidden' }}
         >
           {/* Stick-Figure Canvas */}
-          <canvas ref={canvasRef} className="absolute inset-0 w-full h-full block" />
+          <canvas
+            ref={canvasRef}
+            className="absolute inset-0 w-full h-full block transform-gpu"
+          />
 
           {/* Subtle Flash Overlay */}
           <div
@@ -528,7 +509,7 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
           {/* STAGE 1 TOP TITLE: Minimalistic, bold luxury serif, well below navbar and well above 88 */}
           <div
             ref={t1Ref}
-            className="absolute left-0 right-0 top-[82px] sm:top-[92px] md:top-[102px] lg:top-[108px] px-5 sm:px-8 text-center max-w-5xl mx-auto opacity-100 translate-y-0 transition-all duration-500 pointer-events-none z-20"
+            className="absolute left-0 right-0 top-[82px] sm:top-[92px] md:top-[102px] lg:top-[108px] px-5 sm:px-8 text-center max-w-5xl mx-auto opacity-100 translate-y-0 transition-opacity duration-300 pointer-events-none z-20 transform-gpu"
           >
             <h2 className="font-serif text-[clamp(1.35rem,2.8vw,2.45rem)] font-semibold tracking-tight text-slate-900 leading-[1.12]">
               {stage1.headline}
@@ -538,7 +519,7 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
           {/* STAGE 2 TOP TITLE: Minimalistic, bold luxury serif with classic SABR Digital shimmer, well below navbar and well above 77 */}
           <div
             ref={t2Ref}
-            className="absolute left-0 right-0 top-[82px] sm:top-[92px] md:top-[102px] lg:top-[108px] px-5 sm:px-8 text-center max-w-5xl mx-auto opacity-0 -translate-y-2.5 transition-all duration-500 pointer-events-none z-20"
+            className="absolute left-0 right-0 top-[82px] sm:top-[92px] md:top-[102px] lg:top-[108px] px-5 sm:px-8 text-center max-w-5xl mx-auto opacity-0 pointer-events-none transition-opacity duration-300 z-20 transform-gpu"
           >
             <h2 className="font-serif text-[clamp(1.35rem,2.8vw,2.45rem)] font-semibold tracking-tight text-slate-900 leading-[1.12]">
               {stage2.headline}
@@ -548,7 +529,7 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
           {/* STAGE 1 BOTTOM TEXT: Generous padding below the quote and below 88 so nothing ever crowds or overlaps */}
           <div
             ref={q1Ref}
-            className="absolute left-0 right-0 bottom-[56px] sm:bottom-[68px] md:bottom-[80px] lg:bottom-[92px] px-5 sm:px-[6vw] text-center max-w-[820px] mx-auto opacity-100 translate-y-0 transition-all duration-500 pointer-events-none z-20"
+            className="absolute left-0 right-0 bottom-[56px] sm:bottom-[68px] md:bottom-[80px] lg:bottom-[92px] px-5 sm:px-[6vw] text-center max-w-[820px] mx-auto opacity-100 translate-y-0 transition-opacity duration-300 pointer-events-none z-20 transform-gpu"
           >
             <div className="font-serif text-[clamp(15px,1.85vw,23px)] leading-[1.32] font-normal text-slate-900 mb-2">
               {stage1.quote}
@@ -561,7 +542,7 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
           {/* STAGE 2 BOTTOM TEXT: Generous padding below the quote and below 77 so nothing ever crowds or overlaps */}
           <div
             ref={q2Ref}
-            className="absolute left-0 right-0 bottom-[56px] sm:bottom-[68px] md:bottom-[80px] lg:bottom-[92px] px-5 sm:px-[6vw] text-center max-w-[820px] mx-auto opacity-0 translate-y-3 transition-all duration-500 pointer-events-none z-20"
+            className="absolute left-0 right-0 bottom-[56px] sm:bottom-[68px] md:bottom-[80px] lg:bottom-[92px] px-5 sm:px-[6vw] text-center max-w-[820px] mx-auto opacity-0 pointer-events-none transition-opacity duration-300 z-20 transform-gpu"
           >
             <div className="font-serif text-[clamp(15px,1.85vw,23px)] leading-[1.32] font-normal text-slate-900 mb-2">
               {stage2.quote}
