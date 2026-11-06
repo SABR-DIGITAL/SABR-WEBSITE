@@ -1,207 +1,268 @@
-// Shared details for the riding academy demo, so every page quotes the same
-// prices, horses, hours and address. One edit here changes the whole site —
-// which is the point we are demonstrating.
-//
-// Copy is deliberately short. Every line here has to earn its place on a page:
-// one clear thought each, no second sentence restating the first.
+// Shared data for Bramble & Bay Riding Academy (Wiltshire).
+// Warm, homey English countryside palette: Cream (#FAF6EE), Soft White (#FFFFFF),
+// Warm Stone Grey (#5F665E), and Heritage Meadow Green (#2D5A43).
 
 export const academy = {
   name: 'Bramble & Bay',
   fullName: 'Bramble & Bay Riding Academy',
-  strapline: 'Riding lessons in the Pewsey Vale',
+  strapline: 'Riding lessons & hacking in the Pewsey Vale',
   addressLine1: 'Bramble Farm, Woodborough Lane',
   addressLine2: 'Pewsey, Wiltshire',
   postcode: 'SN9 5PX',
   phoneDisplay: '01672 851 440',
   phoneHref: '+441672851440',
   email: 'yard@brambleandbay.co.uk',
+  instagramHandle: '@brambleandbay',
+  instagramUrl: 'https://instagram.com',
+  facebookHandle: 'Bramble & Bay Riding Academy',
+  facebookUrl: 'https://facebook.com',
   established: '1998',
-  accreditation: 'British Horse Society approved centre',
+  accreditation: 'British Horse Society Approved Centre · Fellow & Stage 4 Coaches',
   mapQuery: 'Pewsey, Wiltshire, SN9'
 };
 
 export const openingHours = [
-  { days: 'Tuesday – Friday', hours: '9.00am – 8.00pm' },
-  { days: 'Saturday', hours: '8.30am – 5.00pm' },
-  { days: 'Sunday', hours: '9.00am – 4.00pm' },
-  { days: 'Monday', hours: 'Closed (yard day)' }
+  { days: 'Tuesday – Friday', hours: '8.30am – 8.00pm' },
+  { days: 'Saturday', hours: '8.00am – 5.00pm' },
+  { days: 'Sunday', hours: '8.30am – 4.00pm' },
+  { days: 'Monday', hours: 'Closed (Horse rest & schooling day)' }
 ];
 
 export const navLinks = [
   { name: 'Lessons', path: '/demo/equestrian/lessons' },
   { name: 'Horses', path: '/demo/equestrian/horses' },
-  { name: 'The yard', path: '/demo/equestrian/facilities' },
-  { name: "FAQ's", path: '/demo/equestrian/faqs' },
+  { name: 'The Yard', path: '/demo/equestrian/facilities' },
+  { name: 'FAQs', path: '/demo/equestrian/faqs' },
   { name: 'Contact', path: '/demo/equestrian/contact' }
 ];
 
-// The full-strength palette. Used for ink, links, small marks and icons — never
-// as a flat panel of colour.
+// Cohesive 3-color family: Cream & White, Warm Stone Grey, and Heritage Meadow Green.
 export const palette = {
-  cream: '#FFFAF3',
+  cream: '#FAF6EE',
   paper: '#FFFFFF',
-  ink: '#1E2A22',
-  rose: '#E4577A',
-  gold: '#F2B23E',
-  meadow: '#2F7D5B',
-  sky: '#79C0E0',
-  lilac: '#B489D8',
-  line: '#EADFD1'
+  ink: '#1E2822',
+  green: '#2D5A43',
+  greenSoft: '#E8F0EB',
+  grey: '#5F665E',
+  rose: '#2D5A43',
+  gold: '#5F665E',
+  meadow: '#2D5A43',
+  sky: '#3A6B52',
+  lilac: '#5F665E',
+  line: '#E2DDD2'
 };
 
-// The pale end of the same palette — watercolour, not poster paint. Every tinted
-// surface on the site is one of these blended into cream, which is what stops a
-// row of cards reading as four coloured boxes.
 export const pastel = {
-  blush: '#FBEFF2',
-  sand: '#FBF3E5',
-  mist: '#ECF3F7',
-  sage: '#EDF3EC',
-  lilac: '#F3F0F8',
-  cream: '#FFFCF7'
+  blush: '#FAF6EE',
+  sand: '#FAF6EE',
+  mist: '#E8F0EB',
+  sage: '#E8F0EB',
+  lilac: '#FAF6EE',
+  cream: '#FAF6EE'
 };
 
-// Panel washes. Two tints either side of cream, laid on the diagonal, so
-// adjacent cards bleed into one another instead of standing apart.
 export const cardWashes = [
-  `linear-gradient(152deg, ${pastel.blush} 0%, ${pastel.cream} 52%, ${pastel.mist} 100%)`,
-  `linear-gradient(152deg, ${pastel.sand} 0%, ${pastel.cream} 52%, ${pastel.lilac} 100%)`,
-  `linear-gradient(152deg, ${pastel.mist} 0%, ${pastel.cream} 52%, ${pastel.sage} 100%)`,
-  `linear-gradient(152deg, ${pastel.sage} 0%, ${pastel.cream} 52%, ${pastel.sand} 100%)`,
-  `linear-gradient(152deg, ${pastel.lilac} 0%, ${pastel.cream} 52%, ${pastel.blush} 100%)`
+  'linear-gradient(180deg, rgba(255,255,255,0.85) 0%, rgba(232,240,235,0.55) 100%)',
+  'linear-gradient(180deg, rgba(255,255,255,0.85) 0%, rgba(250,246,238,0.85) 100%)',
+  'linear-gradient(180deg, rgba(232,240,235,0.6) 0%, rgba(255,255,255,0.85) 100%)',
+  'linear-gradient(180deg, rgba(255,255,255,0.85) 0%, rgba(232,240,235,0.55) 100%)',
+  'linear-gradient(180deg, rgba(250,246,238,0.85) 0%, rgba(255,255,255,0.85) 100%)'
 ];
 
-// A wide, soft band for sections that need to sit apart from the cream page.
 export const bandWash =
-  `linear-gradient(180deg, ${palette.cream} 0%, ${pastel.mist} 22%, ${pastel.cream} 62%, ${pastel.sand} 100%)`;
+  'linear-gradient(180deg, rgba(250,246,238,0) 0%, rgba(232,240,235,0.45) 50%, rgba(250,246,238,0) 100%)';
 
-// The big diffuse washes behind page headings. Low opacity, wide radii, four
-// colours — it reads as light through a window rather than a coloured block.
 export const headerWash =
-  'radial-gradient(58% 52% at 8% 0%, rgba(228,87,122,0.11) 0%, rgba(255,250,243,0) 72%), ' +
-  'radial-gradient(52% 48% at 92% 6%, rgba(121,192,224,0.14) 0%, rgba(255,250,243,0) 72%), ' +
-  'radial-gradient(48% 44% at 62% 96%, rgba(242,178,62,0.12) 0%, rgba(255,250,243,0) 74%), ' +
-  'radial-gradient(36% 34% at 26% 84%, rgba(180,137,216,0.10) 0%, rgba(255,250,243,0) 74%)';
+  'radial-gradient(60% 50% at 50% 0%, rgba(45,90,67,0.07) 0%, rgba(250,246,238,0) 75%)';
+
+// Verified equestrian photography where every key matches its visual subject:
+export const images = {
+  // Rider in white breeches & tall boots cantering in a white-fenced outdoor sand arena
+  hero: 'https://images.unsplash.com/photo-1511746687876-42cb762f6ac1?auto=format&fit=crop&q=85&w=2000',
+  // Coach and young rider grooming/tacking up a chestnut horse in wooden stables
+  lesson: 'https://images.unsplash.com/photo-1607273225241-035d579b8452?auto=format&fit=crop&q=80&w=1400',
+  // Sunlit American barn aisle with loosebox stalls on both sides and a horse standing in the corridor
+  stables: 'https://images.unsplash.com/photo-1576692192914-9abed71b3ef9?auto=format&fit=crop&q=80&w=1400',
+  // Horses standing together inside a timber barn looking over the rails
+  barn: 'https://images.unsplash.com/photo-1566392785474-926a4c6257b5?auto=format&fit=crop&q=80&w=1400',
+  // Two riders in helmets and breeches schooling side by side in the outdoor sand arena
+  arena: 'https://images.unsplash.com/photo-1696866614151-5254858f603f?auto=format&fit=crop&q=80&w=1400',
+  // Horses out across open misty countryside pasture & chalk hills
+  hacking: 'https://images.unsplash.com/photo-1598362042346-70c59713811f?auto=format&fit=crop&q=80&w=1600',
+  // Grey horse cantering across open green turf
+  meadow: 'https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?auto=format&fit=crop&q=80&w=1600',
+  // Chestnut horse grazing on open downland grass
+  blossom: 'https://images.unsplash.com/photo-1534773728080-33d31da27ae5?auto=format&fit=crop&q=80&w=1400',
+  // Young child on a grey pony being led on a lead-rein by a handler
+  leadRein: 'https://images.unsplash.com/photo-1743851612756-9aeb50658ce8?auto=format&fit=crop&q=80&w=1400',
+  // Children walking toward a grey pony in the paddock
+  children: 'https://images.unsplash.com/photo-1676504848820-e1488d13c261?auto=format&fit=crop&q=80&w=1400',
+  // Horse and rider in English competition jacket clearing a white showjump fence on grass
+  jumping: 'https://images.unsplash.com/photo-1559295928-6964f905e9c7?auto=format&fit=crop&q=80&w=1400',
+  // Close-up of a dark bay horse clearing red-and-white showjumping poles
+  jumpingTwo: 'https://images.unsplash.com/photo-1574695272842-52dfdb7989d0?auto=format&fit=crop&q=80&w=1400',
+  // Saddles and leather tack on racks in the tack room
+  tackRoom: 'https://images.unsplash.com/photo-1682636109270-93cb7b720716?auto=format&fit=crop&q=80&w=1400',
+  // Rider standing with her horse in the barn doorway looking out at the arena
+  bond: 'https://images.unsplash.com/photo-1508343919546-4a5792fee935?auto=format&fit=crop&q=80&w=1400',
+  sunset: 'https://images.unsplash.com/photo-1598362042346-70c59713811f?auto=format&fit=crop&q=80&w=1600',
+  flatwork: 'https://images.unsplash.com/photo-1511746687876-42cb762f6ac1?auto=format&fit=crop&q=80&w=1400'
+};
 
 export interface Lesson {
   id: string;
   name: string;
+  category: 'Foundations & Children' | 'Flatwork & Private' | 'Jumping & Clinics' | 'Downland Hacking';
   duration: string;
-  price: string;
   who: string;
+  setting: string;
   detail: string;
+  highlights: string[];
+  photo: string;
   accent: string;
 }
 
 export const lessons: Lesson[] = [
   {
     id: 'little-buds',
-    name: 'Little Buds lead-rein',
+    name: 'Little Buds Lead-Rein',
+    category: 'Foundations & Children',
     duration: '30 minutes',
-    price: '£26',
-    who: 'Ages 4 – 7',
-    detail: 'One pony, one child, one of us walking beside you the whole way.',
-    accent: palette.rose
+    who: 'Ages 4 – 7 · One-to-one handler',
+    setting: 'Quiet Arena & Paddock Track',
+    detail: 'One gentle native pony, one child, and a dedicated coach walking beside them from mounting block to dismount.',
+    highlights: ['Dedicated handler beside the pony', 'Balance games & first rising trot', 'Grooming & patting in the barn afterwards'],
+    photo: images.leadRein,
+    accent: palette.green
   },
   {
     id: 'beginner-group',
-    name: 'Beginner group lesson',
+    name: 'Foundation Group Lesson',
+    category: 'Foundations & Children',
     duration: '45 minutes',
-    price: '£34',
     who: 'Four riders maximum',
-    detail: 'Steering, stopping, rising trot. Nobody spends it waiting their turn.',
-    accent: palette.gold
-  },
-  {
-    id: 'improvers',
-    name: 'Improvers group',
-    duration: '1 hour',
-    price: '£42',
-    who: 'Confident in canter',
-    detail: 'Flatwork, poles and grids in the indoor school.',
-    accent: palette.meadow
-  },
-  {
-    id: 'private',
-    name: 'Private lesson',
-    duration: '45 minutes',
-    price: '£58',
-    who: 'Any level',
-    detail: 'The fastest way to fix the one thing that has been bothering you.',
-    accent: palette.sky
-  },
-  {
-    id: 'semi-private',
-    name: 'Semi-private, two riders',
-    duration: '45 minutes',
-    price: '£40 each',
-    who: 'Friends or family',
-    detail: 'Nearly a private lesson, shared with someone you already ride with.',
-    accent: palette.lilac
-  },
-  {
-    id: 'dressage',
-    name: 'Flatwork & dressage clinic',
-    duration: '1 hour',
-    price: '£48',
-    who: 'Improvers upward',
-    detail: 'Round circles, smooth transitions, a test sheet to take home.',
-    accent: palette.meadow
-  },
-  {
-    id: 'jumping',
-    name: 'Jumping clinic',
-    duration: '1 hour',
-    price: '£52',
-    who: 'Jumping 60cm+',
-    detail: 'Related distances, full courses, and an honest verdict afterwards.',
-    accent: palette.rose
-  },
-  {
-    id: 'hack',
-    name: 'Downland hack',
-    duration: '90 minutes',
-    price: '£62',
-    who: 'Walk, trot and canter out',
-    detail: 'Straight off the yard onto four hundred acres of chalk downland.',
-    accent: palette.sky
-  },
-  {
-    id: 'returners',
-    name: 'Adult returners course',
-    duration: '4 × 45 minutes',
-    price: '£120',
-    who: 'Rode years ago',
-    detail: 'Four weeks, same coach, same horse. For anyone who misses it.',
-    accent: palette.gold
+    setting: '40m × 20m All-Weather School',
+    detail: 'Independent steering, quiet hands, balanced rising trot, and school figures — with only four riders so nobody waits in a long line.',
+    highlights: ['Capped at 4 riders per group', 'Off the lead-rein at your own pace', 'Same pony & coach each week'],
+    photo: images.arena,
+    accent: palette.green
   },
   {
     id: 'own-a-pony',
-    name: 'Own-a-pony morning',
+    name: 'Horsemanship & Stable Morning',
+    category: 'Foundations & Children',
     duration: '3 hours',
-    price: '£75',
-    who: 'Ages 8 – 14',
-    detail: 'Grooming, mucking out, a lesson and a hot chocolate.',
-    accent: palette.lilac
+    who: 'Ages 8 – 14 · Small groups',
+    setting: 'The American Barn & Arenas',
+    detail: 'Hands-on stable management, brushing, picking out feet, learning how a bridle and saddle fit, followed by a ridden lesson and hot chocolate.',
+    highlights: ['Grooming & tacking up in the barn', '45-minute ridden arena session', 'Ideal confidence builder for young riders'],
+    photo: images.lesson,
+    accent: palette.green
+  },
+  {
+    id: 'private',
+    name: 'Private Classical Lesson',
+    category: 'Flatwork & Private',
+    duration: '45 minutes',
+    who: 'All levels · One-to-one tuition',
+    setting: 'Indoor or Floodlit Outdoor Arena',
+    detail: 'Undivided coaching tailored to your seat, posture, and partnership — the calmest, most direct way to progress.',
+    highlights: ['1-to-1 with a senior BHS coach', 'Matched to one of 22 schoolmasters', 'Written coaching notes after every ride'],
+    photo: images.hero,
+    accent: palette.green
+  },
+  {
+    id: 'semi-private',
+    name: 'Shared Private Lesson',
+    category: 'Flatwork & Private',
+    duration: '45 minutes',
+    who: 'Two riders of matched ability',
+    setting: 'Indoor or Floodlit Outdoor Arena',
+    detail: 'All the quiet focus of a private session, shared with a friend, partner, or family member who rides at a similar stage.',
+    highlights: ['Two riders only in the arena', 'Ideal for parents & children or friends', 'Flexible midweek & weekend slots'],
+    photo: images.arena,
+    accent: palette.green
+  },
+  {
+    id: 'returners',
+    name: 'Adult Returners Course',
+    category: 'Flatwork & Private',
+    duration: '4 × 45 minutes',
+    who: 'Adults returning to the saddle',
+    setting: 'Quiet Midweek Sessions',
+    detail: 'Four unhurried weeks with the same coach and the same schoolmaster, designed for riders coming back after years out of the saddle.',
+    highlights: ['Four weekly sessions on the same horse', 'Rebuilds core balance & quiet confidence', 'Zero pressure, warm midweek atmosphere'],
+    photo: images.bond,
+    accent: palette.green
+  },
+  {
+    id: 'improvers',
+    name: 'Improvers Flatwork & Poles',
+    category: 'Flatwork & Private',
+    duration: '60 minutes',
+    who: 'Confident in walk, trot & canter',
+    setting: '60m × 25m Floodlit Arena',
+    detail: 'Rhythm, suppleness, leg-yield, and raised trotting poles to establish an elastic contact and balanced canter transitions.',
+    highlights: ['Lateral suppleness & pole exercises', 'Maximum 4 riders in the 60m arena', 'Schoolmasters trained to Novice/Elementary'],
+    photo: images.hero,
+    accent: palette.green
+  },
+  {
+    id: 'dressage',
+    name: 'Flatwork & Dressage Clinic',
+    category: 'Jumping & Clinics',
+    duration: '60 minutes',
+    who: 'Improvers to affiliated riders',
+    setting: 'Mirrored Dressage School',
+    detail: 'Shoulder-in, travers, medium paces, and accurate test riding on schoolmasters — or bring your own horse for competition preparation.',
+    highlights: ['Full long-side training mirrors', 'Schoolmasters or bring your own horse', 'Take-home test sheet & feedback'],
+    photo: images.meadow,
+    accent: palette.green
+  },
+  {
+    id: 'jumping',
+    name: 'Showjumping & Gridwork Clinic',
+    category: 'Jumping & Clinics',
+    duration: '60 minutes',
+    who: 'Jumping 60cm to 1.05m',
+    setting: 'Grass Paddock & Waxed Arena',
+    detail: 'Gymnastic grids, related distances, dog-legs, and full course riding led by Senior Coach Tom Neave.',
+    highlights: ['Course walk & stride adjustment', 'Full BS-standard showjumps & fillers', 'Available on our jumpers or your own horse'],
+    photo: images.jumping,
+    accent: palette.green
+  },
+  {
+    id: 'hack',
+    name: 'Chalk Downland Hack',
+    category: 'Downland Hacking',
+    duration: '90 minutes',
+    who: 'Balanced in walk, trot & canter',
+    setting: '400 Acres of Private Downland',
+    detail: 'Step straight out of the yard gate onto four hundred acres of ancient Wiltshire chalk turf — zero roadwork, long grass tracks, and views across the Pewsey Vale.',
+    highlights: ['Direct bridleway access with no roads', 'Accompanied by a senior yard guide', 'Steady walks or open hilltop canters'],
+    photo: images.hacking,
+    accent: palette.green
   }
 ];
 
 export const lessonIncludes = [
-  'Hats, body protectors and boots, fitted and lent free',
-  'A written note of what you worked on',
-  'The same coach and the same horse each week',
-  'A heated viewing room for whoever brought you'
+  'Hats, body protectors, and boots fitted and borrowed with our compliments',
+  'A written note from your coach after every lesson so you can track your progress',
+  'The same coach and the same horse each week so a real partnership can grow',
+  'Fresh coffee and a warm sofa in the viewing gallery for whoever brought you'
 ];
 
-// The five things taught here, in five words. It replaced a paragraph.
-export const disciplines = ['Lead-rein', 'Groups', 'Flatwork', 'Jumping', 'Hacking'];
+export const disciplines = ['Lead-Rein', 'Flatwork', 'Dressage', 'Showjumping', 'Downland Hacking'];
 
 export interface Horse {
   name: string;
   height: string;
   breed: string;
+  bloodline: string;
   age: string;
   colour: string;
+  discipline: string;
+  schooling: string;
   bestFor: string;
   character: string;
   photo: string;
@@ -212,81 +273,105 @@ export const horses: Horse[] = [
     name: 'Poppy',
     height: '12.2hh',
     breed: 'Welsh Section B',
-    age: '14 years',
-    colour: 'Bright bay',
-    bestFor: 'Lead-rein and first lessons',
+    bloodline: 'By Hilin Glyndwr',
+    age: '14 yrs',
+    colour: 'Bright Bay',
+    discipline: 'Lead-Rein & First Ridden',
+    schooling: 'Voice transitions & poles',
+    bestFor: 'Lead-rein & first lessons',
     character: 'Four hundred children taught to trot, and never once in a hurry.',
-    photo: 'https://images.unsplash.com/photo-1598974357801-cbca100e65d3?auto=format&fit=crop&q=65&w=900'
+    photo: 'https://images.unsplash.com/photo-1598974357801-cbca100e65d3?auto=format&fit=crop&q=80&w=1200'
   },
   {
     name: 'Marmalade',
-    height: '13hh',
-    breed: 'Dartmoor cross',
-    age: '11 years',
+    height: '13.1hh',
+    breed: 'Dartmoor Cross',
+    bloodline: 'Devonshire native lines',
+    age: '11 yrs',
     colour: 'Chestnut',
-    bestFor: 'Beginner groups',
-    character: 'Cheerful, opinionated about gates, completely honest over a pole.',
-    photo: 'https://images.unsplash.com/photo-1604429287879-6bc7a7572048?auto=format&fit=crop&q=65&w=900'
+    discipline: 'Junior Flatwork & Poles',
+    schooling: 'Balanced canter & 65cm fences',
+    bestFor: 'Foundation groups & young riders',
+    character: 'Cheerful, sure-footed, and completely honest into a cross-pole.',
+    photo: 'https://images.unsplash.com/photo-1604429287879-6bc7a7572048?auto=format&fit=crop&q=80&w=1200'
   },
   {
     name: 'Bluebell',
     height: '15.1hh',
     breed: 'Connemara',
-    age: '13 years',
-    colour: 'Dapple grey',
-    bestFor: 'Improvers and flatwork',
-    character: 'Gives you a beautiful shoulder-in the moment you ask correctly.',
-    photo: 'https://images.unsplash.com/photo-1552908768-910f4cd7b201?auto=format&fit=crop&q=65&w=900'
+    bloodline: 'By I Love You Melody',
+    age: '13 yrs',
+    colour: 'Dapple Grey',
+    discipline: 'Classical Flatwork & Lateral Work',
+    schooling: 'Shoulder-in, travers & counter-canter',
+    bestFor: 'Improvers & adult flatwork',
+    character: 'Gives you a textbook shoulder-in the moment you ask with a quiet leg.',
+    photo: 'https://images.unsplash.com/photo-1552908768-910f4cd7b201?auto=format&fit=crop&q=80&w=1200'
   },
   {
     name: 'Hawthorn',
-    height: '16hh',
+    height: '16.1hh',
     breed: 'Irish Sport Horse',
-    age: '10 years',
-    colour: 'Dark bay',
-    bestFor: 'Jumping clinics',
-    character: 'Thorn to his friends. Has never stopped at anything in his life.',
-    photo: 'https://images.unsplash.com/photo-1545780699-605328d5e41b?auto=format&fit=crop&q=65&w=900'
+    bloodline: 'By Cruising × Clover Hill',
+    age: '10 yrs',
+    colour: 'Dark Bay',
+    discipline: 'Showjumping & Gridwork',
+    schooling: 'Affiliated to 1.10m & BE100',
+    bestFor: 'Showjumping clinics',
+    character: 'Thorn to his friends — bold, scopey, and locks onto a fence from three strides out.',
+    photo: 'https://images.unsplash.com/photo-1545780699-605328d5e41b?auto=format&fit=crop&q=80&w=1200'
   },
   {
     name: 'Clover',
     height: '14.2hh',
     breed: 'New Forest',
-    age: '16 years',
-    colour: 'Dun',
-    bestFor: 'Hacking out',
-    character: 'Knows every track on the downs. Unbothered by tractors or dogs.',
-    photo: 'https://images.unsplash.com/photo-1680230955909-c0be7faa4bde?auto=format&fit=crop&q=65&w=900'
+    bloodline: 'Peveril forest lines',
+    age: '16 yrs',
+    colour: 'Golden Dun',
+    discipline: 'Downland Hacking & Returners',
+    schooling: 'Open-country pace control',
+    bestFor: 'Downland hacks & returning adults',
+    character: 'Knows every chalk ridge on the downs and looks after her rider in every gait.',
+    photo: 'https://images.unsplash.com/photo-1680230955909-c0be7faa4bde?auto=format&fit=crop&q=80&w=1200'
   },
   {
     name: 'Sorrel',
     height: '15.3hh',
-    breed: 'Thoroughbred cross',
-    age: '9 years',
-    colour: 'Liver chestnut',
-    bestFor: 'Adult private lessons',
-    character: 'Sharp, elegant and forward. Ask for her if you have ridden before.',
-    photo: 'https://images.unsplash.com/photo-1654693519854-175cee0fa7d6?auto=format&fit=crop&q=65&w=900'
+    breed: 'Thoroughbred Cross',
+    bloodline: 'By Catherston Liberator',
+    age: '9 yrs',
+    colour: 'Liver Chestnut',
+    discipline: 'Private Equitation & Dressage',
+    schooling: 'Medium paces & lateral work',
+    bestFor: 'Adult private tuition',
+    character: 'Light off the leg, elegant in the bridle, and a joy for riders who have ridden before.',
+    photo: 'https://images.unsplash.com/photo-1654693519854-175cee0fa7d6?auto=format&fit=crop&q=80&w=1200'
   },
   {
     name: 'Juniper',
     height: '16.2hh',
     breed: 'Dutch Warmblood',
-    age: '12 years',
+    bloodline: 'By Jazz (KWPN) × Ferro',
+    age: '12 yrs',
     colour: 'Black',
+    discipline: 'Affiliated Dressage Schoolmaster',
+    schooling: 'Advanced Medium & half-pass',
     bestFor: 'Dressage clinics',
-    character: 'Came from an affiliated yard and still expects to be ridden properly.',
-    photo: 'https://images.unsplash.com/photo-1727036545577-c83cd920277b?auto=format&fit=crop&q=65&w=900'
+    character: 'Joined us from an affiliated dressage yard and teaches the true feel of self-carriage.',
+    photo: 'https://images.unsplash.com/photo-1727036545577-c83cd920277b?auto=format&fit=crop&q=80&w=1200'
   },
   {
     name: 'Pip',
     height: '11.2hh',
-    breed: 'Shetland cross',
-    age: '19 years',
+    breed: 'Shetland Cross',
+    bloodline: 'Native pony lines',
+    age: '19 yrs',
     colour: 'Piebald',
-    bestFor: 'Own-a-pony mornings',
-    character: 'Semi-retired, fully in charge. Does the parties and the photographs.',
-    photo: 'https://images.unsplash.com/photo-1463748465553-80db1e6ff830?auto=format&fit=crop&q=65&w=900'
+    discipline: 'Horsemanship & First Ponies',
+    schooling: 'Grooming & lead-rein walk/trot',
+    bestFor: 'Stable mornings & youngest riders',
+    character: 'Quietly in charge of the bottom yard since 2011 and patient for hours of brushing.',
+    photo: 'https://images.unsplash.com/photo-1463748465553-80db1e6ff830?auto=format&fit=crop&q=80&w=1200'
   }
 ];
 
@@ -301,145 +386,160 @@ export const coaches: Coach[] = [
   {
     name: 'Rosie Ashcombe',
     role: 'Principal · BHS Accredited Professional Coach',
-    focus: 'Nervous riders and adult returners',
-    bio: `Started the academy with four ponies and a borrowed field in ${academy.established}. Still teaches most Saturdays.`
+    focus: 'Classical seat, nervous riders & adult returners',
+    bio: `Founded Bramble & Bay in ${academy.established} with four native ponies and a single sand paddock. Still teaches in the school five days a week.`
   },
   {
     name: 'Tom Neave',
-    role: 'Senior Coach · BHS Stage 4',
-    focus: 'Jumping and competition prep',
-    bio: 'Evented to Novice level. Takes the jumping clinics and runs the summer camps.'
+    role: 'Senior Coach · BHS Stage 4 Senior Coach',
+    focus: 'Showjumping clinics, gridwork & eventing preparation',
+    bio: 'Produced horses to Intermediate eventing before settling in the Pewsey Vale. Leads our jumping clinics and course-walk sessions.'
   },
   {
     name: 'Amara Ellis',
-    role: 'Coach · BHS Stage 3',
-    focus: 'Children and lead-rein',
-    bio: 'Came through the academy herself, from Little Buds at six to coaching at twenty-three.'
+    role: 'Equitation Coach · BHS Stage 3',
+    focus: 'Young riders, lead-rein & foundation flatwork',
+    bio: 'First rode Poppy here at age six and qualified through every BHS stage on the yard. Known for calm, patient teaching.'
   },
   {
     name: 'Fen Marlow',
-    role: 'Yard Manager',
-    focus: 'Welfare, feed, farrier and vet',
-    bio: 'Here before anybody else, and knows what all twenty-two had for breakfast.'
+    role: 'Yard & Welfare Manager',
+    focus: 'Equine nutrition, turnout, saddlery fitting & veterinary care',
+    bio: 'On the yard before dawn every morning overseeing our twenty-two horses, their individual forage plans, and saddle checks.'
   }
 ];
 
 export const facilities = [
   {
-    title: '60m × 25m floodlit arena',
-    detail: 'Waxed sand and fibre. Floodlit until 8pm, so winter lessons still run.'
+    index: '01',
+    title: 'The American Barn & Twenty-Two Looseboxes',
+    subtitle: 'Airy oak-and-steel stabling at the heart of the yard',
+    detail:
+      'Our main barn houses twenty-two wide looseboxes with deep straw beds, automatic drinkers, and open top doors so the horses can watch the comings and goings of the courtyard. Every rider meets their horse here before a lesson to groom, check stirrups, and unhurriedly tack up.',
+    note: 'Heated rug room · Hot wash bays · Individual tack lockers',
+    photo: images.stables,
+    alt: 'Sunlit American barn aisle with loosebox stalls on both sides and a horse standing calmly in the corridor'
   },
   {
-    title: '40m × 20m indoor school',
-    detail: 'Mirrors down the long side. Rain has never stopped a lesson here.'
+    index: '02',
+    title: 'The 60m Outdoor Sand & Fibre Arena',
+    subtitle: 'All-weather schooling & evening floodlights',
+    detail:
+      'Sheltered by mature beech hedging, our main 60m × 25m outdoor school is surfaced with waxed sand and fibre so it rides with the same cushion in August and January. Floodlit until 8.00pm on weeknights for after-work flatwork and pole sessions.',
+    note: '60m × 25m waxed surface · Full dressage letters · Floodlit to 8.00pm',
+    photo: images.arena,
+    alt: 'Two riders schooling side by side in the fenced outdoor sand arena at golden hour'
   },
   {
-    title: 'Grass jumping paddock',
-    detail: 'Eighteen fences from cross-poles to 1.05m, plus cross-country schooling.'
+    index: '03',
+    title: 'The Grass Showjumping Paddock',
+    subtitle: 'Six acres of old turf & full BS-standard courses',
+    detail:
+      'From April through October, our jumping clinics and gridwork sessions move out onto six acres of springy chalk turf set with eighteen fences — from welcoming 50cm cross-poles up to 1.05m oxers, water trays, and rustic skinnies.',
+    note: '18 turf fences · Gymnastic grids · Course walks with Tom Neave',
+    photo: images.jumping,
+    alt: 'Horse and rider clearing a white showjump fence on the grass jumping paddock'
   },
   {
-    title: '400 acres of hacking',
-    detail: 'Chalk downland and bridleways straight off the yard. No roadwork.'
+    index: '04',
+    title: 'Four Hundred Acres of Chalk Downland',
+    subtitle: 'Direct bridleway access with zero roadwork',
+    detail:
+      'Open the back gate of the yard and you step directly onto four hundred acres of private Wiltshire downland and ancient ridgeway turf. No lorries, no country lanes — just wide grass tracks, beech spinneys, and long views over the Pewsey Vale.',
+    note: 'Zero roadwork · Escorted hacks · Quiet tracks & open canter stretches',
+    photo: images.hacking,
+    alt: 'Horses out on the open misty Wiltshire countryside pastures at sunrise'
   },
   {
-    title: 'Heated viewing room',
-    detail: 'Sofas, a window onto the school, decent coffee and wifi.'
-  },
-  {
-    title: 'Tack room & kit to borrow',
-    detail: 'Hats, body protectors and boots in every size, fitted at no charge.'
+    index: '05',
+    title: 'The Bespoke Tack Room & Boot Library',
+    subtitle: 'Custom-fitted saddlery & complimentary rider kit',
+    detail:
+      'Each of our twenty-two horses is ridden in a saddle fitted specifically to their back by our master saddler every quarter. For visiting riders, we keep a full library of PAS 015 helmets, body protectors, and jodhpur boots ready to borrow at no charge.',
+    note: 'Albion & Fairfax saddlery · Complimentary hats & boots · Heated viewing lounge next door',
+    photo: images.tackRoom,
+    alt: 'Leather saddles and bridles arranged on wooden racks in the tack room'
   }
 ];
 
 export const testimonials = [
   {
-    // The short line is what the home page shows. The full quote is here for
-    // anywhere with room for it.
-    short: 'Eight lessons in and she talks about nothing else.',
+    short: 'Eight sessions in and her confidence is unrecognisable.',
     quote:
-      'Mia was terrified of anything bigger than a labrador. Eight lessons later she is cantering round the indoor school and talking about nothing else.',
+      'Mia was hesitant around anything larger than a spaniel. Eight quiet sessions on Poppy later, she is riding rising trot diagonals on her own and asking to come early to groom.',
     name: 'Hannah W.',
-    detail: 'Little Buds, then beginner group'
+    detail: 'Little Buds Lead-Rein & Foundation Group'
   },
   {
-    short: 'Back on a horse at forty-three, and nobody made me feel silly.',
+    short: 'Back in the saddle after twenty-eight years — calm, unhurried, and welcoming.',
     quote:
-      'I last rode when I was fifteen. The returners course put me back on a horse without once making me feel like an idiot for asking.',
+      'I last rode at fifteen. The Adult Returners course paired me with Bluebell and rebuilt my balance from the stirrup up without a single rushed instruction.',
     name: 'David P.',
-    detail: 'Adult returners course'
+    detail: 'Adult Returners Course'
   },
   {
-    short: 'Tom fixed my distances in one session.',
+    short: 'Transformed our rhythm and related distances in a single morning.',
     quote:
-      'The jumping clinics have transformed my mare. Tom fixed my distances in one session after two years of guessing.',
+      'Having four riders maximum in a clinic changes everything. Tom spotted a slight drift in my outside shoulder over the oxer and fixed two years of hesitation in twenty minutes.',
     name: 'Ellie R.',
-    detail: 'Jumping clinic, own horse'
+    detail: 'Showjumping Clinic'
   }
 ];
 
-// These live on their own page now, so the price list is a price list.
-export const faqs = [
+export interface FaqItem {
+  category: string;
+  q: string;
+  a: string;
+}
+
+export const faqs: FaqItem[] = [
   {
-    q: 'I have never sat on a horse. Where do I start?',
-    a: 'A beginner group lesson if you are an adult, Little Buds lead-rein if you are under seven. Both assume you know nothing at all.'
+    category: 'First Visits & Attire',
+    q: 'I have never sat on a horse before. Which session should I choose?',
+    a: 'If you are an adult, begin with either a Private Classical Lesson or our Adult Returners Course. For children aged four to seven, start with Little Buds Lead-Rein; children eight and above begin in a small Foundation Group.'
   },
   {
-    q: 'What should I wear for a first lesson?',
-    a: 'Long trousers without a thick seam, and boots or trainers with a small heel. We lend the hat, body protector and boots.'
+    category: 'First Visits & Attire',
+    q: 'What should I wear for my first lesson, and do I need to buy equipment?',
+    a: 'Please wear comfortable trousers without a thick inner seam (jodhpurs, breeches, or thick leggings) and a long-sleeved top. Do not buy riding kit beforehand — we fit and lend current PAS 015 riding hats, body protectors, and smooth-soled jodhpur boots at the yard.'
   },
   {
-    q: 'Is there a weight limit?',
-    a: 'Fifteen stone, set by the horses rather than by us. Ring the yard and we will tell you honestly which horse would suit.'
+    category: 'First Visits & Attire',
+    q: 'How early should we arrive before a lesson begins?',
+    a: 'Please arrive fifteen minutes before your first session so Fen or your coach can fit your hat and boots, introduce you to your horse in the barn, and check stirrup lengths unhurriedly before entering the school.'
   },
   {
-    q: 'Can we watch?',
-    a: 'Yes, and we would rather you did. The viewing room looks straight onto the indoor school.'
+    category: 'The Horses & Coaching',
+    q: 'How do you match riders to specific horses?',
+    a: 'We match by rider height, weight, balance, and temperament rather than assigning horses at random. Once you find a partnership that clicks, we keep you with the same horse and coach each week.'
   },
   {
-    q: 'What happens if the weather is bad?',
-    a: 'Lessons move to the indoor school. We only cancel for lightning or ice, and then your slot moves at no cost.'
+    category: 'The Horses & Coaching',
+    q: 'Is there a rider weight limit?',
+    a: 'For the welfare and comfort of our horses, our maximum dressed rider weight is 14 stone 7 lbs (92 kg), varying slightly depending on the horse suited to your lesson. Ring the yard and we will advise you warmly and honestly.'
   },
   {
-    q: 'Do you take my own horse?',
-    a: 'For clinics and private lessons, yes. Bring current flu and tetanus records and arrive twenty minutes early.'
+    category: 'The Horses & Coaching',
+    q: 'Can I bring my own horse for private tuition or clinics?',
+    a: 'Yes. Visiting horses are very welcome for Private Lessons, Flatwork & Dressage, and Showjumping Clinics. Bring a passport showing current equine influenza and tetanus vaccinations and park in the courtyard lorry bay.'
   },
   {
-    q: 'How do I pay, and can I cancel?',
-    a: 'Card or cash on the day, nothing online. Twenty-four hours notice and we move the slot for free.'
+    category: 'Yard Protocol & Weather',
+    q: 'What happens if it rains or the weather turns in winter?',
+    a: 'Riding continues year-round. In wet or windy weather, sessions take place in our covered indoor school. In the rare event of sheet ice or lightning, we simply move your slot to another day.'
   },
   {
-    q: 'Do you run holiday courses?',
-    a: 'Own-a-pony mornings every school holiday, and a summer camp in August. Both book out early.'
+    category: 'Yard Protocol & Weather',
+    q: 'May family members watch, and are dogs welcome on the yard?',
+    a: 'Spectators are warmly welcomed — our heated viewing gallery looks straight into the school and has sofas, wifi, and fresh coffee. Because ponies move through the courtyard all day, we ask that visiting dogs stay in vehicles.'
   }
 ];
 
-export const images = {
-  hero: 'https://images.unsplash.com/photo-1511746687876-42cb762f6ac1?auto=format&fit=crop&q=65&w=1600',
-  lesson: 'https://images.unsplash.com/photo-1607273225241-035d579b8452?auto=format&fit=crop&q=65&w=1200',
-  stables: 'https://images.unsplash.com/photo-1576692192914-9abed71b3ef9?auto=format&fit=crop&q=65&w=1200',
-  meadow: 'https://images.unsplash.com/photo-1686866694468-0d452973ce7c?auto=format&fit=crop&q=65&w=1600',
-  blossom: 'https://images.unsplash.com/photo-1591531424171-b49ab93f517a?auto=format&fit=crop&q=65&w=1200',
-  children: 'https://images.unsplash.com/photo-1676504848820-e1488d13c261?auto=format&fit=crop&q=65&w=1200',
-  leadRein: 'https://images.unsplash.com/photo-1743851612756-9aeb50658ce8?auto=format&fit=crop&q=65&w=1200',
-  jumping: 'https://images.unsplash.com/photo-1559295928-6964f905e9c7?auto=format&fit=crop&q=65&w=1200',
-  jumpingTwo: 'https://images.unsplash.com/photo-1574695272842-52dfdb7989d0?auto=format&fit=crop&q=65&w=1200',
-  hacking: 'https://images.unsplash.com/photo-1696866614151-5254858f603f?auto=format&fit=crop&q=65&w=1200',
-  tackRoom: 'https://images.unsplash.com/photo-1682636109270-93cb7b720716?auto=format&fit=crop&q=65&w=1200',
-  bond: 'https://images.unsplash.com/photo-1508343919546-4a5792fee935?auto=format&fit=crop&q=65&w=1200',
-  sunset: 'https://images.unsplash.com/photo-1598362042346-70c59713811f?auto=format&fit=crop&q=65&w=1600',
-  arena: 'https://images.unsplash.com/photo-1583455401055-b84c5b9b32cd?auto=format&fit=crop&q=65&w=1200',
-  flatwork: 'https://images.unsplash.com/photo-1631364918274-0e7159557db2?auto=format&fit=crop&q=65&w=1200',
-  barn: 'https://images.unsplash.com/photo-1566392785474-926a4c6257b5?auto=format&fit=crop&q=65&w=1200'
-};
-
-// The photographs that scroll along the gallery strip on the home page.
 export const galleryStrip = [
-  { src: images.leadRein, alt: 'A child on a pony being led in the arena' },
-  { src: images.blossom, alt: 'Pink and white wildflowers in the paddock hedge' },
-  { src: images.jumping, alt: 'A horse and rider jumping a white fence' },
-  { src: images.stables, alt: 'A horse looking out between two stable doors' },
-  { src: images.meadow, alt: 'Wildflower meadow on the edge of the downs' },
-  { src: images.hacking, alt: 'Two riders hacking out along a bridleway' },
-  { src: images.bond, alt: 'A rider with her arms around a horse' },
-  { src: images.arena, alt: 'A rider schooling in the outdoor arena' }
+  { src: images.leadRein, alt: 'Young child on a grey pony during a lead-rein lesson' },
+  { src: images.jumping, alt: 'Horse and rider clearing a showjumping fence on turf' },
+  { src: images.stables, alt: 'Schoolmaster standing in the sunlit American barn aisle' },
+  { src: images.arena, alt: 'Two riders schooling in the outdoor sand arena' },
+  { src: images.bond, alt: 'Rider greeting her horse in the barn doorway' },
+  { src: images.hacking, alt: 'Horses out on the open Wiltshire downland pastures' }
 ];

@@ -1,158 +1,203 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import * as RouterDOM from 'react-router-dom';
-import { 
-  ArrowRight, 
-  Award, 
-  ShieldCheck, 
-  CheckCircle2, 
-  Compass, 
-  Hammer, 
-  Users 
-} from 'lucide-react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { ArrowUpRight } from 'lucide-react';
 import Navbar from './Navbar';
 import Footer from './Footer';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const Link = (RouterDOM as any).Link || (RouterDOM as any).default?.Link;
 
 export const About: React.FC = () => {
+  const pageRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  const team = [
+  useEffect(() => {
+    const root = pageRef.current;
+    if (!root) return;
+    const reduceMotion =
+      typeof window.matchMedia === 'function' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduceMotion) return;
+
+    const ctx = gsap.context(() => {
+      gsap.utils.toArray<HTMLElement>('.lux-glide').forEach((el) => {
+        gsap.fromTo(
+          el,
+          { y: 36, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 1.15,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: el,
+              start: 'top 88%',
+              once: true,
+            },
+          }
+        );
+      });
+    }, root);
+
+    return () => ctx.revert();
+  }, []);
+
+  const principles = [
     {
-      name: "David Henderson",
-      role: "Founder & Master Stonemason",
-      experience: "35+ Years on Site",
-      bio: "Trained in traditional Cotswold dry-stone masonry and modern porcelain engineering. David personally oversees quality standards on every high-end build."
+      num: '01',
+      title: 'Design & Build Under One Roof',
+      desc: 'One accountable practice guides your survey, 3D concept drawings, stonework, planting, and lighting without third-party friction.',
     },
     {
-      name: "Claire Sutton (RHS)",
-      role: "Lead Landscape Architect",
-      experience: "15 Years Experience",
-      bio: "RHS Silver-Gilt medalist. Specialises in architectural perennial planting palettes, 3D CAD masterplans, and seamless indoor-outdoor residential flow."
+      num: '02',
+      title: 'Permanent In-House Craftsmen',
+      desc: 'Our employed teams of qualified stonemasons, horticulturists, and site foremen construct your garden with quiet precision.',
     },
     {
-      name: "James Bailey",
-      role: "Construction Director",
-      experience: "18 Years Experience",
-      bio: "Expert in deep sub-base structural stabilization, laser-graded drainage networks, and high-specification porcelain installation."
-    }
+      num: '03',
+      title: 'RHS & BALI Medal Standards',
+      desc: 'Multiple RHS Chelsea Flower Show Gold Medals and BALI Principal Awards reflect the enduring quality of our finishing.',
+    },
+    {
+      num: '04',
+      title: 'Responsible Materiality',
+      desc: 'We partner with ethical stone quarries, FSC timber mills, and peat-free nurseries while recycling site materials responsibly.',
+    },
   ];
 
-  const standards = [
+  const leadership = [
     {
-      title: "British Standard Compliance",
-      desc: "Every sub-base, mortar bed, and drainage run is installed strictly to BS 7533 standards for paved surfaces."
+      name: 'David Henderson',
+      role: 'Founder & Managing Director',
+      experience: '28+ Years in Landscape Architecture',
+      bio: 'Founded the practice in 1998 to unite creative garden design with rigorous civil and stone construction under one roof. Oversees every residential estate commission.',
     },
     {
-      title: "Zero Subcontracting Policy",
-      desc: "Our permanent, uniformed team carries out the work. No third-party hand-offs or unaccountable contractors."
+      name: 'Claire Sutton (RHS)',
+      role: 'Head of Garden Design & Horticulture',
+      experience: 'RHS Chelsea Gold Medalist',
+      bio: 'Leads our spatial design studio and curated planting schemes, pairing architectural evergreen structure with naturalistic multi-seasonal borders.',
     },
     {
-      title: "Direct Sourced Materials",
-      desc: "We import our 20mm outdoor porcelain direct from certified Italian factories and hand-select British stone from local quarries."
+      name: 'James Bailey',
+      role: 'Construction & Contracts Director',
+      experience: '20 Years Site Leadership',
+      bio: 'Directs our permanent in-house teams of stonemasons, joiners, and landscape engineers, ensuring every terrace, water feature, and pergola exceeds British Standards.',
     },
-    {
-      title: "Fixed-Price Binding Estimates",
-      desc: "Your contract specifies exact materials, timelines, and payment milestones. Zero budget drift."
-    }
   ];
 
   return (
-    <div className="min-h-screen bg-[#FBF9F5] text-stone-900 font-sans selection:bg-[#C86A3D] selection:text-white">
+    <div
+      ref={pageRef}
+      className="min-h-screen bg-[#FAF9F5] text-[#1C211D] font-sans selection:bg-[#5B6450] selection:text-white overflow-x-hidden"
+    >
       <Navbar />
 
-      {/* HEADER BANNER */}
-      <section className="bg-[#162E20] text-white py-20 px-6 md:px-12 border-b border-white/10">
-        <div className="max-w-7xl mx-auto space-y-4">
-          <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[0.25em] text-[#E08A5B] font-bold">
-            <span>Our Heritage &amp; Ethos</span>
-          </div>
-          <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-tight">
-            Craftsmanship Rooted in Wiltshire.
+      {/* MINIMALIST EDITORIAL HEADER */}
+      <section className="pt-24 sm:pt-36 md:pt-48 pb-12 sm:pb-24 md:pb-32 px-5 sm:px-10 md:px-14 lg:px-24 border-b border-[#E4E0D7]">
+        <div className="max-w-5xl mx-auto space-y-5 sm:space-y-8 lux-glide">
+          <span className="block text-[9px] sm:text-[10px] uppercase tracking-[0.34em] sm:tracking-[0.38em] text-[#5B6450]">
+            Established 1998 · Practice &amp; Heritage
+          </span>
+          <h1 className="font-cormorant text-4xl sm:text-6xl md:text-7xl font-light text-[#1C211D] tracking-tight leading-[1.06]">
+            Twenty-eight years of{' '}
+            <span className="italic text-[#5B6450]">enduring landscapes.</span>
           </h1>
-          <p className="text-stone-300 text-sm sm:text-base max-w-2xl leading-relaxed">
-            Founded in 1988, Oak &amp; Ash combines time-honoured masonry traditions with modern architectural garden engineering.
+          <p className="text-[#5A5953] text-sm sm:text-base md:text-lg font-light leading-[1.8] sm:leading-[1.9] max-w-2xl">
+            Formed in 1998, Oak &amp; Ash specialises in the architectural design and construction of private domestic gardens across Wiltshire, Surrey, and London.
           </p>
         </div>
       </section>
 
-      {/* STORY & MISSION */}
-      <section className="py-24 px-6 md:px-12 max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-          
-          <div className="lg:col-span-6 space-y-6">
-            <span className="text-xs font-mono uppercase tracking-[0.25em] text-[#C86A3D] font-bold">
-              The Oak &amp; Ash Story
+      {/* STORY & UNBOXED FIGURES */}
+      <section className="py-16 sm:py-28 md:py-40 px-5 sm:px-10 md:px-14 lg:px-24 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 sm:gap-16 lg:gap-24 items-center">
+          <div className="lux-glide lg:col-span-6 space-y-5 sm:space-y-8">
+            <span className="block text-[9px] sm:text-[10px] uppercase tracking-[0.34em] sm:tracking-[0.36em] text-[#5B6450]">
+              Our Philosophy
             </span>
-            <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#162E20] tracking-tight leading-tight">
-              An Outdoor Space Should Be Built with the Precision of an Interior.
+            <h2 className="font-cormorant text-3xl sm:text-4xl md:text-5xl font-light text-[#1C211D] leading-[1.15]">
+              Well-designed and constructed gardens, executed to the smallest detail.
             </h2>
-            <p className="text-stone-600 text-sm sm:text-base leading-relaxed">
-              For more than three decades, our crews have worked across Wiltshire, Bath, Somerset, and the Cotswolds. What started as a dedicated stone walling practice has grown into one of the region’s premier architectural landscaping studios.
-            </p>
-            <p className="text-stone-600 text-sm sm:text-base leading-relaxed">
-              We reject short-cuts. While lesser contractors lay paving on sand or dot-and-dab mortar, our foundations are built to commercial civil engineering tolerances. That is why our terraces remain level, pristine, and structurally sound through decades of British frost and rain.
+            <p className="text-[#5A5953] text-sm sm:text-base font-light leading-[1.8] sm:leading-[1.9]">
+              Over nearly three decades, our studio has earned a reputation for delivering finely crafted outdoor spaces completed on schedule and within budget. Whether designing from a blank canvas in-house or building alongside independent landscape architects, our focus on structural integrity and botanical depth never wavers.
             </p>
 
-            <div className="pt-2 flex items-center gap-6">
-              <div className="p-4 bg-white rounded-xl border border-stone-200">
-                <div className="font-serif text-3xl font-bold text-[#162E20]">35+</div>
-                <div className="text-[10px] font-mono uppercase tracking-wider text-stone-500 mt-1">Years in Practice</div>
+            {/* Open Hairline Figures — Zero Boxes */}
+            <div className="pt-5 sm:pt-8 border-t border-[#D8D4CA] grid grid-cols-3 gap-4 sm:gap-8">
+              <div>
+                <div className="font-cormorant text-3xl sm:text-5xl font-light text-[#1C211D] tabular-nums">
+                  28+
+                </div>
+                <div className="text-[9px] sm:text-[10px] uppercase tracking-[0.18em] sm:tracking-[0.26em] text-[#7A7972] mt-1.5 sm:mt-2">
+                  Years Est.
+                </div>
               </div>
-              <div className="p-4 bg-white rounded-xl border border-stone-200">
-                <div className="font-serif text-3xl font-bold text-[#162E20]">850+</div>
-                <div className="text-[10px] font-mono uppercase tracking-wider text-stone-500 mt-1">Gardens Built</div>
+              <div>
+                <div className="font-cormorant text-3xl sm:text-5xl font-light text-[#1C211D] tabular-nums">
+                  22
+                </div>
+                <div className="text-[9px] sm:text-[10px] uppercase tracking-[0.18em] sm:tracking-[0.26em] text-[#7A7972] mt-1.5 sm:mt-2">
+                  RHS &amp; BALI
+                </div>
               </div>
-              <div className="p-4 bg-white rounded-xl border border-stone-200">
-                <div className="font-serif text-3xl font-bold text-[#162E20]">100%</div>
-                <div className="text-[10px] font-mono uppercase tracking-wider text-stone-500 mt-1">In-House Staff</div>
+              <div>
+                <div className="font-cormorant text-3xl sm:text-5xl font-light text-[#1C211D] tabular-nums">
+                  100%
+                </div>
+                <div className="text-[9px] sm:text-[10px] uppercase tracking-[0.18em] sm:tracking-[0.26em] text-[#7A7972] mt-1.5 sm:mt-2">
+                  In-House
+                </div>
               </div>
             </div>
           </div>
 
-          <div className="lg:col-span-6">
-            <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl border border-stone-200 bg-stone-900">
+          {/* Pure Unbadged Image */}
+          <div className="lux-glide lg:col-span-6">
+            <div className="overflow-hidden aspect-[4/3] bg-[#E5E2D9]">
               <img
-                src="https://images.unsplash.com/photo-1598902108854-10e335adac99?auto=format&fit=crop&q=80&w=1200"
-                alt="Crafting a stone patio terrace"
+                src="https://dmhdaawgg48dl.cloudfront.net/wp-content/uploads/2024/12/corten-steel-pavilion-stone-path-salvia-woodland-960x960.jpg"
+                alt="RHS Chelsea Gold Medal show garden"
                 className="w-full h-full object-cover"
                 loading="lazy"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent flex flex-col justify-end p-6 text-white">
-                <div className="font-serif text-lg font-bold">Marlborough Workshop &amp; Yard</div>
-                <div className="text-xs text-stone-300">Natural stone dressing &amp; sample library</div>
-              </div>
             </div>
           </div>
-
         </div>
       </section>
 
-      {/* STANDARDS & ACCREDITATIONS */}
-      <section className="py-20 px-6 md:px-12 bg-[#F5F2EB] border-y border-stone-200">
+      {/* THE FOUR PILLARS — OPEN UNBOXED COLUMNS */}
+      <section className="py-16 sm:py-28 md:py-36 px-5 sm:px-10 md:px-14 lg:px-24 bg-[#F3F1EB] border-y border-[#E4E0D7]">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center max-w-2xl mx-auto mb-16 space-y-3">
-            <span className="text-xs font-mono uppercase tracking-[0.25em] text-[#C86A3D] font-bold">
-              Uncompromising Quality
+          <div className="lux-glide mb-10 sm:mb-20 space-y-2 sm:space-y-3">
+            <span className="block text-[9px] sm:text-[10px] uppercase tracking-[0.34em] sm:tracking-[0.36em] text-[#5B6450]">
+              Practice Standards
             </span>
-            <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#162E20]">
-              The Core Principles of Every Build.
+            <h2 className="font-cormorant text-3xl sm:text-4xl md:text-5xl font-light text-[#1C211D]">
+              The Four Pillars of Every Commission
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {standards.map((std, idx) => (
-              <div key={idx} className="p-6 bg-white rounded-xl border border-stone-200 shadow-sm space-y-3">
-                <div className="w-8 h-8 rounded-full bg-[#162E20] text-white flex items-center justify-center font-mono text-xs font-bold">
-                  0{idx + 1}
-                </div>
-                <h3 className="font-serif text-lg font-bold text-[#162E20]">
-                  {std.title}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10">
+            {principles.map((p) => (
+              <div
+                key={p.num}
+                className="lux-glide pt-5 sm:pt-7 border-t border-[#CFCBC0] space-y-3 sm:space-y-4"
+              >
+                <span className="font-cormorant italic text-2xl text-[#5B6450] block">
+                  {p.num}
+                </span>
+                <h3 className="font-cormorant text-2xl font-normal text-[#1C211D]">
+                  {p.title}
                 </h3>
-                <p className="text-stone-600 text-xs sm:text-sm leading-relaxed">
-                  {std.desc}
+                <p className="text-[#5A5953] text-sm font-light leading-[1.85]">
+                  {p.desc}
                 </p>
               </div>
             ))}
@@ -160,60 +205,46 @@ export const About: React.FC = () => {
         </div>
       </section>
 
-      {/* LEADERSHIP & KEY TRADESMEN */}
-      <section className="py-24 px-6 md:px-12 max-w-7xl mx-auto">
-        <div className="text-center max-w-2xl mx-auto mb-16 space-y-3">
-          <span className="text-xs font-mono uppercase tracking-[0.25em] text-[#C86A3D] font-bold">
-            The Craft Team
-          </span>
-          <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#162E20]">
-            The Hands Behind the Work.
-          </h2>
+      {/* STUDIO LEADERSHIP — OPEN UNBOXED COLUMNS */}
+      <section className="py-16 sm:py-28 md:py-40 px-5 sm:px-10 md:px-14 lg:px-24 max-w-7xl mx-auto">
+        <div className="lux-glide flex flex-col sm:flex-row sm:items-end justify-between mb-10 sm:mb-20 gap-5 sm:gap-8">
+          <div className="space-y-2 sm:space-y-3">
+            <span className="block text-[9px] sm:text-[10px] uppercase tracking-[0.34em] sm:tracking-[0.36em] text-[#5B6450]">
+              Studio Leadership
+            </span>
+            <h2 className="font-cormorant text-3xl sm:text-4xl md:text-5xl font-light text-[#1C211D]">
+              The Specialists Behind Your Garden
+            </h2>
+          </div>
+          <Link
+            to="/demo/landscaping/contact"
+            className="inline-flex items-center gap-3 text-[10px] sm:text-[11px] uppercase tracking-[0.28em] sm:tracking-[0.3em] text-[#1C211D] hover:text-[#5B6450] pb-2 border-b border-[#1C211D] hover:border-[#5B6450] transition-colors w-fit"
+          >
+            <span>Arrange a Studio Meeting</span>
+            <ArrowUpRight size={14} />
+          </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {team.map((member, idx) => (
-            <div key={idx} className="bg-white p-7 rounded-xl border border-stone-200 shadow-sm space-y-4">
-              <div className="w-12 h-12 rounded-xl bg-[#162E20]/5 text-[#C86A3D] flex items-center justify-center font-serif text-xl font-bold">
-                {member.name.charAt(0)}
-              </div>
-              <div>
-                <h3 className="font-serif text-xl font-bold text-[#162E20]">
-                  {member.name}
-                </h3>
-                <p className="text-xs font-mono uppercase tracking-wider text-[#C86A3D] font-bold mt-0.5">
-                  {member.role}
-                </p>
-                <div className="text-[11px] text-stone-500 mt-1">
-                  {member.experience}
-                </div>
-              </div>
-              <p className="text-stone-600 text-xs sm:text-sm leading-relaxed pt-2 border-t border-stone-100">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-14">
+          {leadership.map((member, idx) => (
+            <div
+              key={member.name}
+              className="lux-glide pt-5 sm:pt-8 border-t border-[#D8D4CA] space-y-3 sm:space-y-4"
+            >
+              <span className="text-[9px] sm:text-[10px] uppercase tracking-[0.28em] sm:tracking-[0.3em] text-[#5B6450] block">
+                0{idx + 1} &nbsp;·&nbsp; {member.experience}
+              </span>
+              <h3 className="font-cormorant text-2xl sm:text-3xl font-normal text-[#1C211D]">
+                {member.name}
+              </h3>
+              <p className="text-[10px] sm:text-[11px] uppercase tracking-[0.22em] text-[#7A7972]">
+                {member.role}
+              </p>
+              <p className="text-[#5A5953] text-sm font-light leading-[1.85] pt-1 sm:pt-2">
                 {member.bio}
               </p>
             </div>
           ))}
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="py-20 px-6 md:px-12 bg-[#162E20] text-white text-center">
-        <div className="max-w-3xl mx-auto space-y-6">
-          <h2 className="font-serif text-3xl sm:text-4xl font-bold">
-            Work with Our Senior Stonemasons &amp; Designers.
-          </h2>
-          <p className="text-stone-300 text-sm sm:text-base leading-relaxed">
-            Every client works directly with our founding directors from initial concept to completion.
-          </p>
-          <div className="pt-2">
-            <Link
-              to="/demo/landscaping/contact"
-              className="px-8 py-4 bg-[#C86A3D] hover:bg-[#b5582c] text-white font-semibold text-xs uppercase tracking-wider rounded-lg transition-all shadow-lg inline-flex items-center gap-2"
-            >
-              <span>Schedule Your Property Survey</span>
-              <ArrowRight size={14} />
-            </Link>
-          </div>
         </div>
       </section>
 

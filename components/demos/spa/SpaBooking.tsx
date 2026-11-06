@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import * as RouterDOM from 'react-router-dom';
 const { Link } = RouterDOM as any;
-import { Calendar, Users, Check, Sparkles, ArrowRight, ShieldCheck, ArrowLeft, Star, ChevronDown } from 'lucide-react';
+import { Calendar, Check, ArrowRight, ArrowLeft } from 'lucide-react';
 import { motion as framerMotion, AnimatePresence } from 'framer-motion';
 import SpaNavbar from './SpaNavbar';
 import SpaFooter from './SpaFooter';
 import SpaCustomCalendar from './SpaCustomCalendar';
-import { SPA_DATA, SpaSuite } from './spaData';
+import { SPA_DATA } from './spaData';
 
 const motion = framerMotion as any;
 
@@ -29,34 +29,25 @@ export const SpaBooking: React.FC = () => {
   }, [step]);
 
   const selectedSuite = SPA_DATA.suites.find((s) => s.id === selectedSuiteId) || SPA_DATA.suites[0];
-  const nights = 3;
-  const suiteTotal = selectedSuite.pricePerNight * nights;
 
-  const addonPrices: Record<string, { label: string; price: number; desc: string }> = {
+  const addonPrices: Record<string, { label: string; desc: string }> = {
     'spa-pass': {
-      label: 'Unlimited Thermal Spa & Mineral Pools Pass',
-      price: 90,
-      desc: 'Complimentary herbal teas, thermal robe and reserved heated lounger.'
+      label: 'Full Thermal Spa & Mineral Pools Access',
+      desc: 'Complimentary botanical infusions, linen robes, and heated poolside loungers.'
     },
     'stone-ritual': {
-      label: 'Couples Nordic Hot Stone Ritual (90 min)',
-      price: 340,
-      desc: 'Volcanic basalt stones and organic pine arnica massage.'
+      label: 'Couples Nordic Basalt Hot Stone Ritual (90 Minutes)',
+      desc: 'Warm volcanic river stones with organic pine and cedarwood oils.'
     },
     'tasting-dinner': {
-      label: 'Food & Forest 8-Course Tasting Menu with Wine Pairing',
-      price: 260,
-      desc: 'Private chef table overlooking the dusk pine reserve.'
+      label: 'Seven-Course Woodland Tasting Menu at Food & Forest',
+      desc: 'Evening tasting menu with sommelier wine pairing overlooking the pine reserve.'
     },
     'transfer': {
-      label: 'Private Luxury Electric SUV Transfer (London / Heathrow)',
-      price: 180,
-      desc: 'Chauffeur driven directly to your suite door.'
+      label: 'Private Chauffeur Transfer (London or Heathrow)',
+      desc: 'Door-to-door collection in our Mercedes-Maybach or Range Rover fleet.'
     }
   };
-
-  const addonsTotal = addons.reduce((sum, key) => sum + (addonPrices[key]?.price || 0), 0);
-  const grandTotal = suiteTotal + addonsTotal;
 
   const toggleAddon = (key: string) => {
     if (addons.includes(key)) {
@@ -80,64 +71,66 @@ export const SpaBooking: React.FC = () => {
       <SpaNavbar />
 
       {/* BANNER */}
-      <div className="relative pt-44 pb-20 px-6 md:px-14 bg-[#0A0D0C] border-b border-white/10">
-        <div className="max-w-6xl mx-auto text-center space-y-6">
+      <section className="relative pt-28 pb-14 sm:pt-36 sm:pb-20 md:pt-52 md:pb-28 px-5 sm:px-6 md:px-14 bg-[#070908] border-b border-white/10">
+        <div className="max-w-5xl mx-auto text-center space-y-4 sm:space-y-6">
           <span className="text-[10px] uppercase tracking-[0.45em] text-emerald-400 font-mono font-bold block">
-            DIRECT RESERVATION PORTAL
+            DIRECT RESERVATIONS
           </span>
-          <h1 className="font-cinzel text-3xl sm:text-5xl md:text-6xl font-bold uppercase text-white tracking-wider">
-            BOOK YOUR STAY
+          <h1 className="font-cinzel text-3xl sm:text-6xl font-bold uppercase text-white tracking-wider">
+            RESERVE YOUR STAY
           </h1>
-          <p className="text-xs sm:text-sm text-white/60 max-w-lg mx-auto font-light leading-relaxed">
-            Best rate guaranteed with complimentary thermal mineral spa access and welcome organic herbal tea flight.
+          <p className="text-sm sm:text-base text-white/60 max-w-lg mx-auto font-light leading-relaxed">
+            Every reservation includes full access to our geothermal mineral pools, cedar saunas, and morning woodland breakfast.
           </p>
 
           {/* STEP INDICATOR */}
-          <div className="flex items-center justify-center gap-4 pt-6 text-xs uppercase tracking-widest font-mono">
-            <span className={step === 'selection' ? 'text-emerald-400 font-bold' : 'text-white/40'}>
-              01. Choose Suite
+          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-6 pt-4 sm:pt-6 text-[10px] sm:text-xs uppercase tracking-widest font-mono">
+            <span className={step === 'selection' ? 'text-emerald-400 font-bold' : 'text-white/35'}>
+              01 · Residence
             </span>
-            <span className="text-white/20">&rarr;</span>
-            <span className={step === 'details' ? 'text-emerald-400 font-bold' : 'text-white/40'}>
-              02. Guest Details
+            <span className="text-white/20">—</span>
+            <span className={step === 'details' ? 'text-emerald-400 font-bold' : 'text-white/35'}>
+              02 · Guest Details
             </span>
-            <span className="text-white/20">&rarr;</span>
-            <span className={step === 'confirmed' ? 'text-emerald-400 font-bold' : 'text-white/40'}>
-              03. Confirmation
+            <span className="text-white/20">—</span>
+            <span className={step === 'confirmed' ? 'text-emerald-400 font-bold' : 'text-white/35'}>
+              03 · Confirmation
             </span>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div className="max-w-6xl mx-auto px-6 md:px-14 py-20">
+      <section className="max-w-6xl mx-auto px-5 sm:px-6 md:px-14 py-16 sm:py-24 md:py-40">
         {step === 'selection' && (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-            {/* LEFT: SUITE SELECTOR & ADDONS */}
-            <div className="lg:col-span-8 space-y-10">
-              {/* DATES & GUEST BAR (SHARP SQUARES) */}
-              <div className="p-6 bg-[#0C100E] border border-white/10 space-y-4 shadow-xl">
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 sm:gap-16 lg:gap-24 items-start">
+            {/* LEFT: SUITE SELECTOR & ADDONS (NO SMALL PHOTOS) */}
+            <div className="lg:col-span-8 space-y-12 sm:space-y-20">
+              {/* DATES & GUEST BAR */}
+              <div className="pb-8 sm:pb-10 border-b border-white/10 space-y-6">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
                   <button
                     type="button"
                     onClick={() => setShowCalendar(!showCalendar)}
-                    className="flex items-center gap-3 px-5 py-3 bg-white/5 hover:bg-white/10 border border-white/15 text-left w-full sm:w-auto cursor-pointer transition-colors"
+                    className="flex items-center gap-4 py-2 text-left cursor-pointer group"
                   >
-                    <Calendar size={16} className="text-emerald-400 shrink-0" />
+                    <Calendar size={18} className="text-emerald-400 shrink-0" />
                     <div>
-                      <span className="block text-[9px] uppercase font-mono tracking-widest text-white/50">STAY DATES</span>
-                      <span className="text-xs font-mono font-bold text-white">
+                      <span className="block text-[10px] uppercase font-mono tracking-widest text-white/45">
+                        ARRIVAL & DEPARTURE
+                      </span>
+                      <span className="text-sm sm:text-base font-mono text-white group-hover:text-emerald-400 transition-colors">
                         {checkIn} → {checkOut}
                       </span>
                     </div>
                   </button>
 
-                  <div className="flex items-center gap-4 w-full sm:w-auto justify-end text-xs font-mono">
+                  <div className="flex items-center gap-8 text-xs font-mono">
                     <div>
-                      <label className="block text-[9px] uppercase text-white/50 tracking-wider mb-1">Adults</label>
+                      <label className="block text-[10px] uppercase text-white/45 tracking-widest mb-1">Adults</label>
                       <select
                         value={adults}
                         onChange={(e) => setAdults(Number(e.target.value))}
-                        className="bg-[#141B18] border border-white/20 px-3 py-2 text-white focus:outline-none focus:border-emerald-400"
+                        className="bg-[#070908] border-b border-white/20 py-2 text-sm text-white focus:outline-none focus:border-emerald-400"
                       >
                         <option value={1}>1 Adult</option>
                         <option value={2}>2 Adults</option>
@@ -147,11 +140,11 @@ export const SpaBooking: React.FC = () => {
                     </div>
 
                     <div>
-                      <label className="block text-[9px] uppercase text-white/50 tracking-wider mb-1">Children</label>
+                      <label className="block text-[10px] uppercase text-white/45 tracking-widest mb-1">Children</label>
                       <select
                         value={children}
                         onChange={(e) => setChildren(Number(e.target.value))}
-                        className="bg-[#141B18] border border-white/20 px-3 py-2 text-white focus:outline-none focus:border-emerald-400"
+                        className="bg-[#070908] border-b border-white/20 py-2 text-sm text-white focus:outline-none focus:border-emerald-400"
                       >
                         <option value={0}>0</option>
                         <option value={1}>1</option>
@@ -161,7 +154,6 @@ export const SpaBooking: React.FC = () => {
                   </div>
                 </div>
 
-                {/* CUSTOM CALENDAR DRAWER */}
                 <AnimatePresence>
                   {showCalendar && (
                     <motion.div
@@ -169,7 +161,7 @@ export const SpaBooking: React.FC = () => {
                       animate={{ opacity: 1, height: 'auto' }}
                       exit={{ opacity: 0, height: 0 }}
                       transition={{ duration: 0.25 }}
-                      className="overflow-hidden pt-2"
+                      className="overflow-hidden pt-4"
                     >
                       <SpaCustomCalendar
                         checkIn={checkIn}
@@ -185,47 +177,44 @@ export const SpaBooking: React.FC = () => {
                 </AnimatePresence>
               </div>
 
-              {/* SUITES SELECTION LIST */}
-              <div className="space-y-4">
-                <h3 className="font-cinzel text-lg font-bold text-white uppercase tracking-wider">
-                  SELECT YOUR SUITE OR VILLA
-                </h3>
-                <div className="space-y-4">
-                  {SPA_DATA.suites.map((suite) => {
+              {/* SUITES SELECTION LIST (TYPOGRAPHIC ONLY — NO SMALL HARD-TO-SEE PHOTOS) */}
+              <div className="space-y-6 sm:space-y-8">
+                <span className="text-[10px] uppercase tracking-[0.35em] text-emerald-400 font-mono font-bold block">
+                  01 · SELECT YOUR RESIDENCE
+                </span>
+                <div className="divide-y divide-white/10 border-y border-white/10">
+                  {SPA_DATA.suites.map((suite, idx) => {
                     const isSelected = suite.id === selectedSuiteId;
                     return (
                       <div
                         key={suite.id}
                         onClick={() => setSelectedSuiteId(suite.id)}
-                        className={`p-6 border transition-all cursor-pointer flex flex-col md:flex-row gap-6 items-center shadow-xl ${
-                          isSelected
-                            ? 'bg-[#0E1511] border-emerald-400'
-                            : 'bg-[#0C100E] border-white/10 hover:border-white/25'
-                        }`}
+                        className="py-7 sm:py-10 transition-all cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-6 group"
                       >
-                        <img
-                          src={suite.heroImage}
-                          alt={suite.name}
-                          className="w-full md:w-48 h-32 object-cover border border-white/10"
-                        />
-                        <div className="flex-1 space-y-2 text-left w-full">
-                          <div className="flex items-center justify-between">
-                            <span className="text-[10px] uppercase font-mono tracking-widest text-emerald-400 font-bold">
-                              {suite.category}
-                            </span>
-                            <span className="font-mono text-xs uppercase tracking-wider text-white/60">
-                              {suite.sizeSqm} M² · {suite.capacity}
+                        <div className="space-y-2.5 sm:space-y-3 max-w-xl">
+                          <div className="flex items-center gap-4">
+                            <span className="text-xs uppercase font-mono tracking-[0.25em] text-emerald-400 font-bold">
+                              0{idx + 1} · {suite.sizeSqm} M² · {suite.capacity}
                             </span>
                           </div>
-                          <h4 className="font-cinzel text-lg font-bold text-white uppercase">
+                          <h4 className="font-cinzel text-xl sm:text-3xl font-bold text-white uppercase">
                             {suite.name}
                           </h4>
-                          <p className="text-xs text-white/60 font-light line-clamp-2">
+                          <p className="text-sm text-white/60 font-light leading-relaxed">
                             {suite.description}
                           </p>
-                          <div className="flex items-center gap-2 text-[11px] font-mono text-emerald-400/80 pt-1">
-                            <Check size={12} />
-                            <span>Private sauna, thermal pool access & forest terrace</span>
+                        </div>
+
+                        <div className="flex items-center gap-3 shrink-0">
+                          <span className={`font-mono text-xs uppercase tracking-[0.25em] ${isSelected ? 'text-emerald-400 font-bold' : 'text-white/40 group-hover:text-white'}`}>
+                            {isSelected ? 'Selected' : 'Select'}
+                          </span>
+                          <div
+                            className={`w-5 h-5 border flex items-center justify-center ${
+                              isSelected ? 'bg-emerald-400 border-emerald-400 text-slate-950' : 'border-white/30'
+                            }`}
+                          >
+                            {isSelected && <Check size={12} strokeWidth={3} />}
                           </div>
                         </div>
                       </div>
@@ -235,30 +224,26 @@ export const SpaBooking: React.FC = () => {
               </div>
 
               {/* ADD-ONS */}
-              <div className="space-y-4">
-                <h3 className="font-cinzel text-lg font-bold text-white uppercase tracking-wider">
-                  BESPOKE ADD-ONS & CONCIERGE PREFERENCES
-                </h3>
-                <div className="space-y-3">
+              <div className="space-y-6 sm:space-y-8">
+                <span className="text-[10px] uppercase tracking-[0.35em] text-emerald-400 font-mono font-bold block">
+                  02 · TAILORED EXPERIENCES
+                </span>
+                <div className="divide-y divide-white/10 border-y border-white/10">
                   {Object.entries(addonPrices).map(([key, item]) => {
                     const isChecked = addons.includes(key);
                     return (
                       <div
                         key={key}
                         onClick={() => toggleAddon(key)}
-                        className={`p-5 border transition-all cursor-pointer flex items-center justify-between gap-4 ${
-                          isChecked
-                            ? 'bg-[#0E1511] border-emerald-400/80'
-                            : 'bg-[#0C100E] border-white/10 hover:border-white/20'
-                        }`}
+                        className="py-6 sm:py-7 transition-all cursor-pointer flex items-center justify-between gap-4 sm:gap-6"
                       >
-                        <div>
-                          <span className="text-xs font-semibold text-white block">{item.label}</span>
-                          <span className="text-[10px] text-white/50 block font-light">{item.desc}</span>
+                        <div className="space-y-1.5">
+                          <span className="text-sm sm:text-base font-medium text-white block">{item.label}</span>
+                          <span className="text-xs sm:text-sm text-white/55 block font-light">{item.desc}</span>
                         </div>
-                        <div className="flex items-center gap-3">
-                          <span className="font-mono text-xs uppercase text-emerald-400">
-                            {isChecked ? 'Selected' : 'Add to Stay'}
+                        <div className="flex items-center gap-3 shrink-0">
+                          <span className="font-mono text-xs uppercase tracking-widest text-emerald-400">
+                            {isChecked ? 'Included' : 'Add'}
                           </span>
                           <div
                             className={`w-5 h-5 border flex items-center justify-center ${
@@ -275,49 +260,52 @@ export const SpaBooking: React.FC = () => {
               </div>
             </div>
 
-            {/* RIGHT: SUMMARY STICKY SIDEBAR (SHARP SQUARES) */}
+            {/* RIGHT: SUMMARY STICKY COLUMN */}
             <div className="lg:col-span-4">
-              <div className="sticky top-28 bg-[#0C100E] border border-white/15 p-6 sm:p-8 space-y-6 shadow-2xl">
-                <h3 className="font-cinzel text-lg font-bold text-white uppercase pb-4 border-b border-white/10">
-                  RESERVATION SUMMARY
-                </h3>
+              <div className="sticky top-32 pt-8 border-t border-white/20 space-y-6 sm:space-y-8">
+                <div className="space-y-2">
+                  <span className="text-[10px] uppercase tracking-[0.35em] text-emerald-400 font-mono font-bold block">
+                    RESERVATION SUMMARY
+                  </span>
+                  <h3 className="font-cinzel text-2xl font-bold text-white uppercase">
+                    {selectedSuite.name}
+                  </h3>
+                  <span className="text-sm font-mono text-white/60 block">
+                    {selectedSuite.sizeSqm} m² · {selectedSuite.capacity}
+                  </span>
+                </div>
 
-                <div className="space-y-3 text-xs font-mono">
-                  <div className="flex justify-between text-white/70">
-                    <span>Living Space</span>
-                    <span className="text-white font-bold">{selectedSuite.name}</span>
+                <div className="space-y-4 text-xs font-mono py-6 border-y border-white/10">
+                  <div className="flex justify-between text-white/60">
+                    <span>Dates</span>
+                    <span className="text-white">{checkIn} → {checkOut}</span>
                   </div>
-                  <div className="flex justify-between text-white/70">
-                    <span>Stay Duration</span>
-                    <span className="text-white">3 Nights</span>
+                  <div className="flex justify-between text-white/60">
+                    <span>Guests</span>
+                    <span className="text-white">{adults} Adults{children > 0 ? `, ${children} Children` : ''}</span>
                   </div>
-                  <div className="flex justify-between text-white/70">
+                  <div className="flex justify-between text-white/60">
                     <span>Inclusions</span>
                     <span className="text-emerald-400">Thermal Spa & Breakfast</span>
                   </div>
 
                   {addons.length > 0 && (
-                    <div className="pt-2 border-t border-white/10 space-y-1 text-white/50 text-[11px]">
+                    <div className="pt-4 border-t border-white/10 space-y-2 text-white/50 text-[11px]">
                       {addons.map((k) => (
                         <div key={k} className="flex justify-between">
                           <span className="truncate pr-2">{addonPrices[k]?.label}</span>
-                          <span className="text-emerald-400">Included</span>
+                          <span className="text-emerald-400">Added</span>
                         </div>
                       ))}
                     </div>
                   )}
-
-                  <div className="pt-4 border-t border-white/10 flex justify-between font-bold text-xs text-white">
-                    <span>Concierge Service</span>
-                    <span className="text-emerald-400 font-mono">Direct Reservation</span>
-                  </div>
                 </div>
 
                 <button
                   onClick={() => setStep('details')}
-                  className="w-full py-4 bg-white hover:bg-emerald-400 hover:text-slate-950 text-slate-950 font-bold text-xs uppercase tracking-[0.25em] transition-all cursor-pointer shadow-xl flex items-center justify-center gap-2 border border-white/20"
+                  className="w-full py-4 bg-white hover:bg-emerald-400 hover:text-slate-950 text-slate-950 font-bold text-xs uppercase tracking-[0.25em] transition-all cursor-pointer flex items-center justify-center gap-2"
                 >
-                  <span>CONTINUE TO DETAILS</span>
+                  <span>CONTINUE TO GUEST DETAILS</span>
                   <ArrowRight size={14} />
                 </button>
               </div>
@@ -326,49 +314,49 @@ export const SpaBooking: React.FC = () => {
         )}
 
         {step === 'details' && (
-          <div className="max-w-2xl mx-auto bg-[#0C100E] border border-white/15 p-8 sm:p-12 shadow-2xl">
-            <form onSubmit={handleFinish} className="space-y-6">
-              <div className="border-b border-white/10 pb-4">
-                <span className="text-[10px] uppercase tracking-[0.35em] text-emerald-400 font-mono font-bold block mb-1">
+          <div className="max-w-xl mx-auto space-y-8 sm:space-y-10">
+            <form onSubmit={handleFinish} className="space-y-6 sm:space-y-8">
+              <div className="border-b border-white/10 pb-6 space-y-2">
+                <span className="text-[10px] uppercase tracking-[0.35em] text-emerald-400 font-mono font-bold block">
                   STEP 02
                 </span>
-                <h3 className="font-cinzel text-2xl font-bold text-white uppercase">
+                <h3 className="font-cinzel text-2xl sm:text-3xl font-bold text-white uppercase">
                   GUEST DETAILS & ARRIVAL
                 </h3>
               </div>
 
-              <div className="space-y-4">
+              <div className="space-y-6">
                 <div>
-                  <label className="block text-[10px] uppercase tracking-widest font-mono text-white/60 mb-2">
-                    Full Name *
+                  <label className="block text-[10px] uppercase tracking-widest font-mono text-white/50 mb-2">
+                    Full Name
                   </label>
                   <input
                     type="text"
                     required
                     value={guestName}
                     onChange={(e) => setGuestName(e.target.value)}
-                    placeholder="e.g. Lady Vivienne Montgomery"
-                    className="w-full px-4 py-3 bg-[#141B18] border border-white/20 text-white text-xs focus:outline-none focus:border-emerald-400"
+                    placeholder="Vivienne Montgomery"
+                    className="w-full py-3 bg-transparent border-b border-white/20 text-white text-sm focus:outline-none focus:border-emerald-400"
                   />
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
                   <div>
-                    <label className="block text-[10px] uppercase tracking-widest font-mono text-white/60 mb-2">
-                      Email Address *
+                    <label className="block text-[10px] uppercase tracking-widest font-mono text-white/50 mb-2">
+                      Email Address
                     </label>
                     <input
                       type="email"
                       required
                       value={guestEmail}
                       onChange={(e) => setGuestEmail(e.target.value)}
-                      placeholder="vivienne@montgomery.co.uk"
-                      className="w-full px-4 py-3 bg-[#141B18] border border-white/20 text-white text-xs focus:outline-none focus:border-emerald-400"
+                      placeholder="vivienne@domain.co.uk"
+                      className="w-full py-3 bg-transparent border-b border-white/20 text-white text-sm focus:outline-none focus:border-emerald-400"
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] uppercase tracking-widest font-mono text-white/60 mb-2">
-                      Phone Number *
+                    <label className="block text-[10px] uppercase tracking-widest font-mono text-white/50 mb-2">
+                      Telephone Number
                     </label>
                     <input
                       type="tel"
@@ -376,39 +364,39 @@ export const SpaBooking: React.FC = () => {
                       value={guestPhone}
                       onChange={(e) => setGuestPhone(e.target.value)}
                       placeholder="+44 7911 123456"
-                      className="w-full px-4 py-3 bg-[#141B18] border border-white/20 text-white text-xs focus:outline-none focus:border-emerald-400"
+                      className="w-full py-3 bg-transparent border-b border-white/20 text-white text-sm focus:outline-none focus:border-emerald-400"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-[10px] uppercase tracking-widest font-mono text-white/60 mb-2">
-                    Special Requests / Dietary
+                  <label className="block text-[10px] uppercase tracking-widest font-mono text-white/50 mb-2">
+                    Special Requests or Dietary Notes
                   </label>
                   <textarea
-                    rows={3}
-                    placeholder="e.g. Pillow preference (goose down), champagne on ice upon arrival..."
-                    className="w-full px-4 py-3 bg-[#141B18] border border-white/20 text-white text-xs placeholder:text-white/30 focus:outline-none focus:border-emerald-400"
+                    rows={2}
+                    placeholder="Arrival time, dietary preferences, or pillow selection..."
+                    className="w-full py-3 bg-transparent border-b border-white/20 text-white text-sm placeholder:text-white/25 focus:outline-none focus:border-emerald-400"
                   />
                 </div>
               </div>
 
-              <div className="flex items-center justify-between pt-6 border-t border-white/10">
+              <div className="flex flex-col-reverse sm:flex-row sm:items-center justify-between gap-4 pt-6 border-t border-white/10">
                 <button
                   type="button"
                   onClick={() => setStep('selection')}
-                  className="inline-flex items-center gap-2 text-xs font-mono text-white/60 hover:text-white uppercase tracking-wider"
+                  className="inline-flex items-center justify-center sm:justify-start gap-2 text-xs font-mono text-white/60 hover:text-white uppercase tracking-wider cursor-pointer py-2 sm:py-0"
                 >
                   <ArrowLeft size={14} />
-                  <span>BACK TO SUITE</span>
+                  <span>BACK</span>
                 </button>
 
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-8 py-4 bg-white hover:bg-emerald-400 hover:text-slate-950 text-slate-950 font-bold text-xs uppercase tracking-[0.25em] transition-all cursor-pointer shadow-xl border border-white/20"
+                  className="w-full sm:w-auto px-10 py-4 bg-white hover:bg-emerald-400 hover:text-slate-950 text-slate-950 font-bold text-xs uppercase tracking-[0.25em] transition-all cursor-pointer"
                 >
-                  {isSubmitting ? 'CONFIRMING...' : 'CONFIRM RESERVATION'}
+                  {isSubmitting ? 'CONFIRMING...' : 'COMPLETE RESERVATION'}
                 </button>
               </div>
             </form>
@@ -416,52 +404,48 @@ export const SpaBooking: React.FC = () => {
         )}
 
         {step === 'confirmed' && (
-          <div className="max-w-xl mx-auto text-center bg-[#0C100E] border border-white/15 p-10 sm:p-14 space-y-6 shadow-2xl">
+          <div className="max-w-xl mx-auto text-center space-y-8 py-10 sm:py-12 border-y border-white/10">
             <div className="w-14 h-14 bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto border border-emerald-500/30">
               <Check size={28} />
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-3">
               <span className="text-[10px] uppercase tracking-[0.35em] text-emerald-400 font-mono font-bold block">
-                BOOKING CONFIRMED · REF #VER-{Math.floor(100000 + Math.random() * 900000)}
+                RESERVATION CONFIRMED
               </span>
-              <h3 className="font-cinzel text-3xl font-bold uppercase text-white">
-                WE AWAIT YOUR ARRIVAL
+              <h3 className="font-cinzel text-2xl sm:text-3xl font-bold uppercase text-white">
+                WE LOOK FORWARD TO WELCOMING YOU
               </h3>
-              <p className="text-xs sm:text-sm text-white/60 font-light leading-relaxed">
-                A formal reservation itinerary and GPS arrival guide has been sent to {guestEmail || 'your email'}.
+              <p className="text-sm text-white/60 font-light leading-relaxed">
+                A formal reservation itinerary and directions have been sent to {guestEmail || 'your email'}.
               </p>
             </div>
 
-            <div className="p-6 bg-white/[0.02] border border-white/10 text-left text-xs font-mono space-y-2">
+            <div className="py-6 border-y border-white/10 text-left text-xs font-mono space-y-3">
               <div className="flex justify-between">
-                <span className="text-white/50">Residence:</span>
+                <span className="text-white/50">Residence</span>
                 <span className="text-white font-bold">{selectedSuite.name}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-white/50">Check-in:</span>
-                <span className="text-white">{checkIn} (15:00)</span>
+                <span className="text-white/50">Check-In</span>
+                <span className="text-white">{checkIn} (From 15:00)</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-white/50">Check-out:</span>
-                <span className="text-white">{checkOut} (11:00)</span>
-              </div>
-              <div className="flex justify-between pt-2 border-t border-white/10 font-bold">
-                <span className="text-white/50">Status:</span>
-                <span className="text-emerald-400 font-mono uppercase">Direct Concierge Request Confirmed</span>
+                <span className="text-white/50">Check-Out</span>
+                <span className="text-white">{checkOut} (Until 11:00)</span>
               </div>
             </div>
 
             <Link
               to="/demo/spa"
-              className="inline-flex items-center gap-2 px-8 py-4 bg-white hover:bg-emerald-400 hover:text-slate-950 text-slate-950 font-bold text-xs uppercase tracking-[0.25em] transition-all border border-white/20 cursor-pointer"
+              className="inline-flex items-center justify-center w-full sm:w-auto gap-3 px-8 py-4 bg-white hover:bg-emerald-400 hover:text-slate-950 text-slate-950 font-bold text-xs uppercase tracking-[0.25em] transition-all cursor-pointer"
             >
               <span>RETURN TO SANCTUARY HOME</span>
               <ArrowRight size={14} />
             </Link>
           </div>
         )}
-      </div>
+      </section>
 
       <SpaFooter />
     </div>

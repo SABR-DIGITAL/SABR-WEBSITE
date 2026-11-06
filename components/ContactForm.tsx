@@ -43,7 +43,7 @@ const channels: Channel[] = [
     external: true,
     logo: <WhatsAppLogo className="w-7 h-7 md:w-8 md:h-8" />,
     tile: 'bg-[#25D366] text-white',
-    size: 'text-[clamp(1.85rem,7vw,3.5rem)]'
+    size: 'text-[clamp(1.65rem,4.5vw,2.75rem)]'
   },
   {
     key: 'email',
@@ -53,7 +53,7 @@ const channels: Channel[] = [
     external: false,
     logo: <Mail className="w-7 h-7 md:w-8 md:h-8" strokeWidth={2.2} />,
     tile: 'bg-[#059669] text-white',
-    size: 'text-[clamp(1.1rem,4.4vw,2.35rem)]'
+    size: 'text-[clamp(1.15rem,3.4vw,2.25rem)]'
   },
   {
     key: 'instagram',
@@ -63,7 +63,7 @@ const channels: Channel[] = [
     external: true,
     logo: <InstagramLogo className="w-7 h-7 md:w-8 md:h-8" />,
     tile: 'bg-slate-950 text-white',
-    size: 'text-[clamp(1.6rem,6vw,3rem)]'
+    size: 'text-[clamp(1.5rem,4vw,2.5rem)]'
   }
 ];
 
@@ -125,7 +125,7 @@ const ContactForm: React.FC = () => {
                   {c.label}
                 </span>
                 <span
-                  className={`block font-syne font-black text-slate-950 tracking-[-0.03em] leading-none break-words transition-colors duration-300 group-hover:text-emerald-600 ${c.size}`}
+                  className={`block font-inter font-semibold text-slate-950 tracking-[-0.02em] tabular-nums leading-tight break-words transition-colors duration-300 group-hover:text-emerald-600 ${c.size}`}
                 >
                   {c.value}
                 </span>

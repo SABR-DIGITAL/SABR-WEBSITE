@@ -1,223 +1,236 @@
-import React, { useEffect } from 'react';
-// Fix react-router-dom missing exports
+import React, { useEffect, useState } from 'react';
 import * as RouterDOM from 'react-router-dom';
 const { Link } = RouterDOM as any;
-import { ArrowRight, Check } from 'lucide-react';
+import { motion as framerMotion, AnimatePresence } from 'framer-motion';
+import { ArrowUpRight, Check, Clock, MapPin, Phone } from 'lucide-react';
 import EquestrianNav from './EquestrianNav';
 import EquestrianFooter from './EquestrianFooter';
-import { Reveal, SectionLabel, PhotoReveal, Bloom, Wash } from './EquestrianUI';
-import { lessons, lessonIncludes, images, cardWashes, pastel, palette } from './equestrianData';
+import { Reveal, SectionLabel, PhotoReveal } from './EquestrianUI';
+import { academy, lessons, lessonIncludes, images } from './equestrianData';
 
-const levels = [
-  {
-    name: 'Never ridden',
-    detail: 'We start with how to sit, steer and stop.',
-    picks: ['Little Buds lead-rein', 'Beginner group lesson', 'Private lesson']
-  },
-  {
-    name: 'Ridden a bit',
-    detail: 'Walk and trot sorted, canter next. Most riders spend a happy year here.',
-    picks: ['Improvers group', 'Semi-private, two riders', 'Adult returners course']
-  },
-  {
-    name: 'Confident',
-    detail: 'Clinics for the one part you want to sharpen up.',
-    picks: ['Jumping clinic', 'Flatwork & dressage clinic', 'Downland hack']
-  }
-];
+const motion = framerMotion as any;
+
+const CATEGORIES = [
+  'All Sessions',
+  'Foundations & Children',
+  'Flatwork & Private',
+  'Jumping & Clinics',
+  'Downland Hacking'
+] as const;
 
 const EquestrianLessons: React.FC = () => {
+  const [selectedCategory, setSelectedCategory] = useState<string>('All Sessions');
+
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' as any });
   }, []);
 
+  const filteredLessons =
+    selectedCategory === 'All Sessions'
+      ? lessons
+      : lessons.filter((l) => l.category === selectedCategory);
+
   return (
-    <div className="min-h-screen bg-[#FFFAF3] font-inter text-[#1E2A22] selection:bg-[#E4577A] selection:text-[#FFFAF3] overflow-x-hidden">
+    <div className="relative min-h-screen bg-[#FAF6EE] font-inter text-[#1E2822] selection:bg-[#2D5A43] selection:text-[#FAF6EE] overflow-x-hidden">
       <EquestrianNav />
 
-      {/* ── HEADER ─────────────────────────────────────────────────────── */}
-      <section className="relative pt-24 md:pt-28 pb-10 md:pb-14 px-6 md:px-10">
-        <Wash />
-        <div className="relative max-w-[1500px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-end">
-          <div className="lg:col-span-7">
-            <p className="eq-rise flex items-center gap-3 text-[10px] uppercase tracking-[0.42em] text-[#6B7A6F] mb-6">
-              <Bloom size={16} />
-              Lessons &amp; prices
-            </p>
-            <h1
-              className="eq-rise font-serif text-[clamp(2.3rem,6.4vw,4.6rem)] leading-[1] tracking-[-0.02em]"
-              style={{ animationDelay: '90ms' }}
-            >
-              Ten ways in.
-              <br />
-              <span className="italic text-[#E4577A]">No hidden extras.</span>
-            </h1>
+      {/* ── WARM EDITORIAL HEADER ────────────────────────────────────────── */}
+      <section className="relative z-10 pt-24 sm:pt-32 md:pt-40 pb-10 sm:pb-12 md:pb-16 px-5 sm:px-6 md:px-12">
+        <div className="max-w-[1440px] mx-auto">
+          <Reveal>
+            <SectionLabel className="mb-4 sm:mb-5">Lessons &amp; Clinics</SectionLabel>
+          </Reveal>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-10 items-end">
+            <div className="lg:col-span-8">
+              <Reveal delay={0.05}>
+                <h1 className="font-serif text-[clamp(2.2rem,5.8vw,4.8rem)] leading-[1.05] tracking-[-0.02em]">
+                  Quiet, structured coaching.
+                  <br />
+                  <span className="italic text-[#2D5A43]">Never more than four in a ride.</span>
+                </h1>
+              </Reveal>
+            </div>
+            <div className="lg:col-span-4">
+              <Reveal delay={0.12}>
+                <p className="text-[15px] sm:text-[16px] text-[#5F665E] leading-[1.8] sm:leading-[1.85]">
+                  Every session is taught by a BHS-accredited coach and paired with a schoolmaster suited to your height, balance, and confidence.
+                </p>
+              </Reveal>
+            </div>
           </div>
-          <div className="lg:col-span-5">
-            <p
-              className="eq-rise text-lg text-[#4C5A50] leading-relaxed"
-              style={{ animationDelay: '170ms' }}
-            >
-              Hat, body protector and boots included. Book a block of six and you pay for five.
-            </p>
-          </div>
+
+          {/* ── INTERACTIVE CATEGORY FILTER PILLS ──────────────────────── */}
+          <Reveal delay={0.16} className="mt-8 sm:mt-12 flex flex-wrap items-center gap-2 sm:gap-3">
+            {CATEGORIES.map((cat) => {
+              const active = selectedCategory === cat;
+              return (
+                <button
+                  key={cat}
+                  type="button"
+                  onClick={() => setSelectedCategory(cat)}
+                  className={`px-4 sm:px-6 py-2.5 sm:py-3 rounded-full text-[10px] sm:text-[11px] uppercase tracking-[0.2em] sm:tracking-[0.26em] font-medium transition-all duration-300 ${
+                    active
+                      ? 'bg-[#2D5A43] text-[#FAF6EE] shadow-md'
+                      : 'bg-white/80 text-[#5F665E] hover:bg-[#E8F0EB] hover:text-[#2D5A43]'
+                  }`}
+                >
+                  {cat}
+                </button>
+              );
+            })}
+          </Reveal>
         </div>
       </section>
 
-      {/* ── FULL PRICE LIST ────────────────────────────────────────────── */}
-      <section className="px-6 md:px-10 pb-14 md:pb-20">
-        <div className="max-w-[1500px] mx-auto">
-          <div className="border-t border-[#EADFD1]">
-            {lessons.map((lesson, i) => (
-              <Reveal key={lesson.id} delay={Math.min(i, 6) * 0.04}>
-                <div className="group grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-8 py-6 border-b border-[#EADFD1] items-start transition-colors duration-500 hover:bg-[#FFFCF7]">
-                  <div className="md:col-span-4 flex items-start gap-4">
-                    <span
-                      aria-hidden="true"
-                      className="mt-2.5 w-2.5 h-2.5 rounded-full shrink-0 opacity-80"
-                      style={{ backgroundColor: lesson.accent }}
+      {/* ── VISUAL LESSON STREAM (ENGAGING, WARM & UNCLUTTERED) ──────────── */}
+      <section className="relative z-10 px-5 sm:px-6 md:px-12 pb-16 sm:pb-24 md:pb-32">
+        <div className="max-w-[1440px] mx-auto space-y-5 sm:space-y-6">
+          <AnimatePresence mode="popLayout">
+            {filteredLessons.map((lesson, i) => (
+              <motion.article
+                key={lesson.id}
+                layout
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -16 }}
+                transition={{ duration: 0.45, delay: Math.min(i, 5) * 0.04, ease: [0.22, 1, 0.36, 1] }}
+                className="group rounded-3xl bg-white/80 backdrop-blur-[2px] hover:bg-white p-5 sm:p-6 md:p-8 lg:p-10 transition-all duration-300 shadow-[0_14px_40px_-26px_rgba(30,40,34,0.18)]"
+              >
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-8 items-center">
+                  {/* Left: Correlated Lesson Photograph */}
+                  <div className="lg:col-span-4 overflow-hidden rounded-2xl aspect-[16/10] bg-[#E8E2D5]">
+                    <img
+                      src={lesson.photo}
+                      alt={lesson.name}
+                      loading={i < 2 ? 'eager' : 'lazy'}
+                      decoding="async"
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
-                    <div>
-                      <h2 className="font-serif text-xl md:text-[1.65rem] leading-tight">{lesson.name}</h2>
-                      <p className="mt-2 text-[10px] uppercase tracking-[0.26em] text-[#6B7A6F]">
-                        {lesson.who}
-                      </p>
+                  </div>
+
+                  {/* Middle: Title, Badges, Description & Highlights */}
+                  <div className="lg:col-span-5">
+                    <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 mb-2.5 sm:mb-3">
+                      <span className="px-3.5 py-1 rounded-full bg-[#E8F0EB] text-[#2D5A43] text-[10px] uppercase tracking-[0.24em] font-medium">
+                        {lesson.category}
+                      </span>
+                      <span className="text-[11px] uppercase tracking-[0.22em] text-[#5F665E]">
+                        &middot; {lesson.who}
+                      </span>
+                    </div>
+
+                    <h2 className="font-serif text-2xl md:text-3xl text-[#1E2822] group-hover:text-[#2D5A43] transition-colors mb-2.5 sm:mb-3">
+                      {lesson.name}
+                    </h2>
+
+                    <p className="text-[14px] sm:text-[15px] md:text-[16px] text-[#5F665E] leading-[1.75] sm:leading-[1.8] mb-4 sm:mb-5">
+                      {lesson.detail}
+                    </p>
+
+                    <div className="flex flex-wrap gap-x-5 gap-y-2">
+                      {lesson.highlights.map((h) => (
+                        <span key={h} className="inline-flex items-center gap-2 text-[13px] text-[#2D5A43]">
+                          <span className="w-4 h-4 rounded-full bg-[#E8F0EB] flex items-center justify-center shrink-0">
+                            <Check size={10} />
+                          </span>
+                          <span className="text-[#454D46]">{h}</span>
+                        </span>
+                      ))}
                     </div>
                   </div>
 
-                  <div className="md:col-span-5">
-                    <p className="text-[15px] md:text-base text-[#4C5A50] leading-relaxed">{lesson.detail}</p>
-                  </div>
+                  {/* Right: Duration, Arena & Book CTA */}
+                  <div className="lg:col-span-3 flex flex-col sm:flex-row lg:flex-col items-start sm:items-center lg:items-end justify-between gap-4 pt-3 sm:pt-4 lg:pt-0">
+                    <div className="lg:text-right space-y-1.5">
+                      <div className="inline-flex items-center gap-2 text-[12px] uppercase tracking-[0.22em] text-[#2D5A43] font-medium">
+                        <Clock size={14} />
+                        <span>{lesson.duration}</span>
+                      </div>
+                      <div className="flex items-center lg:justify-end gap-1.5 text-[12px] text-[#5F665E]">
+                        <MapPin size={13} className="text-[#2D5A43] shrink-0" />
+                        <span>{lesson.setting}</span>
+                      </div>
+                    </div>
 
-                  <div className="md:col-span-3 flex md:justify-end items-baseline gap-5">
-                    <p className="text-[10px] uppercase tracking-[0.26em] text-[#6B7A6F] whitespace-nowrap">
-                      {lesson.duration}
-                    </p>
-                    <p className="font-serif text-2xl md:text-3xl leading-none whitespace-nowrap">
-                      {lesson.price}
-                    </p>
+                    <Link
+                      to="/demo/equestrian/book"
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-full bg-[#2D5A43] text-[#FAF6EE] text-[10px] uppercase tracking-[0.28em] font-medium hover:bg-[#234734] transition-colors shrink-0"
+                    >
+                      <span>Book This Lesson</span>
+                      <ArrowUpRight size={14} />
+                    </Link>
                   </div>
                 </div>
-              </Reveal>
+              </motion.article>
             ))}
-          </div>
-
-          <Reveal delay={0.05}>
-            <div
-              className="mt-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 rounded-[1.5rem] border border-white/70 px-8 py-7"
-              style={{ background: cardWashes[1] }}
-            >
-              <p className="text-[15px] text-[#4C5A50] leading-relaxed max-w-xl">
-                <span className="text-[#1E2A22]">Blocks of six:</span> pay for five. Same coach, same
-                slot, twelve weeks to use them.
-              </p>
-              <Link
-                to="/demo/equestrian/book"
-                className="group inline-flex items-center gap-3 pl-7 pr-5 py-4 bg-[#1E2A22] text-[#FFFAF3] rounded-full text-[10px] uppercase tracking-[0.3em] hover:bg-[#E4577A] transition-colors duration-300 shrink-0"
-              >
-                Book a lesson
-                <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform duration-300" />
-              </Link>
-            </div>
-          </Reveal>
+          </AnimatePresence>
         </div>
       </section>
 
-      {/* ── WHICH LESSON ───────────────────────────────────────────────── */}
-      <section
-        className="px-6 md:px-10 py-14 md:py-20"
-        style={{
-          background: `linear-gradient(180deg, ${palette.cream} 0%, ${pastel.mist} 32%, ${pastel.lilac} 70%, ${palette.cream} 100%)`
-        }}
-      >
-        <div className="max-w-[1500px] mx-auto">
-          <Reveal className="max-w-2xl mb-10 md:mb-12">
-            <SectionLabel className="mb-6">Which one am I?</SectionLabel>
-            <h2 className="font-serif text-[clamp(1.9rem,4.6vw,3.2rem)] leading-[1.05] tracking-[-0.02em]">
-              Pick the row that sounds like you.
+      {/* ── INCLUDED WITH EVERY LESSON (OPEN SPACE, NO BOXES) ────────────── */}
+      <section className="relative z-10 py-14 sm:py-20 md:py-28 px-5 sm:px-6 md:px-12">
+        <div className="max-w-[1440px] mx-auto">
+          <Reveal>
+            <SectionLabel className="mb-4 sm:mb-5">The Yard Standard</SectionLabel>
+            <h2 className="font-serif text-[clamp(2rem,4vw,3.3rem)] leading-[1.1] tracking-[-0.02em] mb-10 sm:mb-16">
+              Included with every session.
             </h2>
           </Reveal>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-            {levels.map((level, i) => {
-              const colour = [palette.rose, palette.gold, palette.meadow][i % 3];
-              return (
-                <Reveal key={level.name} delay={i * 0.08}>
-                  <div
-                    className="h-full rounded-[1.75rem] p-8 md:p-10 flex flex-col border border-white/70 shadow-[0_20px_46px_-36px_rgba(30,42,34,0.45)] transition-transform duration-500 hover:-translate-y-1"
-                    style={{ background: cardWashes[i % cardWashes.length] }}
-                  >
-                    <p className="inline-flex self-start items-center gap-2 rounded-full bg-[#FFFCF7]/85 border border-white px-3.5 py-1.5 text-[9px] uppercase tracking-[0.3em] text-[#4C5A50] mb-5">
-                      Stage {i + 1}
-                    </p>
-                    <h3 className="font-serif text-2xl leading-tight mb-3">{level.name}</h3>
-                    <p className="text-[15px] text-[#4C5A50] leading-relaxed mb-7">{level.detail}</p>
-                    <ul className="mt-auto space-y-3 border-t border-[#EADFD1]/80 pt-6">
-                      {level.picks.map((pick) => (
-                        <li key={pick} className="flex items-start gap-3 text-[14px] text-[#1E2A22]">
-                          <Check size={15} className="mt-0.5 shrink-0" style={{ color: colour }} />
-                          {pick}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </Reveal>
-              );
-            })}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10 lg:gap-12">
+            {lessonIncludes.map((item, i) => (
+              <Reveal key={item} delay={i * 0.07}>
+                <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-[#E8F0EB] text-[#2D5A43] font-serif text-sm mb-4 sm:mb-5">
+                  0{i + 1}
+                </span>
+                <p className="font-serif text-lg sm:text-xl leading-relaxed text-[#1E2822]">{item}</p>
+              </Reveal>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* ── WHAT'S INCLUDED ────────────────────────────────────────────── */}
-      <section className="px-6 md:px-10 py-14 md:py-20">
-        <div className="max-w-[1500px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+      {/* ── PHOTOGRAPH & GUIDANCE SPLIT ──────────────────────────────────── */}
+      <section className="relative z-10 py-14 sm:py-20 md:py-28 px-5 sm:px-6 md:px-12">
+        <div className="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-12 lg:gap-16 items-center">
           <div className="lg:col-span-6">
             <PhotoReveal
-              src={images.lesson}
-              alt="A young rider holding her horse before a lesson"
-              className="rounded-[2rem] aspect-[4/3]"
+              src={images.bond}
+              alt="Rider standing with her horse in the barn doorway"
+              className="aspect-[16/11] w-full"
             />
           </div>
           <div className="lg:col-span-6">
             <Reveal>
-              <SectionLabel className="mb-6">Included as standard</SectionLabel>
-              <h2 className="font-serif text-[clamp(1.9rem,4.6vw,3rem)] leading-[1.05] tracking-[-0.02em] mb-8">
-                Nothing you have to buy first.
+              <SectionLabel className="mb-4 sm:mb-5">Personal Advice</SectionLabel>
+              <h2 className="font-serif text-[clamp(2rem,4vw,3.3rem)] leading-[1.08] tracking-[-0.02em] mb-5 sm:mb-6">
+                Not sure which lesson fits best?
               </h2>
-            </Reveal>
-            <div className="divide-y divide-[#EADFD1] border-y border-[#EADFD1]">
-              {lessonIncludes.map((item, i) => (
-                <Reveal key={item} delay={i * 0.06}>
-                  <div className="flex items-start gap-4 py-5">
-                    <Bloom size={17} className="mt-0.5 shrink-0" />
-                    <p className="text-[15px] md:text-base text-[#4C5A50] leading-relaxed">{item}</p>
-                  </div>
-                </Reveal>
-              ))}
-            </div>
-            <Reveal delay={0.1}>
-              <Link
-                to="/demo/equestrian/faqs"
-                className="group inline-flex items-center gap-3 mt-9 text-[10px] uppercase tracking-[0.3em]"
-              >
-                Questions people ask
-                <ArrowRight size={15} className="group-hover:translate-x-1 transition-transform duration-300" />
-              </Link>
+              <p className="text-[15px] sm:text-[16px] text-[#5F665E] leading-[1.8] sm:leading-[1.85] mb-8 sm:mb-10 max-w-xl">
+                Ring Rosie or Fen in the tack room, or send a lesson request. Tell us how recently you rode and what you would like to work on, and we will advise the right session and horse.
+              </p>
+              <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3.5 sm:gap-4">
+                <Link
+                  to="/demo/equestrian/book"
+                  className="group inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-[#2D5A43] text-[#FAF6EE] text-[11px] uppercase tracking-[0.28em] font-medium hover:bg-[#234734] transition-colors"
+                >
+                  <span>Book a Lesson</span>
+                  <ArrowUpRight size={15} />
+                </Link>
+                <a
+                  href={`tel:${academy.phoneHref}`}
+                  className="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-[#E8F0EB] text-[#2D5A43] text-[11px] uppercase tracking-[0.28em] font-medium hover:bg-[#dce8e0] transition-colors"
+                >
+                  <Phone size={14} />
+                  <span>{academy.phoneDisplay}</span>
+                </a>
+              </div>
             </Reveal>
           </div>
         </div>
       </section>
 
       <EquestrianFooter />
-
-      <style>{`
-        @keyframes eq-rise {
-          from { opacity: 0; transform: translate3d(0, 22px, 0); }
-          to { opacity: 1; transform: none; }
-        }
-        .eq-rise { animation: eq-rise 0.85s cubic-bezier(0.22, 1, 0.36, 1) both; }
-        @media (prefers-reduced-motion: reduce) { .eq-rise { animation: none; } }
-      `}</style>
     </div>
   );
 };

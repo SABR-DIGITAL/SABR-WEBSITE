@@ -1,454 +1,476 @@
-import React, { useEffect, useRef, useCallback } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
-gsap.registerPlugin(ScrollTrigger);
-
-// The grid gets its own compositor layer and paint containment, so the dot
-// animation repaints only this small area. The padding (offset by a negative
-// margin) leaves room for the glows so they are not clipped at the edges.
-const DOT_GRID_CLASS =
-  'grid grid-cols-10 gap-1.5 sm:gap-2 md:gap-2.5 place-items-center p-2.5 -m-2.5 sm:p-3 sm:-m-3 [contain:layout_paint] will-change-transform';
-
-interface DotProps {
-  className: string;
-  fill: string;
-  glow: string;
-  fillOn: boolean;
-  glowOn: boolean;
-  scale: number;
-  opacity: number;
-}
-
-// A white base with a coloured fill and a soft glow stacked on top. Animating
-// the opacity of those layers looks the same as tweening background-color and
-// box-shadow, but costs far less to draw.
-const Dot: React.FC<DotProps> = ({ className, fill, glow, fillOn, glowOn, scale, opacity }) => (
-  <span
-    className={`${className} relative block w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-3.5 md:h-3.5 lg:w-4 lg:h-4`}
-    style={{ transform: `scale(${scale})`, opacity }}
-  >
-    <span
-      className="dot-glow absolute -inset-1.5 sm:-inset-2.5 rounded-full pointer-events-none"
-      style={{ background: `radial-gradient(circle, ${glow} 30%, transparent 70%)`, opacity: glowOn ? 1 : 0 }}
-    />
-    <span className="absolute inset-0 rounded-full bg-white" />
-    <span
-      className="dot-fill absolute inset-0 rounded-full"
-      style={{ backgroundColor: fill, opacity: fillOn ? 1 : 0 }}
-    />
-  </span>
-);
+import React, { useEffect, useRef } from 'react';
 
 export interface StatsStage {
   headline: React.ReactNode;
-  /** How many of the 100 dots light up (red in stage 1, green in stage 2). */
   count: number;
-  /** Appended to the animated counter, e.g. "%". */
   suffix?: string;
   quote: React.ReactNode;
   body: React.ReactNode;
-  /** Legend labels: [highlighted dots, remaining dots]. */
   legend: [string, string];
 }
 
 export const DEFAULT_STAGE_1: StatsStage = {
-  headline: 'The cost of being overlooked.',
+  headline: (
+    <>
+      The cost of being <span className="italic text-[#e5535a]">overlooked.</span>
+    </>
+  ),
   count: 88,
-  quote: <>&ldquo;88 of every 100 won’t come back after a bad website experience.&rdquo;</>,
-  body: <>First impressions are formed in milliseconds. When a website takes too long to load, feels cluttered, or breaks down on mobile, high-intent prospects don&rsquo;t wait around — they bounce straight to a competitor, taking their trust, their budget, and their loyalty with them for good.</>,
-  legend: ['88 Lost', '12 Retained']
+  quote: (
+    <>
+      &ldquo;<em className="italic text-[#e5535a]">88 of every 100</em> won&rsquo;t come back after a bad website experience.&rdquo;
+    </>
+  ),
+  body: (
+    <>
+      First impressions are formed in milliseconds. When a website takes too long to load, feels cluttered, or breaks down on mobile, high-intent prospects don&rsquo;t wait around &mdash; they bounce straight to a competitor, taking their trust, their budget, and their loyalty with them for good.
+    </>
+  ),
+  legend: ['88 Lost', '12 Retained'],
 };
 
 export const DEFAULT_STAGE_2: StatsStage = {
-  headline: 'The power of an amazing experience.',
+  headline: (
+    <>
+      The power of an <span className="text-shimmer-blue italic">amazing experience.</span>
+    </>
+  ),
   count: 77,
   suffix: '%',
-  quote: <>&ldquo;77% of customers will return if your website is easy to navigate and has a captivating factor.&rdquo;</>,
-  body: <>Speed, clarity, and effortless navigation build instant trust. When visitors can find exactly what they need within seconds, they linger longer, explore further, and convert into loyal, paying clients — turning a single visit into a lasting relationship.</>,
-  legend: ['77 Retained', '23 General']
+  quote: (
+    <>
+      &ldquo;<em className="italic text-emerald-600">77% of customers</em> will return if your website is easy to navigate and has a captivating factor.&rdquo;
+    </>
+  ),
+  body: (
+    <>
+      Speed, clarity, and effortless navigation build instant trust. When visitors can find exactly what they need within seconds, they linger longer, explore further, and convert into loyal, paying clients &mdash; turning a single visit into a lasting relationship.
+    </>
+  ),
+  legend: ['77 Retained', '23 General'],
 };
 
 interface StatsSectionProps {
   stage1?: StatsStage;
   stage2?: StatsStage;
-  /** Small print under the section, e.g. to mark figures as illustrative. */
   footnote?: React.ReactNode;
+}
+
+interface StickParticle {
+  ax: number;
+  ay: number;
+  bx: number;
+  by: number;
+  sx: number;
+  sy: number;
+  dx: number;
+  dy: number;
+  d: number;
+  ph: number;
+  sz: number;
+}
+
+interface AmbientParticle {
+  x: number;
+  y: number;
+  r: number;
+  v: number;
+  ph: number;
 }
 
 export const StatsSection: React.FC<StatsSectionProps> = ({
   stage1 = DEFAULT_STAGE_1,
   stage2 = DEFAULT_STAGE_2,
-  footnote
 }) => {
-  const n1 = stage1.count;
-  const n2 = stage2.count;
-  const suffix1 = stage1.suffix ?? '';
-  const suffix2 = stage2.suffix ?? '';
-  const sectionRef = useRef<HTMLElement>(null);
-  const stage1Ref = useRef<HTMLDivElement>(null);
-  const stage2Ref = useRef<HTMLDivElement>(null);
-  const dots1Ref = useRef<HTMLDivElement>(null);
-  const dots2Ref = useRef<HTMLDivElement>(null);
-
-  const activeStageRef = useRef<1 | 2>(1);
-
-  // The counters are written straight to the DOM. Driving them through React
-  // state re-rendered this whole section, all 200 dots included, on every
-  // animation frame, which was the main source of lag here.
-  const count1Ref = useRef<HTMLSpanElement>(null);
-  const count2Ref = useRef<HTMLSpanElement>(null);
-
-  const hasPlayed1Ref = useRef(false);
-  const hasPlayed2Ref = useRef(false);
-
-  // Running dot timelines, killed before a replay so overlapping runs never
-  // fight over the same dots.
-  const dotsTl1Ref = useRef<gsap.core.Timeline | null>(null);
-  const dotsTl2Ref = useRef<gsap.core.Timeline | null>(null);
-
-  // STAGE 1 ANIMATION: Counts up to 88, turns 88 dots RED, 12 remain WHITE.
-  // Only transform and opacity are tweened. Colour changes are cross-fades of a
-  // pre-coloured fill layer and glows are pre-drawn gradients, so nothing
-  // expensive (box-shadow blur, background-color) is repainted per frame.
-  const runStage1Animation = useCallback(() => {
-    const root = dots1Ref.current;
-    if (!root) return;
-    const dots: HTMLElement[] = Array.prototype.slice.call(root.querySelectorAll<HTMLElement>('.customer-dot-1'));
-    const lost = dots.slice(0, n1);
-    const retained = dots.slice(n1);
-    const fills = (els: HTMLElement[]) => els.map((d) => d.querySelector('.dot-fill'));
-    const glows = (els: HTMLElement[]) => els.map((d) => d.querySelector('.dot-glow'));
-
-    dotsTl1Ref.current?.kill();
-    gsap.set(dots, { scale: 1, force3D: false });
-    gsap.set(fills(lost), { opacity: 0 });
-    gsap.set(retained, { scale: 1.15 });
-    gsap.set(glows(retained), { opacity: 0.85 });
-
-    const counterProxy = { count: 0 };
-    const tl = gsap.timeline({ defaults: { force3D: false } });
-    dotsTl1Ref.current = tl;
-
-    tl.to(counterProxy, {
-      count: n1,
-      duration: 1.4,
-      ease: 'power2.out',
-      onUpdate: () => {
-        if (count1Ref.current) count1Ref.current.textContent = `${Math.round(counterProxy.count)}${suffix1}`;
-      }
-    });
-
-    const stagger = { each: 0.014, from: 'start' as const, ease: 'power1.out' };
-    tl.to(fills(lost), { opacity: 1, duration: 0.35, stagger }, 0.05)
-      .to(lost, { scale: 0.85, duration: 0.35, stagger }, 0.05);
-
-    tl.to(retained, { scale: 1.25, duration: 0.35, stagger: 0.025, ease: 'back.out(2)' }, '-=0.5')
-      .to(glows(retained), { opacity: 1, duration: 0.35, stagger: 0.025 }, '<')
-      .to(retained, { scale: 1.15, duration: 0.25 });
-  }, [n1, suffix1]);
-
-  // STAGE 2 ANIMATION: Counts up to 77, turns 77 dots radiant GREEN, 23 remain neutral WHITE
-  const runStage2Animation = useCallback(() => {
-    const root = dots2Ref.current;
-    if (!root) return;
-    const dots: HTMLElement[] = Array.prototype.slice.call(root.querySelectorAll<HTMLElement>('.customer-dot-2'));
-    const returning = dots.slice(0, n2);
-    const others = dots.slice(n2);
-    const fills = returning.map((d) => d.querySelector('.dot-fill'));
-    const glows = returning.map((d) => d.querySelector('.dot-glow'));
-
-    dotsTl2Ref.current?.kill();
-    gsap.set(dots, { opacity: 0.8, scale: 0.9, force3D: false });
-    gsap.set([...fills, ...glows], { opacity: 0 });
-
-    const counterProxy = { count: 0 };
-    const tl = gsap.timeline({ defaults: { force3D: false } });
-    dotsTl2Ref.current = tl;
-
-    tl.to(counterProxy, {
-      count: n2,
-      duration: 1.4,
-      ease: 'power2.out',
-      onUpdate: () => {
-        if (count2Ref.current) count2Ref.current.textContent = `${Math.round(counterProxy.count)}${suffix2}`;
-      }
-    });
-
-    const stagger = { each: 0.014, from: 'start' as const, ease: 'power1.out' };
-    tl.to(returning, { scale: 1.15, opacity: 1, duration: 0.35, stagger }, 0.05)
-      .to(fills, { opacity: 1, duration: 0.35, stagger }, 0.05)
-      .to(glows, { opacity: 1, duration: 0.35, stagger }, 0.05);
-
-    tl.to(others, { opacity: 0.5, duration: 0.3 }, 0.1);
-  }, [n2, suffix2]);
-
-  // SEQUENTIAL CROSS-FADE: Stage 1 fades fully out, THEN stage 2 fades in — no overlap, no jump
-  const transitionTo = useCallback((targetStage: 1 | 2) => {
-    // No "already transitioning" lock: if the visitor scrolls back mid-fade,
-    // the running tweens are killed and the fade reverses from where it is,
-    // instead of being ignored and leaving the wrong stage on screen.
-    if (activeStageRef.current === targetStage) return;
-    activeStageRef.current = targetStage;
-
-    const outEl = targetStage === 2 ? stage1Ref.current : stage2Ref.current;
-    const inEl = targetStage === 2 ? stage2Ref.current : stage1Ref.current;
-    const runInAnimation = targetStage === 2 ? runStage2Animation : runStage1Animation;
-
-    gsap.killTweensOf([stage1Ref.current, stage2Ref.current]);
-
-    const tl = gsap.timeline();
-
-    tl.to(outEl, {
-      opacity: 0,
-      duration: 0.4,
-      ease: 'power1.inOut',
-      pointerEvents: 'none'
-    }).set(inEl, { pointerEvents: 'auto' }, '>').to(
-      inEl,
-      {
-        opacity: 1,
-        duration: 0.45,
-        ease: 'power1.out',
-        onStart: runInAnimation
-      },
-      '>'
-    );
-  }, [runStage1Animation, runStage2Animation]);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const flashRef = useRef<HTMLDivElement>(null);
+  const t1Ref = useRef<HTMLDivElement>(null);
+  const t2Ref = useRef<HTMLDivElement>(null);
+  const q1Ref = useRef<HTMLDivElement>(null);
+  const q2Ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const el = sectionRef.current;
-    if (!el) return;
+    const track = trackRef.current;
+    const stage = stageRef.current;
+    const cv = canvasRef.current;
+    const fl = flashRef.current;
+    const t1 = t1Ref.current;
+    const t2 = t2Ref.current;
+    const q1 = q1Ref.current;
+    const q2 = q2Ref.current;
 
-    // 1. Initial trigger when section enters viewport: Start Stage 1 animation
-    const checkInitial = () => {
-      const rect = el.getBoundingClientRect();
-      const windowHeight = window.innerHeight || document.documentElement.clientHeight;
-      if (rect.top <= windowHeight * 0.75 && !hasPlayed1Ref.current) {
-        hasPlayed1Ref.current = true;
-        runStage1Animation();
-      }
-    };
-    checkInitial();
+    if (!track || !stage || !cv || !fl || !t1 || !t2 || !q1 || !q2) {
+      return;
+    }
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && !hasPlayed1Ref.current) {
-            hasPlayed1Ref.current = true;
-            runStage1Animation();
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
-    observer.observe(el);
+    const ctx = cv.getContext('2d');
+    if (!ctx) return;
 
-    // 2. ScrollTrigger for pinned center transition:
-    // When the section is centered on screen, scrolling past center point glides Stage 1 out and Stage 2 in
-    const ctx = gsap.context(() => {
-      ScrollTrigger.create({
-        trigger: el,
-        start: 'top top',
-        end: 'bottom bottom',
-        onUpdate: (self) => {
-          // Switch to Stage 2 once the user scrolls past ~42% through the pinned runway
-          if (self.progress >= 0.42 && activeStageRef.current !== 2) {
-            transitionTo(2);
-          } else if (self.progress < 0.42 && activeStageRef.current !== 1) {
-            transitionTo(1);
+    let W = 0;
+    let H = 0;
+    let dpr = 1;
+    let P: StickParticle[] = [];
+    let N = 0;
+    let shown = true;
+    let cur = 0;
+    let tgt = 0;
+    let amb: AmbientParticle[] = [];
+    let rafId = 0;
+    let resizeTimer: ReturnType<typeof setTimeout> | null = null;
+
+    const clamp = (x: number) => Math.max(0, Math.min(1, x));
+    const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+    const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+    const phase = (p: number, s: number, w: number, d: number) =>
+      ease(clamp(((p - s) / w) * 1.5 - d * 0.5));
+
+    function sample(txt: string): [number, number][] {
+      const o = document.createElement('canvas');
+      const s = 0.5;
+      o.width = Math.max(1, Math.floor(W * s));
+      o.height = Math.max(1, Math.floor(H * s));
+      const x = o.getContext('2d');
+
+      // Strictly bounded vertical safe zone between the top title and bottom text
+      const yTop = Math.max(170, H * 0.23);
+      const yBot = Math.min(H - 190, H * 0.63);
+      const centerY = (yTop + yBot) * 0.5;
+      const safeHeight = Math.max(130, yBot - yTop - 36);
+
+      if (!x) return [[W / 2, centerY]];
+
+      const fs = Math.min(W * 0.42, safeHeight / 0.74) * s;
+      x.fillStyle = '#fff';
+      x.font = '900 ' + fs + 'px Inter,Arial Black,Arial,sans-serif';
+      x.textAlign = 'center';
+      x.textBaseline = 'middle';
+      x.fillText(txt, o.width / 2, centerY * s);
+
+      const data = x.getImageData(0, 0, o.width, o.height).data;
+      const gx = (W < 700 ? 7.2 : 10.5) * s;
+      const gy = (W < 700 ? 12 : 17.5) * s;
+
+      // Collect points row-by-row so we can prune grazing 1-figure tip rows on rounded glyphs like "88"
+      const rows: [number, number][][] = [];
+      for (let y = 0, row = 0; y < o.height; y += gy, row++) {
+        const rowPts: [number, number][] = [];
+        for (let xx = row % 2 ? gx / 2 : 0; xx < o.width; xx += gx) {
+          const ix = Math.round(xx);
+          const iy = Math.round(y);
+          if (ix < o.width && iy < o.height && data[(iy * o.width + ix) * 4 + 3] > 128) {
+            rowPts.push([xx / s, y / s]);
           }
         }
+        if (rowPts.length > 0) {
+          rows.push(rowPts);
+        }
+      }
+
+      // Ensure the top and bottom caps of "88" have at least ~4 figures per digit (8 total across both digits)
+      // instead of a single lone stick figure on the extreme tangent of the curve.
+      const minCapPoints = txt === '88' ? 7 : 4;
+      while (rows.length > 4 && rows[0].length < minCapPoints) {
+        rows.shift();
+      }
+      while (rows.length > 4 && rows[rows.length - 1].length < minCapPoints) {
+        rows.pop();
+      }
+
+      const pts: [number, number][] = [];
+      for (let r = 0; r < rows.length; r++) {
+        for (let c = 0; c < rows[r].length; c++) {
+          pts.push(rows[r][c]);
+        }
+      }
+
+      for (let i = pts.length - 1; i > 0; i--) {
+        const j = (Math.random() * (i + 1)) | 0;
+        const tmp = pts[i];
+        pts[i] = pts[j];
+        pts[j] = tmp;
+      }
+
+      return pts.length > 0 ? pts : [[W / 2, centerY]];
+    }
+
+    function build() {
+      if (!stage || !cv || !ctx) return;
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      W = stage.clientWidth || window.innerWidth;
+      H = stage.clientHeight || window.innerHeight;
+      cv.width = W * dpr;
+      cv.height = H * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, W, H);
+
+      const A = sample('88');
+      const B = sample('77');
+      N = Math.max(A.length, B.length);
+      P = [];
+      amb = [];
+
+      const ambCount = W < 700 ? 60 : 120;
+      for (let k = 0; k < ambCount; k++) {
+        amb.push({
+          x: Math.random() * W,
+          y: Math.random() * H,
+          r: 0.5 + Math.random() * 1.1,
+          v: 0.032 + Math.random() * 0.14,
+          ph: Math.random() * 6.283,
+        });
+      }
+
+      for (let i = 0; i < N; i++) {
+        const a = A[i % A.length];
+        const b = B[i % B.length];
+        const ang = Math.random() * 6.283;
+        const r = Math.max(W, H) * (0.5 + Math.random() * 0.5);
+        P.push({
+          ax: a[0],
+          ay: a[1],
+          bx: b[0],
+          by: b[1],
+          sx: W / 2 + Math.cos(ang) * r,
+          sy: H / 2 + Math.sin(ang) * r,
+          dx: (Math.random() - 0.25) * W * 0.55,
+          dy: -(Math.random() * H * 0.5 + H * 0.08),
+          d: Math.random(),
+          ph: Math.random() * 6.283,
+          sz: 1 + Math.random() * 1.6,
+        });
+      }
+    }
+
+    function draw(t: number) {
+      if (!ctx || !fl) return;
+      const p = cur;
+      const shk = Math.sin(clamp((p - 0.35) / 0.2) * Math.PI);
+      ctx.setTransform(
+        dpr,
+        0,
+        0,
+        dpr,
+        Math.sin(cur * 720) * shk * 2.5 * dpr,
+        Math.cos(cur * 880) * shk * 2.5 * dpr
+      );
+
+      // Motion-trail fade onto pure white canvas background
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.32)';
+      ctx.fillRect(-30, -30, W + 60, H + 60);
+
+      // Colour: Crimson Red (88) -> Classic SABR Emerald Green (77)
+      const isGreen = p >= 0.5;
+      const hue = isGreen ? 160 : 358;
+      const sat = isGreen ? 86 : 76;
+      const lig = isGreen ? 35 : 42;
+
+      const fh = W < 700 ? 11.5 : 18;
+      const u = fh / 20;
+
+      for (let i = 0; i < N; i++) {
+        const q = P[i];
+        // Slowed phases by ~20% for smoother, unhurried transitions
+        const e1 = phase(p, 0.01, 0.16, q.d);
+        const e2 = phase(p, 0.36, 0.17, q.d);
+        const e3 = phase(p, 0.53, 0.17, q.d);
+        const wob = Math.sin(t * 0.0012 + q.ph) * (3 + 8 * e2 * (1 - e3));
+
+        let x = lerp(q.sx, q.ax, e1) + q.dx * e2 + wob;
+        let y = lerp(q.sy, q.ay, e1) + q.dy * e2 + Math.cos(t * 0.00096 + q.ph) * wob;
+        x = lerp(x, q.bx, e3);
+        y = lerp(y, q.by, e3);
+
+        // Idle shimmer when assembled (20% slower)
+        let calm = e1 * (1 - e2) + e3;
+        calm = Math.min(1, calm);
+        x += Math.sin(t * 0.0016 + q.ph) * calm * 0.8;
+        y += Math.cos(t * 0.0016 + q.ph) * calm * 0.8;
+
+        let al = 0.95 - 0.7 * e2 * (1 - e3);
+        if (e1 < 1) al *= 0.35 + 0.65 * e1;
+        ctx.globalAlpha = al;
+
+        const mv = Math.max(e1 * (1 - e1), e2 * (1 - e2), e3 * (1 - e3)) * 4;
+        const sw = Math.sin(t * 0.0056 + q.ph) * (0.12 + 0.88 * mv);
+        const tp = y - fh / 2;
+
+        ctx.strokeStyle = 'hsl(' + hue + ',' + sat + '%,' + (lig + (q.d - 0.5) * 28) + '%)';
+        ctx.lineWidth = Math.max(1, u * 1.1);
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+
+        ctx.beginPath();
+        ctx.arc(x, tp + 3.2 * u, 2.1 * u, 0, 6.283);
+        ctx.moveTo(x, tp + 5.4 * u);
+        ctx.lineTo(x, tp + 12 * u);
+        ctx.moveTo(x - 2.8 * u - sw * 1.5 * u, tp + 10.2 * u);
+        ctx.lineTo(x, tp + 7.2 * u);
+        ctx.lineTo(x + 2.8 * u + sw * 1.5 * u, tp + 10.2 * u);
+        ctx.moveTo(x - 1.6 * u + sw * 2.6 * u, tp + 18.6 * u);
+        ctx.lineTo(x, tp + 12 * u);
+        ctx.lineTo(x + 1.6 * u - sw * 2.6 * u, tp + 18.6 * u);
+        ctx.stroke();
+      }
+
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = 'hsl(' + hue + ',55%,40%)';
+      for (let j = 0; j < amb.length; j++) {
+        const a = amb[j];
+        a.y -= a.v;
+        if (a.y < -5) a.y = H + 5;
+        ctx.globalAlpha = 0.09 + 0.07 * Math.sin(t * 0.0008 + a.ph);
+        ctx.fillRect(a.x + Math.sin(t * 0.0005 + a.ph) * 8, a.y, a.r, a.r);
+      }
+      ctx.globalAlpha = 1;
+
+      const fr = Math.max(0, 1 - Math.abs(p - 0.39) * 30);
+      const fg = Math.max(0, 1 - Math.abs(p - 0.68) * 30);
+      fl.style.background = fg > fr ? '#059669' : '#ff4d3d';
+      fl.style.opacity = String(Math.max(fr, fg) * 0.04);
+    }
+
+    function ui(p: number) {
+      if (!t1 || !t2 || !q1 || !q2) return;
+      // Visible immediately at top of section so there is no empty gap when entering
+      const showStage1 = p >= 0.04 && p < 0.45;
+      const showStage2 = p > 0.64;
+
+      t1.style.opacity = showStage1 ? '1' : '0';
+      t1.style.transform = showStage1 ? 'translateY(0px)' : 'translateY(-10px)';
+      q1.style.opacity = showStage1 ? '1' : '0';
+      q1.style.transform = showStage1 ? 'translateY(0px)' : 'translateY(12px)';
+
+      t2.style.opacity = showStage2 ? '1' : '0';
+      t2.style.transform = showStage2 ? 'translateY(0px)' : 'translateY(-10px)';
+      q2.style.opacity = showStage2 ? '1' : '0';
+      q2.style.transform = showStage2 ? 'translateY(0px)' : 'translateY(12px)';
+    }
+
+    function prog() {
+      if (!track) return;
+      const r = track.getBoundingClientRect();
+      const max = Math.max(1, track.offsetHeight - window.innerHeight);
+      // Begin assembling 88 while scrolling into the section so there is no empty top gap
+      const lead = window.innerHeight * 0.45;
+      tgt = clamp((lead - r.top) / (max + lead * 0.6));
+    }
+
+    function loop(t: number) {
+      if (shown) {
+        // Slowed interpolation by ~20% (from 0.09 to 0.072)
+        cur += (tgt - cur) * 0.072;
+        if (Math.abs(tgt - cur) < 0.0002) cur = tgt;
+        draw(t);
+        ui(cur);
+      }
+      rafId = requestAnimationFrame(loop);
+    }
+
+    let observer: IntersectionObserver | null = null;
+    if ('IntersectionObserver' in window) {
+      observer = new IntersectionObserver((entries) => {
+        if (entries[0]) {
+          shown = entries[0].isIntersecting;
+        }
       });
-    }, el);
+      observer.observe(stage);
+    }
+
+    const handleResize = () => {
+      if (resizeTimer) clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        build();
+        prog();
+      }, 150);
+    };
+
+    window.addEventListener('scroll', prog, { passive: true });
+    window.addEventListener('resize', handleResize);
+
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      build();
+      prog();
+      cur = tgt;
+      rafId = requestAnimationFrame(loop);
+    }
 
     return () => {
-      observer.disconnect();
-      ctx.revert();
-      dotsTl1Ref.current?.kill();
-      dotsTl2Ref.current?.kill();
+      window.removeEventListener('scroll', prog);
+      window.removeEventListener('resize', handleResize);
+      if (resizeTimer) clearTimeout(resizeTimer);
+      if (observer) observer.disconnect();
+      if (rafId) cancelAnimationFrame(rafId);
     };
-  }, [runStage1Animation, transitionTo]);
+  }, []);
 
   return (
-    <section
-      ref={sectionRef}
-      className="relative min-h-[175vh] bg-[#fcfaf7] border-b border-stone-200/50"
-    >
-      {/* Sticky viewport-centered stage: locks the content cleanly in center while scrolling past */}
-      <div className="sticky top-0 h-[100dvh] flex flex-col justify-center items-center px-4 sm:px-6 lg:px-20 py-3 sm:py-6 overflow-hidden">
-        
-        {/* STACKED GRID CONTAINER: Both stages share identical footprint so there is zero layout jump */}
-        <div className="grid grid-cols-1 grid-rows-1 w-full max-w-5xl mx-auto">
-          
-          {/* ========================================================= */}
-          {/* STAGE 1: BAD WEBSITE (88/100 Drop-off, Red Dots)          */}
-          {/* ========================================================= */}
+    <section className="relative bg-white text-slate-900 -mt-4 -mb-10 sm:-mb-14">
+      {/* Compact 230vh Scroll Track */}
+      <div ref={trackRef} className="relative h-[230vh] bg-white">
+        {/* Sticky Stage */}
+        <div
+          ref={stageRef}
+          className="sticky top-0 h-[100vh] h-[100dvh] w-full overflow-hidden bg-white"
+        >
+          {/* Stick-Figure Canvas */}
+          <canvas ref={canvasRef} className="absolute inset-0 w-full h-full block" />
+
+          {/* Subtle Flash Overlay */}
           <div
-            ref={stage1Ref}
-            className="col-start-1 row-start-1 w-full space-y-2.5 sm:space-y-4 md:space-y-7 will-change-[opacity]"
+            ref={flashRef}
+            className="absolute inset-0 pointer-events-none opacity-0 z-10"
+          />
+
+          {/* STAGE 1 TOP TITLE: Minimalistic, bold luxury serif, well below navbar and well above 88 */}
+          <div
+            ref={t1Ref}
+            className="absolute left-0 right-0 top-[102px] sm:top-[112px] md:top-[118px] px-5 sm:px-8 text-center max-w-4xl mx-auto opacity-0 -translate-y-2.5 transition-all duration-700 pointer-events-none z-20"
           >
-            {/* SECTION HEADLINE */}
-            <div className="text-center">
-              <h2 className="font-serif text-[clamp(1.45rem,4.5vw,3.2rem)] font-normal text-slate-900 tracking-tight leading-[1.08]">
-                {stage1.headline}
-              </h2>
-            </div>
-
-            {/* COMPACT TWO-COLUMN ROW */}
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-3 sm:gap-5 md:gap-12 items-center">
-              
-              {/* LEFT: 100 CUSTOMER DOTS MATRIX (88 Red Dots, 12 White) */}
-              <div className="md:col-span-5 flex flex-col items-center justify-center">
-                <div
-                  ref={dots1Ref}
-                  onClick={runStage1Animation}
-                  title="Click to replay visitor drop-off animation"
-                  className="p-3 sm:p-4 md:p-6 bg-[#0e1117] rounded-xl sm:rounded-2xl border border-stone-800 shadow-xl cursor-pointer select-none hover:border-stone-700 transition-colors"
-                >
-                  <div className={DOT_GRID_CLASS}>
-                    {Array.from({ length: 100 }).map((_, i) => {
-                      const isLost = i < n1;
-                      return (
-                        <Dot
-                          key={i}
-                          className="customer-dot-1"
-                          fill="#ef4444"
-                          glow="rgba(255, 255, 255, 0.85)"
-                          fillOn={isLost}
-                          glowOn={!isLost}
-                          scale={isLost ? 0.85 : 1.15}
-                          opacity={0.9}
-                        />
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* Micro Indicator: Red = 88 Lost, White = 12 Retained */}
-                <div className="flex items-center gap-4 sm:gap-6 mt-1.5 sm:mt-3 text-[10px] sm:text-[11px] font-mono text-stone-600">
-                  <div className="flex items-center gap-1.5">
-                    <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-red-500 shadow-sm" />
-                    <span className="text-red-600 font-semibold">{stage1.legend[0]}</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-white border border-stone-400 shadow-sm" />
-                    <span className="text-slate-800 font-semibold">{stage1.legend[1]}</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* RIGHT: THE STATISTIC */}
-              <div className="md:col-span-7 space-y-1.5 sm:space-y-2.5 md:space-y-3.5 text-center md:text-left">
-                <div className="flex items-baseline justify-center md:justify-start gap-1.5 sm:gap-2">
-                  <span className="font-serif text-4xl sm:text-6xl md:text-8xl font-light text-slate-900 tracking-tight leading-none tabular-nums">
-                    <span ref={count1Ref}>0{suffix1}</span>
-                  </span>
-                  <span className="font-serif text-xl sm:text-3xl md:text-5xl text-red-600 font-light">
-                    / 100
-                  </span>
-                </div>
-
-                <p className="font-serif text-base sm:text-xl md:text-3xl lg:text-[2rem] text-slate-900 font-normal leading-snug">
-                  {stage1.quote}
-                </p>
-
-                <p className="font-inter text-slate-600 text-xs sm:text-sm md:text-base font-normal leading-relaxed max-w-xl mx-auto md:mx-0">
-                  {stage1.body}
-                </p>
-              </div>
-
-            </div>
+            <h2 className="font-serif text-[clamp(1.55rem,3.4vw,2.85rem)] font-semibold tracking-tight text-slate-900 leading-[1.1]">
+              {stage1.headline}
+            </h2>
           </div>
 
-          {/* ========================================================= */}
-          {/* STAGE 2: GOOD WEBSITE (77% Return, Green Dots)            */}
-          {/* ========================================================= */}
+          {/* STAGE 2 TOP TITLE: Minimalistic, bold luxury serif with classic SABR Digital shimmer, well below navbar and well above 77 */}
           <div
-            ref={stage2Ref}
-            className="col-start-1 row-start-1 w-full space-y-2.5 sm:space-y-4 md:space-y-7 opacity-0 pointer-events-none will-change-[opacity]"
+            ref={t2Ref}
+            className="absolute left-0 right-0 top-[102px] sm:top-[112px] md:top-[118px] px-5 sm:px-8 text-center max-w-4xl mx-auto opacity-0 -translate-y-2.5 transition-all duration-700 pointer-events-none z-20"
           >
-            {/* SECTION HEADLINE */}
-            <div className="text-center">
-              <h2 className="font-serif text-[clamp(1.45rem,4.5vw,3.2rem)] font-normal text-slate-900 tracking-tight leading-[1.08]">
-                {stage2.headline}
-              </h2>
-            </div>
-
-            {/* COMPACT TWO-COLUMN ROW - EXACT SAME LAYOUT AS COUNTERPART */}
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-3 sm:gap-5 md:gap-12 items-center">
-
-              {/* LEFT: 100 CUSTOMER DOTS MATRIX (77 Green Dots, 23 White) */}
-              <div className="md:col-span-5 flex flex-col items-center justify-center">
-                <div
-                  ref={dots2Ref}
-                  onClick={runStage2Animation}
-                  title="Click to replay return visitor animation"
-                  className="p-3 sm:p-4 md:p-6 bg-[#0e1117] rounded-xl sm:rounded-2xl border border-stone-800 shadow-xl cursor-pointer select-none hover:border-emerald-900/60 transition-colors"
-                >
-                  <div className={DOT_GRID_CLASS}>
-                    {Array.from({ length: 100 }).map((_, i) => {
-                      const isReturn = i < n2;
-                      return (
-                        <Dot
-                          key={i}
-                          className="customer-dot-2"
-                          fill="#10b981"
-                          glow="rgba(16, 185, 129, 0.9)"
-                          fillOn={isReturn}
-                          glowOn={isReturn}
-                          scale={isReturn ? 1.15 : 0.85}
-                          opacity={isReturn ? 1 : 0.6}
-                        />
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* Micro Indicator: Green = 77 Retained, White = 23 Other */}
-                <div className="flex items-center gap-4 sm:gap-6 mt-1.5 sm:mt-3 text-[10px] sm:text-[11px] font-mono text-stone-600">
-                  <div className="flex items-center gap-1.5">
-                    <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-emerald-500 shadow-sm" />
-                    <span className="text-emerald-600 font-semibold">{stage2.legend[0]}</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-white border border-stone-400 shadow-sm" />
-                    <span className="text-slate-800 font-semibold">{stage2.legend[1]}</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* RIGHT: THE 77% STATISTIC */}
-              <div className="md:col-span-7 space-y-1.5 sm:space-y-2.5 md:space-y-3.5 text-center md:text-left">
-                <div className="flex items-baseline justify-center md:justify-start gap-1.5 sm:gap-2">
-                  <span className="font-serif text-4xl sm:text-6xl md:text-8xl font-light text-slate-900 tracking-tight leading-none tabular-nums">
-                    <span ref={count2Ref}>0{suffix2}</span>
-                  </span>
-                  <span className="font-serif text-xl sm:text-3xl md:text-5xl text-emerald-600 font-light">
-                    / 100
-                  </span>
-                </div>
-
-                <p className="font-serif text-base sm:text-xl md:text-3xl lg:text-[2rem] text-slate-900 font-normal leading-snug">
-                  {stage2.quote}
-                </p>
-
-                <p className="font-inter text-slate-600 text-xs sm:text-sm md:text-base font-normal leading-relaxed max-w-xl mx-auto md:mx-0">
-                  {stage2.body}
-                </p>
-              </div>
-
-            </div>
+            <h2 className="font-serif text-[clamp(1.55rem,3.4vw,2.85rem)] font-semibold tracking-tight text-slate-900 leading-[1.1]">
+              {stage2.headline}
+            </h2>
           </div>
 
+          {/* STAGE 1 BOTTOM TEXT: Positioned below 88 with zero overlap */}
+          <div
+            ref={q1Ref}
+            className="absolute left-0 right-0 top-[65%] sm:top-[66%] px-5 sm:px-[6vw] text-center max-w-[820px] mx-auto opacity-0 translate-y-3 transition-all duration-700 pointer-events-none z-20"
+          >
+            <div className="font-serif text-[clamp(17px,2.1vw,26px)] leading-[1.35] font-normal text-slate-900 mb-2.5">
+              {stage1.quote}
+            </div>
+            <p className="text-xs sm:text-sm md:text-[15px] text-slate-600 leading-relaxed max-w-2xl mx-auto">
+              {stage1.body}
+            </p>
+          </div>
+
+          {/* STAGE 2 BOTTOM TEXT: Positioned below 77 with zero overlap */}
+          <div
+            ref={q2Ref}
+            className="absolute left-0 right-0 top-[65%] sm:top-[66%] px-5 sm:px-[6vw] text-center max-w-[820px] mx-auto opacity-0 translate-y-3 transition-all duration-700 pointer-events-none z-20"
+          >
+            <div className="font-serif text-[clamp(17px,2.1vw,26px)] leading-[1.35] font-normal text-slate-900 mb-2.5">
+              {stage2.quote}
+            </div>
+            <p className="text-xs sm:text-sm md:text-[15px] text-slate-600 leading-relaxed max-w-2xl mx-auto">
+              {stage2.body}
+            </p>
+          </div>
         </div>
-
-        {footnote && (
-          <p className="mt-4 sm:mt-6 max-w-2xl text-center text-[10px] sm:text-[11px] font-mono text-stone-500">
-            {footnote}
-          </p>
-        )}
-
       </div>
     </section>
   );

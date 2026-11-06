@@ -1,157 +1,197 @@
-import React, { useState, useEffect } from 'react';
-// Fix react-router-dom missing exports
+import React, { useEffect, useState } from 'react';
 import * as RouterDOM from 'react-router-dom';
 const { Link, useLocation } = RouterDOM as any;
-import { Menu, X, Phone } from 'lucide-react';
-import { motion as framerMotion, AnimatePresence } from 'framer-motion';
+import { ArrowUpRight, Menu, Phone, X } from 'lucide-react';
 import { academy, navLinks, palette } from './equestrianData';
-import { HorseMark, Bloom } from './EquestrianUI';
+import { HorseMark } from './EquestrianUI';
 
-// Fix motion types by casting to any
-const motion = framerMotion as any;
+interface EquestrianNavProps {
+  transparentOnTop?: boolean;
+}
 
-const EquestrianNav: React.FC = () => {
+const EquestrianNav: React.FC<EquestrianNavProps> = ({ transparentOnTop = false }) => {
   const [scrolled, setScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [open, setOpen] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 24);
-    handleScroll();
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    const onScroll = () => setScrolled(window.scrollY > 32);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  // The menu must not stay open behind a page change.
   useEffect(() => {
-    setMobileMenuOpen(false);
+    setOpen(false);
   }, [location.pathname]);
+
+  useEffect(() => {
+    document.body.style.overflow = open ? 'hidden' : '';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [open]);
+
+  const isLightOnHero = transparentOnTop && !scrolled && !open;
 
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-[200] transition-all duration-500 ${
-          scrolled
-            ? 'bg-[#FFFAF3]/95 backdrop-blur-md border-b border-[#EADFD1] py-3'
-            : 'bg-transparent py-5'
+        className={`fixed top-0 left-0 right-0 z-[150] transition-all duration-500 ${
+          isLightOnHero
+            ? 'bg-gradient-to-b from-[#1E2822]/55 to-transparent py-4 sm:py-5 md:py-6'
+            : 'bg-[#FAF6EE]/95 backdrop-blur-md border-b border-[#2D5A43]/15 py-3 sm:py-3.5 shadow-[0_8px_30px_-20px_rgba(30,40,34,0.18)]'
         }`}
       >
-        <div className="max-w-[1500px] mx-auto px-6 md:px-10 flex items-center justify-between gap-8">
-          <Link to="/demo/equestrian" className="flex items-center gap-3 group shrink-0">
-            <HorseMark size={42} color={palette.ink} className="transition-transform duration-500 group-hover:-translate-y-0.5" />
-            <span className="flex flex-col leading-none">
-              <span className="font-serif text-[1.25rem] md:text-[1.5rem] text-[#1E2A22] tracking-[-0.01em]">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 md:px-12 flex items-center justify-between gap-4 sm:gap-6">
+          <Link to="/demo/equestrian" className="group inline-flex items-center gap-3 sm:gap-3.5 min-w-0">
+            <span
+              className={`w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center shrink-0 transition-colors duration-300 ${
+                isLightOnHero
+                  ? 'bg-white/15 backdrop-blur-sm'
+                  : 'bg-[#E8F0EB]'
+              }`}
+            >
+              <HorseMark
+                size={26}
+                color={isLightOnHero ? '#FAF6EE' : palette.green}
+                className="transition-transform duration-500 group-hover:scale-105"
+              />
+            </span>
+            <div className="min-w-0">
+              <span
+                className={`block font-serif text-lg sm:text-xl md:text-2xl tracking-[-0.01em] leading-none truncate transition-colors duration-300 ${
+                  isLightOnHero ? 'text-[#FAF6EE]' : 'text-[#1E2822]'
+                }`}
+              >
                 {academy.name}
               </span>
-              <span className="mt-1 text-[7.5px] md:text-[8.5px] uppercase tracking-[0.4em] text-[#6B7A6F]">
-                Riding Academy
+              <span
+                className={`block text-[8px] sm:text-[9px] uppercase tracking-[0.26em] sm:tracking-[0.32em] mt-1 truncate transition-colors duration-300 ${
+                  isLightOnHero ? 'text-white/75' : 'text-[#2D5A43]'
+                }`}
+              >
+                Pewsey Vale &middot; Wiltshire
               </span>
-            </span>
+            </div>
           </Link>
 
-          <nav aria-label="Primary" className="hidden lg:flex items-center gap-6 xl:gap-9">
+          <nav aria-label="Main" className="hidden lg:flex items-center gap-2">
             {navLinks.map((link) => {
               const active = location.pathname === link.path;
               return (
                 <Link
                   key={link.path}
                   to={link.path}
-                  className={`relative text-[10px] uppercase tracking-[0.26em] whitespace-nowrap transition-colors duration-300 ${
-                    active ? 'text-[#1E2A22]' : 'text-[#6B7A6F] hover:text-[#1E2A22]'
+                  className={`px-4 py-2 rounded-full text-[11px] uppercase tracking-[0.26em] transition-all duration-300 ${
+                    isLightOnHero
+                      ? active
+                        ? 'bg-white/20 text-white font-medium'
+                        : 'text-white/85 hover:text-white hover:bg-white/10'
+                      : active
+                      ? 'bg-[#2D5A43] text-[#FAF6EE] font-medium'
+                      : 'text-[#5F665E] hover:text-[#2D5A43] hover:bg-[#E8F0EB]'
                   }`}
                 >
                   {link.name}
-                  <span
-                    className={`absolute -bottom-2 left-0 h-px bg-[#E4577A] transition-all duration-300 ${
-                      active ? 'w-full' : 'w-0'
-                    }`}
-                  />
                 </Link>
               );
             })}
           </nav>
 
-          <div className="flex items-center gap-3">
+          <div className="hidden md:flex items-center gap-5">
             <a
               href={`tel:${academy.phoneHref}`}
-              className="hidden xl:flex items-center gap-2 text-[11px] tracking-[0.1em] text-[#6B7A6F] hover:text-[#1E2A22] transition-colors"
+              className={`inline-flex items-center gap-2 text-[12px] tracking-[0.14em] font-medium transition-colors duration-300 ${
+                isLightOnHero
+                  ? 'text-white/90 hover:text-white'
+                  : 'text-[#2D5A43] hover:text-[#1E2822]'
+              }`}
             >
-              <Phone size={13} />
-              {academy.phoneDisplay}
+              <Phone size={14} />
+              <span>{academy.phoneDisplay}</span>
             </a>
+
             <Link
               to="/demo/equestrian/book"
-              className="hidden sm:inline-flex items-center gap-2 px-6 py-3 bg-[#1E2A22] text-[#FFFAF3] text-[9px] uppercase tracking-[0.3em] rounded-full hover:bg-[#E4577A] transition-colors duration-300"
+              className={`group inline-flex items-center gap-2.5 px-6 py-3 rounded-full text-[10px] uppercase tracking-[0.28em] font-medium transition-all duration-300 ${
+                isLightOnHero
+                  ? 'bg-[#2D5A43] text-[#FAF6EE] hover:bg-[#244936] shadow-lg'
+                  : 'bg-[#2D5A43] text-[#FAF6EE] hover:bg-[#224634]'
+              }`}
             >
-              Book a lesson
+              <span>Book a Lesson</span>
+              <ArrowUpRight
+                size={14}
+                className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+              />
             </Link>
-            <button
-              aria-label="Open menu"
-              className="lg:hidden w-11 h-11 flex items-center justify-center rounded-full text-[#1E2A22] border border-[#EADFD1] bg-[#FFFAF3]"
-              onClick={() => setMobileMenuOpen(true)}
-            >
-              <Menu size={19} />
-            </button>
           </div>
+
+          <button
+            type="button"
+            onClick={() => setOpen((v) => !v)}
+            aria-expanded={open}
+            aria-label={open ? 'Close menu' : 'Open menu'}
+            className={`lg:hidden w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-colors ${
+              isLightOnHero
+                ? 'bg-white/15 text-white'
+                : 'bg-[#E8F0EB] text-[#2D5A43]'
+            }`}
+          >
+            {open ? <X size={18} /> : <Menu size={18} />}
+          </button>
         </div>
       </header>
 
-      <AnimatePresence>
-        {mobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -12 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -12 }}
-            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed inset-0 z-[300] bg-[#FFFAF3] flex flex-col px-7 py-6 lg:hidden overflow-y-auto"
-          >
-            <div className="flex justify-between items-start mb-8">
-              <div className="flex items-center gap-3">
-                <HorseMark size={40} color={palette.ink} />
-                <span className="flex flex-col leading-none">
-                  <span className="font-serif text-2xl text-[#1E2A22]">{academy.name}</span>
-                  <span className="mt-1 text-[8px] uppercase tracking-[0.4em] text-[#6B7A6F]">
-                    Riding Academy
+      {open && (
+        <div className="fixed inset-0 z-[140] bg-[#FAF6EE] pt-20 px-5 pb-8 flex flex-col justify-between lg:hidden overflow-y-auto">
+          <nav aria-label="Mobile" className="space-y-1.5">
+            {[
+              { name: 'Home', path: '/demo/equestrian' },
+              ...navLinks
+            ].map((link, idx) => {
+              const active = location.pathname === link.path;
+              return (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  onClick={() => setOpen(false)}
+                  className={`flex items-center justify-between px-4 py-3.5 rounded-2xl font-serif text-xl sm:text-2xl transition-colors ${
+                    active ? 'bg-[#2D5A43] text-[#FAF6EE]' : 'text-[#1E2822] hover:bg-[#E8F0EB]'
+                  }`}
+                >
+                  <span>{link.name}</span>
+                  <span
+                    className={`text-[10px] font-sans uppercase tracking-[0.28em] ${
+                      active ? 'text-white/75' : 'text-[#2D5A43]'
+                    }`}
+                  >
+                    0{idx + 1}
                   </span>
-                </span>
-              </div>
-              <button
-                aria-label="Close menu"
-                onClick={() => setMobileMenuOpen(false)}
-                className="w-11 h-11 flex items-center justify-center rounded-full border border-[#EADFD1] text-[#1E2A22]"
-              >
-                <X size={19} />
-              </button>
-            </div>
-
-            <nav aria-label="Mobile" className="flex flex-col divide-y divide-[#EADFD1] border-y border-[#EADFD1]">
-              <Link to="/demo/equestrian" className="font-serif text-[1.75rem] text-[#1E2A22] py-4">
-                Home
-              </Link>
-              {navLinks.map((link) => (
-                <Link key={link.path} to={link.path} className="font-serif text-[1.75rem] text-[#1E2A22] py-4">
-                  {link.name}
                 </Link>
-              ))}
-            </nav>
+              );
+            })}
+          </nav>
 
-            <div className="mt-auto pt-8 space-y-3">
-              <a
-                href={`tel:${academy.phoneHref}`}
-                className="flex items-center justify-center gap-3 py-4 rounded-full border border-[#1E2A22] text-[#1E2A22] text-[10px] uppercase tracking-[0.3em]"
-              >
-                <Phone size={14} /> {academy.phoneDisplay}
+          <div className="pt-6 space-y-4">
+            <div className="p-4 sm:p-5 rounded-2xl bg-[#E8F0EB]">
+              <p className="text-[10px] uppercase tracking-[0.3em] text-[#2D5A43] mb-1">Ring the Tack Room</p>
+              <a href={`tel:${academy.phoneHref}`} className="font-serif text-xl sm:text-2xl text-[#1E2822]">
+                {academy.phoneDisplay}
               </a>
-              <Link
-                to="/demo/equestrian/book"
-                className="flex items-center justify-center gap-3 py-4 rounded-full bg-[#1E2A22] text-[#FFFAF3] text-[10px] uppercase tracking-[0.3em]"
-              >
-                <Bloom size={14} /> Book a lesson
-              </Link>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            <Link
+              to="/demo/equestrian/book"
+              onClick={() => setOpen(false)}
+              className="w-full inline-flex items-center justify-center gap-3 py-4 rounded-full bg-[#2D5A43] text-[#FAF6EE] text-[10px] uppercase tracking-[0.3em]"
+            >
+              <span>Book a Lesson</span>
+              <ArrowUpRight size={15} />
+            </Link>
+          </div>
+        </div>
+      )}
     </>
   );
 };

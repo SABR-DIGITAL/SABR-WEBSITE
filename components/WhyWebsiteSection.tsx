@@ -183,7 +183,7 @@ const WhyWebsiteSection: React.FC<WhyWebsiteSectionProps> = ({
   const activeIndex = selectedPro ? sabrPros.findIndex(p => p.id === selectedPro.id) : 0;
 
   return (
-    <section className="relative bg-white py-16 md:py-24 overflow-hidden border-t border-slate-100">
+    <section className="relative bg-white pt-4 pb-16 md:pt-8 md:pb-24 overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 relative z-20 flex flex-col-reverse lg:flex-row items-start justify-between gap-8 lg:gap-16">
         
         {/* LEFT STACK: STATIC GRID FOR ALL DEVICES */}
@@ -222,7 +222,7 @@ const WhyWebsiteSection: React.FC<WhyWebsiteSectionProps> = ({
               
               {/* TABLET-READY CLAMPED FONT SIZES */}
               <h2 className="font-syne text-3xl sm:text-4xl md:text-[clamp(2.5rem,6vw,5rem)] font-black tracking-tighter uppercase leading-[0.9] text-slate-950">
-                {headline ?? <>WHY <br /> <span className="text-emerald-600 italic">DOMINATE</span> <br /> ONLINE?</>}
+                {headline ?? <>WHAT WE <br /> <span className="text-emerald-600 italic">DO WELL!</span></>}
               </h2>
               
               <div className="max-w-md border-l-4 border-emerald-50 pl-8">

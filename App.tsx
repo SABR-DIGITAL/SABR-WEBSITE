@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, Suspense, lazy, useLayoutEffect, Component } from 'react';
+import React, { useState, useEffect, useRef, useLayoutEffect, Component } from 'react';
 // Fix react-router-dom missing exports
 import * as RouterDOM from 'react-router-dom';
 const { BrowserRouter, Routes, Route, Navigate, Link, useLocation, useNavigate } = RouterDOM as any;
@@ -15,106 +15,55 @@ import Hero from './components/Hero';
 import StatsSection from './components/StatsSection';
 import WebsiteScoreScanner from './components/WebsiteScoreScanner';
 import WhyWebsiteSection from './components/WhyWebsiteSection';
-
-// Lazy Loaded Pages
-const ProjectsGallery = lazy(() => import('./pages/ProjectsGallery'));
-const EquestrianHome = lazy(() => import('./components/demos/equestrian/EquestrianHome'));
-const EquestrianLessons = lazy(() => import('./components/demos/equestrian/EquestrianLessons'));
-const EquestrianHorses = lazy(() => import('./components/demos/equestrian/EquestrianHorses'));
-const EquestrianFacilities = lazy(() => import('./components/demos/equestrian/EquestrianFacilities'));
-const EquestrianFaqs = lazy(() => import('./components/demos/equestrian/EquestrianFaqs'));
-const EquestrianContact = lazy(() => import('./components/demos/equestrian/EquestrianContact'));
-const EquestrianBooking = lazy(() => import('./components/demos/equestrian/EquestrianBooking'));
-const LandscaperHome = lazy(() => import('./components/demos/landscaping/Home'));
-const LandscaperContact = lazy(() => import('./components/demos/landscaping/Contact'));
-const LandscaperServices = lazy(() => import('./components/demos/landscaping/Services'));
-const LandscaperAbout = lazy(() => import('./components/demos/landscaping/About'));
-const LandscaperGallery = lazy(() => import('./components/demos/landscaping/Gallery'));
-
-// Cafe Demo Pages
-const CafeHome = lazy(() => import('./components/demos/cafe/CafeHome'));
-const CafeMenu = lazy(() => import('./components/demos/cafe/CafeMenu'));
-const CafeLocations = lazy(() => import('./components/demos/cafe/CafeLocations'));
-const CafeAbout = lazy(() => import('./components/demos/cafe/CafeAbout'));
-const CafeContact = lazy(() => import('./components/demos/cafe/CafeContact'));
-const CafeBooking = lazy(() => import('./components/demos/cafe/CafeBooking'));
-
-// Physio Demo (New)
-const PhysioHome = lazy(() => import('./components/demos/physio/PhysioHome'));
-const PhysioPrices = lazy(() => import('./components/demos/physio/PhysioPrices'));
-const PhysioTeam = lazy(() => import('./components/demos/physio/PhysioTeam'));
-const PhysioFAQ = lazy(() => import('./components/demos/physio/PhysioFAQ'));
-const PhysioContact = lazy(() => import('./components/demos/physio/PhysioContact'));
-
-// Luxury Spa Demo (Verholy-inspired)
-const SpaHome = lazy(() => import('./components/demos/spa/SpaHome'));
-const SpaSuites = lazy(() => import('./components/demos/spa/SpaSuites'));
-const SpaTreatments = lazy(() => import('./components/demos/spa/SpaTreatments'));
-const SpaDining = lazy(() => import('./components/demos/spa/SpaDining'));
-const SpaActivities = lazy(() => import('./components/demos/spa/SpaActivities'));
-const SpaPhilosophy = lazy(() => import('./components/demos/spa/SpaPhilosophy'));
-const SpaTransfers = lazy(() => import('./components/demos/spa/SpaTransfers'));
-const SpaContact = lazy(() => import('./components/demos/spa/SpaContact'));
-const SpaBooking = lazy(() => import('./components/demos/spa/SpaBooking'));
-
-// Traditional Sections
-const SnakeTimeline = lazy(() => import('./components/SnakeTimeline'));
-const FAQSection = lazy(() => import('./components/FAQSection'));
-const ContactForm = lazy(() => import('./components/ContactForm'));
 import AboutFounderSection from './components/AboutFounderSection';
 
-// The inner pages of a demo are the ones a visitor clicks through next, so once
-// a demo's landing page is on screen we quietly fetch the rest of that demo.
-// Same import specifiers as above, which means the same chunks — no extra work.
-const DEMO_SIBLING_CHUNKS: Record<string, Array<() => Promise<unknown>>> = {
-  equestrian: [
-    () => import('./components/demos/equestrian/EquestrianLessons'),
-    () => import('./components/demos/equestrian/EquestrianHorses'),
-    () => import('./components/demos/equestrian/EquestrianFacilities'),
-    () => import('./components/demos/equestrian/EquestrianFaqs'),
-    () => import('./components/demos/equestrian/EquestrianContact'),
-    () => import('./components/demos/equestrian/EquestrianBooking')
-  ],
-  landscaping: [
-    () => import('./components/demos/landscaping/Services'),
-    () => import('./components/demos/landscaping/Gallery'),
-    () => import('./components/demos/landscaping/About'),
-    () => import('./components/demos/landscaping/Contact')
-  ],
-  cafe: [
-    () => import('./components/demos/cafe/CafeMenu'),
-    () => import('./components/demos/cafe/CafeLocations'),
-    () => import('./components/demos/cafe/CafeAbout'),
-    () => import('./components/demos/cafe/CafeContact'),
-    () => import('./components/demos/cafe/CafeBooking')
-  ],
-  physio: [
-    () => import('./components/demos/physio/PhysioPrices'),
-    () => import('./components/demos/physio/PhysioTeam'),
-    () => import('./components/demos/physio/PhysioFAQ'),
-    () => import('./components/demos/physio/PhysioContact')
-  ],
-  spa: [
-    () => import('./components/demos/spa/SpaSuites'),
-    () => import('./components/demos/spa/SpaTreatments'),
-    () => import('./components/demos/spa/SpaDining'),
-    () => import('./components/demos/spa/SpaActivities'),
-    () => import('./components/demos/spa/SpaPhilosophy'),
-    () => import('./components/demos/spa/SpaTransfers'),
-    () => import('./components/demos/spa/SpaContact'),
-    () => import('./components/demos/spa/SpaBooking')
-  ]
-};
+// Direct Eagerly Loaded Pages — Zero loading screen flashes when switching pages or demos
+import ProjectsGallery from './pages/ProjectsGallery';
+import SnakeTimeline from './components/SnakeTimeline';
+import FAQSection from './components/FAQSection';
+import ContactForm from './components/ContactForm';
 
-const warmedDemos = new Set<string>();
+// Equestrian Demo Pages
+import EquestrianHome from './components/demos/equestrian/EquestrianHome';
+import EquestrianLessons from './components/demos/equestrian/EquestrianLessons';
+import EquestrianHorses from './components/demos/equestrian/EquestrianHorses';
+import EquestrianFacilities from './components/demos/equestrian/EquestrianFacilities';
+import EquestrianFaqs from './components/demos/equestrian/EquestrianFaqs';
+import EquestrianContact from './components/demos/equestrian/EquestrianContact';
+import EquestrianBooking from './components/demos/equestrian/EquestrianBooking';
 
-const warmDemoSiblings = (slug: string) => {
-  if (warmedDemos.has(slug)) return;
-  const loaders = DEMO_SIBLING_CHUNKS[slug];
-  if (!loaders) return;
-  warmedDemos.add(slug);
-  loaders.forEach((load) => load().catch(() => undefined));
-};
+// Landscaping Demo Pages (Oak & Ash)
+import LandscaperHome from './components/demos/landscaping/Home';
+import LandscaperContact from './components/demos/landscaping/Contact';
+import LandscaperServices from './components/demos/landscaping/Services';
+import LandscaperAbout from './components/demos/landscaping/About';
+import LandscaperGallery from './components/demos/landscaping/Gallery';
+
+// Cafe Demo Pages
+import CafeHome from './components/demos/cafe/CafeHome';
+import CafeMenu from './components/demos/cafe/CafeMenu';
+import CafeLocations from './components/demos/cafe/CafeLocations';
+import CafeAbout from './components/demos/cafe/CafeAbout';
+import CafeContact from './components/demos/cafe/CafeContact';
+import CafeBooking from './components/demos/cafe/CafeBooking';
+
+// Physio Demo Pages
+import PhysioHome from './components/demos/physio/PhysioHome';
+import PhysioPrices from './components/demos/physio/PhysioPrices';
+import PhysioTeam from './components/demos/physio/PhysioTeam';
+import PhysioFAQ from './components/demos/physio/PhysioFAQ';
+import PhysioContact from './components/demos/physio/PhysioContact';
+
+// Luxury Spa Demo Pages
+import SpaHome from './components/demos/spa/SpaHome';
+import SpaSuites from './components/demos/spa/SpaSuites';
+import SpaTreatments from './components/demos/spa/SpaTreatments';
+import SpaDining from './components/demos/spa/SpaDining';
+import SpaActivities from './components/demos/spa/SpaActivities';
+import SpaPhilosophy from './components/demos/spa/SpaPhilosophy';
+import SpaTransfers from './components/demos/spa/SpaTransfers';
+import SpaContact from './components/demos/spa/SpaContact';
+import SpaBooking from './components/demos/spa/SpaBooking';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -210,19 +159,6 @@ class ErrorBoundary extends ComponentBase {
   }
 }
 
-const LoadingFallback = () => (
-  <div className="min-h-screen bg-slate-950 flex items-center justify-center">
-    <div className="flex flex-col items-center gap-6">
-      <div className="w-12 h-12 border-4 border-blue-600/20 border-t-blue-600 rounded-full animate-spin"></div>
-      <p className="text-blue-600 font-black text-[10px] uppercase tracking-[0.5em] animate-pulse">Loading Experience...</p>
-    </div>
-  </div>
-);
-
-// Keeps the document title, description and canonical URL aligned with the
-// active page so shared links and search snippets read like a person wrote them.
-// This app is mounted at /web-design (see the basename on the router below), so
-// canonical/OG URLs need that prefix even though every in-app path stays relative.
 const SITE_URL = 'https://sabrdigital.co.uk/web-design';
 
 const SEO_META: Record<Page, { title: string; description: string }> = {
@@ -288,12 +224,7 @@ const useSeoMeta = (page: Page, pathname: string) => {
 };
 
 const MainApp: React.FC = () => {
-  // Deep links straight into a demo skip the agency intro — the demo has its own
-  // opening sequence and two title cards stacked on top of each other reads as a bug.
   const [showIntro, setShowIntro] = useState(
-    // Mounted under /web-design, so the raw browser path is /web-design/demo/...
-    // Arriving from the gateway (its panel-fill animation is the transition)
-    // or switching over from the AI Optimisation site skips it too.
     () => !window.location.pathname.includes('/demo') && !arrivedFromWithinSite('web-design')
   );
   const [isRevealed, setIsRevealed] = useState(false);
@@ -309,7 +240,6 @@ const MainApp: React.FC = () => {
   useLayoutEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' as any });
 
-    // Debounce refresh to avoid layout thrashing
     const timer = setTimeout(() => {
       ScrollTrigger.refresh();
     }, 100);
@@ -319,9 +249,6 @@ const MainApp: React.FC = () => {
 
   useEffect(() => {
     if (!showIntro && !isDemo) {
-      // Trigger internal animations once the intro is gone. Two frames in, so
-      // the hidden state has definitely been painted and the navbar's opacity
-      // transition actually runs instead of snapping straight to visible.
       let raf2 = 0;
       const raf1 = requestAnimationFrame(() => {
         raf2 = requestAnimationFrame(() => setIsRevealed(true));
@@ -339,12 +266,6 @@ const MainApp: React.FC = () => {
     }
   }, [showIntro, isDemo]);
 
-  // Soft cross-fade between pages now that each one is a real route. Not on
-  // the first page of a visit, though: fading the whole page in from 0 would
-  // show the cream page background through the hero photo — a grey flash
-  // straight after the gateway's panel has filled the screen with that same
-  // photo. The first page is revealed by the intro, or by the hero's own text
-  // fade, instead.
   const firstPath = useRef(location.pathname);
   const hasNavigated = useRef(false);
   if (location.pathname !== firstPath.current) hasNavigated.current = true;
@@ -352,8 +273,6 @@ const MainApp: React.FC = () => {
     if (!contentRef.current) return;
     if (!hasNavigated.current) return;
 
-    // A leftover GSAP transform on this wrapper would become the containing
-    // block for the fixed Exit Preview button, so demos start from a clean slate.
     if (isDemo) {
       gsap.set(contentRef.current, { clearProps: 'all' });
       return;
@@ -361,26 +280,10 @@ const MainApp: React.FC = () => {
 
     gsap.fromTo(
       contentRef.current,
-      { opacity: 0, y: 24 },
-      { opacity: 1, y: 0, duration: 0.45, ease: 'power4.out', force3D: true, clearProps: 'transform' }
+      { opacity: 0, y: 18 },
+      { opacity: 1, y: 0, duration: 0.42, ease: 'power3.out', force3D: true, clearProps: 'transform' }
     );
   }, [location.pathname, isDemo]);
-
-  // Inside a demo, fetch its remaining pages while the visitor reads the first
-  // one, so moving around the demo site feels instant.
-  useEffect(() => {
-    if (!isDemo) return;
-    const slug = location.pathname.split('/')[2];
-    if (!slug) return;
-    const warm = () => warmDemoSiblings(slug);
-    const idle = (window as any).requestIdleCallback;
-    if (typeof idle === 'function') {
-      const handle = idle(warm, { timeout: 2500 });
-      return () => (window as any).cancelIdleCallback?.(handle);
-    }
-    const timer = window.setTimeout(warm, 1200);
-    return () => window.clearTimeout(timer);
-  }, [isDemo, location.pathname]);
 
   const navigateTo = (page: Page) => {
     if (page === 'about') {
@@ -411,12 +314,14 @@ const MainApp: React.FC = () => {
     setShowIntro(false);
   };
 
+  // Swapped order per user request:
+  // Hero -> About SABR -> WebsiteScoreScanner -> StatsSection (88/100 & 77%/100) -> WhyWebsiteSection (What we do well!)
   const renderHomeContent = () => (
     <>
       <Hero navigateTo={navigateTo} startAnimation={isRevealed} />
-      <StatsSection />
-      <WebsiteScoreScanner navigateTo={navigateTo} />
       <AboutFounderSection navigateTo={navigateTo} />
+      <WebsiteScoreScanner navigateTo={navigateTo} />
+      <StatsSection />
       <WhyWebsiteSection />
     </>
   );
@@ -426,58 +331,53 @@ const MainApp: React.FC = () => {
       <ScrollToTop />
       <LegacyHashRedirect />
       {showIntro && <IntroPortal onComplete={handleIntroComplete} />}
-      {/* Fixed site navigation bar mounted directly at root viewport level */}
       {!isDemo && <Navbar navigateTo={navigateTo} currentPage={currentPage} startAnimation={isRevealed} />}
-      {/* One instance for every demo, mounted outside the animated page wrapper
-          so it stays pinned to the viewport wherever the visitor scrolls. */}
       {isDemo && <ExitPreviewButton />}
       <div className="flex flex-col min-h-screen relative z-10">
         <main className="relative flex-grow">
           <div ref={contentRef} className="w-full">
             <ErrorBoundary>
-              <Suspense fallback={<LoadingFallback />}>
-                <Routes>
-                  <Route path="/" element={renderHomeContent()} />
-                  <Route path="/about" element={<Navigate to="/#about" replace />} />
-                  <Route path="/process" element={<SnakeTimeline navigateTo={navigateTo} />} />
-                  <Route path="/faq" element={<FAQSection navigateTo={navigateTo} />} />
-                  <Route path="/contact" element={<ContactForm />} />
-                  <Route path="/projects" element={<ProjectsGallery />} />
-                  <Route path="/demo/equestrian" element={<EquestrianHome />} />
-                  <Route path="/demo/equestrian/lessons" element={<EquestrianLessons />} />
-                  <Route path="/demo/equestrian/horses" element={<EquestrianHorses />} />
-                  <Route path="/demo/equestrian/facilities" element={<EquestrianFacilities />} />
-                  <Route path="/demo/equestrian/faqs" element={<EquestrianFaqs />} />
-                  <Route path="/demo/equestrian/contact" element={<EquestrianContact />} />
-                  <Route path="/demo/equestrian/book" element={<EquestrianBooking />} />
-                  <Route path="/demo/landscaping" element={<LandscaperHome />} />
-                  <Route path="/demo/landscaping/services" element={<LandscaperServices />} />
-                  <Route path="/demo/landscaping/about" element={<LandscaperAbout />} />
-                  <Route path="/demo/landscaping/gallery" element={<LandscaperGallery />} />
-                  <Route path="/demo/landscaping/contact" element={<LandscaperContact />} />
-                  <Route path="/demo/cafe" element={<CafeHome />} />
-                  <Route path="/demo/cafe/menu" element={<CafeMenu />} />
-                  <Route path="/demo/cafe/locations" element={<CafeLocations />} />
-                  <Route path="/demo/cafe/about" element={<CafeAbout />} />
-                  <Route path="/demo/cafe/contact" element={<CafeContact />} />
-                  <Route path="/demo/cafe/book" element={<CafeBooking />} />
-                  <Route path="/demo/physio" element={<PhysioHome />} />
-                  <Route path="/demo/physio/prices" element={<PhysioPrices />} />
-                  <Route path="/demo/physio/team" element={<PhysioTeam />} />
-                  <Route path="/demo/physio/faq" element={<PhysioFAQ />} />
-                  <Route path="/demo/physio/contact" element={<PhysioContact />} />
-                  <Route path="/demo/spa" element={<SpaHome />} />
-                  <Route path="/demo/spa/suites" element={<SpaSuites />} />
-                  <Route path="/demo/spa/treatments" element={<SpaTreatments />} />
-                  <Route path="/demo/spa/dining" element={<SpaDining />} />
-                  <Route path="/demo/spa/activities" element={<SpaActivities />} />
-                  <Route path="/demo/spa/philosophy" element={<SpaPhilosophy />} />
-                  <Route path="/demo/spa/transfers" element={<SpaTransfers />} />
-                  <Route path="/demo/spa/contact" element={<SpaContact />} />
-                  <Route path="/demo/spa/book" element={<SpaBooking />} />
-                  <Route path="*" element={<Navigate to="/" replace />} />
-                </Routes>
-              </Suspense>
+              <Routes>
+                <Route path="/" element={renderHomeContent()} />
+                <Route path="/about" element={<Navigate to="/#about" replace />} />
+                <Route path="/process" element={<SnakeTimeline navigateTo={navigateTo} />} />
+                <Route path="/faq" element={<FAQSection navigateTo={navigateTo} />} />
+                <Route path="/contact" element={<ContactForm />} />
+                <Route path="/projects" element={<ProjectsGallery />} />
+                <Route path="/demo/equestrian" element={<EquestrianHome />} />
+                <Route path="/demo/equestrian/lessons" element={<EquestrianLessons />} />
+                <Route path="/demo/equestrian/horses" element={<EquestrianHorses />} />
+                <Route path="/demo/equestrian/facilities" element={<EquestrianFacilities />} />
+                <Route path="/demo/equestrian/faqs" element={<EquestrianFaqs />} />
+                <Route path="/demo/equestrian/contact" element={<EquestrianContact />} />
+                <Route path="/demo/equestrian/book" element={<EquestrianBooking />} />
+                <Route path="/demo/landscaping" element={<LandscaperHome />} />
+                <Route path="/demo/landscaping/services" element={<LandscaperServices />} />
+                <Route path="/demo/landscaping/about" element={<LandscaperAbout />} />
+                <Route path="/demo/landscaping/gallery" element={<LandscaperGallery />} />
+                <Route path="/demo/landscaping/contact" element={<LandscaperContact />} />
+                <Route path="/demo/cafe" element={<CafeHome />} />
+                <Route path="/demo/cafe/menu" element={<CafeMenu />} />
+                <Route path="/demo/cafe/locations" element={<CafeLocations />} />
+                <Route path="/demo/cafe/about" element={<CafeAbout />} />
+                <Route path="/demo/cafe/contact" element={<CafeContact />} />
+                <Route path="/demo/cafe/book" element={<CafeBooking />} />
+                <Route path="/demo/physio" element={<PhysioHome />} />
+                <Route path="/demo/physio/prices" element={<PhysioPrices />} />
+                <Route path="/demo/physio/team" element={<PhysioTeam />} />
+                <Route path="/demo/physio/faq" element={<PhysioFAQ />} />
+                <Route path="/demo/physio/contact" element={<PhysioContact />} />
+                <Route path="/demo/spa" element={<SpaHome />} />
+                <Route path="/demo/spa/suites" element={<SpaSuites />} />
+                <Route path="/demo/spa/treatments" element={<SpaTreatments />} />
+                <Route path="/demo/spa/dining" element={<SpaDining />} />
+                <Route path="/demo/spa/activities" element={<SpaActivities />} />
+                <Route path="/demo/spa/philosophy" element={<SpaPhilosophy />} />
+                <Route path="/demo/spa/transfers" element={<SpaTransfers />} />
+                <Route path="/demo/spa/contact" element={<SpaContact />} />
+                <Route path="/demo/spa/book" element={<SpaBooking />} />
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
             </ErrorBoundary>
           </div>
 
@@ -597,11 +497,6 @@ const MainApp: React.FC = () => {
   );
 };
 
-// Mounted at /web-design so it can sit alongside the new intro gateway (at "/")
-// and the AI Optimisation site (at /ai-optimisation) on the same domain. The
-// basename is stripped from location.pathname automatically, and every Link/
-// navigate() call below is resolved against it too, so nothing else in this
-// file needed to change.
 const App: React.FC = () => (
   <BrowserRouter basename="/web-design">
     <MainApp />

@@ -1,420 +1,669 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as RouterDOM from 'react-router-dom';
-import { 
-  ArrowRight, 
-  CheckCircle2, 
-  Phone, 
-  ShieldCheck, 
-  Award, 
-  Layers, 
-  Sparkles, 
-  Ruler, 
-  Compass, 
-  Quote 
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import {
+  ArrowUpRight,
+  ChevronLeft,
+  ChevronRight,
+  Plus,
+  Minus,
 } from 'lucide-react';
 import Navbar from './Navbar';
 import Footer from './Footer';
 
+gsap.registerPlugin(ScrollTrigger);
+
 const Link = (RouterDOM as any).Link || (RouterDOM as any).default?.Link;
 
+const HERO_SLIDES = [
+  {
+    image:
+      'https://dmhdaawgg48dl.cloudfront.net/wp-content/uploads/2024/10/pool-patio-palm-trees-putting-green-modern-oxshott-surrey-1920x1280.jpg',
+    alt: 'Contemporary architectural garden and lawn terrace in Surrey',
+  },
+  {
+    image:
+      'https://dmhdaawgg48dl.cloudfront.net/wp-content/uploads/2024/10/metal-pergola-palm-tree-patio-lawn-contemporary-oxshott-1920x1280.jpg',
+    alt: 'Bespoke metalwork pergola and natural stone terrace',
+  },
+  {
+    image:
+      'https://dmhdaawgg48dl.cloudfront.net/wp-content/uploads/2024/10/yorkstone-rill-water-feature-english-country-petworth-sussex-1920x1280.jpg',
+    alt: 'English country garden with Yorkstone water rill and herbaceous borders',
+  },
+  {
+    image:
+      'https://dmhdaawgg48dl.cloudfront.net/wp-content/uploads/2024/10/york-stone-patio-conservatory-hedges-classic-notting-hill-960x960.jpg',
+    alt: 'Classic town garden with Yorkstone terrace and clipped yew hedging',
+  },
+];
+
+const PORTFOLIO_COLLECTIONS = [
+  {
+    index: '01',
+    title: 'Family Gardens',
+    location: 'Wiltshire & Surrey',
+    image:
+      'https://dmhdaawgg48dl.cloudfront.net/wp-content/uploads/2024/10/york-stone-patio-conservatory-hedges-classic-notting-hill-960x960.jpg',
+  },
+  {
+    index: '02',
+    title: 'Contemporary Gardens',
+    location: 'Stone & Pergolas',
+    image:
+      'https://dmhdaawgg48dl.cloudfront.net/wp-content/uploads/2024/10/pool-patio-palm-trees-putting-green-modern-oxshott-surrey-760x760.jpg',
+  },
+  {
+    index: '03',
+    title: 'Courtyard Gardens',
+    location: 'Town Sanctuaries',
+    image:
+      'https://dmhdaawgg48dl.cloudfront.net/wp-content/uploads/2024/11/plunge-pool-stone-patio-floating-stairs-modern-hampstead-760x760.jpg',
+  },
+  {
+    index: '04',
+    title: 'Roof Terraces',
+    location: 'Elevated Living',
+    image:
+      'https://dmhdaawgg48dl.cloudfront.net/wp-content/uploads/2024/11/rooftop-terrace-dining-table-composite-decking-slate-planters-760x760.jpg',
+  },
+  {
+    index: '05',
+    title: 'Award-Winning Gardens',
+    location: 'RHS & BALI Honours',
+    image:
+      'https://dmhdaawgg48dl.cloudfront.net/wp-content/uploads/2025/02/reflection-pool-york-stone-courtyard-country-garden-petworth-760x760.jpg',
+  },
+  {
+    index: '06',
+    title: 'Water & Reflection',
+    location: 'Rills & Still Pools',
+    image:
+      'https://dmhdaawgg48dl.cloudfront.net/wp-content/uploads/2024/11/slate-wall-floating-walkway-water-feature-contemporary-kingston-760x760.jpg',
+  },
+];
+
+const SHOW_GARDENS = [
+  {
+    year: '2022',
+    title: 'Chelsea Gold Sanctuary',
+    detail: 'Corten steel pavilion, riven stone path & woodland Salvia',
+    image:
+      'https://dmhdaawgg48dl.cloudfront.net/wp-content/uploads/2024/12/corten-steel-pavilion-stone-path-salvia-woodland-960x960.jpg',
+  },
+  {
+    year: '2022',
+    title: 'Naturalistic Crescent Pool',
+    detail: 'Hand-dressed Yorkstone stepping stones, ferns & irises',
+    image:
+      'https://dmhdaawgg48dl.cloudfront.net/wp-content/uploads/2024/12/stone-path-crescent-pool-fern-iris-naturalistic-960x960.jpg',
+  },
+  {
+    year: '2021',
+    title: 'Silver-Gilt Woodland Walk',
+    detail: 'Steam-bent cedar screen, limestone treads & white hydrangeas',
+    image:
+      'https://dmhdaawgg48dl.cloudfront.net/wp-content/uploads/2024/12/wavy-timber-screen-stone-step-pathway-ferns-sumac-hydrangeas-960x960.jpg',
+  },
+  {
+    year: '2018',
+    title: 'Chelsea Gold Arid Garden',
+    detail: 'Quarry boulder outcrops, gravel trail & drought-resilient flora',
+    image:
+      'https://dmhdaawgg48dl.cloudfront.net/wp-content/uploads/2024/12/aquarium-dome-barrel-cactus-succulent-spanish-moss-pathway-960x960.jpg',
+  },
+];
+
+const FAQS = [
+  {
+    q: 'Do you handle both the garden design and the construction in-house?',
+    a: 'Yes. Every stage—from the initial site survey and 3D architectural masterplan to stone masonry, bespoke pergolas, lighting, and seasonal planting—is completed by our own permanent designers, horticulturists, and craftsmen.',
+  },
+  {
+    q: 'Do you work with sustainable and environmentally responsible materials?',
+    a: 'We source natural Yorkstone, limestone, and FSC-certified hardwoods from ethical suppliers, divert site waste away from landfill through specialist recycling partners, and design peat-free, pollinator-rich planting schemes.',
+  },
+  {
+    q: 'When is the best time of year to begin planning a garden build?',
+    a: 'Structural landscaping and groundworks proceed year-round. Many clients begin design consultations three to six months ahead of their ideal season, and larger estate builds can be phased smoothly around your schedule.',
+  },
+  {
+    q: 'Which regions do you cover?',
+    a: 'From our Wiltshire studio and London base, we design and construct private gardens across Wiltshire, the Cotswolds, Bath, Surrey, West Sussex, and Greater London.',
+  },
+  {
+    q: 'Can you build a garden designed by an independent landscape architect?',
+    a: 'Alongside our in-house design commissions, we regularly act as principal landscape contractor for established garden designers and architects, translating their drawings into RHS medal-standard builds.',
+  },
+  {
+    q: 'How are design fees and construction budgets structured?',
+    a: 'Following a complimentary initial consultation at your property, we provide a fixed-fee design proposal. Once concepts are approved, you receive a fully itemised construction schedule with transparent stage payments.',
+  },
+];
+
 export const Home: React.FC = () => {
+  const pageRef = useRef<HTMLDivElement>(null);
+  const [heroIndex, setHeroIndex] = useState(0);
+  const [openFaq, setOpenFaq] = useState<number | null>(0);
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  const featuredProjects = [
-    {
-      title: "Marlborough Estate Terrace",
-      category: "Porcelain Paving & Ambient Lighting",
-      location: "Marlborough, Wiltshire",
-      img: "https://images.unsplash.com/photo-1558904541-efa8c1965f1e?auto=format&fit=crop&q=80&w=1200",
-      description: "140m² large-format Italian porcelain patio with flush threshold transitions, integrated LED step lighting, and architectural ornamental grasses."
-    },
-    {
-      title: "Cotswold Sunken Terrace & Fire Pit",
-      category: "Dry-Stone Masonry & Outdoor Living",
-      location: "Cirencester, Cotswolds",
-      img: "https://images.unsplash.com/photo-1598902108854-10e335adac99?auto=format&fit=crop&q=80&w=1200",
-      description: "Hand-dressed Cotswold stone retaining walls, sunken fire pit seating terrace, and bespoke charcoal aluminum louvered pergola."
-    },
-    {
-      title: "Salisbury Architectural Garden",
-      category: "Complete Garden Transformation",
-      location: "Salisbury, Wiltshire",
-      img: "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&q=80&w=1200",
-      description: "Complete garden overhaul with raised western red cedar planters, multi-seasonal structural planting, and precision Rolawn turfing."
-    }
-  ];
+  // Gentle auto-advance on the hero slideshow
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setHeroIndex((prev) => (prev + 1) % HERO_SLIDES.length);
+    }, 6500);
+    return () => window.clearInterval(timer);
+  }, []);
 
-  const coreServices = [
-    {
-      number: "01",
-      title: "Porcelain & Stone Paving",
-      desc: "Ultra-durable Italian porcelain and hand-selected natural sandstone terraces engineered with laser-level sub-bases and frost-proof resin jointing.",
-      img: "https://images.unsplash.com/photo-1598902108854-10e335adac99?auto=format&fit=crop&q=80&w=800"
-    },
-    {
-      number: "02",
-      title: "Architectural Garden Design",
-      desc: "Comprehensive 3D concept masterplans, structural evergreen planting palettes, and specimen trees designed for year-round beauty and low maintenance.",
-      img: "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&q=80&w=800"
-    },
-    {
-      number: "03",
-      title: "Outdoor Living & Pergolas",
-      desc: "Bioclimatic louvered pergolas, bespoke outdoor kitchens, integrated fire pits, and ambient architectural lighting for year-round entertaining.",
-      img: "https://images.unsplash.com/photo-1590073242678-70ee3fc28e8e?auto=format&fit=crop&q=80&w=800"
-    },
-    {
-      number: "04",
-      title: "Stone Masonry & Walling",
-      desc: "Traditional dry-stone fieldstone retaining walls, rendered brick planters, and acoustic slatted timber boundary screening built with artisan care.",
-      img: "https://images.unsplash.com/photo-1584479898061-15742e14f50d?auto=format&fit=crop&q=80&w=800"
-    }
-  ];
+  // Smooth, glide-like scroll animations
+  useEffect(() => {
+    const root = pageRef.current;
+    if (!root) return;
 
-  const trustPoints = [
-    {
-      icon: Ruler,
-      title: "3D CAD Masterplanning",
-      desc: "Visualise every angle of your new garden with precision 3D CAD renders before breaking ground."
-    },
-    {
-      icon: Award,
-      title: "In-House Master Craftsmen",
-      desc: "Zero casual subcontractors. Every patio, wall, and lawn is built by our permanent, qualified trades team."
-    },
-    {
-      icon: ShieldCheck,
-      title: "10-Year Structural Guarantee",
-      desc: "We build to strict British Standards (BS 7533), ensuring your terrace never sinks, cracks, or moves."
-    },
-    {
-      icon: Compass,
-      title: "Fixed-Price Certainty",
-      desc: "Comprehensive itemised quotes with no hidden surprises, delivered on schedule with dedicated project management."
-    }
-  ];
+    const reduceMotion =
+      typeof window.matchMedia === 'function' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduceMotion) return;
+
+    const ctx = gsap.context(() => {
+      gsap.utils.toArray<HTMLElement>('.lux-glide').forEach((el) => {
+        gsap.fromTo(
+          el,
+          { y: 36, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 1.15,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: el,
+              start: 'top 88%',
+              once: true,
+            },
+          }
+        );
+      });
+
+      gsap.utils.toArray<HTMLElement>('.lux-line').forEach((line) => {
+        gsap.fromTo(
+          line,
+          { scaleX: 0, transformOrigin: 'left center' },
+          {
+            scaleX: 1,
+            duration: 1.25,
+            ease: 'expo.out',
+            scrollTrigger: {
+              trigger: line,
+              start: 'top 90%',
+              once: true,
+            },
+          }
+        );
+      });
+    }, root);
+
+    return () => ctx.revert();
+  }, []);
 
   return (
-    <div className="min-h-screen bg-[#FBF9F5] text-stone-900 font-sans selection:bg-[#C86A3D] selection:text-white">
+    <div
+      ref={pageRef}
+      className="min-h-screen bg-[#FAF9F5] text-[#1C211D] font-sans selection:bg-[#5B6450] selection:text-white overflow-x-hidden"
+    >
       <Navbar />
 
-      {/* HERO SECTION */}
-      <section className="relative min-h-[85vh] flex items-center bg-[#162E20] text-white px-6 md:px-12 py-20 overflow-hidden">
-        {/* Ambient Dark Image Backdrop */}
-        <div className="absolute inset-0 z-0">
-          <img
-            src="https://images.unsplash.com/photo-1558904541-efa8c1965f1e?auto=format&fit=crop&q=80&w=1600"
-            alt="Modern luxury landscaped garden terrace"
-            className="w-full h-full object-cover opacity-35 object-center"
-            loading="eager"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#162E20]/95 via-[#162E20]/85 to-transparent" />
-        </div>
-
-        <div className="max-w-7xl mx-auto w-full relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-          
-          {/* Hero Copy (Left 7 cols) */}
-          <div className="lg:col-span-7 space-y-6 text-left">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-[#E08A5B] text-xs font-mono uppercase tracking-[0.2em] font-semibold">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#E08A5B]" />
-              <span>WILTSHIRE &amp; COTSWOLD GARDEN ARCHITECTURE</span>
-            </div>
-
-            <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-[1.08]">
-              Architectural Gardens. <br />
-              <span className="italic text-[#E08A5B] font-normal">Built to Endure.</span>
-            </h1>
-
-            <p className="text-stone-300 text-base sm:text-lg leading-relaxed max-w-xl font-normal">
-              Specialists in luxury porcelain terraces, Cotswold stone masonry, and complete garden transformations. We turn uninspiring outdoor spaces into functional, timeless extensions of your home.
-            </p>
-
-            {/* Value Indicators */}
-            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 pt-2 text-xs text-stone-300 font-medium">
-              <div className="flex items-center gap-2">
-                <CheckCircle2 size={15} className="text-[#E08A5B]" />
-                <span>Fixed-Price Quotes</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 size={15} className="text-[#E08A5B]" />
-                <span>10-Year Guarantee</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 size={15} className="text-[#E08A5B]" />
-                <span>RHS Qualified Team</span>
-              </div>
-            </div>
-
-            {/* CTAs */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-4">
-              <Link
-                to="/demo/landscaping/contact"
-                className="px-8 py-4 bg-[#C86A3D] hover:bg-[#b5582c] text-white font-semibold text-xs uppercase tracking-wider rounded-lg transition-all duration-300 shadow-xl flex items-center justify-center gap-3 hover:scale-105 active:scale-95"
-              >
-                <span>Request Free Consultation</span>
-                <ArrowRight size={15} />
-              </Link>
-              <Link
-                to="/demo/landscaping/gallery"
-                className="px-8 py-4 bg-white/10 hover:bg-white/20 text-white border border-white/20 rounded-lg text-xs uppercase tracking-wider font-semibold transition-all flex items-center justify-center gap-2 backdrop-blur-sm"
-              >
-                <span>View Recent Projects</span>
-              </Link>
-            </div>
-          </div>
-
-          {/* Hero Quick Card (Right 5 cols) */}
-          <div className="lg:col-span-5 flex justify-center lg:justify-end">
-            <div className="w-full max-w-md bg-white p-7 sm:p-9 rounded-2xl shadow-2xl border border-stone-200 text-stone-900 relative">
-              <div className="w-10 h-1 bg-[#C86A3D] mb-5 rounded-full" />
-              <h3 className="font-serif text-2xl font-bold text-[#162E20] mb-2">
-                Book a Free Site Visit
-              </h3>
-              <p className="text-stone-600 text-xs sm:text-sm leading-relaxed mb-6">
-                We assess your site levels, soil conditions, and spatial orientation to provide a fixed-price design and build estimate within 48 hours.
-              </p>
-
-              <div className="p-4 bg-stone-50 rounded-xl border border-stone-200 mb-6 space-y-2">
-                <div className="text-[10px] font-mono uppercase tracking-wider text-stone-500 font-semibold">
-                  Direct Estimator Line
-                </div>
-                <a
-                  href="tel:01672552140"
-                  className="font-serif text-2xl font-bold text-[#162E20] hover:text-[#C86A3D] transition-colors block"
-                >
-                  01672 552 140
-                </a>
-                <div className="text-[11px] text-stone-500">
-                  Monday – Friday · 07:30 – 17:30
-                </div>
-              </div>
-
-              <Link
-                to="/demo/landscaping/contact"
-                className="w-full py-3.5 bg-[#162E20] hover:bg-[#C86A3D] text-white font-semibold text-xs uppercase tracking-wider rounded-lg transition-all duration-300 shadow-md flex items-center justify-center gap-2.5 text-center"
-              >
-                <span>Get Started Online</span>
-                <ArrowRight size={14} />
-              </Link>
-            </div>
-          </div>
-
-        </div>
-      </section>
-
-      {/* FEATURED WORK SHOWCASE */}
-      <section className="py-24 px-6 md:px-12 max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
-          <div className="space-y-3">
-            <span className="text-xs font-mono uppercase tracking-[0.25em] text-[#C86A3D] font-bold">
-              Portfolio
-            </span>
-            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#162E20] tracking-tight">
-              Recent Transformations.
-            </h2>
-          </div>
-          <Link
-            to="/demo/landscaping/gallery"
-            className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-[#C86A3D] hover:text-[#162E20] font-bold transition-colors"
-          >
-            <span>View All Completed Projects</span>
-            <ArrowRight size={14} />
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {featuredProjects.map((project, idx) => (
-            <div 
-              key={idx}
-              className="group bg-white rounded-xl border border-stone-200/90 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 flex flex-col"
+      {/* =================================================================== */}
+      {/* SECTION 1: FULL-SCREEN MINIMALIST HERO                              */}
+      {/* =================================================================== */}
+      <section className="relative h-[100svh] min-h-[560px] w-full overflow-hidden bg-[#151915]">
+        {HERO_SLIDES.map((slide, idx) => {
+          const isCurrent = idx === heroIndex;
+          return (
+            <div
+              key={slide.image}
+              className={`absolute inset-0 transition-opacity duration-[1800ms] ease-out ${
+                isCurrent ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
+              }`}
             >
-              <div className="relative aspect-[4/3] overflow-hidden bg-stone-800">
-                <img
-                  src={project.img}
-                  alt={project.title}
-                  className="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-105"
-                  loading="lazy"
-                />
-                <div className="absolute top-4 left-4 px-3 py-1 bg-black/60 backdrop-blur-md rounded-md text-[10px] font-mono uppercase text-white tracking-wider">
-                  {project.location}
-                </div>
-              </div>
-              <div className="p-6 sm:p-7 flex-grow flex flex-col justify-between space-y-4">
-                <div>
-                  <span className="text-[10px] font-mono uppercase tracking-wider text-[#C86A3D] font-bold block mb-1">
-                    {project.category}
-                  </span>
-                  <h3 className="font-serif text-xl font-bold text-[#162E20] group-hover:text-[#C86A3D] transition-colors">
-                    {project.title}
-                  </h3>
-                  <p className="text-stone-600 text-xs sm:text-sm leading-relaxed mt-2.5">
-                    {project.description}
-                  </p>
-                </div>
-                <Link
-                  to="/demo/landscaping/contact"
-                  className="inline-flex items-center gap-2 text-xs font-semibold text-[#162E20] group-hover:text-[#C86A3D] transition-colors pt-3 border-t border-stone-100"
-                >
-                  <span>Discuss Similar Project</span>
-                  <ArrowRight size={13} />
-                </Link>
-              </div>
+              <img
+                src={slide.image}
+                alt={slide.alt}
+                loading={idx === 0 ? 'eager' : 'lazy'}
+                decoding="async"
+                className={`w-full h-full object-cover object-center transition-transform duration-[8500ms] ease-out ${
+                  isCurrent ? 'scale-100' : 'scale-105'
+                }`}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-black/15" />
             </div>
+          );
+        })}
+
+        {/* Far-Left Minimal Square Prev Button */}
+        <button
+          type="button"
+          onClick={() =>
+            setHeroIndex((prev) => (prev - 1 + HERO_SLIDES.length) % HERO_SLIDES.length)
+          }
+          aria-label="Previous photograph"
+          className="absolute left-3 sm:left-5 md:left-6 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-9 sm:h-9 bg-black/25 hover:bg-black/55 text-white/85 flex items-center justify-center transition-colors duration-300 cursor-pointer"
+        >
+          <ChevronLeft size={16} strokeWidth={1.5} />
+        </button>
+
+        {/* Far-Right Minimal Square Next Button */}
+        <button
+          type="button"
+          onClick={() => setHeroIndex((prev) => (prev + 1) % HERO_SLIDES.length)}
+          aria-label="Next photograph"
+          className="absolute right-3 sm:right-5 md:right-6 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-9 sm:h-9 bg-black/25 hover:bg-black/55 text-white/85 flex items-center justify-center transition-colors duration-300 cursor-pointer"
+        >
+          <ChevronRight size={16} strokeWidth={1.5} />
+        </button>
+
+        {/* Bottom-Center Architectural Micro-Typography & Vertical Hairline */}
+        <div className="absolute inset-x-0 bottom-12 sm:bottom-7 z-20 flex flex-col items-center text-center pointer-events-none px-4">
+          <p className="text-[9px] sm:text-[10px] md:text-[11px] font-light uppercase tracking-[0.26em] sm:tracking-[0.34em] text-white/90 leading-relaxed">
+            LANDSCAPE ARCHITECTURE &nbsp;·&nbsp; CONSTRUCTION
+            <br />
+            WILTSHIRE &amp; LONDON
+          </p>
+          <span className="block w-[1px] h-4 sm:h-7 bg-[#C8B88A]/85 my-2 sm:my-3" />
+          <span className="text-[8px] sm:text-[9px] font-light uppercase tracking-[0.34em] sm:tracking-[0.36em] text-white/80">
+            EST 1998
+          </span>
+        </div>
+
+        {/* Bottom Progress Dashes (Centered on mobile so they never collide with text, bottom-left on sm+) */}
+        <div className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 sm:left-6 sm:translate-x-0 z-20 flex items-center gap-2">
+          {HERO_SLIDES.map((_, idx) => (
+            <button
+              key={idx}
+              type="button"
+              onClick={() => setHeroIndex(idx)}
+              aria-label={`Slide ${idx + 1}`}
+              className={`h-[1.5px] transition-all duration-500 cursor-pointer ${
+                idx === heroIndex ? 'w-5 bg-[#C8B88A]' : 'w-3.5 bg-white/35 hover:bg-white/60'
+              }`}
+            />
           ))}
         </div>
       </section>
 
-      {/* CORE CAPABILITIES GRID */}
-      <section className="py-24 px-6 md:px-12 bg-[#F5F2EB] border-y border-stone-200/80">
-        <div className="max-w-7xl mx-auto">
-          
-          <div className="text-center max-w-2xl mx-auto mb-16 space-y-3">
-            <span className="text-xs font-mono uppercase tracking-[0.25em] text-[#C86A3D] font-bold">
-              Disciplines
+      {/* =================================================================== */}
+      {/* SECTION 2: QUIET EDITORIAL STATEMENT                                */}
+      {/* =================================================================== */}
+      <section className="py-16 sm:py-28 md:py-44 px-5 sm:px-10 md:px-14 lg:px-24 bg-[#FAF9F5]">
+        <div className="max-w-5xl mx-auto">
+          <div className="lux-glide space-y-6 sm:space-y-10">
+            <span className="block text-[9px] sm:text-[10px] uppercase tracking-[0.34em] sm:tracking-[0.38em] text-[#5B6450]">
+              Oak &amp; Ash · Landscape Architecture
             </span>
-            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#162E20] tracking-tight">
-              Master Landscaping Services.
-            </h2>
-            <p className="text-stone-600 text-sm sm:text-base leading-relaxed">
-              Every detail engineered from deep groundwork and proper drainage to precision cutting and finishing masonry.
-            </p>
-          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {coreServices.map((service, idx) => (
-              <div 
-                key={idx}
-                className="bg-white rounded-xl overflow-hidden border border-stone-200/90 shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col"
-              >
-                <div className="aspect-[16/10] bg-stone-800 overflow-hidden relative">
-                  <img
-                    src={service.img}
-                    alt={service.title}
-                    className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
-                    loading="lazy"
+            <h1 className="font-cormorant text-3xl sm:text-5xl md:text-6xl lg:text-[4.25rem] font-light text-[#1C211D] leading-[1.12] tracking-tight">
+              Twenty-eight years of award-winning garden design and master construction,{' '}
+              <span className="italic text-[#5B6450]">crafted under one roof.</span>
+            </h1>
+
+            <div className="lux-line h-[1px] w-full bg-[#DFDCD2]" />
+
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-6 sm:gap-10 pt-2 items-start md:items-end">
+              <p className="md:col-span-7 text-[#5A5953] text-sm sm:text-base md:text-lg font-light leading-[1.8] sm:leading-[1.9]">
+                From the initial consultation and spatial masterplan through to natural stone masonry, bespoke metalwork, and mature planting, our permanent in-house teams handle every stage of your garden transformation without third-party friction.
+              </p>
+              <div className="md:col-span-5 flex md:justify-end">
+                <Link
+                  to="/demo/landscaping/contact"
+                  className="inline-flex items-center gap-3 text-[10px] sm:text-[11px] uppercase tracking-[0.28em] sm:tracking-[0.32em] text-[#1C211D] hover:text-[#5B6450] pb-2 border-b border-[#1C211D] hover:border-[#5B6450] transition-colors duration-300 group"
+                >
+                  <span>Arrange a Consultation</span>
+                  <ArrowUpRight
+                    size={14}
+                    className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
                   />
-                  <div className="absolute top-3 left-3 w-8 h-8 rounded-full bg-[#162E20] text-white flex items-center justify-center font-mono text-xs font-bold shadow-md">
-                    {service.number}
-                  </div>
-                </div>
-                <div className="p-6 flex-grow flex flex-col justify-between space-y-3">
-                  <div>
-                    <h3 className="font-serif text-lg font-bold text-[#162E20]">
-                      {service.title}
-                    </h3>
-                    <p className="text-stone-600 text-xs sm:text-sm leading-relaxed mt-2">
-                      {service.desc}
-                    </p>
-                  </div>
-                  <Link
-                    to="/demo/landscaping/services"
-                    className="inline-flex items-center gap-1.5 text-xs font-bold text-[#C86A3D] hover:text-[#162E20] transition-colors pt-2"
-                  >
-                    <span>View Specifications</span>
-                    <ArrowRight size={13} />
-                  </Link>
-                </div>
+                </Link>
               </div>
-            ))}
+            </div>
           </div>
-
         </div>
       </section>
 
-      {/* WHY OAK & ASH (THE STANDARD OF EXCELLENCE) */}
-      <section className="py-24 px-6 md:px-12 max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-          
-          <div className="lg:col-span-5 space-y-6">
-            <span className="text-xs font-mono uppercase tracking-[0.25em] text-[#C86A3D] font-bold">
-              The Oak &amp; Ash Standard
-            </span>
-            <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#162E20] tracking-tight leading-tight">
-              Why Discerning Homeowners Choose Our Tradesmen.
-            </h2>
-            <p className="text-stone-600 text-sm sm:text-base leading-relaxed">
-              We treat outdoor construction with the exact same architectural rigor as an interior extension. From calculating fall gradients to diamond-blade mitering, our focus on precision is uncompromising.
+      {/* =================================================================== */}
+      {/* SECTION 3: CURATED GARDEN PORTFOLIOS (100% SYMMETRICAL & ALIGNED)   */}
+      {/* =================================================================== */}
+      <section className="py-16 sm:py-28 md:py-36 px-5 sm:px-10 md:px-14 lg:px-24 bg-[#F3F1EB] border-t border-[#E4E0D7]">
+        <div className="max-w-7xl mx-auto">
+          <div className="lux-glide flex flex-col sm:flex-row sm:items-end justify-between mb-10 sm:mb-20 gap-5 sm:gap-8">
+            <div className="space-y-2 sm:space-y-3">
+              <span className="block text-[9px] sm:text-[10px] uppercase tracking-[0.34em] sm:tracking-[0.36em] text-[#5B6450]">
+                Selected Works
+              </span>
+              <h2 className="font-cormorant text-3xl sm:text-5xl md:text-6xl font-light text-[#1C211D] tracking-tight">
+                Garden Portfolios
+              </h2>
+            </div>
+            <Link
+              to="/demo/landscaping/gallery"
+              className="inline-flex items-center gap-3 text-[10px] sm:text-[11px] uppercase tracking-[0.28em] sm:tracking-[0.3em] text-[#1C211D] hover:text-[#5B6450] pb-2 border-b border-[#1C211D]/40 hover:border-[#5B6450] transition-colors w-fit"
+            >
+              <span>View Complete Archive</span>
+              <ArrowUpRight size={14} />
+            </Link>
+          </div>
+
+          {/* Symmetrical 2-col (tablet) / 3-col (desktop) Grid — No Overlapping Text, Equal Heights */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 lg:gap-x-10 gap-y-10 sm:gap-y-16 items-stretch">
+            {PORTFOLIO_COLLECTIONS.map((item) => (
+              <Link
+                key={item.index}
+                to="/demo/landscaping/gallery"
+                className="lux-glide group flex flex-col h-full overflow-hidden"
+              >
+                {/* Identical 4:5 Aspect Ratio Image */}
+                <div className="w-full aspect-[4/5] overflow-hidden bg-[#E5E2D9] shrink-0">
+                  <img
+                    src={item.image}
+                    alt={item.title}
+                    loading="lazy"
+                    decoding="async"
+                    className="w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.04]"
+                  />
+                </div>
+
+                {/* Symmetrical Fixed-Baseline Hairline Caption Block */}
+                <div className="pt-4 sm:pt-5 pb-3.5 sm:pb-4 border-b border-[#D8D4CA] flex items-baseline justify-between gap-3 mt-auto min-w-0">
+                  <div className="flex items-baseline gap-2.5 sm:gap-3 min-w-0">
+                    <span className="font-cormorant italic text-base sm:text-lg text-[#7A7E72] shrink-0">
+                      {item.index}
+                    </span>
+                    <h3 className="font-cormorant text-xl sm:text-2xl xl:text-[1.55rem] font-normal text-[#1C211D] group-hover:text-[#5B6450] transition-colors truncate">
+                      {item.title}
+                    </h3>
+                  </div>
+                  <span className="text-[9px] xl:text-[10px] uppercase tracking-[0.18em] xl:tracking-[0.22em] text-[#7A7972] shrink-0 text-right">
+                    {item.location}
+                  </span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* =================================================================== */}
+      {/* SECTION 4: DESIGN & BUILD UNDER ONE ROOF                            */}
+      {/* =================================================================== */}
+      <section className="py-16 sm:py-32 md:py-44 px-5 sm:px-10 md:px-14 lg:px-24 bg-[#FAF9F5] border-t border-[#E4E0D7]">
+        <div className="max-w-7xl mx-auto space-y-16 sm:space-y-32 md:space-y-44">
+          {/* Split Row 1 */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-14 lg:gap-24 items-center">
+            <div className="lux-glide lg:col-span-5 space-y-5 sm:space-y-8">
+              <span className="block text-[9px] sm:text-[10px] uppercase tracking-[0.34em] sm:tracking-[0.36em] text-[#5B6450]">
+                01 &nbsp;/&nbsp; Turnkey Practice
+              </span>
+              <h2 className="font-cormorant text-3xl sm:text-4xl md:text-5xl font-light text-[#1C211D] leading-[1.15]">
+                A Full Garden Design &amp; Build Service.
+              </h2>
+              <div className="lux-line h-[1px] w-16 bg-[#5B6450]" />
+              <p className="text-[#5A5953] text-sm sm:text-base font-light leading-[1.8] sm:leading-[1.9]">
+                Coordinating separate designers and contractors often fragments a vision. By uniting landscape architecture and construction within a single studio, we carry your garden from initial concept drawings through to stone paving, bespoke joinery, planting, and ambient lighting with complete accountability.
+              </p>
+              <div className="pt-1 sm:pt-2">
+                <Link
+                  to="/demo/landscaping/services"
+                  className="inline-flex items-center gap-3 text-[10px] sm:text-[11px] uppercase tracking-[0.28em] sm:tracking-[0.3em] text-[#1C211D] hover:text-[#5B6450] pb-2 border-b border-[#1C211D] hover:border-[#5B6450] transition-colors"
+                >
+                  <span>Explore Design &amp; Build</span>
+                  <ArrowUpRight size={14} />
+                </Link>
+              </div>
+            </div>
+
+            <div className="lux-glide lg:col-span-7">
+              <div className="overflow-hidden aspect-[16/11] bg-[#E5E2D9]">
+                <img
+                  src="https://dmhdaawgg48dl.cloudfront.net/wp-content/uploads/2024/11/metal-dining-set-boxwood-topiary-cottage-esher-surrey-960x960.jpg"
+                  alt="Clipped boxwood topiary and Yorkstone dining terrace"
+                  loading="lazy"
+                  decoding="async"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <p className="text-[9px] sm:text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.26em] text-[#7A7972] mt-3 sm:mt-4">
+                Clipped Boxwood Topiary &amp; Hand-Laid Yorkstone Terrace · Surrey
+              </p>
+            </div>
+          </div>
+
+          {/* Split Row 2 (Reversed on Desktop) */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-14 lg:gap-24 items-center">
+            <div className="lux-glide lg:col-span-7 order-2 lg:order-1">
+              <div className="overflow-hidden aspect-[16/11] bg-[#E5E2D9]">
+                <img
+                  src="https://dmhdaawgg48dl.cloudfront.net/wp-content/uploads/2024/12/curved-stone-pathway-iris-fern-modern-woodland-960x960.jpg"
+                  alt="Curved woodland stone pathway and shade planting"
+                  loading="lazy"
+                  decoding="async"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <p className="text-[9px] sm:text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.26em] text-[#7A7972] mt-3 sm:mt-4">
+                Natural Stone Woodland Path, Ferns &amp; Perennial Borders · RHS Medal Team
+              </p>
+            </div>
+
+            <div className="lux-glide lg:col-span-5 space-y-5 sm:space-y-8 order-1 lg:order-2">
+              <span className="block text-[9px] sm:text-[10px] uppercase tracking-[0.34em] sm:tracking-[0.36em] text-[#5B6450]">
+                02 &nbsp;/&nbsp; Technical Mastery
+              </span>
+              <h2 className="font-cormorant text-3xl sm:text-4xl md:text-5xl font-light text-[#1C211D] leading-[1.15]">
+                Crafting Award-Winning Gardens Since 1998.
+              </h2>
+              <div className="lux-line h-[1px] w-16 bg-[#5B6450]" />
+              <p className="text-[#5A5953] text-sm sm:text-base font-light leading-[1.8] sm:leading-[1.9]">
+                Our reputation across the RHS Chelsea Flower Show, BALI, and the Society of Garden Designers rests on the calibre of our people. Every stonemason, horticulturist, and site foreman is permanently employed by our practice, ensuring quiet precision in every mitred joint, drainage gradient, and botanical border.
+              </p>
+              <div className="pt-1 sm:pt-2">
+                <Link
+                  to="/demo/landscaping/about"
+                  className="inline-flex items-center gap-3 text-[10px] sm:text-[11px] uppercase tracking-[0.28em] sm:tracking-[0.3em] text-[#1C211D] hover:text-[#5B6450] pb-2 border-b border-[#1C211D] hover:border-[#5B6450] transition-colors"
+                >
+                  <span>About Our Practice</span>
+                  <ArrowUpRight size={14} />
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* =================================================================== */}
+      {/* SECTION 5: RHS CHELSEA SHOW GARDENS                                 */}
+      {/* =================================================================== */}
+      <section className="py-16 sm:py-32 md:py-40 px-5 sm:px-10 md:px-14 lg:px-24 bg-[#1C211D] text-white">
+        <div className="max-w-7xl mx-auto">
+          <div className="lux-glide flex flex-col md:flex-row md:items-end justify-between mb-10 sm:mb-20 gap-5 sm:gap-8 pb-6 sm:pb-10 border-b border-white/15">
+            <div className="space-y-2 sm:space-y-3">
+              <span className="block text-[9px] sm:text-[10px] uppercase tracking-[0.32em] sm:tracking-[0.36em] text-[#A5AE98]">
+                Royal Horticultural Society &amp; National Honours
+              </span>
+              <h2 className="font-cormorant text-3xl sm:text-5xl md:text-6xl font-light text-white tracking-tight">
+                Award-Winning Show Gardens
+              </h2>
+            </div>
+            <p className="text-[#A8A69E] text-xs sm:text-sm font-light max-w-md leading-relaxed">
+              Multiple Gold and Silver-Gilt medals at the RHS Chelsea Flower Show and BALI National Landscape Awards.
             </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10">
+            {SHOW_GARDENS.map((garden) => (
+              <Link
+                key={garden.title}
+                to="/demo/landscaping/gallery"
+                className="lux-glide group flex flex-col h-full"
+              >
+                <div className="overflow-hidden aspect-square bg-[#272D28] mb-4 sm:mb-5">
+                  <img
+                    src={garden.image}
+                    alt={garden.title}
+                    loading="lazy"
+                    decoding="async"
+                    className="w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-105"
+                  />
+                </div>
+                <div className="space-y-1.5 mt-auto">
+                  <span className="text-[9px] sm:text-[10px] uppercase tracking-[0.26em] sm:tracking-[0.28em] text-[#A5AE98] block">
+                    RHS Chelsea · {garden.year}
+                  </span>
+                  <h3 className="font-cormorant text-xl sm:text-2xl font-normal text-white group-hover:text-[#C8B88A] transition-colors">
+                    {garden.title}
+                  </h3>
+                  <p className="text-xs font-light text-[#9E9D95] leading-relaxed">
+                    {garden.detail}
+                  </p>
+                </div>
+              </Link>
+            ))}
+          </div>
+
+          {/* Unboxed Text Accreditation Strip */}
+          <div className="lux-glide mt-12 sm:mt-24 pt-6 sm:pt-12 border-t border-white/15 grid grid-cols-2 lg:flex lg:flex-wrap items-center justify-between gap-4 sm:gap-8 text-[9px] sm:text-[10px] uppercase tracking-[0.22em] sm:tracking-[0.3em] text-[#9E9D95]">
+            <span>RHS Chelsea Gold Medalists</span>
+            <span className="hidden lg:inline text-white/20">·</span>
+            <span>BALI Principal Award Winners</span>
+            <span className="hidden lg:inline text-white/20">·</span>
+            <span>Society of Garden Designers</span>
+            <span className="hidden lg:inline text-white/20">·</span>
+            <span>Professional Landscapers</span>
+          </div>
+        </div>
+      </section>
+
+      {/* =================================================================== */}
+      {/* SECTION 6: STUDIO & PRIVATE COMMISSIONS                             */}
+      {/* =================================================================== */}
+      <section className="py-16 sm:py-32 md:py-44 px-5 sm:px-10 md:px-14 lg:px-24 bg-[#F3F1EB]">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 sm:gap-16 lg:gap-24 items-center">
+          <div className="lux-glide lg:col-span-6 space-y-6 sm:space-y-10">
+            <div className="space-y-2.5 sm:space-y-4">
+              <span className="block text-[9px] sm:text-[10px] uppercase tracking-[0.34em] sm:tracking-[0.36em] text-[#5B6450]">
+                Private Commissions
+              </span>
+              <h2 className="font-cormorant text-3xl sm:text-4xl md:text-5xl font-light text-[#1C211D] leading-[1.12]">
+                We Handle Every Detail From First Sketch to Maturity.
+              </h2>
+            </div>
+
+            <p className="text-[#5A5953] text-sm sm:text-base font-light leading-[1.8] sm:leading-[1.9]">
+              Whether transforming a country estate in Wiltshire, a family lawn in Surrey, or a secluded courtyard in Fulham, our studio provides a calm, transparent experience with a single dedicated project director throughout.
+            </p>
+
+            {/* Unboxed Hairline Studio Details */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-10 pt-5 sm:pt-8 border-t border-[#D8D4CA]">
+              <div className="space-y-1.5 sm:space-y-2">
+                <span className="block text-[9px] sm:text-[10px] uppercase tracking-[0.26em] sm:tracking-[0.28em] text-[#7A7972]">
+                  Direct Enquiries
+                </span>
+                <a
+                  href="tel:01672552140"
+                  className="block font-cormorant text-2xl text-[#1C211D] hover:text-[#5B6450] transition-colors tabular-nums"
+                >
+                  01672 552 140
+                </a>
+                <a
+                  href="mailto:enquiries@oakandashgardens.co.uk"
+                  className="block text-xs font-light text-[#5A5953] hover:text-[#1C211D] transition-colors break-all"
+                >
+                  enquiries@oakandashgardens.co.uk
+                </a>
+              </div>
+
+              <div className="space-y-1.5 sm:space-y-2">
+                <span className="block text-[9px] sm:text-[10px] uppercase tracking-[0.26em] sm:tracking-[0.28em] text-[#7A7972]">
+                  Design Studio &amp; Stone Yard
+                </span>
+                <p className="font-cormorant text-2xl text-[#1C211D]">
+                  The Old Stone Mill
+                </p>
+                <p className="text-xs font-light text-[#5A5953]">
+                  High Street, Marlborough, SN8 1AA
+                </p>
+              </div>
+            </div>
+
             <div className="pt-2">
               <Link
-                to="/demo/landscaping/about"
-                className="inline-flex items-center gap-2.5 px-6 py-3 bg-[#162E20] hover:bg-[#C86A3D] text-white text-xs uppercase tracking-wider font-semibold rounded-lg transition-all shadow-md"
+                to="/demo/landscaping/contact"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-7 sm:px-8 py-3.5 sm:py-4 border border-[#1C211D] text-[#1C211D] hover:bg-[#1C211D] hover:text-white text-[10px] uppercase tracking-[0.3em] sm:tracking-[0.32em] transition-all duration-500"
               >
-                <span>Read Our Heritage &amp; Standards</span>
-                <ArrowRight size={14} />
+                <span>Book a Private Consultation</span>
+                <ArrowUpRight size={14} />
               </Link>
             </div>
           </div>
 
-          <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-6">
-            {trustPoints.map((point, idx) => {
-              const Icon = point.icon;
+          <div className="lux-glide lg:col-span-6">
+            <div className="overflow-hidden aspect-[4/5] bg-[#E5E2D9]">
+              <img
+                src="https://dmhdaawgg48dl.cloudfront.net/wp-content/uploads/2025/02/reflection-pool-york-stone-courtyard-country-garden-petworth-760x760.jpg"
+                alt="Yorkstone courtyard and reflection pool"
+                loading="lazy"
+                decoding="async"
+                className="w-full h-full object-cover"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* =================================================================== */}
+      {/* SECTION 7: FREQUENTLY ASKED QUESTIONS                               */}
+      {/* =================================================================== */}
+      <section className="py-16 sm:py-32 md:py-44 px-5 sm:px-10 md:px-14 lg:px-24 bg-[#FAF9F5] border-t border-[#E4E0D7]">
+        <div className="max-w-4xl mx-auto">
+          <div className="lux-glide mb-12 sm:mb-16 space-y-2.5 sm:space-y-3">
+            <span className="block text-[9px] sm:text-[10px] uppercase tracking-[0.34em] sm:tracking-[0.36em] text-[#5B6450]">
+              Client Guidance
+            </span>
+            <h2 className="font-cormorant text-3xl sm:text-4xl md:text-5xl font-light text-[#1C211D] tracking-tight">
+              Frequently Asked Questions
+            </h2>
+          </div>
+
+          <div className="lux-glide border-t border-[#D8D4CA]">
+            {FAQS.map((item, idx) => {
+              const isOpen = openFaq === idx;
               return (
-                <div key={idx} className="p-6 sm:p-7 bg-white rounded-xl border border-stone-200/90 shadow-sm space-y-3">
-                  <div className="w-10 h-10 rounded-lg bg-[#162E20]/5 text-[#C86A3D] flex items-center justify-center">
-                    <Icon size={20} />
+                <div key={item.q} className="border-b border-[#D8D4CA]">
+                  <button
+                    type="button"
+                    onClick={() => setOpenFaq(isOpen ? null : idx)}
+                    className="w-full py-6 sm:py-7 text-left flex items-center justify-between gap-6 sm:gap-8 group cursor-pointer"
+                  >
+                    <h3 className="font-cormorant text-xl sm:text-2xl md:text-[1.65rem] font-normal text-[#1C211D] group-hover:text-[#5B6450] transition-colors leading-snug">
+                      {item.q}
+                    </h3>
+                    <span className="text-[#5B6450] shrink-0 transition-transform duration-300">
+                      {isOpen ? <Minus size={18} strokeWidth={1.2} /> : <Plus size={18} strokeWidth={1.2} />}
+                    </span>
+                  </button>
+                  <div
+                    className={`overflow-hidden transition-all duration-500 ease-out ${
+                      isOpen ? 'max-h-72 pb-6 sm:pb-8 opacity-100' : 'max-h-0 opacity-0'
+                    }`}
+                  >
+                    <p className="text-[#5A5953] text-sm sm:text-base font-light leading-[1.85] sm:leading-[1.9] max-w-3xl">
+                      {item.a}
+                    </p>
                   </div>
-                  <h3 className="font-serif text-base font-bold text-[#162E20]">
-                    {point.title}
-                  </h3>
-                  <p className="text-stone-600 text-xs sm:text-sm leading-relaxed">
-                    {point.desc}
-                  </p>
                 </div>
               );
             })}
-          </div>
-
-        </div>
-      </section>
-
-      {/* CLIENT TESTIMONIALS */}
-      <section className="py-20 px-6 md:px-12 bg-[#162E20] text-white">
-        <div className="max-w-4xl mx-auto text-center space-y-8">
-          <div className="w-12 h-12 bg-[#C86A3D] rounded-full mx-auto flex items-center justify-center text-white shadow-lg">
-            <Quote size={22} />
-          </div>
-          
-          <blockquote className="font-serif text-xl sm:text-2xl md:text-3xl font-normal italic leading-relaxed text-stone-100">
-            &ldquo;Oak &amp; Ash completely transformed our sloping Marlborough garden. The porcelain terrace, integrated steps, and sunken seating area have become our favourite part of the house. Clean, polite, and finished exactly on budget.&rdquo;
-          </blockquote>
-
-          <div className="space-y-1">
-            <p className="font-serif text-lg font-bold text-[#E08A5B]">
-              Robert &amp; Charlotte Hayes
-            </p>
-            <p className="text-xs font-mono uppercase tracking-widest text-stone-400">
-              Private Residential Estate · Marlborough, Wiltshire
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* FINAL CALL TO ACTION */}
-      <section className="py-20 px-6 md:px-12 bg-[#FBF9F5] text-center border-t border-stone-200">
-        <div className="max-w-3xl mx-auto space-y-6">
-          <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#162E20]">
-            Ready to Plan Your Garden Transformation?
-          </h2>
-          <p className="text-stone-600 text-sm sm:text-base leading-relaxed max-w-xl mx-auto">
-            Book a complimentary on-site survey. We inspect your grounds, discuss your requirements, and provide a fixed-price itemised quotation.
-          </p>
-          <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link
-              to="/demo/landscaping/contact"
-              className="w-full sm:w-auto px-8 py-4 bg-[#C86A3D] hover:bg-[#b5582c] text-white font-semibold text-xs uppercase tracking-wider rounded-lg transition-all shadow-lg hover:scale-105 active:scale-95"
-            >
-              <span>Book Your Consultation</span>
-            </Link>
-            <a
-              href="tel:01672552140"
-              className="w-full sm:w-auto px-8 py-4 bg-white hover:bg-stone-50 text-[#162E20] border border-stone-300 font-semibold text-xs uppercase tracking-wider rounded-lg transition-all shadow-sm flex items-center justify-center gap-2"
-            >
-              <Phone size={14} className="text-[#C86A3D]" />
-              <span>Call 01672 552 140</span>
-            </a>
           </div>
         </div>
       </section>

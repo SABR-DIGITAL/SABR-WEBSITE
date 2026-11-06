@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { X, Calendar, Users, Sparkles, Check, ArrowRight, ShieldCheck, Clock, MapPin } from 'lucide-react';
+import { X, Calendar, Check, ArrowRight } from 'lucide-react';
 import { motion as framerMotion, AnimatePresence } from 'framer-motion';
-import { SPA_DATA, SpaSuite } from './spaData';
+import { SPA_DATA } from './spaData';
 import SpaCustomCalendar from './SpaCustomCalendar';
 
 const motion = framerMotion as any;
@@ -36,34 +36,24 @@ const SpaBookingModal: React.FC<SpaBookingModalProps> = ({
   const selectedSuite =
     SPA_DATA.suites.find((s) => s.id === selectedSuiteId) || SPA_DATA.suites[0];
 
-  const nights = 3;
-  const roomTotal = selectedSuite.pricePerNight * nights;
-
-  const addonPrices: Record<string, { label: string; price: number; desc: string }> = {
+  const addonPrices: Record<string, { label: string; desc: string }> = {
     'spa-pass': {
-      label: 'Unlimited Thermal Spa & Mineral Pools Pass',
-      price: 90,
-      desc: 'Complimentary herbal teas, thermal robe and reserved heated lounger.'
+      label: 'Full Thermal Spa & Mineral Pools Access',
+      desc: 'Complimentary botanical teas, linen robes, and heated loungers.'
     },
     'stone-ritual': {
-      label: 'Couples Nordic Hot Stone Ritual (90 min)',
-      price: 340,
-      desc: 'Volcanic basalt stones and organic pine arnica massage.'
+      label: 'Couples Nordic Basalt Hot Stone Ritual (90 min)',
+      desc: 'Warm volcanic basalt stones and organic pine massage.'
     },
     'tasting-dinner': {
-      label: 'Food & Forest 8-Course Tasting Menu with Wine Pairing',
-      price: 260,
-      desc: 'Private chef table overlooking the dusk pine reserve.'
+      label: 'Seven-Course Woodland Tasting Menu at Food & Forest',
+      desc: 'Evening chef table with sommelier pairing.'
     },
     'transfer': {
-      label: 'Private Luxury Electric SUV Transfer (London / Heathrow)',
-      price: 180,
-      desc: 'Chauffeur driven directly to your suite door.'
+      label: 'Private Chauffeur Transfer (London or Heathrow)',
+      desc: 'Door-to-door chauffeur service to your residence.'
     }
   };
-
-  const addonsTotal = addons.reduce((sum, key) => sum + (addonPrices[key]?.price || 0), 0);
-  const grandTotal = roomTotal + addonsTotal;
 
   const toggleAddon = (key: string) => {
     if (addons.includes(key)) {
@@ -100,20 +90,20 @@ const SpaBookingModal: React.FC<SpaBookingModalProps> = ({
             className="fixed inset-0 bg-black/90 backdrop-blur-md"
           />
 
-          {/* MODAL CARD (SHARP SQUARES) */}
+          {/* MODAL */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.96, y: 15 }}
+            initial={{ opacity: 0, scale: 0.98, y: 12 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.96, y: 15 }}
+            exit={{ opacity: 0, scale: 0.98, y: 12 }}
             transition={{ duration: 0.25 }}
-            className="relative w-full max-w-4xl bg-[#0A0D0C] border border-white/15 shadow-2xl text-white overflow-hidden z-10 my-8"
+            className="relative w-full max-w-3xl bg-[#070908] border border-white/15 shadow-2xl text-white overflow-hidden z-10 my-8"
           >
             {/* MODAL HEADER */}
-            <div className="flex items-center justify-between px-6 md:px-10 py-6 border-b border-white/10 bg-[#070908]">
+            <div className="flex items-center justify-between px-6 md:px-10 py-6 border-b border-white/10">
               <div className="flex items-center gap-3">
-                <div className="w-2 h-2 bg-emerald-400"></div>
+                <div className="w-1.5 h-1.5 bg-emerald-400"></div>
                 <h3 className="font-cinzel text-base md:text-lg font-bold uppercase tracking-wider text-white">
-                  VERDANT · DIRECT RESERVATION
+                  VERDANT · RESERVE YOUR STAY
                 </h3>
               </div>
               <button
@@ -127,29 +117,29 @@ const SpaBookingModal: React.FC<SpaBookingModalProps> = ({
             {step === 'details' && (
               <div className="p-6 md:p-10 space-y-8 max-h-[80vh] overflow-y-auto">
                 {/* DATES & GUESTS BAR */}
-                <div className="p-5 bg-[#0C100E] border border-white/10 space-y-4 shadow-xl">
-                  <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="pb-6 border-b border-white/10 space-y-4">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                     <button
                       type="button"
                       onClick={() => setShowCalendar(!showCalendar)}
-                      className="flex items-center gap-3 px-5 py-3 bg-white/5 hover:bg-white/10 border border-white/15 text-left w-full sm:w-auto cursor-pointer transition-colors"
+                      className="flex items-center gap-3 py-2 text-left cursor-pointer group"
                     >
                       <Calendar size={16} className="text-emerald-400 shrink-0" />
                       <div>
                         <span className="block text-[9px] uppercase font-mono tracking-widest text-white/50">STAY DATES</span>
-                        <span className="text-xs font-mono font-bold text-white">
+                        <span className="text-xs font-mono font-bold text-white group-hover:text-emerald-400 transition-colors">
                           {checkIn} → {checkOut}
                         </span>
                       </div>
                     </button>
 
-                    <div className="flex items-center gap-4 w-full sm:w-auto justify-end text-xs font-mono">
+                    <div className="flex items-center gap-6 text-xs font-mono">
                       <div>
                         <label className="block text-[9px] uppercase text-white/50 tracking-wider mb-1">Adults</label>
                         <select
                           value={adults}
                           onChange={(e) => setAdults(Number(e.target.value))}
-                          className="bg-[#141B18] border border-white/20 px-3 py-2 text-white focus:outline-none focus:border-emerald-400"
+                          className="bg-[#070908] border-b border-white/20 py-1.5 text-white focus:outline-none focus:border-emerald-400"
                         >
                           <option value={1}>1 Adult</option>
                           <option value={2}>2 Adults</option>
@@ -163,7 +153,7 @@ const SpaBookingModal: React.FC<SpaBookingModalProps> = ({
                         <select
                           value={children}
                           onChange={(e) => setChildren(Number(e.target.value))}
-                          className="bg-[#141B18] border border-white/20 px-3 py-2 text-white focus:outline-none focus:border-emerald-400"
+                          className="bg-[#070908] border-b border-white/20 py-1.5 text-white focus:outline-none focus:border-emerald-400"
                         >
                           <option value={0}>0</option>
                           <option value={1}>1</option>
@@ -173,7 +163,6 @@ const SpaBookingModal: React.FC<SpaBookingModalProps> = ({
                     </div>
                   </div>
 
-                  {/* EMBEDDED CUSTOM DARK CALENDAR */}
                   <AnimatePresence>
                     {showCalendar && (
                       <motion.div
@@ -199,39 +188,34 @@ const SpaBookingModal: React.FC<SpaBookingModalProps> = ({
                   </AnimatePresence>
                 </div>
 
-                {/* SUITES SELECTION */}
-                <div className="space-y-3">
+                {/* SUITES SELECTION (CLEAN TYPOGRAPHY, NO TINY PHOTOS) */}
+                <div className="space-y-4">
                   <span className="text-[10px] uppercase tracking-widest text-emerald-400 font-mono font-bold block">
-                    STEP 01 · SELECT SUITE OR RESIDENCE
+                    01 · SELECT RESIDENCE
                   </span>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="divide-y divide-white/10 border-y border-white/10">
                     {SPA_DATA.suites.map((s) => {
                       const isSelected = s.id === selectedSuiteId;
                       return (
                         <div
                           key={s.id}
                           onClick={() => setSelectedSuiteId(s.id)}
-                          className={`p-5 border transition-all cursor-pointer flex gap-4 items-center ${
-                            isSelected
-                              ? 'bg-[#0E1511] border-emerald-400 shadow-xl'
-                              : 'bg-[#0C100E] border-white/10 hover:border-white/25'
-                          }`}
+                          className="py-5 transition-all cursor-pointer flex items-center justify-between gap-4"
                         >
-                          <img
-                            src={s.heroImage}
-                            alt={s.name}
-                            className="w-20 h-20 object-cover border border-white/10 shrink-0"
-                          />
                           <div className="space-y-1">
-                            <h4 className="font-cinzel text-xs font-bold text-white uppercase line-clamp-1">
+                            <h4 className="font-cinzel text-sm sm:text-base font-bold text-white uppercase">
                               {s.name}
                             </h4>
-                            <p className="text-[11px] font-mono text-emerald-400 font-bold uppercase">
-                              {s.category}
-                            </p>
-                            <p className="text-[10px] text-white/50 font-mono">
+                            <p className="text-xs text-emerald-400/90 font-mono">
                               {s.sizeSqm} M² · {s.capacity}
                             </p>
+                          </div>
+                          <div
+                            className={`w-4 h-4 border flex items-center justify-center shrink-0 ${
+                              isSelected ? 'bg-emerald-400 border-emerald-400 text-slate-950' : 'border-white/30'
+                            }`}
+                          >
+                            {isSelected && <Check size={10} strokeWidth={3} />}
                           </div>
                         </div>
                       );
@@ -240,31 +224,24 @@ const SpaBookingModal: React.FC<SpaBookingModalProps> = ({
                 </div>
 
                 {/* ADDONS */}
-                <div className="space-y-3">
+                <div className="space-y-4">
                   <span className="text-[10px] uppercase tracking-widest text-emerald-400 font-mono font-bold block">
-                    STEP 02 · SELECT BESPOKE EXPERIENCES
+                    02 · OPTIONAL EXPERIENCES
                   </span>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="divide-y divide-white/10 border-y border-white/10">
                     {Object.entries(addonPrices).map(([key, item]) => {
                       const isChecked = addons.includes(key);
                       return (
                         <div
                           key={key}
                           onClick={() => toggleAddon(key)}
-                          className={`p-4 border transition-all cursor-pointer flex items-center justify-between gap-3 ${
-                            isChecked
-                              ? 'bg-[#0E1511] border-emerald-400/80'
-                              : 'bg-[#0C100E] border-white/10 hover:border-white/20'
-                          }`}
+                          className="py-4 transition-all cursor-pointer flex items-center justify-between gap-4"
                         >
-                          <div className="pr-2">
-                            <span className="text-xs font-semibold text-white block">{item.label}</span>
-                            <span className="text-[10px] text-white/50 block font-light">{item.desc}</span>
+                          <div className="pr-2 space-y-1">
+                            <span className="text-xs sm:text-sm font-medium text-white block">{item.label}</span>
+                            <span className="text-xs text-white/50 block font-light">{item.desc}</span>
                           </div>
                           <div className="flex items-center gap-2 shrink-0">
-                            <span className="font-mono text-xs uppercase text-emerald-400">
-                              {isChecked ? 'Included' : 'Add'}
-                            </span>
                             <div
                               className={`w-4 h-4 border flex items-center justify-center ${
                                 isChecked ? 'bg-emerald-400 border-emerald-400 text-slate-950' : 'border-white/30'
@@ -280,19 +257,19 @@ const SpaBookingModal: React.FC<SpaBookingModalProps> = ({
                 </div>
 
                 {/* FOOTER ACTION BAR */}
-                <div className="pt-4 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="pt-4 flex flex-col sm:flex-row items-center justify-between gap-4">
                   <div>
-                    <span className="text-[10px] uppercase font-mono text-white/50 block">SELECTED RESIDENCE</span>
+                    <span className="text-[10px] uppercase font-mono text-white/45 block">SELECTED RESIDENCE</span>
                     <span className="font-cinzel text-base font-bold text-white uppercase">
-                      {selectedSuite.name} <span className="text-xs font-mono text-emerald-400 font-normal">({nights} NIGHTS)</span>
+                      {selectedSuite.name} <span className="text-xs font-mono text-emerald-400 font-normal">· {selectedSuite.sizeSqm} m²</span>
                     </span>
                   </div>
 
                   <button
                     onClick={() => setStep('guest')}
-                    className="w-full sm:w-auto px-8 py-3.5 bg-white hover:bg-emerald-400 hover:text-slate-950 text-slate-950 font-bold text-xs uppercase tracking-[0.25em] transition-all cursor-pointer shadow-xl flex items-center justify-center gap-2 border border-white/20"
+                    className="w-full sm:w-auto px-8 py-3.5 bg-white hover:bg-emerald-400 hover:text-slate-950 text-slate-950 font-bold text-xs uppercase tracking-[0.25em] transition-all cursor-pointer flex items-center justify-center gap-2"
                   >
-                    <span>CONTINUE TO GUEST INFO</span>
+                    <span>CONTINUE</span>
                     <ArrowRight size={14} />
                   </button>
                 </div>
@@ -301,47 +278,47 @@ const SpaBookingModal: React.FC<SpaBookingModalProps> = ({
 
             {step === 'guest' && (
               <form onSubmit={handleConfirmBooking} className="p-6 md:p-10 space-y-6 max-h-[80vh] overflow-y-auto">
-                <div className="space-y-2">
+                <div className="space-y-1">
                   <span className="text-[10px] uppercase tracking-widest text-emerald-400 font-mono font-bold block">
-                    STEP 03 · GUEST INFORMATION
+                    03 · GUEST DETAILS
                   </span>
                   <h4 className="font-cinzel text-xl font-bold uppercase text-white">
                     PRIMARY GUEST CONTACT
                   </h4>
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-y-6">
                   <div>
-                    <label className="block text-[10px] uppercase tracking-widest font-mono text-white/60 mb-2">
-                      Full Name *
+                    <label className="block text-[10px] uppercase tracking-widest font-mono text-white/50 mb-2">
+                      Full Name
                     </label>
                     <input
                       type="text"
                       required
                       value={guestName}
                       onChange={(e) => setGuestName(e.target.value)}
-                      placeholder="e.g. Lady Vivienne Montgomery"
-                      className="w-full px-4 py-3 bg-[#141B18] border border-white/20 text-white text-xs focus:outline-none focus:border-emerald-400"
+                      placeholder="Vivienne Montgomery"
+                      className="w-full py-3 bg-transparent border-b border-white/20 text-white text-sm focus:outline-none focus:border-emerald-400"
                     />
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-[10px] uppercase tracking-widest font-mono text-white/60 mb-2">
-                        Email Address *
+                      <label className="block text-[10px] uppercase tracking-widest font-mono text-white/50 mb-2">
+                        Email Address
                       </label>
                       <input
                         type="email"
                         required
                         value={guestEmail}
                         onChange={(e) => setGuestEmail(e.target.value)}
-                        placeholder="vivienne@montgomery.co.uk"
-                        className="w-full px-4 py-3 bg-[#141B18] border border-white/20 text-white text-xs focus:outline-none focus:border-emerald-400"
+                        placeholder="vivienne@domain.co.uk"
+                        className="w-full py-3 bg-transparent border-b border-white/20 text-white text-sm focus:outline-none focus:border-emerald-400"
                       />
                     </div>
                     <div>
-                      <label className="block text-[10px] uppercase tracking-widest font-mono text-white/60 mb-2">
-                        Phone Number *
+                      <label className="block text-[10px] uppercase tracking-widest font-mono text-white/50 mb-2">
+                        Telephone Number
                       </label>
                       <input
                         type="tel"
@@ -349,28 +326,17 @@ const SpaBookingModal: React.FC<SpaBookingModalProps> = ({
                         value={guestPhone}
                         onChange={(e) => setGuestPhone(e.target.value)}
                         placeholder="+44 7911 123456"
-                        className="w-full px-4 py-3 bg-[#141B18] border border-white/20 text-white text-xs focus:outline-none focus:border-emerald-400"
+                        className="w-full py-3 bg-transparent border-b border-white/20 text-white text-sm focus:outline-none focus:border-emerald-400"
                       />
                     </div>
                   </div>
                 </div>
 
-                <div className="p-4 bg-white/[0.02] border border-white/10 text-xs font-mono space-y-2">
-                  <div className="flex justify-between">
-                    <span className="text-white/50">Selected Residence:</span>
-                    <span className="text-white font-bold">{selectedSuite.name}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-white/50">Service Level:</span>
-                    <span className="text-emerald-400 font-bold uppercase">Private Concierge Reservation</span>
-                  </div>
-                </div>
-
-                <div className="pt-4 border-t border-white/10 flex items-center justify-between">
+                <div className="pt-6 border-t border-white/10 flex items-center justify-between">
                   <button
                     type="button"
                     onClick={() => setStep('details')}
-                    className="text-xs font-mono text-white/60 hover:text-white uppercase tracking-wider"
+                    className="text-xs font-mono text-white/60 hover:text-white uppercase tracking-wider cursor-pointer"
                   >
                     ← BACK
                   </button>
@@ -378,7 +344,7 @@ const SpaBookingModal: React.FC<SpaBookingModalProps> = ({
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="px-8 py-3.5 bg-white hover:bg-emerald-400 hover:text-slate-950 text-slate-950 font-bold text-xs uppercase tracking-[0.25em] transition-all cursor-pointer shadow-xl border border-white/20"
+                    className="px-8 py-3.5 bg-white hover:bg-emerald-400 hover:text-slate-950 text-slate-950 font-bold text-xs uppercase tracking-[0.25em] transition-all cursor-pointer"
                   >
                     {isSubmitting ? 'CONFIRMING...' : 'COMPLETE RESERVATION'}
                   </button>
@@ -398,14 +364,14 @@ const SpaBookingModal: React.FC<SpaBookingModalProps> = ({
                   <h3 className="font-cinzel text-2xl font-bold uppercase text-white">
                     WE LOOK FORWARD TO WELCOMING YOU
                   </h3>
-                  <p className="text-xs text-white/60 max-w-md mx-auto leading-relaxed">
-                    A confirmation folio has been sent to {guestEmail || 'your email'}. Our concierge team will reach out to organize your arrival logistics.
+                  <p className="text-sm text-white/60 max-w-md mx-auto font-light leading-relaxed">
+                    A confirmation itinerary has been sent to {guestEmail || 'your email'}.
                   </p>
                 </div>
 
                 <button
                   onClick={handleReset}
-                  className="px-8 py-3.5 bg-white hover:bg-emerald-400 hover:text-slate-950 text-slate-950 font-bold text-xs uppercase tracking-[0.25em] transition-all cursor-pointer border border-white/20"
+                  className="px-8 py-3.5 bg-white hover:bg-emerald-400 hover:text-slate-950 text-slate-950 font-bold text-xs uppercase tracking-[0.25em] transition-all cursor-pointer"
                 >
                   CLOSE
                 </button>

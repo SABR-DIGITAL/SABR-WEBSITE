@@ -1,20 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { MoveRight, Cpu, PenTool, Eye, Rocket, Search } from 'lucide-react';
+import { MoveRight } from 'lucide-react';
 import { Page } from '../App';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Same five steps, same words. What changed is the shape: one hairline running
-// down the page with the steps hung off it, instead of five full-height slabs
-// with glowing icons and glass cards. Reads in a third of the scrolling.
 const BuildJourney = [
   {
     id: '01',
-    icon: <Search size={18} />,
+    phase: 'Discovery',
     title: 'The Discovery & Planning',
-    color: '#059669',
     bullets: [
       'We learn about your business, services, and target audience.',
       'We review competitors to see what’s working in your market.',
@@ -23,9 +19,8 @@ const BuildJourney = [
   },
   {
     id: '02',
-    icon: <PenTool size={18} />,
+    phase: 'Alignment',
     title: 'The Project Lock-In',
-    color: '#059669',
     bullets: [
       'Contracts are signed to confirm deliverables, timelines, and ownership.',
       'We collect the necessary details like images, brand colours, pricing ETC.',
@@ -34,9 +29,8 @@ const BuildJourney = [
   },
   {
     id: '03',
-    icon: <Cpu size={18} />,
+    phase: 'Architecture',
     title: 'The Design & Build',
-    color: '#059669',
     bullets: [
       'We start to create your custom site tailored to your brand’s vision and style.',
       'Mobile optimisation and technical integrations are built in.',
@@ -45,9 +39,8 @@ const BuildJourney = [
   },
   {
     id: '04',
-    icon: <Eye size={18} />,
+    phase: 'Refinement',
     title: 'The Review & Refinement',
-    color: '#059669',
     bullets: [
       'You review the build and request revisions within scope of the contract.',
       'We polish visuals, layout, and performance details.',
@@ -56,9 +49,8 @@ const BuildJourney = [
   },
   {
     id: '05',
-    icon: <Rocket size={18} />,
+    phase: 'Handover',
     title: 'The Launch & Handover',
-    color: '#059669',
     bullets: [
       'Final payment clears before final deployment begins.',
       'You choose your preferred hosting and deployment path.',
@@ -73,11 +65,11 @@ const DeploymentOptions = {
     option: 'OPTION 01',
     quote: '"We host, update, and manage your site so you can focus on your trade."',
     points: [
-      { id: 1, title: 'ALL BUILT', desc: 'Your site is finished and ready for customers.' },
-      { id: 2, title: 'FAST HOSTING', desc: 'We host it on the best servers for speed.' },
-      { id: 3, title: 'WE UPDATE IT', desc: 'We handle all the technical bits and security.' },
-      { id: 4, title: 'EASY CHANGES', desc: 'Just tell us what to change and we do it.' },
-      { id: 5, title: 'GROW WITH YOU', desc: 'Your site stays fresh and works on every phone.' }
+      { id: '01', title: 'ALL BUILT', desc: 'Your site is finished and ready for customers.' },
+      { id: '02', title: 'FAST HOSTING', desc: 'We host it on the best servers for speed.' },
+      { id: '03', title: 'WE UPDATE IT', desc: 'We handle all the technical bits and security.' },
+      { id: '04', title: 'EASY CHANGES', desc: 'Just tell us what to change and we do it.' },
+      { id: '05', title: 'GROW WITH YOU', desc: 'Your site stays fresh and works on every phone.' }
     ]
   },
   ownership: {
@@ -85,11 +77,11 @@ const DeploymentOptions = {
     option: 'OPTION 02',
     quote: '"You own the site 100%. We give you the logins and you’re in control."',
     points: [
-      { id: 1, title: 'ALL BUILT', desc: 'The site is finished and ready for transfer.' },
-      { id: 2, title: 'FINAL BILL', desc: 'Once settled, we start the handover process.' },
-      { id: 3, title: 'FULL ACCESS', desc: 'We give you all the passwords and logins.' },
-      { id: 4, title: 'YOUR HOSTING', desc: 'You pay for your own hosting (we set it up).' },
-      { id: 5, title: '100% YOURS', desc: 'You own every part of the site forever.' }
+      { id: '01', title: 'ALL BUILT', desc: 'The site is finished and ready for transfer.' },
+      { id: '02', title: 'FINAL BILL', desc: 'Once settled, we start the handover process.' },
+      { id: '03', title: 'FULL ACCESS', desc: 'We give you all the passwords and logins.' },
+      { id: '04', title: 'YOUR HOSTING', desc: 'You pay for your own hosting (we set it up).' },
+      { id: '05', title: '100% YOURS', desc: 'You own every part of the site forever.' }
     ]
   }
 } as const;
@@ -99,7 +91,6 @@ type DeploymentMode = keyof typeof DeploymentOptions;
 const SnakeTimeline: React.FC<{ navigateTo: (page: Page) => void }> = ({ navigateTo }) => {
   const [deploymentMode, setDeploymentMode] = useState<DeploymentMode>('managed');
   const rootRef = useRef<HTMLDivElement>(null);
-  const railRef = useRef<HTMLDivElement>(null);
   const stepsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -116,53 +107,68 @@ const SnakeTimeline: React.FC<{ navigateTo: (page: Page) => void }> = ({ navigat
     if (reduceMotion) return;
 
     const ctx = gsap.context(() => {
-      // The rail fills as you read down the five steps.
-      const rail = railRef.current;
-      const steps = stepsRef.current;
-      if (rail && steps) {
-        gsap.fromTo(
-          rail,
-          { scaleY: 0 },
-          {
-            scaleY: 1,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: steps,
-              start: 'top 70%',
-              end: 'bottom 65%',
-              scrub: 0.8
+      // Alternate whole stages gliding in: left (0), right (1), left (2), right (3), left (4)
+      gsap.utils.toArray<HTMLElement>('.process-stage').forEach((stage, index) => {
+        const fromLeft = index % 2 === 0;
+        const startX = fromLeft ? -85 : 85;
+        const topLine = stage.querySelector('.stage-top-line');
+        const stageContent = stage.querySelector('.stage-glide-body');
+        const dot = stage.querySelector('.stage-dot');
+
+        if (topLine) {
+          gsap.fromTo(
+            topLine,
+            { scaleX: 0, transformOrigin: fromLeft ? 'left center' : 'right center' },
+            {
+              scaleX: 1,
+              duration: 1.35,
+              ease: 'expo.out',
+              scrollTrigger: {
+                trigger: stage,
+                start: 'top 84%',
+                once: true
+              }
             }
-          }
-        );
-      }
+          );
+        }
 
-      // Each step lifts in once, on its own trigger. The hidden state is applied
-      // here rather than in the markup, so if the script never runs the page is
-      // still fully readable.
-      gsap.utils.toArray<HTMLElement>('.step-row').forEach((row) => {
-        const parts = row.querySelectorAll<HTMLElement>('.step-part');
-        gsap.set(parts, { y: 22, opacity: 0 });
-        gsap.to(parts, {
-          y: 0,
-          opacity: 1,
-          duration: 0.65,
-          stagger: 0.06,
-          ease: 'power3.out',
-          force3D: true,
-          scrollTrigger: { trigger: row, start: 'top 86%', once: true, fastScrollEnd: true }
-        });
-      });
+        if (stageContent) {
+          gsap.fromTo(
+            stageContent,
+            { x: startX, opacity: 0 },
+            {
+              x: 0,
+              opacity: 1,
+              duration: 1.35,
+              ease: 'power3.out',
+              force3D: true,
+              clearProps: 'transform',
+              scrollTrigger: {
+                trigger: stage,
+                start: 'top 82%',
+                once: true
+              }
+            }
+          );
+        }
 
-      gsap.utils.toArray<HTMLElement>('.fade-up').forEach((el) => {
-        gsap.set(el, { y: 24, opacity: 0 });
-        gsap.to(el, {
-          y: 0,
-          opacity: 1,
-          duration: 0.7,
-          ease: 'power3.out',
-          force3D: true,
-          scrollTrigger: { trigger: el, start: 'top 90%', once: true, fastScrollEnd: true }
-        });
+        if (dot) {
+          gsap.fromTo(
+            dot,
+            { scale: 0.4, opacity: 0 },
+            {
+              scale: 1,
+              opacity: 1,
+              duration: 0.85,
+              ease: 'back.out(2)',
+              scrollTrigger: {
+                trigger: stage,
+                start: 'top 82%',
+                once: true
+              }
+            }
+          );
+        }
       });
     }, root);
 
@@ -174,75 +180,84 @@ const SnakeTimeline: React.FC<{ navigateTo: (page: Page) => void }> = ({ navigat
   return (
     <div
       ref={rootRef}
-      className="bg-[#fdfbf7] min-h-screen text-slate-950 overflow-x-hidden selection:bg-emerald-600/30"
+      className="bg-[#fdfbf7] min-h-screen text-slate-950 overflow-x-hidden selection:bg-emerald-600/20"
     >
-      {/* HERO — same wording, same scale as the other page headers. */}
-      <section className="px-6 md:px-10 lg:px-16 pt-32 md:pt-44 pb-16 md:pb-24">
+      {/* =================================================================== */}
+      {/* 1. MINIMALIST ARCHITECTURAL HERO                                    */}
+      {/* =================================================================== */}
+      <section className="px-6 md:px-12 lg:px-20 pt-36 md:pt-48 pb-24 md:pb-36">
         <div className="max-w-6xl mx-auto">
-          <p className="pt-rise text-[10px] font-bold uppercase tracking-[0.5em] text-slate-400 mb-8">
-            The process
+          <p className="pt-rise text-[10px] md:text-[11px] font-black uppercase tracking-[0.5em] text-emerald-600 mb-8">
+            The Process
           </p>
           <h1
-            className="pt-rise font-syne text-[clamp(2.5rem,10vw,5rem)] font-black text-slate-950 tracking-tighter uppercase leading-[0.9] mb-8"
+            className="pt-rise font-syne text-[clamp(2.75rem,10vw,5.5rem)] font-black text-slate-950 tracking-tighter uppercase leading-[0.88] mb-10"
             style={{ animationDelay: '70ms' }}
           >
             THE <br />
             <span className="text-shimmer-blue italic">SYSTEM.</span>
           </h1>
           <p
-            className="pt-rise max-w-xl text-lg md:text-xl text-slate-500 leading-relaxed"
+            className="pt-rise max-w-xl text-lg md:text-2xl text-slate-500 font-medium leading-relaxed"
             style={{ animationDelay: '140ms' }}
           >
-            Experience our 5 simple steps to a better website. We build powerful sites designed to
-            help your business win.
+            Five clear stages from first conversation to launch. Built around open communication, fixed pricing, and zero guesswork.
           </p>
         </div>
       </section>
 
-      {/* THE FIVE STEPS — one rail, five rows, no slabs. */}
-      <section className="px-6 md:px-10 lg:px-16 pb-24 md:pb-32">
+      {/* =================================================================== */}
+      {/* 2. SPACIOUS UNBOXED 5-STAGE TIMELINE                                */}
+      {/* =================================================================== */}
+      <section className="px-6 md:px-12 lg:px-20 pb-32 md:pb-48">
         <div ref={stepsRef} className="max-w-6xl mx-auto relative">
-          {/* Static hairline plus the emerald line that fills over it. */}
-          <div
-            aria-hidden="true"
-            className="absolute left-[15px] md:left-[19px] top-3 bottom-3 w-px bg-slate-200"
-          />
-          <div
-            ref={railRef}
-            aria-hidden="true"
-            className="absolute left-[15px] md:left-[19px] top-3 bottom-3 w-px bg-emerald-600 origin-top will-change-transform"
-          />
-
-          <div className="space-y-14 md:space-y-20">
+          <div>
             {BuildJourney.map((step) => (
-              <div key={step.id} className="step-row relative pl-14 md:pl-20">
-                {/* Marker */}
-                <div className="step-part absolute left-0 top-1 w-8 h-8 md:w-10 md:h-10 rounded-full bg-[#fdfbf7] border border-slate-200 flex items-center justify-center text-emerald-600">
-                  {step.icon}
-                </div>
+              <div
+                key={step.id}
+                className="process-stage relative md:pl-14 lg:pl-20 py-16 md:py-24"
+              >
+                {/* Animated Top Hairline */}
+                <div
+                  aria-hidden="true"
+                  className="stage-top-line absolute left-0 right-0 top-0 h-px bg-slate-200"
+                />
 
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-12 items-start">
+                {/* Minimal Green Dot (No Trailing Line) */}
+                <div
+                  aria-hidden="true"
+                  className="stage-dot hidden md:block absolute -left-[4.5px] top-24 w-2.5 h-2.5 rounded-full bg-emerald-600"
+                />
+
+                <div className="stage-glide-body grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start will-change-transform">
+                  {/* Left Column: Monumental Step Index & Title */}
                   <div className="lg:col-span-5">
-                    <span className="step-part block font-oswald text-[11px] font-bold tracking-[0.45em] text-slate-400 mb-3">
-                      {step.id}
-                    </span>
-                    <h2 className="step-part font-syne text-2xl md:text-[2rem] font-black uppercase tracking-tighter leading-[1.05] text-slate-950">
+                    <div className="flex items-center gap-4 mb-5">
+                      <span className="font-syne text-sm md:text-base font-black text-emerald-600 tabular-nums">
+                        {step.id}
+                      </span>
+                      <span className="w-8 h-px bg-slate-300" />
+                      <span className="text-[10px] font-black uppercase tracking-[0.45em] text-slate-400">
+                        {step.phase}
+                      </span>
+                    </div>
+
+                    <h2 className="font-syne text-3xl sm:text-4xl md:text-[2.5rem] font-black uppercase tracking-tighter leading-[0.96] text-slate-950">
                       {step.title}
                     </h2>
                   </div>
 
-                  <ul className="lg:col-span-7 lg:pt-1">
+                  {/* Right Column: Clean Unboxed Hairline Deliverables */}
+                  <ul className="lg:col-span-7 divide-y divide-slate-200/80 border-b border-slate-200/80">
                     {step.bullets.map((bullet, idx) => (
                       <li
                         key={idx}
-                        className="step-part flex gap-4 items-baseline py-3 border-b border-slate-200/80 last:border-b-0"
+                        className="flex items-baseline gap-6 py-5 first:pt-0"
                       >
-                        <span
-                          aria-hidden="true"
-                          className="shrink-0 w-4 h-px translate-y-[-0.35em]"
-                          style={{ backgroundColor: step.color }}
-                        />
-                        <p className="text-[15px] md:text-base text-slate-600 leading-relaxed">
+                        <span className="font-mono text-[11px] font-bold text-emerald-600/80 tabular-nums shrink-0">
+                          0{idx + 1}
+                        </span>
+                        <p className="text-base md:text-lg text-slate-600 font-normal leading-relaxed">
                           {bullet}
                         </p>
                       </li>
@@ -255,29 +270,28 @@ const SnakeTimeline: React.FC<{ navigateTo: (page: Page) => void }> = ({ navigat
         </div>
       </section>
 
-      {/* PICK YOUR PATH */}
-      <section className="relative bg-[#0A0D14] text-white">
-        <div className="max-w-6xl mx-auto px-6 md:px-10 lg:px-16 min-h-[100svh] flex flex-col justify-center pt-[clamp(2.5rem,6vh,5rem)] pb-[clamp(2.5rem,6vh,4rem)]">
-          <div className="fade-up text-center">
-            <h2 className="font-syne text-[clamp(1.8rem,5.4vw,3.2rem)] font-black uppercase tracking-tighter leading-[0.9]">
-              PICK YOUR <br />
-              <span className="text-shimmer-blue italic">PATH.</span>
-            </h2>
-            <div className="mt-[clamp(0.8rem,2vh,1.5rem)] flex items-center justify-center gap-4 md:gap-6">
-              <span aria-hidden="true" className="h-px w-8 md:w-16 bg-white/15" />
-              <p className="text-[8.5px] md:text-[10px] font-bold uppercase tracking-[0.4em] text-white/40">
-                HOW DO YOU WANT TO RUN YOUR BUSINESS?
+      {/* =================================================================== */}
+      {/* 3. MINIMALIST DARK HANDOVER SECTION — "PICK YOUR PATH"              */}
+      {/* =================================================================== */}
+      <section className="relative bg-[#0A0D14] text-white py-28 md:py-40">
+        <div className="max-w-6xl mx-auto px-6 md:px-12 lg:px-20">
+          {/* Header */}
+          <div className="mb-20 md:mb-28 flex flex-col md:flex-row md:items-end justify-between gap-8 pb-12 border-b border-white/10">
+            <div>
+              <p className="text-[10px] font-black uppercase tracking-[0.5em] text-emerald-400 mb-6">
+                After Launch
               </p>
-              <span aria-hidden="true" className="h-px w-8 md:w-16 bg-white/15" />
+              <h2 className="font-syne text-[clamp(2.25rem,6vw,4.25rem)] font-black uppercase tracking-tighter leading-[0.9]">
+                PICK YOUR <br />
+                <span className="text-shimmer-blue italic">PATH.</span>
+              </h2>
             </div>
-          </div>
 
-          <div className="mt-[clamp(1.25rem,3.5vh,3rem)] grid grid-cols-1 lg:grid-cols-12 gap-[clamp(1rem,2.5vh,2rem)] lg:gap-14">
-            {/* The two cards. These are the tablist. */}
+            {/* Minimalist Unboxed Underline Switcher */}
             <div
               role="tablist"
               aria-label="Deployment options"
-              className="lg:col-span-5 flex flex-col gap-[clamp(0.7rem,1.8vh,1.1rem)]"
+              className="flex flex-wrap gap-8 md:gap-12"
             >
               {(Object.keys(DeploymentOptions) as DeploymentMode[]).map((mode) => {
                 const option = DeploymentOptions[mode];
@@ -289,80 +303,64 @@ const SnakeTimeline: React.FC<{ navigateTo: (page: Page) => void }> = ({ navigat
                     role="tab"
                     aria-selected={isActive}
                     onClick={() => setDeploymentMode(mode)}
-                    className={`fade-up text-left rounded-[1.5rem] md:rounded-[1.75rem] px-5 md:px-8 py-[clamp(0.9rem,2.2vh,1.6rem)] border transition-colors duration-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50 ${
+                    className={`group text-left pb-4 border-b-2 transition-all duration-500 cursor-pointer focus:outline-none ${
                       isActive
-                        ? 'border-emerald-400/80 bg-[#0e1d16]'
-                        : 'border-white/10 bg-white/[0.02] hover:border-white/30'
+                        ? 'border-emerald-400 text-white'
+                        : 'border-white/15 text-white/40 hover:text-white/75 hover:border-white/35'
                     }`}
                   >
-                    <span className="flex items-center justify-between gap-4">
-                      <span
-                        className={`text-[9px] md:text-[10px] font-bold uppercase tracking-[0.45em] transition-colors duration-500 ${
-                          isActive ? 'text-emerald-300' : 'text-emerald-500/80'
-                        }`}
-                      >
-                        {option.option}
-                      </span>
-                      <span
-                        aria-hidden="true"
-                        className={`w-2.5 h-2.5 rounded-full bg-emerald-400 transition-opacity duration-500 ${
-                          isActive ? 'opacity-100' : 'opacity-0'
-                        }`}
-                      />
+                    <span className="block text-[9px] font-black uppercase tracking-[0.45em] text-emerald-400 mb-2">
+                      {option.option}
                     </span>
-                    <span className="mt-2.5 block font-syne text-[clamp(1.2rem,3vw,1.85rem)] font-black uppercase tracking-tighter leading-[0.98]">
+                    <span className="font-syne text-xl md:text-2xl font-black uppercase tracking-tight">
                       {option.label}
-                    </span>
-                    <span className="mt-2 block italic text-[clamp(0.8rem,1.5vw,0.95rem)] leading-relaxed text-white/45">
-                      {option.quote}
                     </span>
                   </button>
                 );
               })}
             </div>
+          </div>
 
-            {/* The chosen path */}
-            <ul
-              key={deploymentMode}
-              className="lg:col-span-7 flex flex-col justify-center gap-[clamp(0.4rem,1.5vh,1.15rem)]"
-            >
+          {/* Active Path Content — Open & Minimalist */}
+          <div key={deploymentMode} className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-start">
+            <div className="lg:col-span-5 path-in">
+              <p className="text-xl md:text-2xl font-light italic text-white/80 leading-relaxed mb-10">
+                {active.quote}
+              </p>
+              <button
+                type="button"
+                onClick={() => navigateTo('contact')}
+                className="group inline-flex items-center gap-4 pl-8 pr-6 py-4 rounded-full bg-white text-slate-950 font-black uppercase text-[10px] md:text-[11px] tracking-[0.3em] hover:bg-emerald-500 hover:text-slate-950 transition-all duration-300 cursor-pointer"
+              >
+                <span>Start Your Project</span>
+                <MoveRight
+                  size={17}
+                  className="group-hover:translate-x-1 transition-transform duration-300"
+                />
+              </button>
+            </div>
+
+            <ul className="lg:col-span-7 divide-y divide-white/10 border-t border-b border-white/10">
               {active.points.map((point, idx) => (
                 <li
                   key={point.id}
-                  className="path-in flex items-start gap-4 md:gap-6"
-                  style={{ animationDelay: `${idx * 55}ms` }}
+                  className="path-in py-6 flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 sm:gap-8"
+                  style={{ animationDelay: `${idx * 65}ms` }}
                 >
-                  <span
-                    aria-hidden="true"
-                    className="shrink-0 grid place-items-center w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl border border-emerald-500/20 bg-emerald-950/20 font-syne text-base md:text-lg font-black text-emerald-400"
-                  >
-                    {point.id}
-                  </span>
-                  <span className="block pt-0.5">
-                    <span className="block font-syne text-[clamp(0.95rem,2.1vw,1.35rem)] font-black uppercase tracking-tight leading-none">
+                  <div className="flex items-baseline gap-5">
+                    <span className="font-mono text-xs text-emerald-400 tabular-nums">
+                      {point.id}
+                    </span>
+                    <span className="font-syne text-lg md:text-xl font-black uppercase tracking-tight text-white">
                       {point.title}
                     </span>
-                    <span className="mt-1.5 block italic text-[clamp(0.8rem,1.5vw,0.95rem)] leading-snug text-white/45">
-                      {point.desc}
-                    </span>
+                  </div>
+                  <span className="text-sm text-white/55 sm:text-right pl-9 sm:pl-0">
+                    {point.desc}
                   </span>
                 </li>
               ))}
             </ul>
-          </div>
-
-          <div className="mt-[clamp(1.5rem,3.5vh,2.75rem)] flex justify-center">
-            <button
-              type="button"
-              onClick={() => navigateTo('contact')}
-              className="cta-hover group inline-flex items-center gap-3 md:gap-4 pl-6 md:pl-8 pr-5 md:pr-6 py-3.5 md:py-4 rounded-full bg-white text-slate-950 font-bold uppercase text-[10px] md:text-[11px] tracking-[0.25em] whitespace-nowrap shadow-[0_18px_45px_-12px_rgba(0,0,0,0.55)] hover:bg-emerald-600 hover:text-white transition-colors duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/60"
-            >
-              CONTACT US NOW
-              <MoveRight
-                size={17}
-                className="group-hover:translate-x-1 transition-transform duration-300"
-              />
-            </button>
           </div>
         </div>
       </section>
@@ -380,25 +378,15 @@ const SnakeTimeline: React.FC<{ navigateTo: (page: Page) => void }> = ({ navigat
         }
         @keyframes emerald-shine { to { background-position: 200% center; } }
 
-        /* Header and switched content use fill-mode animations rather than
-           scroll triggers, so they can never be left stuck at opacity 0. */
         @keyframes pt-rise {
-          from { opacity: 0; transform: translate3d(0, 20px, 0); }
+          from { opacity: 0; transform: translate3d(0, 22px, 0); }
           to { opacity: 1; transform: none; }
         }
-        .pt-rise { animation: pt-rise 0.75s cubic-bezier(0.22, 1, 0.36, 1) both; }
-        .path-in { animation: pt-rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
-
-        @keyframes cta-hover-in {
-          from { opacity: 0; transform: translate3d(0, 40%, 0); }
-          to { opacity: 1; transform: none; }
-        }
-        .cta-hover {
-          animation: cta-hover-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.55s both;
-        }
+        .pt-rise { animation: pt-rise 0.8s cubic-bezier(0.22, 1, 0.36, 1) both; }
+        .path-in { animation: pt-rise 0.65s cubic-bezier(0.22, 1, 0.36, 1) both; }
 
         @media (prefers-reduced-motion: reduce) {
-          .pt-rise, .path-in, .cta-hover { animation: none; }
+          .pt-rise, .path-in { animation: none; }
           .text-shimmer-blue { animation: none; }
         }
       `}</style>

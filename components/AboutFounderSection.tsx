@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { CheckCircle2, ArrowRight } from 'lucide-react';
 // Fix react-router-dom missing exports
 import * as RouterDOM from 'react-router-dom';
 const { Link } = RouterDOM as any;
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Page, PAGE_PATHS } from '../App';
+
+gsap.registerPlugin(ScrollTrigger);
 
 interface AboutFounderSectionProps {
   navigateTo?: (page: Page) => void;
@@ -22,6 +26,15 @@ const DEFAULT_POINTS = [
   'Live in weeks, not months'
 ];
 
+// Preload and pre-decode the founder portrait at module load time so it is
+// already in memory and paints immediately without any decode delay.
+if (typeof window !== 'undefined') {
+  const preloadImg = new Image();
+  preloadImg.decoding = 'sync';
+  preloadImg.src = '/assets/aistudio/image_c05e976f.webp';
+  preloadImg.decode?.().catch(() => {});
+}
+
 const AboutFounderSection: React.FC<AboutFounderSectionProps> = ({
   navigateTo,
   headline,
@@ -30,14 +43,77 @@ const AboutFounderSection: React.FC<AboutFounderSectionProps> = ({
   ctaLabel = 'Start Your Project With Us',
   ctaTo
 }) => {
+  const sectionRef = useRef<HTMLElement>(null);
+  const imageColRef = useRef<HTMLDivElement>(null);
+  const textColRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    const imgCol = imageColRef.current;
+    const txtCol = textColRef.current;
+    if (!section || !imgCol || !txtCol) return;
+
+    const reduceMotion =
+      typeof window.matchMedia === 'function' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduceMotion) return;
+
+    const ctx = gsap.context(() => {
+      gsap.set(imgCol, { x: -70, opacity: 0 });
+      gsap.set(txtCol, { x: 70, opacity: 0 });
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          start: 'top 80%',
+          once: true,
+          fastScrollEnd: true
+        }
+      });
+
+      tl.to(
+        imgCol,
+        {
+          x: 0,
+          opacity: 1,
+          duration: 1.15,
+          ease: 'power3.out',
+          force3D: true,
+          clearProps: 'transform'
+        },
+        0
+      ).to(
+        txtCol,
+        {
+          x: 0,
+          opacity: 1,
+          duration: 1.15,
+          ease: 'power3.out',
+          force3D: true,
+          clearProps: 'transform'
+        },
+        0.06
+      );
+    }, section);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section id="about" className="relative py-14 md:py-20 px-6 lg:px-20 bg-[#fdfbf7] overflow-hidden border-t border-stone-200/60">
+    <section
+      ref={sectionRef}
+      id="about"
+      className="relative py-16 md:py-24 px-6 lg:px-20 bg-[#fdfbf7] overflow-hidden border-t border-stone-200/60"
+    >
       <div className="max-w-6xl mx-auto relative z-10">
         
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
           
-          {/* LEFT COLUMN: Founder Portrait (Raphael in Navy Suit) */}
-          <div className="lg:col-span-5 flex justify-center lg:justify-start">
+          {/* LEFT COLUMN: Founder Portrait glides in smoothly from the left */}
+          <div
+            ref={imageColRef}
+            className="lg:col-span-5 flex justify-center lg:justify-start will-change-transform"
+          >
             <div className="relative w-full max-w-[340px] sm:max-w-[380px] group">
               
               {/* Subtle decorative glow & backdrop accent */}
@@ -48,12 +124,19 @@ const AboutFounderSection: React.FC<AboutFounderSectionProps> = ({
 
               {/* Founder Image Frame - More square with clean modern radius */}
               <div className="relative rounded-lg overflow-hidden bg-stone-900 border border-stone-300/90 shadow-[0_12px_36px_-12px_rgba(0,0,0,0.15)] aspect-[3/4]">
-                <img
-                  src="/assets/aistudio/image_c05e976f.png"
-                  alt="Raphael - Founder of SABR Digital in Wiltshire"
-                  className="w-full h-full object-cover object-top transform transition-transform duration-700 group-hover:scale-[1.03]"
-                  loading="lazy"
-                />
+                <picture className="block w-full h-full">
+                  <source srcSet="/assets/aistudio/image_c05e976f.webp" type="image/webp" />
+                  <img
+                    src="/assets/aistudio/image_c05e976f.png"
+                    alt="Raphael - Founder of SABR Digital in Wiltshire"
+                    width={1069}
+                    height={1472}
+                    className="w-full h-full object-cover object-top transform transition-transform duration-700 group-hover:scale-[1.03]"
+                    loading="eager"
+                    decoding="sync"
+                    fetchPriority="high"
+                  />
+                </picture>
 
                 {/* Subtle gradient vignette at the bottom */}
                 <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-black/85 via-black/40 to-transparent flex flex-col justify-end p-5 text-white">
@@ -69,8 +152,11 @@ const AboutFounderSection: React.FC<AboutFounderSectionProps> = ({
             </div>
           </div>
 
-          {/* RIGHT COLUMN: ABOUT SABR - Compact to match photo height */}
-          <div className="lg:col-span-7 flex flex-col justify-center space-y-4 sm:space-y-5">
+          {/* RIGHT COLUMN: ABOUT SABR text glides in smoothly from the right */}
+          <div
+            ref={textColRef}
+            className="lg:col-span-7 flex flex-col justify-center space-y-4 sm:space-y-5 will-change-transform"
+          >
             
             {/* EYEBROW */}
             <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[0.25em] text-emerald-800 font-bold">

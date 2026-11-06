@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>88/100 — Website Experience</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:dark;--bg:#0b0b10}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:#f4f1ea;font-family:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif}
+#track{height:520vh;position:relative}
+#stage{position:sticky;top:0;height:100vh;height:100dvh;overflow:hidden;transition:background .2s}
+canvas{position:absolute;inset:0;width:100%;height:100%}
+.cap{position:absolute;top:calc(env(safe-area-inset-top,0px) + 28px);left:0;right:0;text-align:center;font-variant-numeric:tabular-nums;letter-spacing:.18em;font-size:clamp(12px,1.6vw,15px);text-transform:uppercase;opacity:0;transition:opacity .4s}
+.cap b{font-size:2.6em;letter-spacing:0;font-weight:300}
+#grain{position:absolute;inset:0;pointer-events:none;opacity:.08;mix-blend-mode:overlay;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+#frame{position:absolute;inset:18px;border:1px solid rgba(244,241,234,.07);pointer-events:none}
+#bar{position:absolute;left:0;top:0;height:2px;width:100%;transform-origin:0 50%;transform:scaleX(0);background:linear-gradient(90deg,#e5535a,#e8b863)}
+#chap{position:absolute;left:42px;top:calc(env(safe-area-inset-top,0px) + 34px);font-size:11px;letter-spacing:.28em;text-transform:uppercase;opacity:.55}
+@media (max-width:600px){#chap{display:none}}
+.quote{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 128px);padding:0 6vw;text-align:center;font-family:Georgia,"Times New Roman",serif;font-size:clamp(18px,2.4vw,30px);line-height:1.4;font-weight:400;max-width:860px;margin:0 auto;opacity:0;transform:translateY(16px);transition:opacity .8s,transform .8s}
+.quote em{font-style:italic}#q1 em{color:#e5535a}#q2 em{color:#e8b863}
+.on{opacity:1!important;transform:none!important}
+#dots{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 24px);transform:translateX(-50%);display:grid;grid-template-columns:repeat(50,1fr);gap:6px 2px;width:min(660px,90vw)}
+#dots i{display:block;aspect-ratio:1/2;color:#f4f1ea;opacity:.85;transition:color .4s,opacity .4s,transform .5s}
+#dots i svg{width:100%;height:100%;display:block;overflow:visible}
+#dots i.gone{color:#e5535a;opacity:.22;transform:translateY(4px) rotate(10deg)}
+#dots i.back{color:#e8b863;opacity:1}
+@media (max-width:600px){#dots{grid-template-columns:repeat(25,1fr);width:92vw}.quote{bottom:calc(env(safe-area-inset-bottom,0px) + 176px)}}
+#flash{position:absolute;inset:0;pointer-events:none;opacity:0;mix-blend-mode:screen}
+#hint{position:absolute;left:0;right:0;top:50%;text-align:center;font-size:12px;letter-spacing:.3em;text-transform:uppercase;opacity:.5;transition:opacity .4s}
+#static{display:none}
+@media (prefers-reduced-motion:reduce){
+  #track{display:none}
+  #static{display:block;padding:12vh 6vw;max-width:800px;margin:auto}
+  #static h2{font-size:clamp(64px,16vw,140px);margin:0;line-height:1}
+  #static h2.a{color:#ff4d3d}#static h2.b{color:#ffc247}
+  #static p{font-size:1.3rem;margin:.5em 0 3em}
+}
+</style>
+</head>
+<body>
+<div id="track">
+  <div id="stage">
+    <canvas id="c"></canvas>
+    <div class="cap" id="cap"><b id="num">0</b> / 100</div>
+    <div id="grain"></div><div id="frame"></div><div id="bar"></div><div id="chap">01 — The Loss</div><div id="flash"></div>
+    <div id="hint">Scroll</div>
+    <div class="quote" id="q1">“<em>88 of every 100</em> won’t come back after a bad website experience.”</div>
+    <div class="quote" id="q2">“<em>77% of customers</em> will return if your website is easy to navigate and has a captivating factor.”</div>
+    <div id="dots"></div>
+  </div>
+</div>
+<div id="static">
+  <h2 class="a">88/100</h2><p>“88 of every 100 won’t come back after a bad website experience.”</p>
+  <h2 class="b">77/100</h2><p>“77% of customers will return if your website is easy to navigate and has a captivating factor.”</p>
+</div>
+<script>
+(function(){
+var track=document.getElementById('track'),stage=document.getElementById('stage'),cv=document.getElementById('c'),ctx=cv.getContext('2d');
+var cap=document.getElementById('cap'),num=document.getElementById('num'),q1=document.getElementById('q1'),q2=document.getElementById('q2'),hint=document.getElementById('hint');
+var dotsEl=document.getElementById('dots'),dots=[];
+for(var i=0;i<100;i++){var d=document.createElement('i');d.innerHTML='<svg viewBox="0 0 10 20" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="3.2" r="2.1"/><path d="M5 5.4V12M5 7.2 2 10M5 7.2 8 10M5 12 2.8 18.4M5 12 7.2 18.4"/></svg>';dotsEl.appendChild(d);dots.push(d);}
+var W,H,dpr,P=[],N,shown=true,cur=0,tgt=0,lastN1=-1,lastN2=-1,amb=[],fl=document.getElementById('flash'),chap=document.getElementById('chap'),bar=document.getElementById('bar');
+var clamp=function(x){return Math.max(0,Math.min(1,x))};
+var ease=function(t){return t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2};
+var lerp=function(a,b,t){return a+(b-a)*t};
+
+function sample(txt){
+  var o=document.createElement('canvas'),s=.5;o.width=W*s;o.height=H*s;
+  var x=o.getContext('2d'),fs=Math.min(W*.62,H*.55)*s;
+  x.fillStyle='#fff';x.font='900 '+fs+'px Inter,Arial Black,Arial,sans-serif';x.textAlign='center';x.textBaseline='middle';
+  x.fillText(txt,o.width/2,o.height*.46);
+  var data=x.getImageData(0,0,o.width,o.height).data,pts=[],gx=(W<700?8:13)*s,gy=(W<700?14:22)*s;
+  for(var y=0,row=0;y<o.height;y+=gy,row++)for(var xx=(row%2?gx/2:0);xx<o.width;xx+=gx){var ix=Math.round(xx),iy=Math.round(y);if(ix<o.width&&iy<o.height&&data[(iy*o.width+ix)*4+3]>128)pts.push([xx/s,y/s]);}
+  for(var i=pts.length-1;i>0;i--){var j=Math.random()*(i+1)|0,t=pts[i];pts[i]=pts[j];pts[j]=t;}
+  return pts;
+}
+function build(){
+  dpr=Math.min(window.devicePixelRatio||1,2);W=stage.clientWidth;H=stage.clientHeight;
+  cv.width=W*dpr;cv.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);
+  var A=sample('88'),B=sample('77');
+  N=Math.max(A.length,B.length);P=[];
+  amb=[];for(var k=0;k<(W<700?90:200);k++)amb.push({x:Math.random()*W,y:Math.random()*H,r:.5+Math.random()*1.1,v:.04+Math.random()*.18,ph:Math.random()*6.283});
+  for(var i=0;i<N;i++){
+    var a=A[i%A.length],b=B[i%B.length],ang=Math.random()*6.283,r=Math.max(W,H)*(.5+Math.random()*.5);
+    P.push({ax:a[0],ay:a[1],bx:b[0],by:b[1],
+      sx:W/2+Math.cos(ang)*r,sy:H/2+Math.sin(ang)*r,
+      dx:(Math.random()-.25)*W*.55,dy:-(Math.random()*H*.5+H*.08),
+      d:Math.random(),ph:Math.random()*6.283,sz:1+Math.random()*1.6});
+  }
+}
+function phase(p,s,w,d){return ease(clamp((p-s)/w*1.5-d*.5));}
+
+function draw(t){
+  var p=cur;
+  var shk=Math.sin(clamp((p-.36)/.18)*Math.PI);
+  ctx.setTransform(dpr,0,0,dpr,Math.sin(cur*900)*shk*3*dpr,Math.cos(cur*1100)*shk*3*dpr);
+  ctx.globalCompositeOperation='destination-out';ctx.fillStyle='rgba(0,0,0,.32)';ctx.fillRect(-30,-30,W+60,H+60);
+  ctx.globalCompositeOperation='lighter';
+  // colour: red -> gold across reform
+  var mix=ease(clamp((p-.52)/.2));
+  var hue=lerp(-2,38,mix),sat=lerp(72,74,mix),lig=lerp(56,64,mix);
+  // background tint
+  stage.style.background='radial-gradient(ellipse at 50% 45%,hsl('+lerp(4,38,mix)+','+lerp(60,50,mix)+'%,'+lerp(9,11,mix)+'%),#0b0b10 70%)';
+  for(var i=0;i<N;i++){
+    var q=P[i],fh=W<700?13:21,e1=phase(p,.02,.13,q.d),e2=phase(p,.38,.14,q.d),e3=phase(p,.54,.14,q.d);
+    var wob=Math.sin(t*.0015+q.ph)*(3+8*e2*(1-e3)),jit=(1-e1)*0;
+    var x=lerp(q.sx,q.ax,e1)+q.dx*e2+wob,y=lerp(q.sy,q.ay,e1)+q.dy*e2+Math.cos(t*.0012+q.ph)*wob;
+    x=lerp(x,q.bx,e3);y=lerp(y,q.by,e3);
+    // idle shimmer when assembled
+    var calm=e1*(1-e2)+e3;calm=Math.min(1,calm);
+    x+=Math.sin(t*.002+q.ph)*calm*.8;y+=Math.cos(t*.002+q.ph)*calm*.8;
+    var al=.95-.7*e2*(1-e3);if(e1<1)al*=.35+.65*e1;
+    ctx.globalAlpha=al;
+    var mv=Math.max(e1*(1-e1),e2*(1-e2),e3*(1-e3))*4,sw=Math.sin(t*.007+q.ph)*(.12+.88*mv),u=fh/20,tp=y-fh/2;
+    ctx.strokeStyle='hsl('+hue+','+sat+'%,'+(lig+(q.d-.5)*30)+'%)';ctx.lineWidth=Math.max(1,u*1.1);ctx.lineCap='round';ctx.lineJoin='round';
+    ctx.beginPath();ctx.arc(x,tp+3.2*u,2.1*u,0,6.283);
+    ctx.moveTo(x,tp+5.4*u);ctx.lineTo(x,tp+12*u);
+    ctx.moveTo(x-2.8*u-sw*1.5*u,tp+10.2*u);ctx.lineTo(x,tp+7.2*u);ctx.lineTo(x+2.8*u+sw*1.5*u,tp+10.2*u);
+    ctx.moveTo(x-1.6*u+sw*2.6*u,tp+18.6*u);ctx.lineTo(x,tp+12*u);ctx.lineTo(x+1.6*u-sw*2.6*u,tp+18.6*u);
+    ctx.stroke();
+  }
+  ctx.globalAlpha=1;
+  ctx.fillStyle='hsl('+hue+',35%,82%)';
+  for(var j=0;j<amb.length;j++){var a=amb[j];a.y-=a.v;if(a.y<-5)a.y=H+5;
+    ctx.globalAlpha=.14+.12*Math.sin(t*.001+a.ph);ctx.fillRect(a.x+Math.sin(t*.0006+a.ph)*8,a.y,a.r,a.r);}
+  ctx.globalAlpha=1;
+  var fr=Math.max(0,1-Math.abs(p-.39)*30),fg=Math.max(0,1-Math.abs(p-.68)*30);
+  fl.style.background=fg>fr?'#ffc247':'#ff4d3d';fl.style.opacity=Math.max(fr,fg)*.07;
+}
+
+function ui(p){
+  var c1=ease(clamp((p-.02)/.13)),c2=ease(clamp((p-.54)/.14));
+  var second=p>=.5,val=second?Math.round(77*c2):Math.round(88*c1);
+  num.textContent=val;chap.textContent=second?'02 — The Return':'01 — The Loss';bar.style.transform='scaleX('+p+')';
+  cap.style.opacity=(p>.02&&p<.99)?1:0;
+  cap.style.color=second?'#e8b863':'#e5535a';
+  hint.style.opacity=p<.015?.5:0;
+  q1.classList.toggle('on',p>.17&&p<.46);
+  q2.classList.toggle('on',p>.74);
+  var n1=Math.round(88*c1),n2=Math.round(77*c2);
+  if(n1!==lastN1||n2!==lastN2){
+    lastN1=n1;lastN2=n2;
+    for(var i=0;i<100;i++){dots[i].className=(i<n2)?'back':(i<n1?'gone':'');}
+  }
+}
+function prog(){
+  var r=track.getBoundingClientRect(),max=track.offsetHeight-window.innerHeight;
+  tgt=clamp(-r.top/max);
+}
+function loop(t){
+  if(shown){cur+=(tgt-cur)*.09;if(Math.abs(tgt-cur)<.0002)cur=tgt;draw(t);ui(cur);}
+  requestAnimationFrame(loop);
+}
+if('IntersectionObserver' in window)new IntersectionObserver(function(e){shown=e[0].isIntersecting;}).observe(stage);
+window.addEventListener('scroll',prog,{passive:true});
+var rt;window.addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(function(){build();prog();},150);});
+if(window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+build();prog();cur=tgt;requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>

@@ -1,163 +1,190 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import * as RouterDOM from 'react-router-dom';
-import { Phone, Menu, X, ArrowRight } from 'lucide-react';
+import { X } from 'lucide-react';
 
 const Link = (RouterDOM as any).Link || (RouterDOM as any).default?.Link;
 const useLocation = (RouterDOM as any).useLocation || (RouterDOM as any).default?.useLocation;
 
+const MENU_ITEMS = [
+  {
+    name: 'HOME',
+    path: '/demo/landscaping',
+    image:
+      'https://dmhdaawgg48dl.cloudfront.net/wp-content/uploads/2024/10/york-stone-patio-conservatory-hedges-classic-notting-hill-960x960.jpg',
+  },
+  {
+    name: 'ABOUT',
+    path: '/demo/landscaping/about',
+    image:
+      'https://dmhdaawgg48dl.cloudfront.net/wp-content/uploads/2025/02/reflection-pool-york-stone-courtyard-country-garden-petworth-760x760.jpg',
+  },
+  {
+    name: 'GARDENS',
+    path: '/demo/landscaping/gallery',
+    image:
+      'https://dmhdaawgg48dl.cloudfront.net/wp-content/uploads/2024/10/pool-patio-palm-trees-putting-green-modern-oxshott-surrey-1920x1280.jpg',
+  },
+  {
+    name: 'DESIGN',
+    path: '/demo/landscaping/services',
+    image:
+      'https://dmhdaawgg48dl.cloudfront.net/wp-content/uploads/2024/11/metal-dining-set-boxwood-topiary-cottage-esher-surrey-960x960.jpg',
+  },
+  {
+    name: 'BUILD',
+    path: '/demo/landscaping/services',
+    image:
+      'https://dmhdaawgg48dl.cloudfront.net/wp-content/uploads/2024/11/plunge-pool-stone-patio-floating-stairs-modern-hampstead-760x760.jpg',
+  },
+  {
+    name: 'PLANTING',
+    path: '/demo/landscaping/services',
+    image:
+      'https://dmhdaawgg48dl.cloudfront.net/wp-content/uploads/2024/12/curved-stone-pathway-iris-fern-modern-woodland-960x960.jpg',
+  },
+  {
+    name: 'MAINTENANCE',
+    path: '/demo/landscaping/services',
+    image:
+      'https://dmhdaawgg48dl.cloudfront.net/wp-content/uploads/2024/10/tiered-slate-retaining-wall-cherry-blossom-japanese-putney-760x760.jpg',
+  },
+  {
+    name: 'CONTACT',
+    path: '/demo/landscaping/contact',
+    image:
+      'https://dmhdaawgg48dl.cloudfront.net/wp-content/uploads/2024/10/yorkstone-rill-water-feature-english-country-petworth-sussex-1920x1280.jpg',
+  },
+];
+
+// Geometric architectural garden emblem (matches the white emblem in screenshot 2)
+export const GardenEmblem: React.FC<{ className?: string }> = ({ className = 'w-14 h-14 text-white' }) => (
+  <svg viewBox="0 0 64 64" fill="currentColor" className={className} aria-hidden="true">
+    {/* Vertical stem */}
+    <rect x="30.5" y="10" width="3" height="44" />
+    {/* Left leaf block with rounded opposite corners */}
+    <path d="M8 22 H28 V38 C28 41.3 25.3 44 22 44 H8 V28 C8 24.7 10.7 22 14 22 Z" />
+    <ellipse cx="18" cy="33" rx="5.5" ry="2.8" fill="#5B6450" transform="rotate(-24 18 33)" />
+    {/* Right square architectural block */}
+    <rect x="36" y="22" width="20" height="22" />
+    <rect x="42.5" y="28.5" width="7" height="9" fill="#5B6450" />
+  </svg>
+);
+
 export const Navbar: React.FC = () => {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [hoveredIdx, setHoveredIdx] = useState(0);
   const location = useLocation ? useLocation() : { pathname: '' };
 
-  const navLinks = [
-    { name: 'Home', path: '/demo/landscaping' },
-    { name: 'Services', path: '/demo/landscaping/services' },
-    { name: 'About', path: '/demo/landscaping/about' },
-    { name: 'Gallery', path: '/demo/landscaping/gallery' },
-    { name: 'Contact', path: '/demo/landscaping/contact' },
-  ];
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [location.pathname]);
+
+  useEffect(() => {
+    if (menuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [menuOpen]);
 
   return (
-    <header className="w-full relative z-[110] font-sans">
-      {/* Top Utility Strip */}
-      <div className="bg-[#162E20] text-stone-200 py-2.5 px-6 md:px-12 text-xs border-b border-white/10">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-[#E08A5B] font-bold">
-              EST. 1988 · WILTSHIRE &amp; COTSWOLDS
-            </span>
-            <span className="text-white/20 hidden sm:inline" aria-hidden="true">/</span>
-            <span className="text-stone-300 hidden sm:inline text-[11px]">Bespoke Patios, Stonework &amp; Garden Design</span>
-          </div>
-          <div className="flex items-center gap-6">
-            <a 
-              href="tel:01672552140" 
-              className="flex items-center gap-2 text-[11px] font-semibold text-stone-200 hover:text-white transition-colors"
-            >
-              <Phone size={13} className="text-[#E08A5B]" />
-              <span>01672 552 140</span>
-            </a>
-          </div>
-        </div>
-      </div>
+    <>
+      {/* Minimal Luxury Hamburger Trigger in Top-Right Corner — No Navbar Bars */}
+      <button
+        type="button"
+        onClick={() => setMenuOpen(true)}
+        aria-label="Open navigation menu"
+        className="fixed top-4 right-4 sm:top-6 sm:right-6 md:top-8 md:right-10 z-[150] w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-white/90 hover:bg-[#1C211D] text-[#1C211D] hover:text-white border border-[#E2DFD7] shadow-[0_8px_30px_rgba(0,0,0,0.08)] backdrop-blur-md flex flex-col items-center justify-center gap-[5px] transition-all duration-500 cursor-pointer group"
+      >
+        <span className="w-4 sm:w-5 h-[1px] bg-current transition-transform duration-300 group-hover:w-5 sm:group-hover:w-6" />
+        <span className="w-4 sm:w-5 h-[1px] bg-current transition-transform duration-300" />
+        <span className="w-3 sm:w-3.5 h-[1px] bg-current self-end mr-[11px] sm:mr-[13px] transition-all duration-300 group-hover:w-4 sm:group-hover:w-5 group-hover:mr-0 group-hover:self-center" />
+      </button>
 
-      {/* Main Navigation Bar */}
-      <nav className="bg-white/95 backdrop-blur-md py-4 px-6 md:px-12 border-b border-stone-200/80 sticky top-0 transition-all">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          
-          {/* Brand Wordmark */}
-          <Link to="/demo/landscaping" className="flex flex-col group shrink-0 focus:outline-none">
-            <span className="font-serif text-2xl md:text-3xl font-extrabold tracking-tight text-[#162E20] group-hover:text-[#C86A3D] transition-colors leading-none">
-              OAK &amp; ASH
-            </span>
-            <span className="text-[9px] uppercase font-bold tracking-[0.35em] text-[#C86A3D] mt-1">
-              ARCHITECTURAL LANDSCAPES
-            </span>
-          </Link>
-
-          {/* Desktop Nav Links */}
-          <div className="hidden lg:flex items-center gap-8 xl:gap-10">
-            {navLinks.map((link) => {
-              const isActive = location.pathname === link.path;
-              return (
-                <Link
-                  key={link.name}
-                  to={link.path}
-                  className={`text-[12px] uppercase font-semibold tracking-[0.25em] transition-all py-1 relative ${
-                    isActive ? 'text-[#162E20] font-bold' : 'text-stone-600 hover:text-[#C86A3D]'
-                  }`}
-                >
-                  {link.name}
-                  {isActive && (
-                    <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#C86A3D] rounded-full" />
-                  )}
-                </Link>
-              );
-            })}
-          </div>
-
-          {/* CTA Button & Mobile Trigger */}
-          <div className="flex items-center gap-4">
-            <Link
-              to="/demo/landscaping/contact"
-              className="hidden sm:inline-flex items-center gap-2 px-6 py-3 bg-[#C86A3D] hover:bg-[#162E20] text-white font-semibold text-xs uppercase tracking-wider rounded-lg transition-all duration-300 shadow-md hover:scale-105 active:scale-95"
-            >
-              <span>Get Free Quote</span>
-              <ArrowRight size={14} />
-            </Link>
-
-            {/* Mobile Hamburger Button */}
+      {/* Full-Screen 50/50 Split Menu Overlay (Matches Screenshot 2 on Desktop, Tablet & Mobile) */}
+      <div
+        className={`fixed inset-0 z-[250] flex flex-col md:flex-row transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+          menuOpen
+            ? 'opacity-100 pointer-events-auto translate-y-0'
+            : 'opacity-0 pointer-events-none -translate-y-3'
+        }`}
+        aria-hidden={!menuOpen}
+      >
+        {/* Left Half: Pure White Minimalist Navigation Column */}
+        <div className="w-full md:w-1/2 h-full bg-white flex flex-col justify-between items-center py-6 sm:py-10 md:py-12 px-6 sm:px-8 relative overflow-y-auto">
+          {/* Thin Close X Button at Top */}
+          <div className="w-full flex justify-center md:justify-start md:pl-[34%]">
             <button
-              onClick={() => setMobileMenuOpen(true)}
-              className="lg:hidden p-2.5 bg-stone-100 hover:bg-stone-200 text-[#162E20] rounded-lg border border-stone-200 transition-colors focus:outline-none"
-              aria-label="Open mobile navigation menu"
+              type="button"
+              onClick={() => setMenuOpen(false)}
+              aria-label="Close navigation menu"
+              className="p-2 text-[#6B735E] hover:text-[#1C211D] transition-colors duration-300 cursor-pointer"
             >
-              <Menu size={22} />
+              <X size={24} strokeWidth={1} />
             </button>
           </div>
 
-        </div>
-      </nav>
+          {/* Centered Vertical Navigation Links */}
+          <nav aria-label="Main menu" className="flex flex-col items-center space-y-2.5 sm:space-y-3.5 md:space-y-4 my-auto py-4">
+            {MENU_ITEMS.map((item, idx) => {
+              const isActive = location.pathname === item.path;
+              return (
+                <Link
+                  key={item.name}
+                  to={item.path}
+                  onMouseEnter={() => setHoveredIdx(idx)}
+                  onClick={() => setMenuOpen(false)}
+                  className={`text-[13px] sm:text-[15px] md:text-[17px] font-light tracking-[0.26em] uppercase transition-all duration-300 py-0.5 ${
+                    isActive
+                      ? 'text-[#5B6450] font-normal'
+                      : 'text-[#3A3E37] hover:text-[#6B735E] hover:tracking-[0.32em]'
+                  }`}
+                >
+                  {item.name}
+                </Link>
+              );
+            })}
+          </nav>
 
-      {/* Mobile Drawer Menu */}
-      {mobileMenuOpen && (
-        <div className="fixed inset-0 z-[200] bg-stone-900/40 backdrop-blur-sm lg:hidden flex justify-end">
-          <div className="w-full max-w-sm bg-[#FBF9F5] h-full flex flex-col p-8 shadow-2xl overflow-y-auto">
-            
-            <div className="flex justify-between items-center pb-6 border-b border-stone-200">
-              <div className="flex flex-col">
-                <span className="font-serif text-xl font-black text-[#162E20]">OAK &amp; ASH</span>
-                <span className="text-[8px] font-mono uppercase tracking-[0.25em] text-[#C86A3D]">Master Landscaping</span>
-              </div>
-              <button
-                onClick={() => setMobileMenuOpen(false)}
-                className="p-2 rounded-lg bg-stone-200/80 text-stone-800 hover:text-black transition-colors"
-                aria-label="Close navigation"
-              >
-                <X size={20} />
-              </button>
-            </div>
-
-            <div className="flex flex-col gap-6 py-10">
-              {navLinks.map((link) => {
-                const isActive = location.pathname === link.path;
-                return (
-                  <Link
-                    key={link.name}
-                    to={link.path}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={`font-serif text-2xl font-bold transition-colors ${
-                      isActive ? 'text-[#C86A3D]' : 'text-[#162E20] hover:text-[#C86A3D]'
-                    }`}
-                  >
-                    {link.name}
-                  </Link>
-                );
-              })}
-            </div>
-
-            <div className="mt-auto pt-8 border-t border-stone-200 space-y-4">
-              <a
-                href="tel:01672552140"
-                className="flex items-center gap-3 p-3 bg-white rounded-lg border border-stone-200 text-[#162E20] font-semibold text-sm"
-              >
-                <Phone size={16} className="text-[#C86A3D]" />
-                <span>01672 552 140</span>
-              </a>
-
-              <Link
-                to="/demo/landscaping/contact"
-                onClick={() => setMobileMenuOpen(false)}
-                className="w-full py-3.5 bg-[#C86A3D] text-white font-semibold text-center text-xs uppercase tracking-wider rounded-lg block shadow-md"
-              >
-                Request Free Site Consultation
-              </Link>
-            </div>
-
+          {/* Subtle Centered Contact Details at Bottom */}
+          <div className="text-center space-y-1 text-[10px] sm:text-[11px] font-light tracking-[0.08em] text-[#7D8078]">
+            <a
+              href="tel:01672552140"
+              className="block hover:text-[#1C211D] transition-colors tabular-nums"
+            >
+              01672 552 140
+            </a>
+            <a
+              href="mailto:enquiries@oakandashgardens.co.uk"
+              className="block hover:text-[#1C211D] transition-colors"
+            >
+              enquiries@oakandashgardens.co.uk
+            </a>
           </div>
         </div>
-      )}
-    </header>
+
+        {/* Right Half: Full-Bleed Garden Photograph with Centered White Emblem */}
+        <div className="hidden md:block md:w-1/2 h-full relative overflow-hidden bg-[#1C211D]">
+          {MENU_ITEMS.map((item, idx) => (
+            <img
+              key={item.name}
+              src={item.image}
+              alt={item.name}
+              className={`absolute inset-0 w-full h-full object-cover transition-all duration-[1100ms] ease-out ${
+                idx === hoveredIdx ? 'opacity-100 scale-100' : 'opacity-0 scale-105'
+              }`}
+            />
+          ))}
+          <div className="absolute inset-0 bg-black/10" />
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <GardenEmblem className="w-14 h-14 lg:w-16 lg:h-16 text-white drop-shadow-md" />
+          </div>
+        </div>
+      </div>
+    </>
   );
 };
 

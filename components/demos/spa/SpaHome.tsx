@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import * as RouterDOM from 'react-router-dom';
-const { Link, useNavigate } = RouterDOM as any;
+const { Link } = RouterDOM as any;
 import { motion as framerMotion, AnimatePresence } from 'framer-motion';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -8,23 +8,12 @@ import {
   ArrowRight, 
   ArrowUpRight, 
   ChevronLeft, 
-  ChevronRight, 
-  Calendar as CalendarIcon, 
-  Sparkles, 
-  Droplets, 
-  Flame, 
-  Wind, 
-  Sun, 
-  MapPin, 
-  Check, 
-  Clock, 
-  Compass,
-  ArrowDown
+  ChevronRight
 } from 'lucide-react';
 import SpaNavbar from './SpaNavbar';
 import SpaFooter from './SpaFooter';
 import SpaBookingModal from './SpaBookingModal';
-import { SPA_DATA, SpaSuite, DiningVenue, ActivityItem } from './spaData';
+import { SPA_DATA } from './spaData';
 
 const motion = framerMotion as any;
 gsap.registerPlugin(ScrollTrigger);
@@ -148,7 +137,6 @@ const LuxuryDrawIntro: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
 };
 
 const SpaHome: React.FC = () => {
-  const navigate = useNavigate();
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [selectedBookingSuiteId, setSelectedBookingSuiteId] = useState<string>(SPA_DATA.suites[0].id);
 
@@ -173,7 +161,7 @@ const SpaHome: React.FC = () => {
   const [activeSuiteIdx, setActiveSuiteIdx] = useState<number>(0);
   const currentSuite = SPA_DATA.suites[activeSuiteIdx];
 
-  // Dining Hover / Active
+  // Dining Active
   const [activeDiningIdx, setActiveDiningIdx] = useState<number>(0);
   const currentDining = SPA_DATA.diningVenues[activeDiningIdx];
 
@@ -255,7 +243,7 @@ const SpaHome: React.FC = () => {
       {/* =================================================================== */}
       <section
         ref={heroRef}
-        className="relative h-screen min-h-[640px] max-h-[1050px] flex flex-col justify-center items-center px-6 md:px-14 overflow-hidden"
+        className="relative h-screen min-h-[100svh] sm:min-h-[640px] max-h-[1050px] flex flex-col justify-center items-center px-5 sm:px-6 md:px-14 overflow-hidden"
       >
         {/* BACKGROUND IMAGE WITH LUXURY MOOD TONES */}
         <div className="absolute inset-0 z-0">
@@ -270,28 +258,28 @@ const SpaHome: React.FC = () => {
 
         {/* CENTER PURE MINIMALIST HERO DISPLAY (BANG IN THE CENTRE) */}
         <div className={`relative z-10 max-w-5xl mx-auto w-full text-center flex flex-col items-center justify-center transition-opacity duration-700 ${introFinished ? 'opacity-100' : 'opacity-0'}`}>
-          <h1 className="hero-title-main font-cinzel text-6xl sm:text-8xl md:text-9xl lg:text-[9.5rem] font-bold tracking-[0.24em] uppercase text-white drop-shadow-2xl leading-none">
+          <h1 className="hero-title-main font-cinzel text-4xl sm:text-8xl md:text-9xl lg:text-[9.5rem] font-bold tracking-[0.18em] sm:tracking-[0.24em] uppercase text-white drop-shadow-2xl leading-none">
             VERDANT
           </h1>
         </div>
       </section>
 
       {/* =================================================================== */}
-      {/* 2. THE SANCTUARY (Clean Architectural Spacing)                      */}
+      {/* 2. THE SANCTUARY (Open, Unboxed Architectural Editorial)            */}
       {/* =================================================================== */}
       <section
         id="sanctuary"
         ref={philosophyRef}
-        className="relative py-32 md:py-44 px-6 md:px-14 bg-[#0A0D0C] border-b border-white/5 overflow-hidden"
+        className="relative py-16 sm:py-28 md:py-60 px-5 sm:px-6 md:px-14 bg-[#070908] border-b border-white/10"
       >
-        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-center">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 sm:gap-16 lg:gap-24 items-center">
           {/* LEFT: EDITORIAL PHILOSOPHY TEXT */}
-          <div className="lg:col-span-7 space-y-8">
+          <div className="lg:col-span-5 space-y-6 sm:space-y-10">
             <span className="text-[10px] uppercase tracking-[0.45em] text-emerald-400 font-mono font-bold block">
-              THE SANCTUARY
+              01 · THE SANCTUARY
             </span>
 
-            <h2 className="philo-heading font-cinzel text-3xl sm:text-4xl lg:text-5xl font-bold uppercase tracking-tight text-white leading-[1.15]">
+            <h2 className="philo-heading font-cinzel text-3xl sm:text-5xl font-bold uppercase tracking-tight text-white leading-[1.15]">
               NATURE IS NOT A <br />
               PLACE TO VISIT. <br />
               <span className="font-cormorant italic font-normal text-emerald-400">
@@ -299,78 +287,69 @@ const SpaHome: React.FC = () => {
               </span>
             </h2>
 
-            <p className="text-sm sm:text-base text-white/70 font-light leading-relaxed max-w-xl">
-              Verdant is the genuine thermal spa-hotel retreat in the middle of ancient pine woods.
-              An authentic private living space crafted from sustainable timber and Welsh slate, where every breath restores calm.
+            <p className="text-sm sm:text-base text-white/65 font-light leading-relaxed max-w-md">
+              Set within 180 acres of private Wiltshire pine forest, Verdant is a quiet architectural sanctuary of warm timber, natural limestone, and geothermal mineral waters.
             </p>
 
-            <div className="pt-2 flex flex-wrap items-center gap-6">
+            <div className="pt-2 sm:pt-4 flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-4 sm:gap-8">
               <Link
                 to="/demo/spa/suites"
-                className="inline-flex items-center gap-3 px-8 py-3.5 rounded-none bg-white hover:bg-emerald-400 hover:text-slate-950 text-slate-950 font-bold text-xs uppercase tracking-[0.25em] transition-all cursor-pointer shadow-lg border border-white/20"
+                className="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-none bg-white hover:bg-emerald-400 hover:text-slate-950 text-slate-950 font-bold text-xs uppercase tracking-[0.25em] transition-all cursor-pointer"
               >
-                <span>EXPLORE ALL SUITES</span>
+                <span>EXPLORE RESIDENCES</span>
                 <ArrowRight size={13} />
               </Link>
               <Link
                 to="/demo/spa/philosophy"
-                className="text-xs uppercase tracking-[0.25em] font-mono text-white/60 hover:text-emerald-400 transition-colors"
+                className="text-xs uppercase tracking-[0.25em] font-mono text-white/60 hover:text-emerald-400 transition-colors text-center sm:text-left py-2 sm:py-0"
               >
                 OUR PHILOSOPHY →
               </Link>
             </div>
           </div>
 
-          {/* RIGHT: SHARP ARCHITECTURAL PHOTO */}
-          <div className="lg:col-span-5 relative">
-            <div className="relative overflow-hidden aspect-[16/11] max-h-[380px] border border-white/10 bg-[#0C100E] shadow-2xl group">
+          {/* RIGHT: 4K CORRELATED TIMBER & GLASS WOODLAND ARCHITECTURE */}
+          <div className="lg:col-span-7">
+            <div className="relative overflow-hidden aspect-[16/10] bg-[#0C100E] group">
               <img
-                src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&q=80&w=1200"
-                alt="Architecture in Nature"
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                src="/src/assets/images/verdant_pine_cottage_1793919178058.jpg"
+                alt="Timber and Glass Forest Architecture"
+                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end p-6">
-                <span className="text-[9px] uppercase tracking-[0.35em] text-emerald-400 font-mono font-bold">
-                  SUSTAINABLE TIMBER & GLASS
-                </span>
-                <p className="font-cormorant text-xl italic text-white mt-0.5">
-                  180 Hectares of Pure Pine Canopy
-                </p>
-              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* =================================================================== */}
-      {/* 3. LIVING SPACES (Fluid Interactive Suite Showcase)                */}
+      {/* 3. LIVING SPACES (Open, Spacious Suite Showcase)                    */}
       {/* =================================================================== */}
       <section
         id="accommodation"
         ref={accommodationRef}
-        className="relative py-32 md:py-44 px-6 md:px-14 bg-[#070908] border-b border-white/5"
+        className="relative py-16 sm:py-28 md:py-60 px-5 sm:px-6 md:px-14 bg-[#070908] border-b border-white/10"
       >
-        <div className="max-w-6xl mx-auto space-y-14">
+        <div className="max-w-6xl mx-auto space-y-12 sm:space-y-24">
           {/* SECTION HEADER */}
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-white/10">
-            <div>
-              <span className="text-[10px] uppercase tracking-[0.45em] text-emerald-400 font-mono font-bold block mb-2">
-                LIVING SPACES
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 sm:gap-8 pb-6 sm:pb-8 border-b border-white/10">
+            <div className="space-y-3">
+              <span className="text-[10px] uppercase tracking-[0.45em] text-emerald-400 font-mono font-bold block">
+                02 · LIVING SPACES
               </span>
-              <h2 className="font-cinzel text-3xl sm:text-4xl lg:text-5xl font-bold uppercase tracking-tight text-white">
-                ACCOMMODATION
+              <h2 className="font-cinzel text-3xl sm:text-5xl font-bold uppercase tracking-tight text-white">
+                RESIDENCES & VILLAS
               </h2>
             </div>
 
-            {/* FLUID SUITE TABS (ZERO BOXES, CLEAN EDITORIAL TYPOGRAPHY) */}
-            <div className="flex items-center gap-6 sm:gap-10 overflow-x-auto pb-1 no-scrollbar">
+            {/* FLUID SUITE TABS */}
+            <div className="flex items-center gap-6 sm:gap-12 overflow-x-auto pb-1 no-scrollbar">
               {SPA_DATA.suites.map((s, idx) => {
                 const isActive = activeSuiteIdx === idx;
                 return (
                   <button
                     key={s.id}
                     onClick={() => setActiveSuiteIdx(idx)}
-                    className={`group relative pb-2.5 text-xs sm:text-sm font-mono uppercase tracking-[0.25em] transition-all cursor-pointer whitespace-nowrap flex items-center gap-2.5 ${
+                    className={`group relative pb-3 text-xs font-mono uppercase tracking-[0.22em] sm:tracking-[0.25em] transition-all cursor-pointer whitespace-nowrap flex items-center gap-2 ${
                       isActive
                         ? 'text-white font-bold'
                         : 'text-white/40 hover:text-white/80'
@@ -381,7 +360,7 @@ const SpaHome: React.FC = () => {
                     </span>
                     <span>{s.name.split(' ')[0]}</span>
                     {isActive && (
-                      <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-emerald-400 shadow-[0_0_10px_#1df2a4]" />
+                      <span className="absolute bottom-0 left-0 right-0 h-[1.5px] bg-emerald-400" />
                     )}
                   </button>
                 );
@@ -389,77 +368,73 @@ const SpaHome: React.FC = () => {
             </div>
           </div>
 
-          {/* ACTIVE SUITE DISPLAY (FLUID EDITORIAL SPLIT, NO HEAVY BOX-IN-A-BOX) */}
+          {/* ACTIVE SUITE DISPLAY */}
           <AnimatePresence mode="wait">
             <motion.div
               key={currentSuite.id}
-              initial={{ opacity: 0, y: 12 }}
+              initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -12 }}
-              transition={{ duration: 0.35 }}
-              className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center"
+              exit={{ opacity: 0, y: -14 }}
+              transition={{ duration: 0.4 }}
+              className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-16 lg:gap-24 items-center"
             >
-              {/* IMAGE */}
-              <div className="lg:col-span-6">
-                <div className="relative overflow-hidden aspect-[16/11] border border-white/15 shadow-2xl group">
+              {/* 4K PHOTOGRAPHY */}
+              <div className="lg:col-span-7">
+                <div className="relative overflow-hidden aspect-[16/10] bg-[#0C100E] group">
                   <img
                     src={currentSuite.heroImage}
                     alt={currentSuite.name}
                     className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
                   />
-                  <div className="absolute top-4 left-4 px-3.5 py-1.5 bg-black/75 backdrop-blur-md border border-white/15 text-[10px] uppercase font-mono tracking-wider text-emerald-400 font-bold">
-                    {currentSuite.category}
-                  </div>
                 </div>
               </div>
 
               {/* DETAILS */}
-              <div className="lg:col-span-6 space-y-6">
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="font-mono text-xs text-white/50 uppercase">
-                      {currentSuite.sizeSqm} M² · {currentSuite.capacity}
-                    </span>
-                    <span className="font-mono text-xs uppercase tracking-widest text-emerald-400 font-bold">
-                      {currentSuite.category.toUpperCase()}
-                    </span>
-                  </div>
-                  <h3 className="font-cinzel text-3xl sm:text-4xl font-bold uppercase tracking-tight text-white">
+              <div className="lg:col-span-5 space-y-6 sm:space-y-8">
+                <div className="space-y-2.5 sm:space-y-3">
+                  <span className="font-mono text-xs text-emerald-400 uppercase tracking-[0.28em] font-bold block">
+                    0{activeSuiteIdx + 1} · {currentSuite.capacity}
+                  </span>
+                  <h3 className="font-cinzel text-2xl sm:text-4xl font-bold uppercase tracking-tight text-white">
                     {currentSuite.name}
                   </h3>
-                  <p className="font-cormorant text-xl italic text-slate-300">
-                    "{currentSuite.tagline}"
+                  <p className="font-cormorant text-xl sm:text-2xl italic text-white/85">
+                    {currentSuite.tagline}
                   </p>
                 </div>
 
-                <p className="text-xs sm:text-sm text-white/65 font-light leading-relaxed">
+                <p className="text-sm sm:text-base text-white/65 font-light leading-relaxed">
                   {currentSuite.description}
                 </p>
 
-                {/* AMENITIES */}
-                <div className="grid grid-cols-2 gap-3 pt-4 border-t border-white/10">
-                  {currentSuite.amenities.slice(0, 4).map((a) => (
-                    <div key={a} className="flex items-center gap-2 text-xs text-white/75 font-mono">
-                      <span className="w-1.5 h-1.5 bg-emerald-400 shrink-0" />
-                      <span className="truncate">{a}</span>
+                {/* LARGER, CLEARLY READABLE SPECIFICATIONS UNDER LIVING AREA 68 M2 */}
+                <div className="grid grid-cols-2 gap-5 sm:gap-8 py-6 sm:py-8 border-y border-white/10">
+                  {currentSuite.features.slice(0, 4).map((f) => (
+                    <div key={f.label} className="space-y-1.5 sm:space-y-2">
+                      <span className="text-[11px] sm:text-xs font-mono uppercase tracking-[0.18em] sm:tracking-[0.22em] text-emerald-400/90 block">
+                        {f.label}
+                      </span>
+                      <span className="text-base sm:text-xl font-cinzel font-bold text-white block">
+                        {f.value}
+                      </span>
                     </div>
                   ))}
                 </div>
 
                 {/* ACTION BUTTONS */}
-                <div className="pt-4 flex flex-wrap items-center gap-6">
+                <div className="pt-1 sm:pt-2 flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-4 sm:gap-8">
                   <button
                     onClick={() => openBookingWithSuite(currentSuite.id)}
-                    className="inline-flex items-center gap-3 px-8 py-4 rounded-none bg-white hover:bg-emerald-400 hover:text-slate-950 text-slate-950 font-bold text-xs uppercase tracking-[0.25em] transition-all cursor-pointer shadow-xl border border-white/20"
+                    className="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-none bg-white hover:bg-emerald-400 hover:text-slate-950 text-slate-950 font-bold text-xs uppercase tracking-[0.25em] transition-all cursor-pointer"
                   >
-                    <span>RESERVE {currentSuite.name.split(' ')[0]}</span>
+                    <span>RESERVE RESIDENCE</span>
                     <ArrowRight size={13} />
                   </button>
                   <Link
-                    to={`/demo/spa/suites?cat=${currentSuite.category}`}
-                    className="text-xs font-mono uppercase tracking-[0.2em] text-white/60 hover:text-emerald-400 transition-colors"
+                    to="/demo/spa/suites"
+                    className="text-xs font-mono uppercase tracking-[0.2em] text-white/60 hover:text-emerald-400 transition-colors text-center sm:text-left py-2 sm:py-0"
                   >
-                    VIEW SPECIFICATIONS →
+                    VIEW ALL SUITES →
                   </Link>
                 </div>
               </div>
@@ -469,125 +444,127 @@ const SpaHome: React.FC = () => {
       </section>
 
       {/* =================================================================== */}
-      {/* 4. THERMAL SPA & WELLNESS                                           */}
+      {/* 4. THERMAL SPA & WELLNESS (Alternating Left / Right Scroll)         */}
       {/* =================================================================== */}
       <section
         id="treatments"
-        className="relative py-36 md:py-48 px-6 md:px-14 bg-[#0A0D0C] border-b border-white/5"
+        className="relative py-16 sm:py-28 md:py-60 px-5 sm:px-6 md:px-14 bg-[#070908] border-b border-white/10"
       >
-        <div className="max-w-6xl mx-auto space-y-20">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8 border-b border-white/10">
-            <div>
-              <span className="text-[10px] uppercase tracking-[0.45em] text-emerald-400 font-mono font-bold block mb-3">
-                THERMAL SPA & WELLNESS
+        <div className="max-w-6xl mx-auto space-y-14 sm:space-y-36">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 sm:gap-8 pb-6 sm:pb-8 border-b border-white/10">
+            <div className="space-y-3">
+              <span className="text-[10px] uppercase tracking-[0.45em] text-emerald-400 font-mono font-bold block">
+                03 · THERMAL SPA & WELLNESS
               </span>
-              <h2 className="font-cinzel text-3xl sm:text-4xl lg:text-5xl font-bold uppercase tracking-tight text-white">
+              <h2 className="font-cinzel text-3xl sm:text-5xl font-bold uppercase tracking-tight text-white">
                 RESTORATIVE RITUALS
               </h2>
             </div>
             <Link
               to="/demo/spa/treatments"
-              className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[0.25em] text-emerald-400 hover:text-white transition-colors group pb-1"
+              className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[0.25em] text-emerald-400 hover:text-white transition-colors group"
             >
               <span>EXPLORE ALL TREATMENTS</span>
               <ArrowUpRight size={14} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
             </Link>
           </div>
 
-          {/* FLUID EDITORIAL RITUALS (ZERO BOXES, CLEAN EDITORIAL FRAMING) */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-16 lg:gap-24">
-            {SPA_DATA.treatments.map((t, idx) => (
-              <div
-                key={t.id}
-                className="group space-y-8 flex flex-col justify-between"
-              >
-                {/* PHOTOGRAPHY (CLEAN NATURAL FRAMING, NO FLOATING BADGE BOXES) */}
-                <div className="relative overflow-hidden aspect-[16/10] shadow-2xl border border-white/10">
-                  <img
-                    src={t.image}
-                    alt={t.name}
-                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
-                  />
-                </div>
-
-                {/* EDITORIAL CONTENT */}
-                <div className="space-y-6 flex-1 flex flex-col justify-between">
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between text-xs font-mono text-emerald-400/80">
-                      <span className="tracking-[0.3em] uppercase">0{idx + 1} · {t.category}</span>
-                      <span className="text-white/40 tracking-wider">{t.duration}</span>
+          {/* ALTERNATING LEFT / RIGHT SCROLL SHOWCASE */}
+          <div className="space-y-16 sm:space-y-32 md:space-y-56">
+            {SPA_DATA.treatments.map((t, idx) => {
+              const isEven = idx % 2 === 0;
+              return (
+                <motion.div
+                  key={t.id}
+                  initial={{ opacity: 0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.2 }}
+                  transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
+                  className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-16 lg:gap-24 items-center"
+                >
+                  <div className={`lg:col-span-7 ${isEven ? 'lg:order-1' : 'lg:order-2'}`}>
+                    <div className="relative overflow-hidden aspect-[16/10] bg-[#0C100E] group">
+                      <img
+                        src={t.image}
+                        alt={t.name}
+                        className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+                      />
                     </div>
-
-                    <h3 className="font-cinzel text-2xl sm:text-3xl font-bold text-white uppercase tracking-wide leading-snug">
-                      {t.name}
-                    </h3>
-
-                    <p className="text-xs sm:text-sm text-white/65 font-light leading-relaxed pt-1">
-                      {t.description}
-                    </p>
                   </div>
 
-                  <div className="pt-4 border-t border-white/10 flex items-center justify-between">
-                    <div className="flex flex-wrap gap-x-5 gap-y-1 text-xs text-white/50 font-mono">
-                      {(t.includes || []).slice(0, 2).map((inc, i) => (
-                        <span key={i} className="flex items-center gap-2">
-                          <span className="w-1 h-1 bg-emerald-400" />
-                          <span>{inc}</span>
-                        </span>
-                      ))}
+                  <div className={`lg:col-span-5 space-y-5 sm:space-y-8 ${isEven ? 'lg:order-2' : 'lg:order-1'}`}>
+                    <div className="space-y-3 sm:space-y-4">
+                      <div className="flex items-center justify-between text-xs font-mono text-emerald-400">
+                        <span className="tracking-[0.22em] sm:tracking-[0.3em] uppercase font-bold">0{idx + 1} · {t.category}</span>
+                        <span className="text-white/60 tracking-widest text-xs sm:text-sm">{t.duration}</span>
+                      </div>
+
+                      <h3 className="font-cinzel text-2xl sm:text-4xl font-bold text-white uppercase tracking-tight leading-tight">
+                        {t.name}
+                      </h3>
+
+                      <p className="text-sm sm:text-base text-white/65 font-light leading-relaxed">
+                        {t.description}
+                      </p>
                     </div>
 
-                    <Link
-                      to="/demo/spa/treatments"
-                      className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[0.25em] text-white hover:text-emerald-400 transition-colors group/btn font-bold shrink-0 ml-4"
-                    >
-                      <span>RESERVE RITUAL</span>
-                      <ArrowRight size={13} className="text-emerald-400 group-hover/btn:translate-x-1 transition-transform" />
-                    </Link>
+                    <div className="pt-4 sm:pt-6 border-t border-white/10 flex items-center justify-between gap-4">
+                      <span className="text-xs sm:text-sm text-white/70 font-light">
+                        {t.includes[0]}
+                      </span>
+
+                      <Link
+                        to="/demo/spa/treatments"
+                        className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[0.25em] text-white hover:text-emerald-400 transition-colors group/btn font-bold shrink-0"
+                      >
+                        <span>RESERVE</span>
+                        <ArrowRight size={13} className="text-emerald-400 group-hover/btn:translate-x-1 transition-transform" />
+                      </Link>
+                    </div>
                   </div>
-                </div>
-              </div>
-            ))}
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </section>
 
       {/* =================================================================== */}
-      {/* 5. CULINARY HEARTH & DINING                                         */}
+      {/* 5. WOOD-FIRED DINING & LOUNGES                                      */}
       {/* =================================================================== */}
       <section
         id="dining"
         ref={diningRef}
-        className="relative py-32 md:py-44 px-6 md:px-14 bg-[#070908] border-b border-white/5"
+        className="relative py-16 sm:py-28 md:py-60 px-5 sm:px-6 md:px-14 bg-[#070908] border-b border-white/10"
       >
-        <div className="max-w-6xl mx-auto space-y-16">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-white/10">
-            <div>
-              <span className="text-[10px] uppercase tracking-[0.45em] text-emerald-400 font-mono font-bold block mb-2">
-                GASTRONOMY & CELLAR
+        <div className="max-w-6xl mx-auto space-y-12 sm:space-y-24">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 sm:gap-8 pb-6 sm:pb-8 border-b border-white/10">
+            <div className="space-y-3">
+              <span className="text-[10px] uppercase tracking-[0.45em] text-emerald-400 font-mono font-bold block">
+                04 · GASTRONOMY & CELLAR
               </span>
-              <h2 className="font-cinzel text-3xl sm:text-4xl lg:text-5xl font-bold uppercase tracking-tight text-white">
-                WOOD-FIRED DINING
+              <h2 className="font-cinzel text-3xl sm:text-5xl font-bold uppercase tracking-tight text-white">
+                SEASONAL DINING
               </h2>
             </div>
             <Link
               to="/demo/spa/dining"
               className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[0.25em] text-emerald-400 hover:text-white transition-colors group"
             >
-              <span>VIEW ALL 4 VENUES</span>
+              <span>VIEW ALL FOUR VENUES</span>
               <ArrowUpRight size={14} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
             </Link>
           </div>
 
-          {/* FLUID HORIZONTAL TYPOGRAPHIC SELECTOR (NO BOXED BUTTONS) */}
-          <div className="flex items-center gap-6 sm:gap-10 md:gap-14 overflow-x-auto pb-4 border-b border-white/10 no-scrollbar">
+          {/* FLUID HORIZONTAL TYPOGRAPHIC SELECTOR */}
+          <div className="flex items-center gap-6 sm:gap-12 overflow-x-auto pb-4 border-b border-white/10 no-scrollbar">
             {SPA_DATA.diningVenues.map((d, idx) => {
               const isSelected = activeDiningIdx === idx;
               return (
                 <button
                   key={d.id}
                   onClick={() => setActiveDiningIdx(idx)}
-                  className={`group relative pb-3 text-xs sm:text-sm font-mono uppercase tracking-[0.25em] transition-all cursor-pointer whitespace-nowrap flex items-center gap-2.5 ${
+                  className={`group relative pb-3 text-xs font-mono uppercase tracking-[0.22em] sm:tracking-[0.25em] transition-all cursor-pointer whitespace-nowrap flex items-center gap-2.5 ${
                     isSelected
                       ? 'text-white font-bold'
                       : 'text-white/40 hover:text-white/80'
@@ -598,62 +575,57 @@ const SpaHome: React.FC = () => {
                   </span>
                   <span>{d.name}</span>
                   {isSelected && (
-                    <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-emerald-400 shadow-[0_0_8px_#10B981]" />
+                    <span className="absolute bottom-0 left-0 right-0 h-[1.5px] bg-emerald-400" />
                   )}
                 </button>
               );
             })}
           </div>
 
-          {/* ACTIVE DINING SHOWCASE (FLUID ASYMMETRICAL EDITORIAL LAYOUT) */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-            <div className="lg:col-span-6 space-y-8">
+          {/* ACTIVE DINING SHOWCASE */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-16 lg:gap-24 items-center">
+            <div className="lg:col-span-5 space-y-6 sm:space-y-8 order-2 lg:order-1">
               <div className="space-y-3">
-                <span className="text-xs font-mono text-emerald-400 uppercase font-bold tracking-widest">
+                <span className="text-xs font-mono text-emerald-400 uppercase tracking-widest block">
                   {currentDining.hours} · {currentDining.cuisine}
                 </span>
-                <h3 className="font-cinzel text-3xl sm:text-4xl font-bold uppercase tracking-tight text-white">
+                <h3 className="font-cinzel text-2xl sm:text-4xl font-bold uppercase tracking-tight text-white">
                   {currentDining.name}
                 </h3>
-                <p className="text-xs sm:text-sm text-white/65 font-light leading-relaxed pt-2">
+                <p className="text-sm sm:text-base text-white/65 font-light leading-relaxed pt-1 sm:pt-2">
                   {currentDining.description}
                 </p>
               </div>
 
-              {/* SIGNATURE DISH & HIGHLIGHTS */}
               {currentDining.signatureDish && (
-                <div className="p-6 bg-[#0C100E] border-l-2 border-emerald-400 space-y-1">
-                  <span className="text-[9px] uppercase font-mono tracking-[0.3em] text-emerald-400 font-bold block">
-                    CHEF'S SIGNATURE
+                <div className="py-5 sm:py-6 border-y border-white/10 space-y-2">
+                  <span className="text-[10px] uppercase font-mono tracking-[0.3em] text-white/40 block">
+                    SIGNATURE DISH
                   </span>
-                  <p className="font-cinzel text-sm sm:text-base text-white/90 font-medium">
+                  <p className="font-cormorant italic text-xl sm:text-2xl text-white/90">
                     {currentDining.signatureDish}
                   </p>
                 </div>
               )}
 
-              <div className="pt-2">
+              <div className="pt-1 sm:pt-2">
                 <Link
                   to={`/demo/spa/dining?venue=${currentDining.id}`}
-                  className="inline-flex items-center gap-3 px-8 py-4 rounded-none bg-white text-slate-950 font-bold text-xs uppercase tracking-[0.25em] hover:bg-emerald-400 hover:text-slate-950 transition-all border border-white/20 shadow-xl"
+                  className="inline-flex items-center justify-center w-full sm:w-auto gap-3 px-8 py-4 rounded-none bg-white text-slate-950 font-bold text-xs uppercase tracking-[0.25em] hover:bg-emerald-400 hover:text-slate-950 transition-all"
                 >
-                  <span>RESERVE TABLE AT {currentDining.name.split(' ')[0]}</span>
+                  <span>RESERVE A TABLE</span>
                   <ArrowRight size={13} />
                 </Link>
               </div>
             </div>
 
-            <div className="lg:col-span-6">
-              <div className="relative overflow-hidden aspect-[16/11] border border-white/15 shadow-2xl group">
+            <div className="lg:col-span-7 order-1 lg:order-2">
+              <div className="relative overflow-hidden aspect-[16/10] bg-[#0C100E] group">
                 <img
                   src={currentDining.image}
                   alt={currentDining.name}
                   className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                <div className="absolute bottom-5 left-6 text-white font-mono text-[10px] tracking-widest uppercase">
-                  {currentDining.dressCode} · RESERVATIONS RECOMMENDED
-                </div>
               </div>
             </div>
           </div>
@@ -663,61 +635,67 @@ const SpaHome: React.FC = () => {
       {/* =================================================================== */}
       {/* 6. PARK ACTIVITIES SLIDER                                           */}
       {/* =================================================================== */}
-      <section className="relative py-32 md:py-44 px-6 md:px-14 bg-[#0A0D0C] border-b border-white/5">
-        <div className="max-w-6xl mx-auto space-y-12">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 pb-6 border-b border-white/10">
-            <div>
-              <span className="text-[10px] uppercase tracking-[0.45em] text-emerald-400 font-mono font-bold block mb-2">
-                THE RESERVE EXPEDITIONS
+      <section className="relative py-16 sm:py-28 md:py-60 px-5 sm:px-6 md:px-14 bg-[#070908]">
+        <div className="max-w-6xl mx-auto space-y-12 sm:space-y-24">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 sm:gap-8 pb-6 sm:pb-8 border-b border-white/10">
+            <div className="space-y-3">
+              <span className="text-[10px] uppercase tracking-[0.45em] text-emerald-400 font-mono font-bold block">
+                05 · THE PRIVATE RESERVE
               </span>
-              <h2 className="font-cinzel text-3xl sm:text-4xl lg:text-5xl font-bold uppercase tracking-tight text-white">
+              <h2 className="font-cinzel text-3xl sm:text-5xl font-bold uppercase tracking-tight text-white">
                 ACTIVITIES & RECREATION
               </h2>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-4 self-end sm:self-auto">
               <button
                 onClick={handlePrevActivity}
-                className="w-10 h-10 bg-white/5 hover:bg-white/15 border border-white/10 flex items-center justify-center text-white cursor-pointer transition-colors"
+                aria-label="Previous activity"
+                className="w-11 h-11 border border-white/15 hover:border-white/40 flex items-center justify-center text-white cursor-pointer transition-colors"
               >
                 <ChevronLeft size={18} />
               </button>
               <button
                 onClick={handleNextActivity}
-                className="w-10 h-10 bg-white/5 hover:bg-white/15 border border-white/10 flex items-center justify-center text-white cursor-pointer transition-colors"
+                aria-label="Next activity"
+                className="w-11 h-11 border border-white/15 hover:border-white/40 flex items-center justify-center text-white cursor-pointer transition-colors"
               >
                 <ChevronRight size={18} />
               </button>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-16 lg:gap-24 items-center">
             <div className="lg:col-span-7">
-              <div className="relative overflow-hidden aspect-[16/10] border border-white/10 shadow-2xl">
+              <div className="relative overflow-hidden aspect-[16/10] bg-[#0C100E]">
                 <img
                   src={SPA_DATA.activities[activityIdx].image}
                   alt={SPA_DATA.activities[activityIdx].title}
-                  className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+                  className="w-full h-full object-cover transition-transform duration-1000 hover:scale-105"
                 />
               </div>
             </div>
 
-            <div className="lg:col-span-5 space-y-6">
-              <span className="font-mono text-xs text-emerald-400 font-bold">
-                ACTIVITY {SPA_DATA.activities[activityIdx].number} / 05
-              </span>
-              <h3 className="font-cinzel text-2xl sm:text-3xl font-bold uppercase tracking-tight text-white">
-                {SPA_DATA.activities[activityIdx].title}
-              </h3>
-              <p className="font-cormorant text-lg italic text-slate-300">
-                "{SPA_DATA.activities[activityIdx].subtitle}"
-              </p>
-              <p className="text-xs sm:text-sm text-white/65 font-light leading-relaxed">
+            <div className="lg:col-span-5 space-y-6 sm:space-y-8">
+              <div className="space-y-3">
+                <span className="font-mono text-xs text-emerald-400 uppercase tracking-widest block">
+                  {SPA_DATA.activities[activityIdx].number} / 05 · PRIVATE ESTATE
+                </span>
+                <h3 className="font-cinzel text-2xl sm:text-4xl font-bold uppercase tracking-tight text-white">
+                  {SPA_DATA.activities[activityIdx].title}
+                </h3>
+                <p className="font-cormorant text-xl sm:text-2xl italic text-white/85">
+                  {SPA_DATA.activities[activityIdx].subtitle}
+                </p>
+              </div>
+
+              <p className="text-sm sm:text-base text-white/65 font-light leading-relaxed">
                 {SPA_DATA.activities[activityIdx].description}
               </p>
-              <div className="pt-2">
+
+              <div className="pt-4 border-t border-white/10">
                 <Link
                   to="/demo/spa/activities"
-                  className="inline-flex items-center gap-2 px-7 py-3.5 rounded-none bg-white text-slate-950 font-bold text-xs uppercase tracking-[0.25em] hover:bg-emerald-400 hover:text-slate-950 transition-colors border border-white/20"
+                  className="inline-flex items-center justify-center w-full sm:w-auto gap-3 px-8 py-4 rounded-none bg-white text-slate-950 font-bold text-xs uppercase tracking-[0.25em] hover:bg-emerald-400 hover:text-slate-950 transition-colors"
                 >
                   <span>EXPLORE ALL ACTIVITIES</span>
                   <ArrowRight size={13} />

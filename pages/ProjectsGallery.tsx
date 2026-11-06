@@ -56,38 +56,50 @@ const projects: Project[] = [
   {
     id: 'landscaping',
     wordmark: 'Oak & Ash',
-    industry: 'Architectural Landscaping',
-    headline: ['Architectural craft,', 'built to endure.'],
+    industry: 'Garden Design & Build',
+    headline: ['28 years of', 'award-winning gardens.'],
     path: '/demo/landscaping',
-    heroImage: 'https://images.unsplash.com/photo-1558904541-efa8c1965f1e?auto=format&fit=crop&q=80&w=1600',
-    accent: '#C86A3D',
+    heroImage: 'https://dmhdaawgg48dl.cloudfront.net/wp-content/uploads/2024/10/pool-patio-palm-trees-putting-green-modern-oxshott-surrey-1920x1280.jpg',
+    accent: '#5B6450',
     description:
-      'Showcasing luxury porcelain terraces, Cotswold stone masonry and garden builds for high-end homeowners. An online flagship that wins five-figure contracts without friction.',
-    features: ['5 dedicated pages', 'Interactive project gallery', 'Fixed-price consultation booking']
+      'A luxury landscape architecture and construction showcase built with spacious editorial pacing, unobstructed full-bleed photography, and an effortless private consultation journey.',
+    features: [
+      'Minimalist luxury layout that lets the work speak first',
+      'Smooth, glide-like animations across desktop and mobile',
+      'Frictionless enquiry flow built for high-value clients'
+    ]
   },
   {
     id: 'equestrian',
     wordmark: 'Bramble & Bay',
-    industry: 'Riding academy',
-    headline: ['Ten lessons,', 'one clear price.'],
+    industry: 'Riding Academy',
+    headline: ['Classical equitation,', 'four hundred private acres.'],
     path: '/demo/equestrian',
-    heroImage: 'https://images.unsplash.com/photo-1511746687876-42cb762f6ac1?auto=format&fit=crop&q=65&w=1600',
-    accent: '#E4577A',
+    heroImage: 'https://images.unsplash.com/photo-1511746687876-42cb762f6ac1?auto=format&fit=crop&q=85&w=2000',
+    accent: '#3E4B41',
     description:
-      'A riding school gets asked the same four questions every week: what does it cost, how old does she need to be, what do we wear, and can we watch. Six pages answer all of it, and the booking takes three steps.',
-    features: ['Every lesson priced', 'Profiles of the horses', 'Three-step booking']
+      'A minimalist, editorial website for a Wiltshire riding academy — pairing full-screen equine photography with a single-line tuition directory, scroll-reveal horse profiles, and a calm three-step booking request.',
+    features: [
+      'Spacious, gallery-grade layout that elevates brand perception',
+      'Clean single-line lesson directory and paired horse profiles',
+      'Seamless three-step booking flow that converts visitors into riders'
+    ]
   },
   {
     id: 'physio',
     wordmark: 'Pulteney Physiotherapy',
-    industry: 'Physiotherapy',
-    headline: ['Two answers,', 'above the fold.'],
+    industry: 'Chartered Physiotherapy · UK',
+    headline: ['Come heal', 'with us.'],
     path: '/demo/physio',
-    heroImage: 'https://images.unsplash.com/photo-1591343395902-1adcb454c4e2?auto=format&fit=crop&q=65&w=1200',
-    accent: '#4A5D4E',
+    heroImage: '/src/assets/images/pulteney_hero_rehab_1793904528479.jpg',
+    accent: '#0D9488',
     description:
-      'People arrive in pain and want to know two things: who will see them, and what it costs. Every fee, every physiotherapist and the next free slot sit on the first screen.',
-    features: ['Fees up front', 'Team profiles', 'Questions answered']
+      'A bright, welcoming UK physiotherapy and sports rehabilitation showcase across Bath, Bristol, and Cheltenham — featuring an interactive pain-relief explorer, six clinical service pathways, and instant multi-clinic appointment requests.',
+    features: [
+      'Light, uplifting palette that builds instant patient trust',
+      'Interactive pain-relief guide and three UK clinic directories',
+      'Seamless appointment request flow across Bath, Bristol & Cheltenham'
+    ]
   },
   {
     id: 'spa',
@@ -95,11 +107,15 @@ const projects: Project[] = [
     industry: 'Luxury Spa & Resort',
     headline: ['Mineral baths,', 'quiet pines.'],
     path: '/demo/spa',
-    heroImage: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&q=80&w=1600',
-    accent: '#94A3B8',
+    heroImage: '/src/assets/images/verdant_thermal_pool_1793919176502.jpg',
+    accent: '#10B981',
     description:
       'A luxury forest sanctuary where suites, thermal mineral baths, and wood-fired dining are explored with editorial transitions and seamless online booking.',
-    features: ['Interactive suite browser', 'Thermal treatment rituals', 'Instant stay reservation']
+    features: [
+      'Refined visual pacing that mirrors the calm of the resort',
+      'Intuitive browsing that keeps guests engaged longer',
+      'Direct reservation path woven seamlessly into every page'
+    ]
   },
   {
     id: 'cafe',
@@ -111,7 +127,11 @@ const projects: Project[] = [
     accent: '#A4715E',
     description:
       'The menu, the opening hours and a table booking are each one tap from the top of the page, on both sites, for people deciding where to go in the next ten minutes.',
-    features: ['Full menu', 'Table booking', 'Locations and maps']
+    features: [
+      'Built for speed so on-the-go customers never bounce',
+      'One-tap access to menus, hours, and table reservations',
+      'Clean, modern presentation that drives daily walk-ins'
+    ]
   }
 ];
 

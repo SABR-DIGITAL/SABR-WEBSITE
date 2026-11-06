@@ -1,80 +1,32 @@
 import React, { useEffect } from 'react';
-// Fix react-router-dom missing exports
 import * as RouterDOM from 'react-router-dom';
 const { Link } = RouterDOM as any;
-import { ArrowRight, Car, Coffee, Clock, Footprints } from 'lucide-react';
+import { ArrowUpRight, Phone } from 'lucide-react';
 import EquestrianNav from './EquestrianNav';
 import EquestrianFooter from './EquestrianFooter';
-import { Reveal, SectionLabel, Bloom, Wash, Carousel } from './EquestrianUI';
-import { academy, facilities, images, cardWashes, pastel, palette } from './equestrianData';
+import { Reveal, SectionLabel, PhotoReveal } from './EquestrianUI';
+import { academy, facilities, images } from './equestrianData';
 
-const firstVisit = [
+const firstVisitMoments = [
   {
-    icon: <Car size={17} />,
-    title: 'Arrive twenty minutes early',
-    detail: 'Park in the gravel yard on your left. Horseboxes turn at the far end.'
+    num: '01',
+    title: 'Arrive fifteen minutes early',
+    detail: 'Turn into the gravel courtyard opposite the postbox on Woodborough Lane and pop into the tack room to say hello.'
   },
   {
-    icon: <Footprints size={17} />,
-    title: 'Kit fitting in the tack room',
-    detail: 'Hat and boots fitted, stirrups set, and you meet your horse.'
+    num: '02',
+    title: 'Borrow a fitted hat & boots',
+    detail: 'No need to buy riding kit for your first lessons — we fit a PAS 015 helmet, body protector, and smooth-soled boots for you.'
   },
   {
-    icon: <Clock size={17} />,
-    title: 'Your lesson starts on the clock',
-    detail: 'On time both ends. The next rider is already tacking up.'
+    num: '03',
+    title: 'Meet your horse in the barn',
+    detail: 'Your horse will be waiting in the American barn so you can say hello, brush them down, and check stirrup lengths before mounting.'
   },
   {
-    icon: <Coffee size={17} />,
-    title: 'Tea in the viewing room',
-    detail: 'Stay as long as you like. Your coach will come and find you.'
-  }
-];
-
-// The old six-photograph mosaic is a carousel now — same pictures, one at a
-// time, captioned, and moving on its own.
-const gallery = [
-  {
-    src: images.jumpingTwo,
-    alt: 'A horse and rider jumping in the grass paddock',
-    title: 'The jumping paddock',
-    note: 'Eighteen fences on grass, from cross-poles to 1.05m.',
-    meta: 'Summer term'
-  },
-  {
-    src: images.tackRoom,
-    alt: 'Saddles stacked in the tack room',
-    title: 'The tack room',
-    note: 'Hats, body protectors and boots in every size, fitted by us.',
-    meta: 'Kit to borrow'
-  },
-  {
-    src: images.hacking,
-    alt: 'Two riders hacking out along a chalk bridleway',
-    title: 'Four hundred acres',
-    note: 'Chalk downland and bridleways straight off the yard.',
-    meta: 'Hacking'
-  },
-  {
-    src: images.flatwork,
-    alt: 'A rider schooling on the flat',
-    title: 'The indoor school',
-    note: 'Mirrors down the long side. Rain has never stopped a lesson.',
-    meta: '40m × 20m'
-  },
-  {
-    src: images.children,
-    alt: 'Two children walking towards a horse in the paddock',
-    title: 'Own-a-pony mornings',
-    note: 'Grooming, mucking out, a lesson and a hot chocolate.',
-    meta: 'School holidays'
-  },
-  {
-    src: images.meadow,
-    alt: 'Wildflower meadow at the edge of the hacking',
-    title: 'The top of the drive',
-    note: 'Where the downs start, and the whole vale drops away below.',
-    meta: 'The view'
+    num: '04',
+    title: 'Coffee in the viewing lounge',
+    detail: 'Whoever brought you can watch from a warm sofa with a fresh coffee while your coach writes up your lesson notes.'
   }
 ];
 
@@ -84,73 +36,128 @@ const EquestrianFacilities: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#FFFAF3] font-inter text-[#1E2A22] selection:bg-[#E4577A] selection:text-[#FFFAF3] overflow-x-hidden">
+    <div className="relative min-h-screen bg-[#FAF6EE] font-inter text-[#1E2822] selection:bg-[#2D5A43] selection:text-[#FAF6EE] overflow-x-hidden">
       <EquestrianNav />
 
-      {/* ── HEADER ─────────────────────────────────────────────────────── */}
-      <section className="relative pt-24 md:pt-28 pb-10 md:pb-14 px-6 md:px-10">
-        <Wash />
-        <div className="relative max-w-[1500px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-end">
-          <div className="lg:col-span-7">
-            <p className="eq-rise flex items-center gap-3 text-[10px] uppercase tracking-[0.42em] text-[#6B7A6F] mb-6">
-              <Bloom size={16} />
-              The yard
-            </p>
-            <h1
-              className="eq-rise font-serif text-[clamp(2.3rem,6.4vw,4.6rem)] leading-[1] tracking-[-0.02em]"
-              style={{ animationDelay: '90ms' }}
-            >
-              Sixteen acres,
-              <br />
-              <span className="italic text-[#E4577A]">four hundred beyond it.</span>
-            </h1>
-          </div>
-          <div className="lg:col-span-5">
-            <p className="eq-rise text-lg text-[#4C5A50] leading-relaxed" style={{ animationDelay: '170ms' }}>
-              {academy.addressLine1}, {academy.addressLine2}. Twelve minutes from Marlborough.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* ── WIDE PHOTOGRAPH ────────────────────────────────────────────── */}
-      <section className="px-6 md:px-10 pb-14 md:pb-20">
-        <div className="max-w-[1500px] mx-auto">
-          <div className="eq-wipe rounded-[1.75rem] md:rounded-[2.5rem] overflow-hidden h-[clamp(280px,52vh,520px)] bg-[#F2EAE0]">
-            <img
-              src={images.arena}
-              alt="A rider working in the outdoor arena at Bramble &amp; Bay"
-              loading="eager"
-              decoding="async"
-              fetchPriority="high"
-              className="eq-drift w-full h-full object-cover"
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* ── FACILITIES LIST ────────────────────────────────────────────── */}
-      <section className="px-6 md:px-10 pb-14 md:pb-20">
-        <div className="max-w-[1500px] mx-auto">
-          <Reveal className="max-w-2xl mb-10 md:mb-12">
-            <SectionLabel className="mb-6">What is here</SectionLabel>
-            <h2 className="font-serif text-[clamp(1.9rem,4.6vw,3.2rem)] leading-[1.05] tracking-[-0.02em]">
-              Everything a lesson needs, and a warm room to wait in.
-            </h2>
+      {/* ── WARM EDITORIAL HEADER ────────────────────────────────────────── */}
+      <section className="relative z-10 pt-24 sm:pt-32 md:pt-40 pb-12 sm:pb-16 md:pb-24 px-5 sm:px-6 md:px-12">
+        <div className="max-w-[1440px] mx-auto">
+          <Reveal>
+            <SectionLabel className="mb-4 sm:mb-5">The Yard &amp; Estate</SectionLabel>
           </Reveal>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-10 items-end">
+            <div className="lg:col-span-8">
+              <Reveal delay={0.05}>
+                <h1 className="font-serif text-[clamp(2.2rem,5.8vw,4.8rem)] leading-[1.04] tracking-[-0.02em]">
+                  Sixteen acres of stabling.
+                  <br />
+                  <span className="italic text-[#2D5A43]">Four hundred of chalk turf.</span>
+                </h1>
+              </Reveal>
+            </div>
+            <div className="lg:col-span-4">
+              <Reveal delay={0.12}>
+                <p className="text-[15px] sm:text-[16px] text-[#5F665E] leading-[1.8] sm:leading-[1.85]">
+                  Laid out at the foot of the Pewsey downs so horses move calmly from loosebox to arena or open downland without ever touching a public road.
+                </p>
+              </Reveal>
+            </div>
+          </div>
+        </div>
+      </section>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 md:gap-8">
-            {facilities.map((item, i) => (
-              <Reveal key={item.title} delay={(i % 3) * 0.07}>
-                <div
-                  className="h-full rounded-[1.5rem] p-8 flex flex-col border border-white/70 shadow-[0_20px_46px_-36px_rgba(30,42,34,0.45)] transition-transform duration-500 hover:-translate-y-1"
-                  style={{ background: cardWashes[i % cardWashes.length] }}
+      {/* ── VISUAL CHAPTERS OF THE YARD (EVERY PHOTO MATCHES ITS WORDING) ── */}
+      <section className="relative z-10 px-5 sm:px-6 md:px-12 pb-16 sm:pb-24 md:pb-32">
+        <div className="max-w-[1440px] mx-auto space-y-16 sm:space-y-24 md:space-y-32">
+          {facilities.map((item, i) => {
+            const isEven = i % 2 === 1;
+            return (
+              <div
+                key={item.title}
+                className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-10 lg:gap-16 items-center"
+              >
+                <div className={`lg:col-span-7 ${isEven ? 'lg:order-2' : ''}`}>
+                  <PhotoReveal
+                    src={item.photo}
+                    alt={item.alt}
+                    priority={i === 0}
+                    className="aspect-[16/10] w-full"
+                  />
+                </div>
+
+                <div className={`lg:col-span-5 ${isEven ? 'lg:order-1' : ''}`}>
+                  <Reveal>
+                    <span className="inline-block px-4 py-1.5 rounded-full bg-[#E8F0EB] text-[#2D5A43] text-[10px] uppercase tracking-[0.28em] font-medium mb-4 sm:mb-5">
+                      {item.index} &middot; {item.subtitle}
+                    </span>
+                    <h2 className="font-serif text-[clamp(1.75rem,3.6vw,3rem)] leading-[1.1] tracking-[-0.015em] text-[#1E2822] mb-4 sm:mb-5">
+                      {item.title}
+                    </h2>
+                    <p className="text-[15px] sm:text-[16px] text-[#5F665E] leading-[1.8] sm:leading-[1.85] mb-4 sm:mb-6">
+                      {item.detail}
+                    </p>
+                    <p className="text-[13px] font-medium text-[#2D5A43]">
+                      {item.note}
+                    </p>
+                  </Reveal>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* ── YOUR FIRST VISIT AT THE YARD (NO BOXES, WARM STORY SPLIT) ────── */}
+      <section className="relative z-10 py-16 sm:py-24 md:py-32 px-5 sm:px-6 md:px-12">
+        <div className="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 sm:gap-12 lg:gap-16 items-start">
+          <div className="lg:col-span-5 lg:sticky lg:top-28">
+            <Reveal>
+              <SectionLabel className="mb-4 sm:mb-5">A Warm Welcome</SectionLabel>
+              <h2 className="font-serif text-[clamp(2rem,4vw,3.4rem)] leading-[1.08] tracking-[-0.02em] mb-5 sm:mb-6">
+                How your first visit works.
+              </h2>
+              <p className="text-[15px] sm:text-[16px] text-[#5F665E] leading-[1.8] sm:leading-[1.85] mb-6 sm:mb-8">
+                Coming to a new yard for the first time should feel relaxed and welcoming. Here is what happens from the moment you turn down the drive.
+              </p>
+              <PhotoReveal
+                src={images.barn}
+                alt="Horses looking out over the wooden rails inside our timber barn"
+                className="aspect-[4/3] w-full mb-6 sm:mb-8"
+              />
+              <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3.5 sm:gap-4">
+                <Link
+                  to="/demo/equestrian/book"
+                  className="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-[#2D5A43] text-[#FAF6EE] text-[11px] uppercase tracking-[0.28em] font-medium hover:bg-[#234734] transition-colors"
                 >
-                  <span className="font-serif text-[11px] tracking-[0.3em] text-[#6B7A6F] mb-6">
-                    {String(i + 1).padStart(2, '0')}
+                  <span>Book a First Lesson</span>
+                  <ArrowUpRight size={15} />
+                </Link>
+                <a
+                  href={`tel:${academy.phoneHref}`}
+                  className="inline-flex items-center justify-center gap-2.5 px-7 py-4 rounded-full bg-[#E8F0EB] text-[#2D5A43] text-[11px] uppercase tracking-[0.26em] font-medium hover:bg-[#dce8e0] transition-colors"
+                >
+                  <Phone size={14} />
+                  <span>{academy.phoneDisplay}</span>
+                </a>
+              </div>
+            </Reveal>
+          </div>
+
+          <div className="lg:col-span-7 space-y-8 sm:space-y-10 lg:pt-8">
+            {firstVisitMoments.map((item, i) => (
+              <Reveal key={item.num} delay={i * 0.08}>
+                <div className="flex items-start gap-4 sm:gap-6">
+                  <span className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#E8F0EB] text-[#2D5A43] font-serif text-sm sm:text-base flex items-center justify-center shrink-0 mt-1">
+                    {item.num}
                   </span>
-                  <h3 className="font-serif text-xl md:text-[1.4rem] leading-tight mb-3">{item.title}</h3>
-                  <p className="text-[15px] text-[#4C5A50] leading-relaxed">{item.detail}</p>
+                  <div>
+                    <h3 className="font-serif text-xl sm:text-2xl md:text-3xl text-[#1E2822] mb-2">
+                      {item.title}
+                    </h3>
+                    <p className="text-[15px] sm:text-[16px] text-[#5F665E] leading-[1.75] sm:leading-[1.8] max-w-xl">
+                      {item.detail}
+                    </p>
+                  </div>
                 </div>
               </Reveal>
             ))}
@@ -158,95 +165,7 @@ const EquestrianFacilities: React.FC = () => {
         </div>
       </section>
 
-      {/* ── GALLERY CAROUSEL ───────────────────────────────────────────── */}
-      <section
-        className="px-6 md:px-10 py-14 md:py-20"
-        style={{
-          background: `linear-gradient(180deg, ${palette.cream} 0%, ${pastel.sage} 34%, ${pastel.sand} 72%, ${palette.cream} 100%)`
-        }}
-      >
-        <div className="max-w-[1500px] mx-auto">
-          <Reveal className="max-w-2xl mb-10 md:mb-12">
-            <SectionLabel className="mb-6">Around the place</SectionLabel>
-            <h2 className="font-serif text-[clamp(1.9rem,4.6vw,3.2rem)] leading-[1.05] tracking-[-0.02em]">
-              A summer term, more or less.
-            </h2>
-          </Reveal>
-
-          <Reveal>
-            <Carousel slides={gallery} />
-          </Reveal>
-        </div>
-      </section>
-
-      {/* ── FIRST VISIT ────────────────────────────────────────────────── */}
-      <section className="px-6 md:px-10 py-14 md:py-20">
-        <div className="max-w-[1500px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
-          <div className="lg:col-span-5 lg:sticky lg:top-28">
-            <Reveal>
-              <SectionLabel className="mb-6">Your first visit</SectionLabel>
-              <h2 className="font-serif text-[clamp(1.9rem,4.6vw,3rem)] leading-[1.05] tracking-[-0.02em] mb-6">
-                What actually happens when you get here.
-              </h2>
-              <p className="text-[#4C5A50] leading-relaxed mb-8 max-w-md">
-                Nobody is left standing in a yard wondering where to go.
-              </p>
-              <Link
-                to="/demo/equestrian/contact"
-                className="group inline-flex items-center gap-3 text-[10px] uppercase tracking-[0.3em]"
-              >
-                Directions and parking
-                <ArrowRight size={15} className="group-hover:translate-x-1 transition-transform duration-300" />
-              </Link>
-            </Reveal>
-          </div>
-
-          <div className="lg:col-span-7">
-            <div className="border-t border-[#EADFD1]">
-              {firstVisit.map((step, i) => (
-                <Reveal key={step.title} delay={i * 0.07}>
-                  <div className="flex items-start gap-6 py-6 border-b border-[#EADFD1]">
-                    <span className="w-11 h-11 rounded-full border border-[#EADFD1] bg-[#FFFCF7]/70 flex items-center justify-center text-[#2F7D5B] shrink-0">
-                      {step.icon}
-                    </span>
-                    <div>
-                      <h3 className="font-serif text-lg md:text-xl mb-2">{step.title}</h3>
-                      <p className="text-[15px] text-[#4C5A50] leading-relaxed">{step.detail}</p>
-                    </div>
-                  </div>
-                </Reveal>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
       <EquestrianFooter />
-
-      <style>{`
-        @keyframes eq-rise {
-          from { opacity: 0; transform: translate3d(0, 22px, 0); }
-          to { opacity: 1; transform: none; }
-        }
-        .eq-rise { animation: eq-rise 0.85s cubic-bezier(0.22, 1, 0.36, 1) both; }
-
-        @keyframes eq-wipe {
-          from { clip-path: inset(0 0 100% 0); }
-          to { clip-path: inset(0 0 0% 0); }
-        }
-        .eq-wipe { animation: eq-wipe 1.4s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both; }
-
-        @keyframes eq-drift {
-          0% { transform: scale(1.05) translate3d(0, 0, 0); }
-          50% { transform: scale(1.11) translate3d(-1.2%, -1%, 0); }
-          100% { transform: scale(1.05) translate3d(0, 0, 0); }
-        }
-        .eq-drift { animation: eq-drift 28s ease-in-out infinite; will-change: transform; }
-
-        @media (prefers-reduced-motion: reduce) {
-          .eq-rise, .eq-wipe, .eq-drift { animation: none; }
-        }
-      `}</style>
     </div>
   );
 };

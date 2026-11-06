@@ -1,32 +1,15 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { motion as framerMotion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { headerWash, palette } from './equestrianData';
 
-// Fix motion types by casting to any
 const motion = framerMotion as any;
 
-// THE HORSE
-//
-// One horse's head, bowed to the left, traced point by point off the reference
-// drawing rather than drawn freehand — the coordinates below are the outline of
-// that picture, sampled and run through a Catmull-Rom fit so each curve passes
-// through every measured point instead of near it.
-//
-// Twelve strokes, no fills, in the order a hand would lay them down: the crest
-// that gives the head its shape, the face and muzzle, the cheek and the throat,
-// then the ear, the three brow marks, the eye and the mouth. The intro animates
-// exactly this list; the logo mark renders the same coordinates small. There is
-// one set of numbers, so the opening drawing and the brand mark cannot drift
-// apart.
 export const HORSE_VIEWBOX = '0 0 298 346';
 export const HORSE_RATIO = 298 / 346;
 
 export type HorseStroke = {
-  /** Stable name — the intro targets strokes by this. */
   key: string;
-  /** Line weight in viewBox units. The reference varies its pressure a lot:
-   *  the crest, cheek and throat are heavy, everything inside is a hairline. */
   w: number;
   d: string;
 };
@@ -124,20 +107,9 @@ export const HORSE_STROKES: HorseStroke[] = [
   }
 ];
 
-// At 40px tall the three brow hatches and the mouth tick sit within a couple of
-// pixels of each other and fuse into a smudge, so the mark drops them. The
-// silhouette, ear and eye are identical to the drawing — it is the same horse
-// with the pencil detail left off, which is what any hand-drawn logo does when
-// it shrinks.
 const LOGO_OMIT = ['browUp', 'browMid', 'browDown', 'mouth'];
 export const HORSE_LOGO_STROKES = HORSE_STROKES.filter((s) => LOGO_OMIT.indexOf(s.key) === -1);
 
-// Weights are authored in viewBox units, which stay proportional at any size —
-// right for the big intro drawing. A logo is different: below ~60px the hairline
-// has to hold at a constant *pixel* weight or it disappears, and the heavy lines
-// have to stop growing or they bleed together. So the unit range 1.6–5.4 is
-// compressed into 1.15–2.0 real pixels and converted back to units against the
-// rendered height.
 const W_MIN = 1.6;
 const W_MAX = 5.4;
 const PX_MIN = 1.15;
@@ -147,10 +119,9 @@ const logoStrokeUnits = (w: number, size: number) => {
   return (px * 346) / size;
 };
 
-// The logo mark. `size` is the rendered height.
 export const HorseMark: React.FC<{ size?: number; color?: string; className?: string }> = ({
   size = 40,
-  color = palette.ink,
+  color = palette.green,
   className = ''
 }) => (
   <svg
@@ -171,59 +142,325 @@ export const HorseMark: React.FC<{ size?: number; color?: string; className?: st
   </svg>
 );
 
-// A small floral cluster used as a divider and next to section labels. Three
-// circles and a stem — enough to read as a flower, cheap enough to repeat.
-export const Bloom: React.FC<{ size?: number; className?: string }> = ({ size = 18, className = '' }) => (
+// Small horseshoe emblem used beside section labels.
+export const Bloom: React.FC<{ size?: number; className?: string }> = ({ size = 16, className = '' }) => (
   <svg
     viewBox="0 0 24 24"
     width={size}
     height={size}
-    className={className}
+    className={`text-[#2D5A43] ${className}`}
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.75"
+    strokeLinecap="round"
+    strokeLinejoin="round"
     aria-hidden="true"
     focusable="false"
   >
-    <circle cx="12" cy="7" r="3.2" fill={palette.rose} />
-    <circle cx="6.6" cy="10.5" r="2.4" fill={palette.gold} />
-    <circle cx="17.4" cy="10.5" r="2.4" fill={palette.lilac} />
-    <path d="M12 11.5 C12 15 12 18 11 21" stroke={palette.meadow} strokeWidth="1.5" fill="none" strokeLinecap="round" />
-    <path d="M11.4 16 C9 15.4 7.6 16.4 7 18" stroke={palette.meadow} strokeWidth="1.5" fill="none" strokeLinecap="round" />
+    <path d="M7 4.5C4.8 7.2 4 10.6 4.5 14.2C5.1 18.4 8.2 21 12 21C15.8 21 18.9 18.4 19.5 14.2C20 10.6 19.2 7.2 17 4.5" />
+    <path d="M9.5 6C8.2 8.2 7.7 10.8 8.1 13.6C8.5 16.3 10 18 12 18C14 18 15.5 16.3 15.9 13.6C16.3 10.8 15.8 8.2 14.5 6" />
   </svg>
 );
 
-// Every reveal on the site goes through here: one direction, one easing, once
-// only. viewport.once means it can never be caught half-faded, and the initial
-// state is only ever applied by framer-motion — if motion is reduced the whole
-// thing renders plainly.
+// Detailed, anatomical classical horseshoe & hoof print oriented pointing DOWNWARD (+Y)
+// so that 0deg rotation points straight down the page and tangent rotation aligns the toe with the walk direction.
+const DetailedHorseshoeSvg: React.FC<{ className?: string; isLeft?: boolean }> = ({
+  className = '',
+  isLeft = true
+}) => (
+  <svg
+    viewBox="0 0 140 165"
+    className={className}
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    aria-hidden="true"
+    style={{ transform: isLeft ? 'none' : 'scaleX(-1)' }}
+  >
+    {/* Soft inner hoof sole & frog impression */}
+    <path
+      d="M52 30 L70 86 L88 30 C82 28, 76 32, 70 46 C64 32, 58 28, 52 30 Z"
+      fill="currentColor"
+      fillOpacity="0.16"
+      stroke="currentColor"
+      strokeWidth="1.2"
+      strokeOpacity="0.38"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M44 52 C40 76, 48 104, 70 108 C92 104, 100 76, 96 52"
+      stroke="currentColor"
+      strokeWidth="1.1"
+      strokeDasharray="4 4"
+      strokeOpacity="0.32"
+      strokeLinecap="round"
+    />
+
+    {/* Forged Iron Horseshoe Outer & Inner Web */}
+    <path
+      d="M34 18
+         C26 16, 20 22, 22 32
+         C13 58, 12 90, 23 116
+         C33 136, 50 148, 70 148
+         C90 148, 107 136, 117 116
+         C128 90, 127 58, 118 32
+         C120 22, 114 16, 106 18
+         C98 20, 96 28, 98 36
+         C105 60, 105 86, 96 107
+         C89 121, 80 128, 70 128
+         C60 128, 51 121, 44 107
+         C35 86, 35 60, 42 36
+         C44 28, 42 20, 34 18 Z"
+      fill="currentColor"
+      fillOpacity="0.28"
+      stroke="currentColor"
+      strokeWidth="2.4"
+      strokeLinejoin="round"
+    />
+
+    {/* Heel Calkins (folded-over heel tabs at the top of each branch) */}
+    <rect
+      x="22"
+      y="18"
+      width="18"
+      height="8"
+      rx="3"
+      transform="rotate(-12 31 22)"
+      fill="currentColor"
+      fillOpacity="0.45"
+      stroke="currentColor"
+      strokeWidth="1.6"
+    />
+    <rect
+      x="100"
+      y="18"
+      width="18"
+      height="8"
+      rx="3"
+      transform="rotate(12 109 22)"
+      fill="currentColor"
+      fillOpacity="0.45"
+      stroke="currentColor"
+      strokeWidth="1.6"
+    />
+
+    {/* Toe Clip at the bottom apex */}
+    <path
+      d="M58 147 L70 158 L82 147 Z"
+      fill="currentColor"
+      fillOpacity="0.55"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinejoin="round"
+    />
+
+    {/* Left & Right Fullering Grooves (recessed channels for nails) */}
+    <path
+      d="M28 44 C22 66, 22 92, 31 112"
+      stroke="currentColor"
+      strokeWidth="5.5"
+      strokeOpacity="0.24"
+      strokeLinecap="round"
+    />
+    <path
+      d="M112 44 C118 66, 118 92, 109 112"
+      stroke="currentColor"
+      strokeWidth="5.5"
+      strokeOpacity="0.24"
+      strokeLinecap="round"
+    />
+
+    {/* 8 Rectangular Nail Holes (4 along left branch, 4 along right branch) */}
+    <g fill="currentColor" fillOpacity="0.85">
+      <rect x="24" y="48" width="5" height="7" rx="1" transform="rotate(8 26.5 51.5)" />
+      <rect x="21.5" y="65" width="5" height="7" rx="1" transform="rotate(2 24 68.5)" />
+      <rect x="22" y="82" width="5" height="7" rx="1" transform="rotate(-7 24.5 85.5)" />
+      <rect x="25.5" y="99" width="5" height="7" rx="1" transform="rotate(-16 28 102.5)" />
+
+      <rect x="111" y="48" width="5" height="7" rx="1" transform="rotate(-8 113.5 51.5)" />
+      <rect x="113.5" y="65" width="5" height="7" rx="1" transform="rotate(-2 116 68.5)" />
+      <rect x="113" y="82" width="5" height="7" rx="1" transform="rotate(7 115.5 85.5)" />
+      <rect x="109.5" y="99" width="5" height="7" rx="1" transform="rotate(16 112 102.5)" />
+    </g>
+  </svg>
+);
+
+// Full-page equine horseshoe trail that walks across the page (right -> left -> right -> left)
+// and actively follows the user's scroll position.
+export const HoofPrintTrail: React.FC = () => {
+  const [docSize, setDocSize] = useState({ width: 1280, height: 3200 });
+  const [walkerY, setWalkerY] = useState(650);
+  const targetYRef = useRef(650);
+  const walkerYRef = useRef(650);
+
+  useEffect(() => {
+    const measure = () => {
+      const h = Math.max(
+        document.body.scrollHeight,
+        document.documentElement.scrollHeight,
+        window.innerHeight * 1.5
+      );
+      const w = window.innerWidth || 1280;
+      setDocSize({ width: w, height: h });
+    };
+
+    measure();
+    const ro =
+      typeof ResizeObserver !== 'undefined' ? new ResizeObserver(() => measure()) : null;
+    if (ro && document.body) ro.observe(document.body);
+    window.addEventListener('resize', measure, { passive: true });
+
+    return () => {
+      ro?.disconnect();
+      window.removeEventListener('resize', measure);
+    };
+  }, []);
+
+  useEffect(() => {
+    let rafId = 0;
+
+    const onScroll = () => {
+      const scrollY = window.scrollY || window.pageYOffset || 0;
+      // Target sits inside the lower portion of the user's viewport so the horse
+      // walks right behind/with the user as they scroll down.
+      targetYRef.current = scrollY + window.innerHeight * 0.82;
+    };
+
+    onScroll();
+    walkerYRef.current = targetYRef.current;
+    setWalkerY(walkerYRef.current);
+
+    const tick = () => {
+      const diff = targetYRef.current - walkerYRef.current;
+      if (Math.abs(diff) > 1.5) {
+        // Smooth, unhurried walking pursuit speed so the footsteps visibly follow the user
+        const stepDelta = Math.sign(diff) * Math.min(Math.abs(diff) * 0.065, 22);
+        walkerYRef.current += stepDelta;
+        setWalkerY(walkerYRef.current);
+      }
+      rafId = requestAnimationFrame(tick);
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    rafId = requestAnimationFrame(tick);
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      window.removeEventListener('scroll', onScroll);
+    };
+  }, []);
+
+  // Build the S-curve walking steps from top to bottom of the page:
+  // Starts on the right (~82%), glides across to the left (~18%), back to the right (~82%), and back to the left.
+  const STRIDE_Y = 235;
+  const START_Y = 280;
+  const END_Y = Math.max(START_Y + STRIDE_Y * 4, docSize.height - 380);
+  const WAVE_PERIOD = 2100; // px per full right-to-left-to-right cycle
+  const k = (2 * Math.PI) / WAVE_PERIOD;
+  const vw = docSize.width;
+  const isMobile = vw < 640;
+  const lateralHoofOffsetPx = isMobile ? 22 : vw < 768 ? 34 : 58; // natural left/right leg spread
+  const waveAmpPct = isMobile ? 28 : 34;
+
+  const footprints: {
+    id: number;
+    xPx: number;
+    yPx: number;
+    rotDeg: number;
+    isLeft: boolean;
+  }[] = [];
+
+  let idx = 0;
+  for (let y = START_Y; y <= END_Y; y += STRIDE_Y) {
+    const phase = (y - START_Y) * k;
+    // Centerline in % of viewport width: 50% + waveAmpPct * cos(phase)
+    const centerXPct = 50 + waveAmpPct * Math.cos(phase);
+    const centerXPx = (centerXPct / 100) * vw;
+
+    // Derivative dx/dy in pixels per pixel of vertical travel
+    const dxDy = -(waveAmpPct / 100) * vw * k * Math.sin(phase);
+    // Rotation angle so a downward-pointing horseshoe aligns with tangent (dxDy, 1)
+    const tangentRad = Math.atan2(-dxDy, 1);
+    const tangentDeg = (tangentRad * 180) / Math.PI;
+
+    // Perpendicular normal vector to offset left vs right hoof
+    const isLeft = idx % 2 === 0;
+    const sign = isLeft ? -1 : 1;
+    const normalX = Math.cos(tangentRad) * sign * lateralHoofOffsetPx;
+    const normalY = Math.sin(tangentRad) * sign * (lateralHoofOffsetPx * 0.35);
+
+    footprints.push({
+      id: idx,
+      xPx: centerXPx + normalX,
+      yPx: y + normalY,
+      rotDeg: tangentDeg + (isLeft ? -4 : 4),
+      isLeft
+    });
+    idx += 1;
+  }
+
+  return (
+    <div
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-x-0 top-0 z-[4] overflow-hidden select-none"
+      style={{ height: `${docSize.height}px` }}
+    >
+      {footprints.map((fp) => {
+        const distFromWalker = walkerY - fp.yPx;
+        const isStepped = distFromWalker >= -40;
+        // Freshly stepped prints near the user's current scroll are slightly richer
+        const isFreshStep = isStepped && distFromWalker >= -40 && distFromWalker < 480;
+        const opacity = !isStepped ? 0 : isFreshStep ? 0.22 : 0.14;
+        const scale = !isStepped ? 0.82 : isFreshStep ? 1.04 : 0.98;
+
+        return (
+          <div
+            key={fp.id}
+            className="absolute text-[#2D5A43] transition-all duration-700 ease-out will-change-transform"
+            style={{
+              left: `${fp.xPx}px`,
+              top: `${fp.yPx}px`,
+              opacity,
+              transform: `translate3d(-50%, -50%, 0) rotate(${fp.rotDeg.toFixed(1)}deg) scale(${scale})`
+            }}
+          >
+            <DetailedHorseshoeSvg
+              isLeft={fp.isLeft}
+              className="w-16 h-20 sm:w-24 sm:h-28 md:w-36 md:h-40 lg:w-44 lg:h-48"
+            />
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
 export const Reveal: React.FC<{
   children: React.ReactNode;
   delay?: number;
   y?: number;
   className?: string;
-}> = ({ children, delay = 0, y = 26, className = '' }) => (
+}> = ({ children, delay = 0, y = 24, className = '' }) => (
   <motion.div
     className={className}
     initial={{ opacity: 0, y }}
     whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true, amount: 0.25 }}
-    transition={{ duration: 0.8, delay, ease: [0.22, 1, 0.36, 1] }}
+    viewport={{ once: true, amount: 0.2 }}
+    transition={{ duration: 0.85, delay, ease: [0.22, 1, 0.36, 1] }}
   >
     {children}
   </motion.div>
 );
 
-// Small caps label with a bloom beside it. Used above every section heading.
 export const SectionLabel: React.FC<{ children: React.ReactNode; className?: string }> = ({
   children,
   className = ''
 }) => (
-  <p className={`flex items-center gap-3 text-[10px] uppercase tracking-[0.42em] text-[#6B7A6F] ${className}`}>
+  <p className={`inline-flex items-center gap-3 text-[11px] uppercase tracking-[0.34em] text-[#2D5A43] font-medium ${className}`}>
     <Bloom size={15} />
-    {children}
+    <span>{children}</span>
   </p>
 );
 
-// A photograph that eases up to its natural scale as it arrives. Kept as one
-// component so every image on the site behaves identically.
 export const PhotoReveal: React.FC<{
   src: string;
   alt: string;
@@ -233,11 +470,11 @@ export const PhotoReveal: React.FC<{
   delay?: number;
 }> = ({ src, alt, className = '', imgClassName = '', priority = false, delay = 0 }) => (
   <motion.div
-    className={`overflow-hidden bg-[#F2EAE0] ${className}`}
+    className={`overflow-hidden rounded-2xl md:rounded-3xl bg-[#E8E2D5] shadow-[0_20px_50px_-28px_rgba(30,40,34,0.22)] ${className}`}
     initial={{ opacity: 0 }}
     whileInView={{ opacity: 1 }}
-    viewport={{ once: true, amount: 0.2 }}
-    transition={{ duration: 0.7, delay, ease: 'easeOut' }}
+    viewport={{ once: true, amount: 0.15 }}
+    transition={{ duration: 0.8, delay, ease: 'easeOut' }}
   >
     <motion.img
       src={src}
@@ -246,19 +483,16 @@ export const PhotoReveal: React.FC<{
       decoding="async"
       {...(priority ? { fetchPriority: 'high' as const } : {})}
       className={`w-full h-full object-cover ${imgClassName}`}
-      initial={{ scale: 1.12 }}
+      initial={{ scale: 1.06 }}
       whileInView={{ scale: 1 }}
-      viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 1.5, delay, ease: [0.16, 1, 0.3, 1] }}
+      viewport={{ once: true, amount: 0.15 }}
+      transition={{ duration: 1.4, delay, ease: [0.16, 1, 0.3, 1] }}
     />
   </motion.div>
 );
 
 export { palette };
 
-// The soft light behind a section. One component so every page carries the same
-// wash rather than each inventing its own set of gradients, and so the colour on
-// this site is always diffuse — never a rectangle of paint.
 export const Wash: React.FC<{ background?: string; className?: string }> = ({
   background = headerWash,
   className = ''
@@ -278,13 +512,9 @@ export interface Slide {
   meta?: string;
 }
 
-// A slow carousel. It advances itself, stops while you are hovering or after you
-// have touched a control, and the caption crossfades with the photograph so the
-// whole thing moves as one piece. Arrows and dots both work; the counter tells
-// you where you are without needing to count the dots.
 export const Carousel: React.FC<{ slides: Slide[]; interval?: number; className?: string }> = ({
   slides,
-  interval = 6200,
+  interval = 6500,
   className = ''
 }) => {
   const [index, setIndex] = useState(0);
@@ -315,9 +545,7 @@ export const Carousel: React.FC<{ slides: Slide[]; interval?: number; className?
       onMouseLeave={() => setHeld(false)}
       aria-roledescription="carousel"
     >
-      {/* Sized against the viewport rather than by aspect ratio, so a wide
-          photograph can never grow taller than the screen it sits on. */}
-      <div className="relative overflow-hidden rounded-[1.75rem] md:rounded-[2.25rem] bg-[#F2EAE0] h-[clamp(330px,56vh,540px)]">
+      <div className="relative overflow-hidden rounded-3xl bg-[#E8E2D5] h-[clamp(360px,62vh,620px)]">
         <AnimatePresence initial={false}>
           <motion.img
             key={slide.src}
@@ -326,24 +554,23 @@ export const Carousel: React.FC<{ slides: Slide[]; interval?: number; className?
             loading="lazy"
             decoding="async"
             className="absolute inset-0 w-full h-full object-cover"
-            initial={{ opacity: 0, scale: 1.07 }}
+            initial={{ opacity: 0, scale: 1.05 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0 }}
             transition={{ opacity: { duration: 1.1, ease: 'easeInOut' }, scale: { duration: 7, ease: 'linear' } }}
           />
         </AnimatePresence>
 
-        {/* Just enough shade at the foot of the frame for the caption to read. */}
         <div
           aria-hidden="true"
           className="absolute inset-0"
           style={{
             background:
-              'linear-gradient(to top, rgba(30,42,34,0.62) 0%, rgba(30,42,34,0.10) 42%, rgba(30,42,34,0) 68%)'
+              'linear-gradient(to top, rgba(30,40,34,0.72) 0%, rgba(30,40,34,0.18) 45%, rgba(30,40,34,0) 75%)'
           }}
         />
 
-        <div className="absolute inset-x-0 bottom-0 p-6 md:p-10 flex flex-col sm:flex-row sm:items-end justify-between gap-6">
+        <div className="absolute inset-x-0 bottom-0 p-8 md:p-12 flex flex-col sm:flex-row sm:items-end justify-between gap-6">
           <AnimatePresence mode="wait">
             <motion.div
               key={slide.title}
@@ -351,18 +578,18 @@ export const Carousel: React.FC<{ slides: Slide[]; interval?: number; className?
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-              className="text-[#FFFAF3] max-w-md"
+              className="text-[#FAF6EE] max-w-lg"
             >
               {slide.meta && (
-                <p className="text-[9px] uppercase tracking-[0.36em] text-white/70 mb-3">{slide.meta}</p>
+                <p className="text-[10px] uppercase tracking-[0.36em] text-white/70 mb-3">{slide.meta}</p>
               )}
-              <h3 className="font-serif text-[clamp(1.6rem,3.6vw,2.6rem)] leading-none mb-3">{slide.title}</h3>
-              <p className="text-[14px] md:text-[15px] text-white/80 leading-relaxed">{slide.note}</p>
+              <h3 className="font-serif text-[clamp(1.6rem,3.4vw,2.5rem)] leading-tight mb-2">{slide.title}</h3>
+              <p className="text-[14px] md:text-[15px] text-white/85 leading-relaxed">{slide.note}</p>
             </motion.div>
           </AnimatePresence>
 
           <div className="flex items-center gap-3 shrink-0">
-            <span className="font-serif text-[#FFFAF3] text-lg mr-2 tabular-nums">
+            <span className="font-serif text-[#FAF6EE] text-base mr-2 tabular-nums">
               {String(index + 1).padStart(2, '0')}
               <span className="text-white/50"> / {String(count).padStart(2, '0')}</span>
             </span>
@@ -373,7 +600,7 @@ export const Carousel: React.FC<{ slides: Slide[]; interval?: number; className?
                 setHeld(true);
                 go(index - 1);
               }}
-              className="w-11 h-11 rounded-full border border-white/40 text-[#FFFAF3] flex items-center justify-center hover:bg-[#FFFAF3] hover:text-[#1E2A22] transition-colors duration-300"
+              className="w-11 h-11 rounded-full border border-white/40 text-[#FAF6EE] flex items-center justify-center hover:bg-[#FAF6EE] hover:text-[#1E2822] transition-colors duration-300"
             >
               <ArrowLeft size={16} />
             </button>
@@ -384,7 +611,7 @@ export const Carousel: React.FC<{ slides: Slide[]; interval?: number; className?
                 setHeld(true);
                 go(index + 1);
               }}
-              className="w-11 h-11 rounded-full border border-white/40 text-[#FFFAF3] flex items-center justify-center hover:bg-[#FFFAF3] hover:text-[#1E2A22] transition-colors duration-300"
+              className="w-11 h-11 rounded-full border border-white/40 text-[#FAF6EE] flex items-center justify-center hover:bg-[#FAF6EE] hover:text-[#1E2822] transition-colors duration-300"
             >
               <ArrowRight size={16} />
             </button>
@@ -392,7 +619,7 @@ export const Carousel: React.FC<{ slides: Slide[]; interval?: number; className?
         </div>
       </div>
 
-      <div className="mt-5 flex items-center gap-2">
+      <div className="mt-4 flex items-center gap-2">
         {slides.map((s, i) => (
           <button
             key={s.src}
@@ -403,10 +630,10 @@ export const Carousel: React.FC<{ slides: Slide[]; interval?: number; className?
               setHeld(true);
               go(i);
             }}
-            className="group h-1.5 rounded-full overflow-hidden flex-1 bg-[#EADFD1]"
+            className="group h-1.5 rounded-full overflow-hidden flex-1 bg-[#E2DDD2]"
           >
             <span
-              className="block h-full rounded-full bg-[#2F7D5B] transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
+              className="block h-full rounded-full bg-[#2D5A43] transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
               style={{ width: i === index ? '100%' : '0%' }}
             />
           </button>

@@ -1,604 +1,532 @@
-import React, { useEffect } from 'react';
-// Fix react-router-dom missing exports
+import React, { useEffect, useState } from 'react';
 import * as RouterDOM from 'react-router-dom';
 const { Link } = RouterDOM as any;
-import { ArrowRight, Clock, MapPin, Users, ShieldCheck } from 'lucide-react';
+import { motion as framerMotion, AnimatePresence } from 'framer-motion';
+import { ArrowRight, ArrowUpRight, Phone } from 'lucide-react';
 import EquestrianNav from './EquestrianNav';
 import EquestrianFooter from './EquestrianFooter';
-import EquestrianIntro from './EquestrianIntro';
-import { Reveal, SectionLabel, PhotoReveal, Bloom, HorseMark, Wash, Carousel } from './EquestrianUI';
+import { Reveal, SectionLabel, PhotoReveal, HoofPrintTrail } from './EquestrianUI';
 import {
   academy,
   lessons,
   horses,
-  facilities,
   testimonials,
-  disciplines,
-  images,
-  galleryStrip,
-  cardWashes,
-  pastel,
-  palette
+  images
 } from './equestrianData';
 
-// Four reasons, one line each.
-const promises = [
+const motion = framerMotion as any;
+
+const pillars = [
   {
-    icon: <Users size={19} />,
-    title: 'Four riders, never more',
-    detail: 'You ride. You do not queue.',
-    colour: palette.rose
+    num: '01',
+    title: 'Four riders maximum',
+    body: 'Every group lesson is capped at four riders so your coach sees every transition, corner, and fence approach.'
   },
   {
-    icon: <ShieldCheck size={19} />,
-    title: 'Hat and boots included',
-    detail: 'Fitted by us, lent free.',
-    colour: palette.gold
+    num: '02',
+    title: 'Twenty-two schoolmasters',
+    body: 'From gentle Welsh lead-rein ponies to KWPN and Irish Sport Horse schoolmasters matched carefully to your balance.'
   },
   {
-    icon: <Clock size={19} />,
-    title: 'Lessons all year',
-    detail: 'Indoor school. Nothing cancelled.',
-    colour: palette.sky
+    num: '03',
+    title: 'Four hundred private acres',
+    body: 'Step directly out of the yard gate onto ancient Wiltshire chalk turf and ridgeway tracks without crossing a road.'
   },
   {
-    icon: <MapPin size={19} />,
-    title: '400 acres out the gate',
-    detail: 'Downland from the yard. No boxing up.',
-    colour: palette.meadow
+    num: '04',
+    title: 'All-weather arenas',
+    body: 'A 60m × 25m floodlit sand-and-fibre outdoor arena, a covered indoor school, and a six-acre grass showjumping paddock.'
   }
 ];
 
-const facts = [
-  { figure: academy.established, label: 'Family run since' },
-  { figure: 'Twenty-two', label: 'Horses and ponies' },
-  { figure: 'BHS', label: 'Approved centre' }
-];
-
-// The carousel runs off the same eight horses as the horses page, so nothing can
-// drift out of step.
-const horseSlides = horses.map((horse) => ({
-  src: horse.photo,
-  alt: `${horse.name}, a ${horse.colour.toLowerCase()} ${horse.breed}`,
-  title: horse.name,
-  note: horse.character,
-  meta: `${horse.height} · ${horse.bestFor}`
-}));
-
 const EquestrianHome: React.FC = () => {
+  const [activeLessonIndex, setActiveLessonIndex] = useState(0);
+
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' as any });
   }, []);
 
+  const featuredLessons = [lessons[0], lessons[1], lessons[3], lessons[8], lessons[9]];
+  const featuredHorses = [horses[0], horses[1], horses[2], horses[3]];
+  const activeLesson = featuredLessons[activeLessonIndex] || featuredLessons[0];
+
   return (
-    <div className="min-h-screen bg-[#FFFAF3] font-inter text-[#1E2A22] selection:bg-[#E4577A] selection:text-[#FFFAF3] overflow-x-hidden">
-      <EquestrianIntro />
-      <EquestrianNav />
+    <div className="relative min-h-screen bg-[#FAF6EE] font-inter text-[#1E2822] selection:bg-[#2D5A43] selection:text-[#FAF6EE] overflow-x-hidden">
+      <HoofPrintTrail />
+      <EquestrianNav transparentOnTop />
 
-      {/* ── HERO ───────────────────────────────────────────────────────────
-          A split masthead rather than a centred stack. The headline holds the
-          left with the facts on hairlines directly beneath it, and the right is
-          a cluster with depth to it: one big photograph, a second tucked into
-          its corner, a turning rosette and a floating line about opening times.
-          The picture is sized against the viewport rather than by an aspect
-          ratio, so the type and the whole photograph share the first screen. */}
-      <section className="relative pt-20 md:pt-24 pb-12 md:pb-16 px-6 md:px-10">
-        <Wash />
-
-        <div className="relative max-w-[1500px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-          {/* The words. */}
-          <div className="lg:col-span-6 xl:col-span-5">
-            <p className="eq-rise flex items-center gap-3 text-[10px] uppercase tracking-[0.42em] text-[#6B7A6F] mb-7">
-              <Bloom size={15} />
-              Est. {academy.established} &middot; the Pewsey Vale
-            </p>
-
-            <h1 className="font-serif text-[clamp(2.6rem,6.6vw,5rem)] leading-[0.96] tracking-[-0.025em] mb-7">
-              <span className="eq-line">
-                <span className="eq-line-in">Four hundred acres.</span>
-              </span>
-              <span className="eq-line">
-                <span className="eq-line-in" style={{ animationDelay: '130ms' }}>
-                  Four riders <span className="italic text-[#E4577A]">a lesson.</span>
-                </span>
-              </span>
-            </h1>
-
-            <p
-              className="eq-rise max-w-md text-lg text-[#4C5A50] leading-relaxed mb-9"
-              style={{ animationDelay: '340ms' }}
-            >
-              A family riding school on the downland, twenty-two horses, and the same coach every
-              week.
-            </p>
-
-            <div
-              className="eq-rise flex flex-wrap items-center gap-4"
-              style={{ animationDelay: '440ms' }}
-            >
-              <Link
-                to="/demo/equestrian/book"
-                className="group inline-flex items-center gap-3 pl-8 pr-6 py-4 bg-[#1E2A22] text-[#FFFAF3] rounded-full text-[10px] uppercase tracking-[0.3em] hover:bg-[#E4577A] transition-colors duration-300"
-              >
-                Book a first lesson
-                <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform duration-300" />
-              </Link>
-              <Link
-                to="/demo/equestrian/lessons"
-                className="inline-flex items-center gap-3 px-8 py-4 rounded-full border border-[#1E2A22]/20 text-[10px] uppercase tracking-[0.3em] hover:border-[#1E2A22] transition-colors duration-300"
-              >
-                Lessons from £26
-              </Link>
-            </div>
-
-            {/* Three facts on hairlines, folded into the column instead of
-                sitting in a band of their own further down the page. */}
-            <div
-              className="eq-rise mt-10 grid grid-cols-3 border-t border-[#EADFD1] divide-x divide-[#EADFD1]"
-              style={{ animationDelay: '540ms' }}
-            >
-              {facts.map((fact) => (
-                <div key={fact.label} className="pt-5 pr-3 pl-4 first:pl-0">
-                  <p className="font-serif text-[1.2rem] md:text-[1.55rem] leading-none mb-2">
-                    {fact.figure}
-                  </p>
-                  <p className="text-[9px] uppercase tracking-[0.26em] text-[#6B7A6F] leading-relaxed">
-                    {fact.label}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* The pictures. */}
-          <div className="lg:col-span-6 xl:col-span-7 relative">
-            <div className="eq-wipe relative rounded-[1.75rem] md:rounded-[2.5rem] overflow-hidden bg-[#F2EAE0] h-[clamp(330px,56vh,580px)]">
-              <img
-                src={images.hero}
-                alt="A rider out on the downs above Bramble &amp; Bay"
-                loading="eager"
-                decoding="async"
-                fetchPriority="high"
-                className="eq-drift w-full h-full object-cover"
-              />
-              <div
-                className="absolute inset-0 pointer-events-none"
-                style={{
-                  background:
-                    'linear-gradient(196deg, rgba(255,250,243,0.22) 0%, rgba(255,250,243,0) 42%, rgba(30,42,34,0.18) 100%)'
-                }}
-              />
-
-              {/* A second photograph tucked into the corner of the first. */}
-              <div
-                className="eq-rise absolute bottom-5 left-5 md:bottom-7 md:left-7 w-[clamp(96px,11vw,146px)] h-[clamp(120px,14vw,182px)] rounded-[1rem] md:rounded-[1.25rem] overflow-hidden border-[5px] border-[#FFFAF3] shadow-[0_22px_50px_-26px_rgba(30,42,34,0.6)]"
-                style={{ animationDelay: '760ms' }}
-              >
-                <img
-                  src={images.children}
-                  alt="Two children leading a pony in from the field"
-                  loading="lazy"
-                  decoding="async"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            </div>
-
-            {/* The rosette. Slow enough that you notice it rather than watch it. */}
-            <div
-              className="eq-rise absolute -top-3 right-3 md:-top-5 md:right-8 z-10 w-[clamp(84px,9vw,118px)] h-[clamp(84px,9vw,118px)] rounded-full bg-[#FFFAF3] shadow-[0_20px_44px_-24px_rgba(30,42,34,0.55)] grid place-items-center"
-              style={{ animationDelay: '900ms' }}
-            >
-              <svg viewBox="0 0 100 100" aria-hidden="true" className="eq-spin absolute inset-0 w-full h-full">
-                <defs>
-                  <path
-                    id="eq-rosette-path"
-                    d="M50,50 m-35,0 a35,35 0 1,1 70,0 a35,35 0 1,1 -70,0"
-                    fill="none"
-                  />
-                </defs>
-                <text fill="#6B7A6F" fontSize="9.2" letterSpacing="2.1">
-                  {/* Sized to go once round the circle: the full accreditation
-                      line is far too long, so it is abbreviated here. */}
-                  <textPath href="#eq-rosette-path" startOffset="0">
-                    {`BHS APPROVED · EST. ${academy.established} · `}
-                  </textPath>
-                </text>
-              </svg>
-              <HorseMark size={30} color={palette.meadow} />
-            </div>
-
-            <div
-              className="eq-rise eq-float absolute -bottom-5 right-4 md:right-10 flex items-center gap-3 bg-[#FFFAF3]/95 backdrop-blur-sm rounded-full pl-4 pr-6 py-3 shadow-[0_22px_50px_-26px_rgba(30,42,34,0.45)]"
-              style={{ animationDelay: '1020ms' }}
-            >
-              <HorseMark size={32} color={palette.meadow} />
-              <span className="text-[9px] uppercase tracking-[0.28em] text-[#4C5A50]">
-                Lessons seven days a week
-              </span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── WHAT IS TAUGHT ─────────────────────────────────────────────────
-          One pale wash running the width of the page, five words across it.
-          It says what happens here in about a second and it is the only place
-          all five colours appear at once. */}
-      <section aria-label="What we teach" className="px-6 md:px-10 pt-6 md:pt-10">
-        <div
-          className="max-w-[1500px] mx-auto rounded-full py-5 md:py-6 px-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-3"
-          style={{
-            background: `linear-gradient(96deg, ${pastel.blush} 0%, ${pastel.sand} 26%, ${pastel.cream} 50%, ${pastel.mist} 74%, ${pastel.lilac} 100%)`
-          }}
+      {/* ── FULL-SCREEN LUXURY HERO (SOPHISTICATED & BOLD TYPOGRAPHY) ─────── */}
+      <section className="relative z-10 min-h-[100svh] md:h-screen md:min-h-[680px] w-full overflow-hidden bg-[#1E2822] flex items-center py-28 md:py-0">
+        <motion.div
+          className="absolute inset-0"
+          initial={{ scale: 1.08, opacity: 0.8 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 2.6, ease: [0.16, 1, 0.3, 1] }}
         >
-          {disciplines.map((word, i) => (
-            <React.Fragment key={word}>
-              {i > 0 && <Bloom size={13} className="opacity-70" />}
-              <span className="eq-ribbon text-[10px] md:text-[11px] uppercase tracking-[0.32em] text-[#4C5A50]" style={{ animationDelay: `${i * 90}ms` }}>
-                {word}
-              </span>
-            </React.Fragment>
-          ))}
+          <img
+            src={images.hero}
+            alt="Horse and rider cantering in the outdoor arena at Bramble & Bay"
+            fetchPriority="high"
+            decoding="async"
+            className="w-full h-full object-cover object-center"
+          />
+        </motion.div>
+
+        <div
+          aria-hidden="true"
+          className="absolute inset-0"
+          style={{
+            background:
+              'linear-gradient(180deg, rgba(18,28,22,0.56) 0%, rgba(18,28,22,0.38) 48%, rgba(18,28,22,0.78) 100%)'
+          }}
+        />
+
+        <div className="relative z-10 max-w-[1440px] w-full mx-auto px-5 sm:px-6 md:px-12 md:pt-16">
+          <motion.p
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.0, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+            className="text-[10px] sm:text-[11px] uppercase tracking-[0.36em] sm:tracking-[0.44em] font-semibold text-[#CFE3D6] mb-5 sm:mb-7"
+          >
+            Bramble &amp; Bay &middot; Pewsey Vale, Wiltshire
+          </motion.p>
+
+          <h1 className="font-serif text-[#FAF6EE] text-[clamp(2.45rem,6.8vw,6.4rem)] leading-[1.04] tracking-[-0.025em] max-w-5xl">
+            <span className="block overflow-hidden pb-1.5 sm:pb-2">
+              <motion.span
+                className="block font-semibold text-white"
+                initial={{ y: '105%', opacity: 0 }}
+                animate={{ y: '0%', opacity: 1 }}
+                transition={{ duration: 1.25, delay: 0.28, ease: [0.16, 1, 0.3, 1] }}
+              >
+                Classical Equitation.
+              </motion.span>
+            </span>
+            <span className="block overflow-hidden pb-1.5 sm:pb-2 mt-1 md:mt-2">
+              <motion.span
+                className="block italic font-normal text-[#CFE3D6]"
+                initial={{ y: '105%', opacity: 0 }}
+                animate={{ y: '0%', opacity: 1 }}
+                transition={{ duration: 1.25, delay: 0.46, ease: [0.16, 1, 0.3, 1] }}
+              >
+                Four hundred private acres.
+              </motion.span>
+            </span>
+          </h1>
+
+          <motion.p
+            initial={{ opacity: 0, y: 22 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.1, delay: 0.72, ease: [0.16, 1, 0.3, 1] }}
+            className="mt-6 sm:mt-8 md:mt-10 max-w-xl text-[15px] sm:text-[16px] md:text-[18px] text-[#FAF6EE]/90 leading-[1.75] sm:leading-[1.8]"
+          >
+            Private and small-group tuition in the heart of the Wiltshire chalk downland — pairing twenty-two schooled horses with quiet classical coaching and open turf hacking straight from the yard gate.
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.0, delay: 0.92, ease: [0.16, 1, 0.3, 1] }}
+            className="mt-8 sm:mt-10 md:mt-12 flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3.5 sm:gap-4"
+          >
+            <Link
+              to="/demo/equestrian/book"
+              className="group inline-flex items-center justify-center gap-3.5 px-8 py-4 rounded-full bg-[#2D5A43] text-[#FAF6EE] text-[11px] uppercase tracking-[0.28em] font-medium hover:bg-[#234734] transition-all duration-300 shadow-lg"
+            >
+              <span>Book a Lesson</span>
+              <ArrowUpRight
+                size={15}
+                className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+              />
+            </Link>
+            <Link
+              to="/demo/equestrian/lessons"
+              className="group inline-flex items-center justify-center gap-3.5 px-8 py-4 rounded-full bg-white/15 backdrop-blur-md border border-white/30 text-[#FAF6EE] text-[11px] uppercase tracking-[0.28em] hover:bg-white/25 transition-all duration-300"
+            >
+              <span>Explore Lessons</span>
+              <ArrowRight size={15} className="transition-transform duration-300 group-hover:translate-x-1" />
+            </Link>
+          </motion.div>
         </div>
       </section>
 
-      {/* ── GALLERY STRIP ──────────────────────────────────────────────── */}
-      <section className="py-8 md:py-12 overflow-hidden" aria-label="Photographs from the yard">
-        <div className="flex w-max eq-marquee">
-          {[0, 1].map((copy) => (
-            <div key={copy} className="flex shrink-0" aria-hidden={copy === 1}>
-              {galleryStrip.map((shot) => (
-                <figure
-                  key={`${copy}-${shot.src}`}
-                  className="w-[220px] md:w-[300px] shrink-0 px-2 md:px-3"
-                >
-                  <div className="rounded-2xl overflow-hidden aspect-[4/3] bg-[#F2EAE0]">
-                    <img
-                      src={shot.src}
-                      alt={copy === 0 ? shot.alt : ''}
-                      loading="lazy"
-                      decoding="async"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                </figure>
-              ))}
+      {/* ── SECTION 01: THE ACADEMY PHILOSOPHY ───────────────────────────── */}
+      <section className="relative z-10 py-16 sm:py-24 md:py-36 px-5 sm:px-6 md:px-12">
+        <div className="max-w-[1440px] mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-12 items-end mb-12 sm:mb-20">
+            <div className="lg:col-span-7">
+              <Reveal>
+                <SectionLabel className="mb-4 sm:mb-5">The Academy Philosophy</SectionLabel>
+                <h2 className="font-serif text-[clamp(2rem,4.6vw,3.9rem)] leading-[1.08] tracking-[-0.02em]">
+                  Unhurried country riding,
+                  <br />
+                  <span className="italic text-[#2D5A43]">taught properly from day one.</span>
+                </h2>
+              </Reveal>
             </div>
-          ))}
-        </div>
-      </section>
+            <div className="lg:col-span-5">
+              <Reveal delay={0.1}>
+                <p className="text-[15px] sm:text-[16px] text-[#5F665E] leading-[1.8] sm:leading-[1.85]">
+                  We do not run nose-to-tail riding lessons. Whether you are putting a five-year-old on the lead-rein, returning to the saddle after twenty years, or schooling shoulder-in on a warmblood, every session is warm, unhurried, and personal.
+                </p>
+              </Reveal>
+            </div>
+          </div>
 
-      {/* ── WHY PEOPLE STAY ────────────────────────────────────────────── */}
-      <section className="px-6 md:px-10 py-14 md:py-20">
-        <div className="max-w-[1500px] mx-auto">
-          <Reveal className="max-w-2xl mb-10 md:mb-14">
-            <SectionLabel className="mb-6">Why people stay</SectionLabel>
-            <h2 className="font-serif text-[clamp(1.9rem,4.6vw,3.2rem)] leading-[1.05] tracking-[-0.02em]">
-              A small yard that takes teaching seriously.
-            </h2>
-          </Reveal>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5 md:gap-6">
-            {promises.map((item, i) => (
-              <Reveal key={item.title} delay={i * 0.08}>
-                <div
-                  className="group h-full rounded-[1.5rem] p-7 md:p-8 border border-white/70 shadow-[0_18px_44px_-34px_rgba(30,42,34,0.4)] transition-transform duration-500 hover:-translate-y-1"
-                  style={{ background: cardWashes[i % cardWashes.length] }}
-                >
-                  <div
-                    className="w-12 h-12 rounded-full flex items-center justify-center mb-6 bg-[#FFFCF7]/80 border border-white transition-transform duration-500 group-hover:-translate-y-0.5"
-                    style={{ color: item.colour }}
-                  >
-                    {item.icon}
-                  </div>
-                  <h3 className="font-serif text-xl md:text-[1.4rem] leading-tight mb-2">{item.title}</h3>
-                  <p className="text-[15px] text-[#4C5A50] leading-relaxed">{item.detail}</p>
-                </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10 lg:gap-12">
+            {pillars.map((pillar, i) => (
+              <Reveal key={pillar.num} delay={i * 0.08}>
+                <p className="font-serif text-lg italic text-[#2D5A43] mb-2 sm:mb-3">{pillar.num}</p>
+                <h3 className="font-serif text-xl sm:text-2xl leading-snug mb-2 sm:mb-3 text-[#1E2822]">{pillar.title}</h3>
+                <p className="text-[14px] sm:text-[15px] text-[#5F665E] leading-[1.8]">{pillar.body}</p>
               </Reveal>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── LESSONS PREVIEW ──────────────────────────────────────────────── */}
-      <section className="px-6 md:px-10 pb-14 md:pb-20">
-        <div className="max-w-[1500px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
-          <div className="lg:col-span-5 lg:sticky lg:top-28">
-            <Reveal>
-              <SectionLabel className="mb-6">Lessons</SectionLabel>
-              <h2 className="font-serif text-[clamp(1.9rem,4.6vw,3.2rem)] leading-[1.05] tracking-[-0.02em] mb-5">
-                Somewhere to start, whatever age you are.
-              </h2>
-              <p className="text-[#4C5A50] leading-relaxed mb-8 max-w-sm">
-                Six lessons for the cost of five. No hidden extras.
-              </p>
-              <Link
-                to="/demo/equestrian/lessons"
-                className="group inline-flex items-center gap-3 text-[10px] uppercase tracking-[0.3em] text-[#1E2A22]"
-              >
-                All ten lesson types
-                <span className="w-8 h-px bg-[#E4577A] group-hover:w-12 transition-all duration-300" />
-              </Link>
-            </Reveal>
-
-            <Reveal delay={0.1} className="mt-12 hidden lg:block">
-              <PhotoReveal
-                src={images.leadRein}
-                alt="A child being led on a pony in the arena"
-                className="rounded-[2rem] aspect-[5/4]"
-              />
-            </Reveal>
+      {/* ── SECTION 02: IN THE BARN & ARENA ──────────────────────────────── */}
+      <section className="relative z-10 pb-16 sm:pb-24 md:pb-36 px-5 sm:px-6 md:px-12">
+        <div className="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-12 lg:gap-16 items-center">
+          <div className="lg:col-span-7">
+            <PhotoReveal
+              src={images.lesson}
+              alt="Coach and young rider grooming a chestnut horse in the wooden stables"
+              className="aspect-[16/11] w-full"
+            />
           </div>
-
-          <div className="lg:col-span-7 space-y-3">
-            {lessons.slice(0, 6).map((lesson, i) => (
-              <Reveal key={lesson.id} delay={i * 0.05}>
+          <div className="lg:col-span-5">
+            <Reveal>
+              <SectionLabel className="mb-4 sm:mb-5">Partnership First</SectionLabel>
+              <h2 className="font-serif text-[clamp(1.85rem,3.8vw,3.2rem)] leading-[1.1] tracking-[-0.015em] mb-5 sm:mb-6">
+                The same coach and the same horse each week.
+              </h2>
+              <p className="text-[15px] sm:text-[16px] text-[#5F665E] leading-[1.8] sm:leading-[1.85] mb-7 sm:mb-8">
+                Good riding starts in the stable before you ever put a foot in the stirrup. Rather than swapping horses every Saturday, we pair you with a schoolmaster suited to your confidence and give you time to groom, tack up, and build a real bond.
+              </p>
+              <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3.5 sm:gap-4">
                 <Link
                   to="/demo/equestrian/lessons"
-                  className="group flex items-center gap-5 md:gap-7 rounded-[1.25rem] border border-white/70 pl-5 pr-6 md:pl-7 md:pr-8 py-5 transition-all duration-500 hover:-translate-y-0.5 hover:shadow-[0_22px_50px_-34px_rgba(30,42,34,0.45)]"
-                  style={{ background: cardWashes[i % cardWashes.length] }}
+                  className="group inline-flex items-center justify-center gap-3 px-7 py-3.5 rounded-full bg-[#2D5A43] text-[#FAF6EE] text-[11px] uppercase tracking-[0.26em] hover:bg-[#234734] transition-all"
                 >
-                  <span
-                    aria-hidden="true"
-                    className="shrink-0 w-1.5 h-10 md:h-12 rounded-full opacity-70"
-                    style={{ backgroundColor: lesson.accent }}
-                  />
-                  <span className="min-w-0 flex-1">
-                    <span className="block font-serif text-xl md:text-[1.55rem] leading-tight group-hover:text-[#E4577A] transition-colors duration-300">
-                      {lesson.name}
-                    </span>
-                    <span className="mt-1.5 block text-[9px] uppercase tracking-[0.26em] text-[#6B7A6F]">
-                      {lesson.who} &middot; {lesson.duration}
-                    </span>
-                  </span>
-                  <span className="font-serif text-2xl md:text-[1.9rem] leading-none shrink-0">
-                    {lesson.price}
-                  </span>
+                  <span>View Our Lessons</span>
+                  <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform duration-300" />
                 </Link>
-              </Reveal>
-            ))}
+                <Link
+                  to="/demo/equestrian/horses"
+                  className="group inline-flex items-center justify-center gap-3 px-7 py-3.5 rounded-full bg-[#E8F0EB] text-[#2D5A43] text-[11px] uppercase tracking-[0.26em] hover:bg-[#dce8e0] transition-all"
+                >
+                  <span>Meet the Horses</span>
+                  <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform duration-300" />
+                </Link>
+              </div>
+            </Reveal>
           </div>
         </div>
       </section>
 
-      {/* ── THE HORSES, AS A CAROUSEL ───────────────────────────────────── */}
-      <section
-        className="px-6 md:px-10 py-14 md:py-20"
-        style={{
-          background: `linear-gradient(180deg, ${palette.cream} 0%, ${pastel.sage} 34%, ${pastel.mist} 72%, ${palette.cream} 100%)`
-        }}
-      >
-        <div className="max-w-[1500px] mx-auto">
-          <Reveal className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-10 md:mb-12">
-            <div className="max-w-xl">
-              <SectionLabel className="mb-6">The horses</SectionLabel>
-              <h2 className="font-serif text-[clamp(1.9rem,4.6vw,3.2rem)] leading-[1.05] tracking-[-0.02em]">
-                Twenty-two of them. Eight you will meet first.
-              </h2>
-            </div>
-            <Link
-              to="/demo/equestrian/horses"
-              className="group inline-flex items-center gap-3 text-[10px] uppercase tracking-[0.3em] shrink-0"
-            >
-              Meet the whole yard
-              <ArrowRight size={15} className="group-hover:translate-x-1 transition-transform duration-300" />
-            </Link>
-          </Reveal>
-
-          <Reveal>
-            <Carousel slides={horseSlides} />
-          </Reveal>
-        </div>
-      </section>
-
-      {/* ── THE YARD ───────────────────────────────────────────────────── */}
-      <section className="px-6 md:px-10 py-14 md:py-20">
-        <div className="max-w-[1500px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-          <div className="lg:col-span-6 order-2 lg:order-1">
+      {/* ── SECTION 03: LESSONS & CLINICS (CLEAN EDITORIAL SPLIT SHOWCASE) ─ */}
+      <section className="relative z-10 py-16 sm:py-24 md:py-32 px-5 sm:px-6 md:px-12">
+        <div className="max-w-[1440px] mx-auto">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 sm:gap-8 mb-10 sm:mb-16">
             <Reveal>
-              <SectionLabel className="mb-6">The yard</SectionLabel>
-              <h2 className="font-serif text-[clamp(1.9rem,4.6vw,3.2rem)] leading-[1.05] tracking-[-0.02em] mb-9">
-                Three arenas, one very good view.
+              <SectionLabel className="mb-4 sm:mb-5">Lessons &amp; Clinics</SectionLabel>
+              <h2 className="font-serif text-[clamp(2rem,4.6vw,3.9rem)] leading-[1.08] tracking-[-0.02em]">
+                Ten ways to ride with us.
               </h2>
             </Reveal>
-
-            <div className="flex flex-wrap gap-3">
-              {facilities.map((item, i) => (
-                <Reveal key={item.title} delay={i * 0.05}>
-                  <span
-                    className="inline-flex items-center gap-3 rounded-full border border-white/70 pl-4 pr-5 py-3 text-[13px] md:text-sm text-[#1E2A22]"
-                    style={{ background: cardWashes[i % cardWashes.length] }}
-                  >
-                    <Bloom size={13} />
-                    {item.title}
-                  </span>
-                </Reveal>
-              ))}
-            </div>
-
             <Reveal delay={0.1}>
               <Link
-                to="/demo/equestrian/facilities"
-                className="group inline-flex items-center gap-3 mt-10 text-[10px] uppercase tracking-[0.3em]"
+                to="/demo/equestrian/lessons"
+                className="group inline-flex items-center gap-2.5 text-[11px] uppercase tracking-[0.28em] text-[#2D5A43] font-medium hover:text-[#1E2822] transition-colors"
               >
-                Look round the yard
+                <span>See all ten lessons</span>
                 <ArrowRight size={15} className="group-hover:translate-x-1 transition-transform duration-300" />
               </Link>
             </Reveal>
           </div>
 
-          <div className="lg:col-span-6 order-1 lg:order-2 grid grid-cols-2 gap-4 md:gap-6">
-            <PhotoReveal
-              src={images.stables}
-              alt="A horse looking out between two stable doors"
-              className="rounded-[1.5rem] aspect-[3/4] col-span-1"
-            />
-            <div className="space-y-4 md:space-y-6">
-              <PhotoReveal
-                src={images.arena}
-                alt="A rider schooling in the outdoor arena"
-                className="rounded-[1.5rem] aspect-square"
-                delay={0.08}
-              />
-              <PhotoReveal
-                src={images.meadow}
-                alt="Wildflower meadow on the edge of the downs"
-                className="rounded-[1.5rem] aspect-[4/3]"
-                delay={0.16}
-              />
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-12 lg:gap-16 items-start">
+            {/* Left: Interactive Live Photograph Preview */}
+            <div className="lg:col-span-5 lg:sticky lg:top-28">
+              <div className="relative overflow-hidden rounded-2xl aspect-[16/10] sm:aspect-[4/5] bg-[#E8E2D5]">
+                <AnimatePresence mode="wait">
+                  <motion.img
+                    key={activeLesson.id}
+                    src={activeLesson.photo}
+                    alt={activeLesson.name}
+                    initial={{ opacity: 0, scale: 1.04 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                </AnimatePresence>
+                <div
+                  aria-hidden="true"
+                  className="absolute inset-0"
+                  style={{
+                    background:
+                      'linear-gradient(to top, rgba(24,36,29,0.72) 0%, rgba(24,36,29,0.12) 45%, rgba(24,36,29,0) 100%)'
+                  }}
+                />
+                <div className="absolute inset-x-0 bottom-0 p-5 sm:p-7 text-[#FAF6EE]">
+                  <p className="text-[10px] uppercase tracking-[0.3em] text-[#CFE3D6] mb-1.5">
+                    {activeLesson.setting} &middot; {activeLesson.duration}
+                  </p>
+                  <p className="font-serif text-xl sm:text-2xl leading-snug">{activeLesson.name}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Right: Open, Unboxed Editorial Typography List */}
+            <div className="lg:col-span-7 divide-y divide-[#2D5A43]/15">
+              {featuredLessons.map((lesson, i) => {
+                const isActive = i === activeLessonIndex;
+                return (
+                  <div
+                    key={lesson.id}
+                    onMouseEnter={() => setActiveLessonIndex(i)}
+                    onFocus={() => setActiveLessonIndex(i)}
+                    className="py-5 sm:py-7 first:pt-0 last:pb-0 transition-colors"
+                  >
+                    <Link
+                      to="/demo/equestrian/lessons"
+                      className="group block"
+                    >
+                      <div className="flex items-baseline justify-between gap-4 sm:gap-6">
+                        <div className="flex items-baseline gap-3.5 sm:gap-5">
+                          <span
+                            className={`font-serif text-sm tabular-nums transition-colors shrink-0 ${
+                              isActive ? 'text-[#2D5A43]' : 'text-[#5F665E]/60'
+                            }`}
+                          >
+                            0{i + 1}
+                          </span>
+                          <div>
+                            <h3
+                              className={`font-serif text-xl sm:text-2xl md:text-3xl leading-snug transition-colors ${
+                                isActive ? 'text-[#2D5A43]' : 'text-[#1E2822] group-hover:text-[#2D5A43]'
+                              }`}
+                            >
+                              {lesson.name}
+                            </h3>
+                            <p className="text-[10px] sm:text-[11px] uppercase tracking-[0.22em] sm:tracking-[0.24em] text-[#5F665E] mt-1">
+                              {lesson.who} &middot; {lesson.duration}
+                            </p>
+                          </div>
+                        </div>
+
+                        <ArrowUpRight
+                          size={18}
+                          className={`shrink-0 transition-all duration-300 ${
+                            isActive
+                              ? 'text-[#2D5A43] translate-x-0.5 -translate-y-0.5'
+                              : 'text-[#5F665E]/50 group-hover:text-[#2D5A43]'
+                          }`}
+                        />
+                      </div>
+
+                      <p
+                        className={`pl-0 sm:pl-9 pr-0 sm:pr-6 text-[14px] sm:text-[15px] leading-[1.75] sm:leading-[1.8] transition-all duration-300 ${
+                          isActive ? 'text-[#1E2822] mt-2.5 sm:mt-3 opacity-100' : 'text-[#5F665E] mt-2 opacity-80'
+                        }`}
+                      >
+                        {lesson.detail}
+                      </p>
+                    </Link>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
       </section>
 
-      {/* ── VOICES ─────────────────────────────────────────────────────── */}
-      <section className="px-6 md:px-10 pb-14 md:pb-20">
-        <div className="max-w-[1500px] mx-auto">
-          <Reveal className="mb-8 md:mb-12">
-            <SectionLabel className="mb-6">In their words</SectionLabel>
-          </Reveal>
+      {/* ── SECTION 04: THE HORSES (MINIMALISTIC, COMPACT 2-PER-ROW) ─────── */}
+      <section className="relative z-10 py-16 sm:py-24 md:py-32 px-5 sm:px-6 md:px-12">
+        <div className="max-w-[1240px] mx-auto">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 sm:gap-8 mb-10 sm:mb-14">
+            <Reveal>
+              <SectionLabel className="mb-4 sm:mb-5">The Horses</SectionLabel>
+              <h2 className="font-serif text-[clamp(2rem,4.6vw,3.9rem)] leading-[1.08] tracking-[-0.02em]">
+                Chosen for temperament,
+                <br />
+                <span className="italic text-[#2D5A43]">schooled with kindness.</span>
+              </h2>
+            </Reveal>
+            <Reveal delay={0.1}>
+              <Link
+                to="/demo/equestrian/horses"
+                className="group inline-flex items-center justify-center gap-3 px-7 py-4 rounded-full bg-[#2D5A43] text-[#FAF6EE] text-[11px] uppercase tracking-[0.28em] hover:bg-[#234734] transition-colors duration-300 w-full sm:w-auto"
+              >
+                <span>Meet All Eight Horses</span>
+                <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform duration-300" />
+              </Link>
+            </Reveal>
+          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6">
-            {testimonials.map((item, i) => (
-              <Reveal key={item.name} delay={i * 0.08}>
-                <figure
-                  className="h-full rounded-[1.75rem] p-8 md:p-9 flex flex-col border border-white/70 shadow-[0_18px_44px_-34px_rgba(30,42,34,0.4)]"
-                  style={{ background: cardWashes[(i + 1) % cardWashes.length] }}
-                >
-                  <Bloom size={20} className="mb-6" />
-                  <blockquote className="font-serif text-[1.35rem] md:text-[1.6rem] leading-[1.3] mb-8">
-                    &ldquo;{item.short}&rdquo;
-                  </blockquote>
-                  <figcaption className="mt-auto flex items-center gap-3">
-                    <span aria-hidden="true" className="w-7 h-px shrink-0 bg-[#E4577A]" />
-                    <span className="text-[10px] uppercase tracking-[0.28em] text-[#4C5A50]">
-                      {item.name}
-                    </span>
-                  </figcaption>
-                </figure>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 lg:gap-x-14 gap-y-10 sm:gap-y-14">
+            {featuredHorses.map((horse, i) => (
+              <Reveal key={horse.name} delay={(i % 2) * 0.12}>
+                <article>
+                  <PhotoReveal
+                    src={horse.photo}
+                    alt={`${horse.name}, ${horse.colour} ${horse.breed}`}
+                    className="aspect-[16/11] w-full mb-4 sm:mb-5"
+                  />
+
+                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 sm:gap-4 mb-2.5">
+                    <div>
+                      <h3 className="font-serif text-2xl md:text-3xl text-[#1E2822] leading-none">
+                        {horse.name}
+                      </h3>
+                      <p className="text-[10px] sm:text-[11px] uppercase tracking-[0.22em] sm:tracking-[0.24em] text-[#2D5A43] mt-2">
+                        {horse.height} &middot; {horse.breed} &middot; {horse.age}
+                      </p>
+                    </div>
+
+                    <Link
+                      to="/demo/equestrian/book"
+                      className="group inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-[#E8F0EB] text-[#2D5A43] hover:bg-[#2D5A43] hover:text-[#FAF6EE] text-[10px] uppercase tracking-[0.26em] font-medium transition-colors shrink-0 w-fit"
+                    >
+                      <span>Ride {horse.name}</span>
+                      <ArrowUpRight size={13} />
+                    </Link>
+                  </div>
+
+                  <p className="text-[14px] md:text-[15px] text-[#5F665E] leading-relaxed">
+                    {horse.character}
+                  </p>
+                </article>
               </Reveal>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── CLOSING CALL ───────────────────────────────────────────────── */}
-      <section className="px-6 md:px-10 pb-16 md:pb-24">
-        <div className="max-w-[1500px] mx-auto">
-          <Reveal>
-            <div className="relative rounded-[2rem] overflow-hidden">
-              <img
-                src={images.sunset}
-                alt="Horses in the field at sunset"
-                loading="lazy"
-                decoding="async"
-                className="absolute inset-0 w-full h-full object-cover"
-              />
-              <div
-                aria-hidden="true"
-                className="absolute inset-0"
-                style={{
-                  background:
-                    'linear-gradient(104deg, rgba(30,42,34,0.90) 0%, rgba(30,42,34,0.58) 46%, rgba(121,192,224,0.34) 78%, rgba(228,87,122,0.30) 100%)'
-                }}
-              />
-              <div className="relative px-8 md:px-16 py-14 md:py-20 max-w-2xl text-[#FFFAF3]">
-                <HorseMark size={56} color="#FFFAF3" className="mb-8" />
-                <h2 className="font-serif text-[clamp(1.9rem,5vw,3.4rem)] leading-[1.02] tracking-[-0.02em] mb-8">
-                  Come and meet the horses.
+      {/* ── SECTION 05: THE YARD & DOWNLAND (100% MATCHING PHOTOS) ──────── */}
+      <section className="relative z-10 py-16 sm:py-24 md:py-32 px-5 sm:px-6 md:px-12">
+        <div className="max-w-[1440px] mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 sm:gap-12 lg:gap-16 items-center">
+            <div className="lg:col-span-5">
+              <Reveal>
+                <SectionLabel className="mb-4 sm:mb-5">The Yard &amp; Estate</SectionLabel>
+                <h2 className="font-serif text-[clamp(1.95rem,4vw,3.5rem)] leading-[1.08] tracking-[-0.02em] mb-5 sm:mb-6">
+                  Airy oak stabling beneath the chalk downs.
                 </h2>
-                <div className="flex flex-wrap gap-4">
-                  <Link
-                    to="/demo/equestrian/book"
-                    className="group inline-flex items-center gap-3 pl-8 pr-6 py-4 bg-[#FFFAF3] text-[#1E2A22] rounded-full text-[10px] uppercase tracking-[0.3em] hover:bg-[#E4577A] hover:text-[#FFFAF3] transition-colors duration-300"
-                  >
-                    Book a lesson
-                    <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform duration-300" />
-                  </Link>
-                  <a
-                    href={`tel:${academy.phoneHref}`}
-                    className="inline-flex items-center gap-3 px-8 py-4 rounded-full border border-white/40 text-[10px] uppercase tracking-[0.3em] hover:border-white transition-colors duration-300"
-                  >
-                    {academy.phoneDisplay}
-                  </a>
-                </div>
+                <p className="text-[15px] sm:text-[16px] text-[#5F665E] leading-[1.8] sm:leading-[1.85] mb-8 sm:mb-10">
+                  Our American barn, 60m floodlit sand arena, grass showjumping paddock, and heated viewing lounge sit right at the foot of the Pewsey Vale — with four hundred acres of open turf stretching out behind the back gate.
+                </p>
+
+                <Link
+                  to="/demo/equestrian/facilities"
+                  className="group inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-[#2D5A43] text-[#FAF6EE] text-[11px] uppercase tracking-[0.28em] hover:bg-[#234734] transition-colors duration-300 w-full sm:w-auto"
+                >
+                  <span>Tour The Yard</span>
+                  <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform duration-300" />
+                </Link>
+              </Reveal>
+            </div>
+
+            <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
+              <div>
+                <PhotoReveal
+                  src={images.stables}
+                  alt="Sunlit American barn aisle with loosebox stalls on both sides and a horse standing calmly"
+                  className="aspect-[16/11] sm:aspect-[4/5] w-full mb-3"
+                />
+                <p className="text-[10px] sm:text-[11px] uppercase tracking-[0.26em] text-[#2D5A43] px-1">
+                  The American Barn &amp; Looseboxes
+                </p>
+              </div>
+              <div className="sm:mt-12">
+                <PhotoReveal
+                  src={images.hacking}
+                  alt="Horses out on the open misty Wiltshire chalk downland pastures"
+                  className="aspect-[16/11] sm:aspect-[4/5] w-full mb-3"
+                  delay={0.12}
+                />
+                <p className="text-[10px] sm:text-[11px] uppercase tracking-[0.26em] text-[#2D5A43] px-1">
+                  400 Acres of Open Chalk Downland
+                </p>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── SECTION 06: RIDER VOICES (OPEN & UNBOXED) ────────────────────── */}
+      <section className="relative z-10 py-16 sm:py-24 md:py-32 px-5 sm:px-6 md:px-12">
+        <div className="max-w-[1440px] mx-auto">
+          <Reveal>
+            <SectionLabel className="mb-4 sm:mb-5">Rider Voices</SectionLabel>
+            <h2 className="font-serif text-[clamp(1.95rem,4vw,3.5rem)] leading-[1.08] tracking-[-0.02em] mb-10 sm:mb-16">
+              Heard from the viewing gallery.
+            </h2>
           </Reveal>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 sm:gap-12 lg:gap-16">
+            {testimonials.map((t, i) => (
+              <Reveal key={t.name} delay={i * 0.08} className="flex flex-col justify-between">
+                <div>
+                  <span className="block font-serif text-4xl sm:text-5xl leading-none text-[#2D5A43]/35 mb-3 sm:mb-4">
+                    &ldquo;
+                  </span>
+                  <p className="font-serif text-lg sm:text-xl md:text-2xl leading-relaxed text-[#1E2822] mb-6 sm:mb-8">
+                    {t.quote}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-[12px] uppercase tracking-[0.28em] text-[#2D5A43] font-medium">
+                    {t.name}
+                  </p>
+                  <p className="text-[13px] text-[#5F665E] mt-1">{t.detail}</p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── CLOSING INVITATION ───────────────────────────────────────────── */}
+      <section className="relative z-10 px-5 sm:px-6 md:px-12 pb-20 sm:pb-28 md:pb-36">
+        <div className="max-w-[1440px] mx-auto rounded-3xl bg-[#2D5A43] text-[#FAF6EE] p-7 sm:p-10 md:p-20">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-12 items-center">
+            <div className="lg:col-span-8">
+              <p className="text-[10px] uppercase tracking-[0.38em] text-[#CFE3D6] mb-3 sm:mb-4">
+                Come &amp; Ride With Us
+              </p>
+              <h2 className="font-serif text-[clamp(2rem,5vw,4.2rem)] leading-[1.05] tracking-[-0.02em] mb-5 sm:mb-6">
+                Tell us about the rider.
+                <br />
+                <span className="italic text-[#CFE3D6]">We will match the horse.</span>
+              </h2>
+              <p className="text-white/80 text-[15px] sm:text-[16px] leading-[1.75] sm:leading-[1.8] max-w-xl">
+                Every booking is confirmed personally from the tack room so we can pair you with the right coach and schoolmaster before you arrive.
+              </p>
+            </div>
+            <div className="lg:col-span-4 flex flex-col sm:flex-row lg:flex-col gap-3.5 sm:gap-4 lg:items-end">
+              <Link
+                to="/demo/equestrian/book"
+                className="group inline-flex items-center justify-center gap-4 px-9 py-4 rounded-full bg-[#FAF6EE] text-[#1E2822] text-[11px] uppercase tracking-[0.28em] font-medium hover:bg-white transition-colors duration-300 w-full sm:w-auto"
+              >
+                <span>Book a Lesson</span>
+                <ArrowUpRight size={15} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+              </Link>
+              <a
+                href={`tel:${academy.phoneHref}`}
+                className="inline-flex items-center justify-center gap-3 px-9 py-4 rounded-full border border-white/30 text-[#FAF6EE] text-[11px] uppercase tracking-[0.28em] hover:bg-white/10 transition-colors duration-300 w-full sm:w-auto"
+              >
+                <Phone size={14} />
+                <span>{academy.phoneDisplay}</span>
+              </a>
+            </div>
+          </div>
         </div>
       </section>
 
       <EquestrianFooter />
-
-      <style>{`
-        /* Header entrances use fill-mode animations rather than scroll triggers,
-           so nothing can be left stranded at opacity 0. */
-        @keyframes eq-rise {
-          from { opacity: 0; transform: translate3d(0, 22px, 0); }
-          to { opacity: 1; transform: none; }
-        }
-        .eq-rise { animation: eq-rise 0.85s cubic-bezier(0.22, 1, 0.36, 1) both; }
-
-        /* The headline arrives a line at a time from behind its own baseline.
-           The padding pair keeps descenders from being clipped by the mask. */
-        .eq-line { display: block; overflow: hidden; padding-bottom: 0.14em; margin-bottom: -0.14em; }
-        @keyframes eq-line-rise {
-          from { transform: translate3d(0, 110%, 0); }
-          to { transform: none; }
-        }
-        .eq-line-in {
-          display: block;
-          animation: eq-line-rise 1.15s cubic-bezier(0.22, 1, 0.36, 1) both;
-        }
-
-        @keyframes eq-wipe {
-          from { clip-path: inset(0 0 100% 0); }
-          to { clip-path: inset(0 0 0% 0); }
-        }
-        .eq-wipe { animation: eq-wipe 1.4s cubic-bezier(0.16, 1, 0.3, 1) 0.25s both; }
-
-        /* A very slow drift, so the first screen is never completely static. */
-        @keyframes eq-drift {
-          0% { transform: scale(1.06) translate3d(0, 0, 0); }
-          50% { transform: scale(1.13) translate3d(-1.4%, -1.2%, 0); }
-          100% { transform: scale(1.06) translate3d(0, 0, 0); }
-        }
-        .eq-drift { animation: eq-drift 28s ease-in-out infinite; will-change: transform; }
-
-        @keyframes eq-float {
-          0%, 100% { transform: translate3d(0, 0, 0); }
-          50% { transform: translate3d(0, -6px, 0); }
-        }
-        .eq-float { animation: eq-rise 0.85s cubic-bezier(0.22, 1, 0.36, 1) both, eq-float 6s ease-in-out 1.6s infinite; }
-
-        /* The rosette lettering turns once every 40s — slow enough to read. */
-        @keyframes eq-spin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-        .eq-spin { animation: eq-spin 40s linear infinite; transform-origin: 50% 50%; }
-
-        @keyframes eq-ribbon-in {
-          from { opacity: 0; transform: translate3d(0, 10px, 0); }
-          to { opacity: 1; transform: none; }
-        }
-        .eq-ribbon { animation: eq-ribbon-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) both; }
-
-        @keyframes eq-marquee-scroll {
-          from { transform: translate3d(0, 0, 0); }
-          to { transform: translate3d(-50%, 0, 0); }
-        }
-        .eq-marquee { animation: eq-marquee-scroll 64s linear infinite; will-change: transform; }
-        .eq-marquee:hover { animation-play-state: paused; }
-
-        @media (prefers-reduced-motion: reduce) {
-          .eq-rise, .eq-wipe, .eq-drift, .eq-ribbon, .eq-line-in { animation: none; }
-          .eq-float { animation: none; }
-          .eq-spin { animation: none; }
-          .eq-marquee { animation: none; }
-        }
-      `}</style>
     </div>
   );
 };

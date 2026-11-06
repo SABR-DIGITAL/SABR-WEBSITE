@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import * as RouterDOM from 'react-router-dom';
 const { Link } = RouterDOM as any;
-import { MapPin, Phone, Mail, Clock, Send, Check, ShieldCheck, Compass, Plane } from 'lucide-react';
+import { Check, ArrowUpRight } from 'lucide-react';
 import SpaNavbar from './SpaNavbar';
 import SpaFooter from './SpaFooter';
 import SpaBookingModal from './SpaBookingModal';
@@ -14,7 +14,7 @@ export const SpaContact: React.FC = () => {
     name: '',
     email: '',
     phone: '',
-    interest: 'General Inquiries & Bookings',
+    interest: 'Residence Reservations',
     message: ''
   });
 
@@ -31,7 +31,7 @@ export const SpaContact: React.FC = () => {
         name: '',
         email: '',
         phone: '',
-        interest: 'General Inquiries & Bookings',
+        interest: 'Residence Reservations',
         message: ''
       });
     }, 4000);
@@ -42,119 +42,117 @@ export const SpaContact: React.FC = () => {
       <SpaNavbar onOpenBooking={() => setIsBookingOpen(true)} />
 
       {/* HERO BANNER */}
-      <div className="relative pt-44 pb-24 px-6 md:px-14 bg-[#0A0D0C] border-b border-white/10">
-        <div className="max-w-6xl mx-auto text-center space-y-6">
+      <section className="relative pt-28 pb-14 sm:pt-36 sm:pb-20 md:pt-48 md:pb-28 px-5 sm:px-6 md:px-14 bg-[#070908] border-b border-white/10">
+        <div className="max-w-4xl mx-auto text-center space-y-4 sm:space-y-6">
           <span className="text-[10px] uppercase tracking-[0.45em] text-emerald-400 font-mono font-bold block">
             CONCIERGE & ACCESS
           </span>
-          <h1 className="font-cinzel text-4xl sm:text-6xl md:text-7xl font-bold uppercase text-white tracking-wider">
+          <h1 className="font-cinzel text-3xl sm:text-6xl md:text-7xl font-bold uppercase text-white tracking-wider">
             CONTACT & LOCATION
           </h1>
-          <p className="max-w-2xl mx-auto text-xs sm:text-sm text-white/60 font-light leading-relaxed">
-            Our VIP Concierge team is available 24/7 to coordinate private airport transfers, 
-            helicopter landing slots, bespoke spa itineraries and custom forest retreats.
+          <p className="max-w-xl mx-auto text-sm text-white/60 font-light leading-relaxed">
+            Our resident concierge desk is available 24 hours a day to assist with suite reservations, private dining, spa rituals, and arrival logistics.
           </p>
         </div>
-      </div>
+      </section>
 
-      {/* MAIN CONTACT SECTION */}
-      <div className="max-w-6xl mx-auto px-6 md:px-14 py-24">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-          {/* LEFT: INFO & TRANSFERS */}
-          <div className="lg:col-span-5 space-y-8">
-            <div className="p-8 sm:p-10 bg-[#0C100E] border border-white/10 space-y-6 shadow-xl">
-              <h3 className="font-cinzel text-2xl font-bold uppercase text-white">
-                RESERVE SANCTUARY
-              </h3>
+      {/* OPEN EDITORIAL CONTACT SECTION (UNBOXED, SPACIOUS) */}
+      <section className="max-w-6xl mx-auto px-5 sm:px-6 md:px-14 py-16 sm:py-28 md:py-48">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 sm:gap-16 lg:gap-24 items-start">
+          {/* LEFT: SANCTUARY DETAILS */}
+          <div className="lg:col-span-5 space-y-8 sm:space-y-12">
+            <div className="space-y-3">
+              <span className="text-[10px] uppercase tracking-[0.45em] text-emerald-400 font-mono font-bold block">
+                01 · THE ESTATE
+              </span>
+              <h2 className="font-cinzel text-2xl sm:text-3xl font-bold uppercase text-white">
+                SANCTUARY DIRECTORY
+              </h2>
+            </div>
 
-              <div className="space-y-5 text-xs">
-                <div className="flex items-start gap-4">
-                  <MapPin className="text-emerald-400 shrink-0 mt-1" size={18} />
-                  <div>
-                    <span className="font-bold text-white block font-mono">Estate Address</span>
-                    <p className="text-white/70 leading-relaxed">{SPA_DATA.brand.address}</p>
-                    <span className="font-mono text-emerald-400 text-[11px] block mt-0.5">
-                      GPS: {SPA_DATA.brand.coordinates}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4">
-                  <Phone className="text-emerald-400 shrink-0 mt-1" size={18} />
-                  <div>
-                    <span className="font-bold text-white block font-mono">Direct Concierge Telephone</span>
-                    <a href={`tel:${SPA_DATA.brand.phone}`} className="text-white/70 hover:text-emerald-400 transition-colors font-mono">
-                      {SPA_DATA.brand.phone}
-                    </a>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4">
-                  <Mail className="text-emerald-400 shrink-0 mt-1" size={18} />
-                  <div>
-                    <span className="font-bold text-white block font-mono">Inquiries Email</span>
-                    <a href={`mailto:${SPA_DATA.brand.email}`} className="text-white/70 hover:text-emerald-400 transition-colors">
-                      {SPA_DATA.brand.email}
-                    </a>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4">
-                  <Clock className="text-emerald-400 shrink-0 mt-1" size={18} />
-                  <div>
-                    <span className="font-bold text-white block font-mono">Reception & Gate Access</span>
-                    <p className="text-white/70 leading-relaxed">24 Hours / 7 Days · Gated Security Barrier</p>
-                  </div>
-                </div>
+            <div className="space-y-6 sm:space-y-8 text-sm">
+              <div className="space-y-2 pb-5 sm:pb-6 border-b border-white/10">
+                <span className="text-[10px] uppercase tracking-[0.3em] text-white/40 font-mono block">
+                  ESTATE ADDRESS
+                </span>
+                <p className="text-white/85 font-light leading-relaxed">{SPA_DATA.brand.address}</p>
+                <span className="font-mono text-emerald-400 text-xs block pt-1">
+                  {SPA_DATA.brand.coordinates}
+                </span>
               </div>
 
-              <div className="pt-4 border-t border-white/10">
-                <Link
-                  to="/demo/spa/transfers"
-                  className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-emerald-400 hover:text-white transition-colors"
-                >
-                  <Plane size={14} />
-                  <span>VIEW HELIPAD & FLIGHT COORDINATION →</span>
-                </Link>
+              <div className="space-y-2 pb-5 sm:pb-6 border-b border-white/10">
+                <span className="text-[10px] uppercase tracking-[0.3em] text-white/40 font-mono block">
+                  DIRECT CONCIERGE TELEPHONE
+                </span>
+                <a href={`tel:${SPA_DATA.brand.phone}`} className="text-white hover:text-emerald-400 transition-colors font-mono block">
+                  {SPA_DATA.brand.phone}
+                </a>
               </div>
+
+              <div className="space-y-2 pb-5 sm:pb-6 border-b border-white/10">
+                <span className="text-[10px] uppercase tracking-[0.3em] text-white/40 font-mono block">
+                  ELECTRONIC MAIL
+                </span>
+                <a href={`mailto:${SPA_DATA.brand.email}`} className="text-white hover:text-emerald-400 transition-colors font-light block break-all">
+                  {SPA_DATA.brand.email}
+                </a>
+              </div>
+
+              <div className="space-y-2 pb-5 sm:pb-6 border-b border-white/10">
+                <span className="text-[10px] uppercase tracking-[0.3em] text-white/40 font-mono block">
+                  RECEPTION & ARRIVALS
+                </span>
+                <p className="text-white/75 font-light">24 Hours Daily · Private Gated Entrance</p>
+              </div>
+            </div>
+
+            <div>
+              <Link
+                to="/demo/spa/transfers"
+                className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[0.25em] text-emerald-400 hover:text-white transition-colors"
+              >
+                <span>HELIPAD & CHAUFFEUR TRANSFERS</span>
+                <ArrowUpRight size={14} />
+              </Link>
             </div>
           </div>
 
-          {/* RIGHT: CONTACT FORM (SHARP SQUARES) */}
-          <div className="lg:col-span-7 bg-[#0C100E] border border-white/15 p-8 sm:p-12 shadow-2xl">
-            <div className="space-y-3 mb-8">
-              <span className="text-[10px] uppercase tracking-[0.35em] text-emerald-400 font-mono block font-bold">
-                DIRECT INQUIRY
+          {/* RIGHT: UNBOXED MINIMALIST FORM */}
+          <div className="lg:col-span-7 space-y-8 sm:space-y-10">
+            <div className="space-y-3 pb-5 sm:pb-6 border-b border-white/10">
+              <span className="text-[10px] uppercase tracking-[0.45em] text-emerald-400 font-mono block font-bold">
+                02 · DIRECT ENQUIRY
               </span>
               <h3 className="font-cinzel text-2xl sm:text-3xl font-bold uppercase text-white">
-                MESSAGE THE CONCIERGE
+                WRITE TO THE CONCIERGE
               </h3>
             </div>
 
             {isSent ? (
-              <div className="py-12 text-center space-y-4">
+              <div className="py-12 sm:py-16 text-center space-y-4 border-b border-white/10">
                 <div className="w-12 h-12 bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto border border-emerald-500/30">
                   <Check size={24} />
                 </div>
-                <h4 className="font-cinzel text-xl font-bold uppercase text-white">Message Dispatched</h4>
-                <p className="text-xs text-white/60 max-w-sm mx-auto leading-relaxed">
-                  Thank you. Our VIP Concierge team will review your inquiry and reply within 4 hours.
+                <h4 className="font-cinzel text-xl font-bold uppercase text-white">Enquiry Sent</h4>
+                <p className="text-sm text-white/60 max-w-sm mx-auto font-light leading-relaxed">
+                  Thank you. Our concierge team will respond personally within two hours.
                 </p>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
                   <div>
                     <label className="block text-[10px] uppercase font-mono tracking-widest text-white/50 mb-2">
-                      Your Full Name
+                      Full Name
                     </label>
                     <input
                       type="text"
                       required
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      placeholder="Lady / Mr. Jonathan Hayes"
-                      className="w-full bg-[#141B18] border border-white/20 px-4 py-3 text-xs text-white focus:outline-none focus:border-emerald-400"
+                      placeholder="Jonathan Hayes"
+                      className="w-full bg-transparent border-b border-white/20 px-0 py-3 text-sm text-white focus:outline-none focus:border-emerald-400 placeholder:text-white/25"
                     />
                   </div>
                   <div>
@@ -167,69 +165,71 @@ export const SpaContact: React.FC = () => {
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       placeholder="jonathan@domain.co.uk"
-                      className="w-full bg-[#141B18] border border-white/20 px-4 py-3 text-xs text-white focus:outline-none focus:border-emerald-400"
+                      className="w-full bg-transparent border-b border-white/20 px-0 py-3 text-sm text-white focus:outline-none focus:border-emerald-400 placeholder:text-white/25"
                     />
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
                   <div>
                     <label className="block text-[10px] uppercase font-mono tracking-widest text-white/50 mb-2">
-                      Phone Number
+                      Telephone Number
                     </label>
                     <input
                       type="tel"
                       value={formData.phone}
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                       placeholder="+44 7900 000000"
-                      className="w-full bg-[#141B18] border border-white/20 px-4 py-3 text-xs text-white focus:outline-none focus:border-emerald-400"
+                      className="w-full bg-transparent border-b border-white/20 px-0 py-3 text-sm text-white focus:outline-none focus:border-emerald-400 placeholder:text-white/25"
                     />
                   </div>
                   <div>
                     <label className="block text-[10px] uppercase font-mono tracking-widest text-white/50 mb-2">
-                      Subject Matter
+                      Subject
                     </label>
                     <select
                       value={formData.interest}
                       onChange={(e) => setFormData({ ...formData, interest: e.target.value })}
-                      className="w-full bg-[#141B18] border border-white/20 px-4 py-3 text-xs font-mono text-white focus:outline-none focus:border-emerald-400"
+                      className="w-full bg-[#070908] border-b border-white/20 px-0 py-3 text-xs font-mono text-white focus:outline-none focus:border-emerald-400"
                     >
-                      <option value="General Inquiries & Bookings">General Inquiries & Bookings</option>
-                      <option value="Presidential Villa Buyout">Presidential Villa Buyout</option>
-                      <option value="Thermal Spa Membership">Thermal Spa Membership</option>
-                      <option value="Private Dining & Events">Private Dining & Events</option>
-                      <option value="Helipad & Flight Logistics">Helipad & Flight Logistics</option>
+                      <option value="Residence Reservations">Residence Reservations</option>
+                      <option value="Presidential Villa Exclusive Use">Presidential Villa Exclusive Use</option>
+                      <option value="Thermal Spa & Wellness">Thermal Spa & Wellness</option>
+                      <option value="Private Dining">Private Dining</option>
+                      <option value="Helipad & Chauffeur Transfers">Helipad & Chauffeur Transfers</option>
                     </select>
                   </div>
                 </div>
 
                 <div>
                   <label className="block text-[10px] uppercase font-mono tracking-widest text-white/50 mb-2">
-                    Message / Special Requirements
+                    Your Message
                   </label>
                   <textarea
-                    rows={4}
+                    rows={3}
                     required
                     value={formData.message}
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                    placeholder="How may our concierge assist your stay?"
-                    className="w-full bg-[#141B18] border border-white/20 px-4 py-3 text-xs text-white placeholder:text-white/30 focus:outline-none focus:border-emerald-400"
+                    placeholder="How may our concierge team assist with your stay?"
+                    className="w-full bg-transparent border-b border-white/20 px-0 py-3 text-sm text-white placeholder:text-white/25 focus:outline-none focus:border-emerald-400"
                   />
                 </div>
 
-                <button
-                  type="submit"
-                  className="w-full py-4 bg-white hover:bg-emerald-400 hover:text-slate-950 text-slate-950 font-bold text-xs uppercase tracking-[0.25em] transition-all cursor-pointer shadow-xl border border-white/20 mt-4"
-                >
-                  DISPATCH INQUIRY
-                </button>
+                <div className="pt-2">
+                  <button
+                    type="submit"
+                    className="inline-flex items-center justify-center w-full sm:w-auto gap-3 px-10 py-4 bg-white hover:bg-emerald-400 hover:text-slate-950 text-slate-950 font-bold text-xs uppercase tracking-[0.25em] transition-all cursor-pointer"
+                  >
+                    <span>SEND ENQUIRY</span>
+                    <ArrowUpRight size={14} />
+                  </button>
+                </div>
               </form>
             )}
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* FOOTER */}
       <SpaFooter />
 
       <SpaBookingModal
