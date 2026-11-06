@@ -18,8 +18,7 @@ const Link = (RouterDOM as any).Link || (RouterDOM as any).default?.Link;
 
 const HERO_SLIDES = [
   {
-    image:
-      'https://dmhdaawgg48dl.cloudfront.net/wp-content/uploads/2024/10/pool-patio-palm-trees-putting-green-modern-oxshott-surrey-1920x1280.jpg',
+    image: '/images/projects/landscaping-preview.webp',
     alt: 'Contemporary architectural garden and lawn terrace in Surrey',
   },
   {

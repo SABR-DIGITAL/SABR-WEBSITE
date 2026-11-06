@@ -141,16 +141,17 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
 
       if (!x) return [[W / 2, centerY]];
 
-      const fs = Math.min(W * 0.42, safeHeight / 0.74) * s;
+      const isMobile = W < 700;
+      const fs = Math.min(isMobile ? W * 0.64 : W * 0.42, safeHeight / 0.74) * s;
       x.fillStyle = '#fff';
-      x.font = '900 ' + fs + 'px Inter,Arial Black,Arial,sans-serif';
+      x.font = (isMobile ? '800 ' : '900 ') + fs + 'px Inter,Arial,sans-serif';
       x.textAlign = 'center';
       x.textBaseline = 'middle';
       x.fillText(txt, o.width / 2, centerY * s);
 
       const data = x.getImageData(0, 0, o.width, o.height).data;
-      const gx = (W < 700 ? 7.2 : 10.5) * s;
-      const gy = (W < 700 ? 12 : 17.5) * s;
+      const gx = (isMobile ? 7.5 : 10.5) * s;
+      const gy = (isMobile ? 12.5 : 17.5) * s;
 
       // Collect points row-by-row so we can prune grazing 1-figure tip rows on rounded glyphs like "88"
       const rows: [number, number][][] = [];
@@ -223,11 +224,12 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
         });
       }
 
+      const isMobile = W < 700;
       for (let i = 0; i < N; i++) {
         const a = A[i % A.length];
         const b = B[i % B.length];
         const ang = Math.random() * 6.283;
-        const r = Math.max(W, H) * (0.5 + Math.random() * 0.5);
+        const r = Math.max(W, H) * (isMobile ? 0.32 + Math.random() * 0.25 : 0.5 + Math.random() * 0.5);
         P.push({
           ax: a[0],
           ay: a[1],
@@ -235,8 +237,8 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
           by: b[1],
           sx: W / 2 + Math.cos(ang) * r,
           sy: H / 2 + Math.sin(ang) * r,
-          dx: (Math.random() - 0.25) * W * 0.55,
-          dy: -(Math.random() * H * 0.5 + H * 0.08),
+          dx: (Math.random() - 0.25) * W * (isMobile ? 0.38 : 0.55),
+          dy: -(Math.random() * H * (isMobile ? 0.36 : 0.5) + H * 0.08),
           d: Math.random(),
           ph: Math.random() * 6.283,
           sz: 1 + Math.random() * 1.6,
@@ -247,19 +249,21 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
     function draw(t: number) {
       if (!ctx || !fl) return;
       const p = cur;
+      const isMobile = W < 700;
       const shk = Math.sin(clamp((p - 0.35) / 0.2) * Math.PI);
+      const shakeAmp = isMobile ? 1.0 : 2.5;
       ctx.setTransform(
         dpr,
         0,
         0,
         dpr,
-        Math.sin(cur * 720) * shk * 2.5 * dpr,
-        Math.cos(cur * 880) * shk * 2.5 * dpr
+        Math.sin(cur * 720) * shk * shakeAmp * dpr,
+        Math.cos(cur * 880) * shk * shakeAmp * dpr
       );
 
       // Motion-trail fade onto pure white canvas background
       ctx.globalCompositeOperation = 'source-over';
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.32)';
+      ctx.fillStyle = isMobile ? 'rgba(255, 255, 255, 0.52)' : 'rgba(255, 255, 255, 0.32)';
       ctx.fillRect(-30, -30, W + 60, H + 60);
 
       // Colour: Crimson Red (88) -> Classic SABR Emerald Green (77)
@@ -268,34 +272,37 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
       const sat = isGreen ? 86 : 76;
       const lig = isGreen ? 35 : 42;
 
-      const fh = W < 700 ? 11.5 : 18;
+      const fh = isMobile ? 10.5 : 18;
       const u = fh / 20;
 
       for (let i = 0; i < N; i++) {
         const q = P[i];
-        // Slowed phases by ~20% for smoother, unhurried transitions
-        const e1 = phase(p, 0.01, 0.16, q.d);
-        const e2 = phase(p, 0.36, 0.17, q.d);
-        const e3 = phase(p, 0.53, 0.17, q.d);
-        const wob = Math.sin(t * 0.0012 + q.ph) * (3 + 8 * e2 * (1 - e3));
+        // On mobile, assemble faster and hold still with minimal wobble so 88 is crystal clear
+        const e1 = isMobile ? phase(p, 0.0, 0.12, q.d * 0.4) : phase(p, 0.01, 0.2, q.d);
+        const e2 = phase(p, 0.34, 0.21, q.d);
+        const e3 = phase(p, 0.54, 0.21, q.d);
+        const baseWob = isMobile ? 0.15 : 3;
+        const burstWob = isMobile ? 4.5 : 8;
+        const wob = Math.sin(t * 0.0006 + q.ph) * (baseWob + burstWob * e2 * (1 - e3));
 
         let x = lerp(q.sx, q.ax, e1) + q.dx * e2 + wob;
-        let y = lerp(q.sy, q.ay, e1) + q.dy * e2 + Math.cos(t * 0.00096 + q.ph) * wob;
+        let y = lerp(q.sy, q.ay, e1) + q.dy * e2 + Math.cos(t * 0.00048 + q.ph) * wob;
         x = lerp(x, q.bx, e3);
         y = lerp(y, q.by, e3);
 
-        // Idle shimmer when assembled (20% slower)
+        // Idle shimmer when assembled (very steady on mobile so 88 stays sharp)
         let calm = e1 * (1 - e2) + e3;
         calm = Math.min(1, calm);
-        x += Math.sin(t * 0.0016 + q.ph) * calm * 0.8;
-        y += Math.cos(t * 0.0016 + q.ph) * calm * 0.8;
+        const calmAmp = isMobile ? 0.12 : 0.8;
+        x += Math.sin(t * 0.0008 + q.ph) * calm * calmAmp;
+        y += Math.cos(t * 0.0008 + q.ph) * calm * calmAmp;
 
         let al = 0.95 - 0.7 * e2 * (1 - e3);
         if (e1 < 1) al *= 0.35 + 0.65 * e1;
         ctx.globalAlpha = al;
 
         const mv = Math.max(e1 * (1 - e1), e2 * (1 - e2), e3 * (1 - e3)) * 4;
-        const sw = Math.sin(t * 0.0056 + q.ph) * (0.12 + 0.88 * mv);
+        const sw = Math.sin(t * 0.0028 + q.ph) * ((isMobile ? 0.025 : 0.12) + (isMobile ? 0.55 : 0.88) * mv);
         const tp = y - fh / 2;
 
         ctx.strokeStyle = 'hsl(' + hue + ',' + sat + '%,' + (lig + (q.d - 0.5) * 28) + '%)';
@@ -320,10 +327,10 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
       ctx.fillStyle = 'hsl(' + hue + ',55%,40%)';
       for (let j = 0; j < amb.length; j++) {
         const a = amb[j];
-        a.y -= a.v;
+        a.y -= a.v * 0.5;
         if (a.y < -5) a.y = H + 5;
-        ctx.globalAlpha = 0.09 + 0.07 * Math.sin(t * 0.0008 + a.ph);
-        ctx.fillRect(a.x + Math.sin(t * 0.0005 + a.ph) * 8, a.y, a.r, a.r);
+        ctx.globalAlpha = 0.09 + 0.07 * Math.sin(t * 0.0004 + a.ph);
+        ctx.fillRect(a.x + Math.sin(t * 0.00025 + a.ph) * 8, a.y, a.r, a.r);
       }
       ctx.globalAlpha = 1;
 
@@ -336,8 +343,8 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
     function ui(p: number) {
       if (!t1 || !t2 || !q1 || !q2) return;
       // Visible immediately at top of section so there is no empty gap when entering
-      const showStage1 = p >= 0.04 && p < 0.45;
-      const showStage2 = p > 0.64;
+      const showStage1 = p >= 0.03 && p < 0.45;
+      const showStage2 = p > 0.66;
 
       t1.style.opacity = showStage1 ? '1' : '0';
       t1.style.transform = showStage1 ? 'translateY(0px)' : 'translateY(-10px)';
@@ -361,9 +368,9 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
 
     function loop(t: number) {
       if (shown) {
-        // Slowed interpolation by ~20% (from 0.09 to 0.072)
-        cur += (tgt - cur) * 0.072;
-        if (Math.abs(tgt - cur) < 0.0002) cur = tgt;
+        // 50% slower scroll interpolation (halved from 0.072 to 0.036)
+        cur += (tgt - cur) * 0.036;
+        if (Math.abs(tgt - cur) < 0.0001) cur = tgt;
         draw(t);
         ui(cur);
       }
@@ -409,8 +416,8 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
 
   return (
     <section className="relative bg-white text-slate-900 -mt-4 -mb-10 sm:-mb-14">
-      {/* Compact 230vh Scroll Track */}
-      <div ref={trackRef} className="relative h-[230vh] bg-white">
+      {/* 360vh Scroll Track (260vh scrollable distance = 2x longer / 50% slower to scroll than 130vh) */}
+      <div ref={trackRef} className="relative h-[360vh] bg-white">
         {/* Sticky Stage */}
         <div
           ref={stageRef}
@@ -428,7 +435,7 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
           {/* STAGE 1 TOP TITLE: Minimalistic, bold luxury serif, well below navbar and well above 88 */}
           <div
             ref={t1Ref}
-            className="absolute left-0 right-0 top-[102px] sm:top-[112px] md:top-[118px] px-5 sm:px-8 text-center max-w-4xl mx-auto opacity-0 -translate-y-2.5 transition-all duration-700 pointer-events-none z-20"
+            className="absolute left-0 right-0 top-[102px] sm:top-[112px] md:top-[118px] px-5 sm:px-8 text-center max-w-4xl mx-auto opacity-0 -translate-y-2.5 transition-all duration-1000 pointer-events-none z-20"
           >
             <h2 className="font-serif text-[clamp(1.55rem,3.4vw,2.85rem)] font-semibold tracking-tight text-slate-900 leading-[1.1]">
               {stage1.headline}
@@ -438,7 +445,7 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
           {/* STAGE 2 TOP TITLE: Minimalistic, bold luxury serif with classic SABR Digital shimmer, well below navbar and well above 77 */}
           <div
             ref={t2Ref}
-            className="absolute left-0 right-0 top-[102px] sm:top-[112px] md:top-[118px] px-5 sm:px-8 text-center max-w-4xl mx-auto opacity-0 -translate-y-2.5 transition-all duration-700 pointer-events-none z-20"
+            className="absolute left-0 right-0 top-[102px] sm:top-[112px] md:top-[118px] px-5 sm:px-8 text-center max-w-4xl mx-auto opacity-0 -translate-y-2.5 transition-all duration-1000 pointer-events-none z-20"
           >
             <h2 className="font-serif text-[clamp(1.55rem,3.4vw,2.85rem)] font-semibold tracking-tight text-slate-900 leading-[1.1]">
               {stage2.headline}
@@ -448,7 +455,7 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
           {/* STAGE 1 BOTTOM TEXT: Positioned below 88 with zero overlap */}
           <div
             ref={q1Ref}
-            className="absolute left-0 right-0 top-[65%] sm:top-[66%] px-5 sm:px-[6vw] text-center max-w-[820px] mx-auto opacity-0 translate-y-3 transition-all duration-700 pointer-events-none z-20"
+            className="absolute left-0 right-0 top-[65%] sm:top-[66%] px-5 sm:px-[6vw] text-center max-w-[820px] mx-auto opacity-0 translate-y-3 transition-all duration-1000 pointer-events-none z-20"
           >
             <div className="font-serif text-[clamp(17px,2.1vw,26px)] leading-[1.35] font-normal text-slate-900 mb-2.5">
               {stage1.quote}
@@ -461,7 +468,7 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
           {/* STAGE 2 BOTTOM TEXT: Positioned below 77 with zero overlap */}
           <div
             ref={q2Ref}
-            className="absolute left-0 right-0 top-[65%] sm:top-[66%] px-5 sm:px-[6vw] text-center max-w-[820px] mx-auto opacity-0 translate-y-3 transition-all duration-700 pointer-events-none z-20"
+            className="absolute left-0 right-0 top-[65%] sm:top-[66%] px-5 sm:px-[6vw] text-center max-w-[820px] mx-auto opacity-0 translate-y-3 transition-all duration-1000 pointer-events-none z-20"
           >
             <div className="font-serif text-[clamp(17px,2.1vw,26px)] leading-[1.35] font-normal text-slate-900 mb-2.5">
               {stage2.quote}

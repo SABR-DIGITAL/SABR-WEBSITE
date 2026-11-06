@@ -183,7 +183,7 @@ const WhyWebsiteSection: React.FC<WhyWebsiteSectionProps> = ({
   const activeIndex = selectedPro ? sabrPros.findIndex(p => p.id === selectedPro.id) : 0;
 
   return (
-    <section className="relative bg-white pt-4 pb-16 md:pt-8 md:pb-24 overflow-hidden">
+    <section className="relative bg-white pt-0 pb-16 md:pt-2 md:pb-24 overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 relative z-20 flex flex-col-reverse lg:flex-row items-start justify-between gap-8 lg:gap-16">
         
         {/* LEFT STACK: STATIC GRID FOR ALL DEVICES */}

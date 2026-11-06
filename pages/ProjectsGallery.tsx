@@ -59,7 +59,7 @@ const projects: Project[] = [
     industry: 'Garden Design & Build',
     headline: ['28 years of', 'award-winning gardens.'],
     path: '/demo/landscaping',
-    heroImage: 'https://dmhdaawgg48dl.cloudfront.net/wp-content/uploads/2024/10/pool-patio-palm-trees-putting-green-modern-oxshott-surrey-1920x1280.jpg',
+    heroImage: '/images/projects/landscaping-preview.webp',
     accent: '#5B6450',
     description:
       'A luxury landscape architecture and construction showcase built with spacious editorial pacing, unobstructed full-bleed photography, and an effortless private consultation journey.',
@@ -75,7 +75,7 @@ const projects: Project[] = [
     industry: 'Riding Academy',
     headline: ['Classical equitation,', 'four hundred private acres.'],
     path: '/demo/equestrian',
-    heroImage: 'https://images.unsplash.com/photo-1511746687876-42cb762f6ac1?auto=format&fit=crop&q=85&w=2000',
+    heroImage: '/images/projects/equestrian-preview.webp',
     accent: '#3E4B41',
     description:
       'A minimalist, editorial website for a Wiltshire riding academy — pairing full-screen equine photography with a single-line tuition directory, scroll-reveal horse profiles, and a calm three-step booking request.',
@@ -91,7 +91,7 @@ const projects: Project[] = [
     industry: 'Chartered Physiotherapy · UK',
     headline: ['Come heal', 'with us.'],
     path: '/demo/physio',
-    heroImage: '/src/assets/images/pulteney_hero_rehab_1793904528479.jpg',
+    heroImage: '/images/projects/physio-preview.webp',
     accent: '#0D9488',
     description:
       'A bright, welcoming UK physiotherapy and sports rehabilitation showcase across Bath, Bristol, and Cheltenham — featuring an interactive pain-relief explorer, six clinical service pathways, and instant multi-clinic appointment requests.',
@@ -107,7 +107,7 @@ const projects: Project[] = [
     industry: 'Luxury Spa & Resort',
     headline: ['Mineral baths,', 'quiet pines.'],
     path: '/demo/spa',
-    heroImage: '/src/assets/images/verdant_thermal_pool_1793919176502.jpg',
+    heroImage: '/images/projects/spa-preview.webp',
     accent: '#10B981',
     description:
       'A luxury forest sanctuary where suites, thermal mineral baths, and wood-fired dining are explored with editorial transitions and seamless online booking.',
@@ -123,7 +123,7 @@ const projects: Project[] = [
     industry: 'Cafe',
     headline: ['One tap', 'to a table.'],
     path: '/demo/cafe',
-    heroImage: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&q=65&w=1600',
+    heroImage: '/images/projects/cafe-preview.webp',
     accent: '#A4715E',
     description:
       'The menu, the opening hours and a table booking are each one tap from the top of the page, on both sites, for people deciding where to go in the next ten minutes.',
@@ -135,10 +135,25 @@ const projects: Project[] = [
   }
 ];
 
+// Preload and pre-decode all 5 project preview photos into memory immediately on module load
+// so they are already decoded in RAM before the user opens or scrolls the Projects tab.
+const predecodedProjectImages: HTMLImageElement[] = [];
+if (typeof window !== 'undefined') {
+  projects.forEach((p) => {
+    const img = new Image();
+    img.decoding = 'sync';
+    (img as any).fetchPriority = 'high';
+    img.src = p.heroImage;
+    img.decode?.().catch(() => {});
+    predecodedProjectImages.push(img);
+    warmedImages.add(p.heroImage);
+  });
+}
+
 // A browser window holding the demo's own first screen. Chrome, caption strip
 // and hairlines are all solid — the only soft edge in the whole card is the
 // photograph itself.
-const PreviewWindow: React.FC<{ project: Project; priority?: boolean }> = ({ project, priority }) => (
+const PreviewWindow: React.FC<{ project: Project; priority?: boolean }> = ({ project }) => (
   <div className="group/card relative w-full rounded-[1.4rem] overflow-hidden bg-white border border-slate-200 shadow-[0_30px_70px_-40px_rgba(15,23,42,0.4)] hover:shadow-[0_45px_100px_-40px_rgba(15,23,42,0.5)] transition-shadow duration-700">
     {/* CHROME */}
     <div className="flex items-center gap-3 px-4 md:px-5 py-3 md:py-3.5 bg-[#F6F7F9] border-b border-slate-200">
@@ -161,9 +176,9 @@ const PreviewWindow: React.FC<{ project: Project; priority?: boolean }> = ({ pro
         alt={`${project.wordmark} demo website`}
         width="1600"
         height="1000"
-        loading={priority ? 'eager' : 'lazy'}
-        {...(priority ? { fetchPriority: 'high' as const } : {})}
-        decoding="async"
+        loading="eager"
+        fetchPriority="high"
+        decoding="sync"
         className="preview-shot absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover/card:scale-[1.05]"
       />
     </div>
@@ -204,51 +219,59 @@ const ProjectRow: React.FC<{ project: Project; index: number }> = ({ project, in
       const shot = card.querySelector('.preview-shot');
       const items = text.querySelectorAll('.reveal-item');
 
-      // The hidden state is applied here rather than in the markup, so if this
-      // script never runs the page still reads perfectly.
-      gsap.set(card, { clipPath: 'inset(0% 0% 100% 0%)' });
-      gsap.set(items, { y: 26, opacity: 0 });
-      if (shot) gsap.set(shot, { scale: 1.18 });
+      // Start at the top (elevated + top-anchored clip) and slowly glide down
+      // as the user scrolls, finishing completely by the time the row is fully in sight.
+      gsap.set(card, { clipPath: 'inset(0% 0% 100% 0%)', y: -56, opacity: 0.25 });
+      gsap.set(items, { y: -42, opacity: 0 });
+      if (shot) gsap.set(shot, { scale: 1.12, y: -24 });
 
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: row,
-          start: 'top 82%',
-          once: true,
-          fastScrollEnd: true
+          start: 'top 95%',
+          end: 'top 38%',
+          scrub: 0.65
         }
       });
 
-      // The window uncovers itself downwards while the photograph settles back
-      // to its true size — a camera coming to rest. The clip is dropped the
-      // moment it finishes, otherwise it would keep cropping the card's shadow.
       tl.to(
         card,
         {
           clipPath: 'inset(0% 0% 0% 0%)',
-          duration: 0.9,
-          ease: 'expo.out',
-          onComplete: () => gsap.set(card, { clearProps: 'clipPath' })
+          y: 0,
+          opacity: 1,
+          duration: 1,
+          ease: 'power2.out',
+          force3D: true
         },
         0
       );
-      if (shot) tl.to(shot, { scale: 1, duration: 1.2, ease: 'expo.out', force3D: true }, 0);
+
+      if (shot) {
+        tl.to(
+          shot,
+          {
+            scale: 1,
+            y: 0,
+            duration: 1,
+            ease: 'power2.out',
+            force3D: true
+          },
+          0
+        );
+      }
+
       tl.to(
         items,
-        { y: 0, opacity: 1, duration: 0.7, stagger: 0.07, ease: 'power3.out', force3D: true },
-        0.18
-      );
-
-      // A few pixels of drift as the row crosses the screen. Enough to feel
-      // engineered, not enough to notice as an effect.
-      gsap.fromTo(
-        card,
-        { yPercent: 3.5 },
         {
-          yPercent: -3.5,
-          ease: 'none',
-          scrollTrigger: { trigger: row, start: 'top bottom', end: 'bottom top', scrub: 1 }
-        }
+          y: 0,
+          opacity: 1,
+          duration: 0.85,
+          stagger: 0.08,
+          ease: 'power2.out',
+          force3D: true
+        },
+        0.1
       );
     }, row);
 
@@ -264,7 +287,7 @@ const ProjectRow: React.FC<{ project: Project; index: number }> = ({ project, in
         ref={cardRef}
         className={`lg:col-span-7 will-change-transform ${isEven ? 'lg:order-1' : 'lg:order-2'}`}
       >
-        <PreviewWindow project={project} priority={index === 0} />
+        <PreviewWindow project={project} priority />
       </div>
 
       <div
@@ -347,7 +370,7 @@ const ProjectsGallery: React.FC = () => {
             className="pg-rise mb-6 text-[9px] md:text-[11px] font-black uppercase tracking-[0.45em] text-emerald-700"
             style={{ animationDelay: '0ms' }}
           >
-            Web Design Portfolio
+            Web design demos
           </p>
           <h1
             className="pg-rise font-syne text-[clamp(2.5rem,10vw,5rem)] font-black text-slate-950 tracking-tighter uppercase leading-[0.9] mb-12"

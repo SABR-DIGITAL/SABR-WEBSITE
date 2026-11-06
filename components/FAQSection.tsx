@@ -84,14 +84,17 @@ const FAQSection: React.FC<FAQSectionProps> = ({ navigateTo }) => {
   };
 
   return (
-    <section className="bg-[#fdfbf7] pt-32 md:pt-48 pb-64 overflow-hidden px-6">
+    <section className="bg-[#fdfbf7] pt-32 md:pt-48 pb-64 overflow-hidden px-6 md:px-10 lg:px-16">
       <div className="max-w-7xl mx-auto relative z-10">
         
         {/* Header Section */}
-        <div className="mb-32">
-          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-12 mb-20">
+        <div className="mb-28 md:mb-40">
+          <p className="mb-6 text-[9px] md:text-[11px] font-black uppercase tracking-[0.45em] text-emerald-700">
+            FAQ&rsquo;s
+          </p>
+          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-12 mb-12">
             <div>
-              <h2 className="font-syne text-[clamp(1.8rem,9vw,5rem)] font-black text-slate-950 tracking-tighter uppercase leading-[0.9] max-w-[90vw]">
+              <h2 className="font-syne text-[clamp(2.5rem,10vw,5rem)] font-black text-slate-950 tracking-tighter uppercase leading-[0.9] max-w-[90vw]">
                 COMMON <br />
                 <span className="text-shimmer-blue italic">QUESTIONS.</span>
               </h2>
@@ -113,8 +116,8 @@ const FAQSection: React.FC<FAQSectionProps> = ({ navigateTo }) => {
             </motion.div>
           </div>
           
-          <div className="max-w-4xl border-l-[8px] border-emerald-100 pl-8 md:pl-16">
-            <p className="text-lg md:text-xl lg:text-3xl text-slate-400 font-medium italic leading-relaxed">
+          <div className="max-w-3xl border-l-[6px] md:border-l-[8px] border-emerald-100 pl-8 md:pl-14">
+            <p className="text-lg md:text-xl lg:text-2xl text-slate-500 font-medium italic leading-relaxed">
               The questions we get asked most often, answered in plain English. If yours is not here, send us a message and we will answer it properly.
             </p>
           </div>

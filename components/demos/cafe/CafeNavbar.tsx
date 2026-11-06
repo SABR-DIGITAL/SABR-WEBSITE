@@ -1,13 +1,7 @@
-
 import React, { useState, useEffect } from 'react';
-// Fix react-router-dom missing exports
 import * as RouterDOM from 'react-router-dom';
 const { Link, useLocation } = RouterDOM as any;
-import { Coffee, Menu, X } from 'lucide-react';
-import { motion as framerMotion, AnimatePresence } from 'framer-motion';
-
-// Fix motion types by casting to any
-const motion = framerMotion as any;
+import { Coffee, Menu, X, Calendar } from 'lucide-react';
 
 const CafeNavbar: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -16,9 +10,14 @@ const CafeNavbar: React.FC = () => {
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', handleScroll);
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [location.pathname, location.search]);
 
   const navLinks = [
     { name: 'Home', path: '/demo/cafe' },
@@ -30,87 +29,120 @@ const CafeNavbar: React.FC = () => {
 
   return (
     <>
-      <nav className={`fixed top-0 left-0 right-0 z-[150] transition-all duration-700 px-6 ${scrolled ? 'py-4' : 'py-8'}`}>
-        <div className={`max-w-6xl mx-auto flex items-center justify-between rounded-full px-8 py-4 transition-all duration-700 ${scrolled ? 'lg:bg-white/80 lg:backdrop-blur-2xl lg:border-white lg:shadow-[0_20px_50px_rgba(164,113,94,0.1)]' : 'lg:bg-white/10 lg:backdrop-blur-md lg:border-white/20 lg:shadow-none'} bg-transparent border-transparent shadow-none`}>
-          <Link to="/demo/cafe" className="hidden lg:flex items-center gap-3 group">
+      <nav
+        aria-label="The Hearth Navigation"
+        className={`fixed top-0 left-0 right-0 z-[150] transition-all duration-500 px-4 sm:px-6 pointer-events-none ${
+          scrolled ? 'py-3.5' : 'py-5 md:py-7'
+        }`}
+      >
+        <div
+          className={`pointer-events-auto max-w-6xl mx-auto flex items-center justify-between rounded-full px-5 sm:px-8 py-3.5 transition-all duration-500 bg-[#FFF9F5]/95 backdrop-blur-2xl border border-[#A4715E]/25 ${
+            scrolled
+              ? 'shadow-[0_20px_50px_rgba(74,64,58,0.18)]'
+              : 'shadow-[0_16px_40px_rgba(0,0,0,0.22)]'
+          }`}
+        >
+          <Link to="/demo/cafe" className="flex items-center gap-3 group shrink-0">
             <div className="w-10 h-10 bg-[#A4715E] rounded-full flex items-center justify-center text-[#FFF9F5] shadow-sm group-hover:rotate-[15deg] transition-transform duration-500">
               <Coffee size={20} />
             </div>
-            <span className="font-serif text-2xl font-bold text-[#4A403A] tracking-tighter group-hover:text-[#A4715E] transition-colors">The Hearth</span>
+            <span className="font-serif text-xl sm:text-2xl font-bold text-[#4A403A] tracking-tighter group-hover:text-[#A4715E] transition-colors">
+              The Hearth
+            </span>
           </Link>
-          
-          <div className="hidden lg:flex items-center gap-10">
-            {navLinks.map((link) => (
-              <Link 
-                key={link.name} 
-                to={link.path}
-                className="relative group"
-              >
-                <span className={`text-[10px] uppercase font-black tracking-[0.3em] transition-colors ${location.pathname === link.path ? 'text-[#A4715E]' : 'text-[#4A403A]/60 hover:text-[#A4715E]'}`}>
+
+          <div className="hidden lg:flex items-center gap-2">
+            {navLinks.map((link) => {
+              const isActive = location.pathname === link.path;
+              return (
+                <Link
+                  key={link.name}
+                  to={link.path}
+                  className={`relative px-4 py-2 rounded-full text-[11px] uppercase font-black tracking-[0.26em] transition-all duration-300 ${
+                    isActive
+                      ? 'bg-[#A4715E] text-white shadow-sm'
+                      : 'text-[#4A403A] hover:text-[#A4715E] hover:bg-[#FDE2E4]/60'
+                  }`}
+                >
                   {link.name}
-                </span>
-                <motion.div 
-                  className="absolute -bottom-1 left-0 right-0 h-[1px] bg-[#A4715E]"
-                  initial={{ scaleX: 0 }}
-                  animate={{ scaleX: location.pathname === link.path ? 1 : 0 }}
-                  transition={{ duration: 0.3 }}
-                />
-              </Link>
-            ))}
+                </Link>
+              );
+            })}
           </div>
 
-          <div className="flex items-center gap-6 ml-auto lg:ml-0">
-            <Link to="/demo/cafe/book" className="hidden lg:block px-8 py-3 bg-[#4A403A] text-[#FFF9F5] rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-[#A4715E] transition-all shadow-lg active:scale-95">
-              Reserve
+          <div className="flex items-center gap-3 sm:gap-4">
+            <Link
+              to="/demo/cafe/book"
+              className="hidden sm:inline-flex items-center gap-2 px-6 sm:px-7 py-3 bg-[#4A403A] text-[#FFF9F5] rounded-full text-[10px] font-black uppercase tracking-[0.25em] hover:bg-[#A4715E] transition-all shadow-md active:scale-95"
+            >
+              <Calendar size={13} />
+              <span>Reserve</span>
             </Link>
-            <button 
-              className="lg:hidden text-[#4A403A] hover:text-[#A4715E] transition-colors p-4 bg-white/90 backdrop-blur-md rounded-full shadow-xl border border-white/20"
+            <button
+              type="button"
+              aria-label="Open navigation menu"
+              className="lg:hidden text-[#4A403A] hover:text-[#A4715E] transition-colors p-2.5 bg-[#FDE2E4]/70 hover:bg-[#FDE2E4] rounded-full border border-[#A4715E]/20"
               onClick={() => setMobileMenuOpen(true)}
             >
-              <Menu size={24} />
+              <Menu size={22} />
             </button>
           </div>
         </div>
       </nav>
 
       {/* Mobile Overlay */}
-      <AnimatePresence>
-        {mobileMenuOpen && (
-          <motion.div 
-            initial={{ opacity: 0, x: '100%' }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: '100%' }}
-            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed inset-0 z-[200] bg-[#FFF9F5] flex flex-col p-10 md:hidden"
-          >
-            <div className="flex justify-between items-center mb-20">
+      {mobileMenuOpen && (
+        <div className="fixed inset-0 z-[200] bg-[#FFF9F5] flex flex-col p-8 sm:p-10 lg:hidden animate-fadeIn">
+          <div className="flex justify-between items-center mb-14">
+            <Link
+              to="/demo/cafe"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center gap-3"
+            >
+              <div className="w-10 h-10 bg-[#A4715E] rounded-full flex items-center justify-center text-[#FFF9F5]">
+                <Coffee size={20} />
+              </div>
               <span className="font-serif text-2xl font-bold text-[#4A403A]">The Hearth</span>
-              <button onClick={() => setMobileMenuOpen(false)} className="text-[#4A403A]"><X size={32} /></button>
-            </div>
-            <div className="flex flex-col gap-12">
-              {navLinks.map((link) => (
-                <Link 
-                  key={link.name} 
-                  to={link.path} 
+            </Link>
+            <button
+              type="button"
+              aria-label="Close navigation menu"
+              onClick={() => setMobileMenuOpen(false)}
+              className="p-2.5 rounded-full bg-[#FDE2E4] text-[#4A403A] hover:bg-[#A4715E] hover:text-white transition-colors"
+            >
+              <X size={26} />
+            </button>
+          </div>
+
+          <div className="flex flex-col gap-7 my-auto">
+            {navLinks.map((link) => {
+              const isActive = location.pathname === link.path;
+              return (
+                <Link
+                  key={link.name}
+                  to={link.path}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="font-serif text-5xl font-black text-[#4A403A] tracking-tighter"
+                  className={`font-serif text-4xl sm:text-5xl font-black tracking-tighter transition-colors ${
+                    isActive ? 'text-[#A4715E] italic' : 'text-[#4A403A] hover:text-[#A4715E]'
+                  }`}
                 >
                   {link.name}.
                 </Link>
-              ))}
-            </div>
-            <div className="mt-auto">
-              <Link 
-                to="/demo/cafe/book" 
-                onClick={() => setMobileMenuOpen(false)}
-                className="block w-full py-6 bg-[#4A403A] text-white text-center rounded-2xl font-black uppercase tracking-widest"
-              >
-                Book a Table
-              </Link>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+              );
+            })}
+          </div>
+
+          <div className="mt-auto pt-8 border-t border-[#A4715E]/15 flex flex-col gap-4">
+            <Link
+              to="/demo/cafe/book"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block w-full py-5 bg-[#4A403A] hover:bg-[#A4715E] text-white text-center rounded-2xl font-black text-xs uppercase tracking-[0.3em] transition-colors shadow-lg"
+            >
+              Book a Table
+            </Link>
+          </div>
+        </div>
+      )}
     </>
   );
 };

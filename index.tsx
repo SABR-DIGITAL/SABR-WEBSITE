@@ -24,27 +24,29 @@ const loadSite = {
   'ai-optimisation': () => import('./aio/AIOApp')
 } as const;
 
-const siteForPath = (path: string): GatewaySite | null =>
-  path === '/ai-optimisation' || path.startsWith('/ai-optimisation/')
-    ? 'ai-optimisation'
-    : path === '/web-design' || path.startsWith('/web-design/')
-    ? 'web-design'
-    : null;
+const siteForPath = (path: string): GatewaySite | null => {
+  if (path === '/ai-optimisation' || path.startsWith('/ai-optimisation/')) {
+    // AI Optimisation is currently Coming Soon and not publicly accessible;
+    // redirect direct URL visits back to the root gateway.
+    if (typeof window !== 'undefined' && window.history?.replaceState) {
+      window.history.replaceState(null, '', '/');
+    }
+    return null;
+  }
+  return path === '/web-design' || path.startsWith('/web-design/') ? 'web-design' : null;
+};
 
 const initialSite = siteForPath(window.location.pathname);
 const InitialSite = initialSite ? lazy(loadSite[initialSite]) : null;
 // Which site is on screen right now — updated on gateway handover and site switches.
 let currentSite: GatewaySite | null = initialSite;
 
-// Warm both destination chunks and pre-decode their hero images once the
-// initial view is settled and the browser is idle, so switching between
-// Web Design and AI Optimisation glides instantaneously from memory cache.
+// Warm the web-design destination chunk and pre-decode its hero image once the
+// initial view is settled and the browser is idle.
 {
   const warmAll = () => {
     loadSite['web-design']().catch(() => undefined);
-    loadSite['ai-optimisation']().catch(() => undefined);
     decodeHero('web-design').catch(() => undefined);
-    decodeHero('ai-optimisation').catch(() => undefined);
   };
   window.setTimeout(() => {
     const idle = (window as any).requestIdleCallback;
@@ -88,6 +90,7 @@ const Shell: React.FC = () => {
   };
 
   const enter = (site: GatewaySite, Component: React.ComponentType, href: string) => {
+    if (site === 'ai-optimisation') return;
     markGatewayHandoff();
     currentSite = site;
     window.history.pushState(null, '', href);
@@ -98,6 +101,7 @@ const Shell: React.FC = () => {
 
   // Smooth lateral swoosh glide between Web Design (Left) and AI Optimisation (Right).
   const switchSite = useRef((target: GatewaySite, href: string, pushHistory = true) => {
+    if (target === 'ai-optimisation') return;
     if (switchingRef.current || currentSite === target) return;
     switchingRef.current = true;
     clearSwooshTimers();

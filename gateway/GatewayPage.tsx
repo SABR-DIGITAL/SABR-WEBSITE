@@ -141,7 +141,8 @@ const GatewayPage: React.FC<GatewayPageProps> = ({ loadSite, onEnter }) => {
 
         <section
           aria-labelledby="gw-aio-heading"
-          className="gw-panel gw-panel-aio relative flex flex-col items-center justify-center overflow-hidden bg-[#0f241d] px-6 text-center"
+          aria-disabled="true"
+          className="gw-panel gw-panel-aio relative flex flex-col items-center justify-center overflow-hidden bg-[#0f241d] px-6 text-center select-none"
         >
           {/* The AI Optimisation site's own hero image. */}
           <img
@@ -155,33 +156,52 @@ const GatewayPage: React.FC<GatewayPageProps> = ({ loadSite, onEnter }) => {
             decoding="async"
           />
           {/* Same overlay strength as the AI Optimisation site's own hero
-              (aio/pages/AIOHome.tsx), so picking this side hands off to an
-              identical frame instead of a visible jump in contrast. */}
+              (aio/pages/AIOHome.tsx), so the panel keeps its rich emerald depth. */}
           <div
             aria-hidden="true"
             className="pointer-events-none absolute inset-0"
             style={{
               background:
-                'linear-gradient(180deg, rgba(7,19,15,0.55) 0%, rgba(7,19,15,0.72) 55%, rgba(7,19,15,0.88) 100%)'
+                'linear-gradient(180deg, rgba(7,19,15,0.58) 0%, rgba(7,19,15,0.76) 55%, rgba(7,19,15,0.92) 100%)'
             }}
           />
 
-          <div className="gw-copy relative z-10 flex flex-col items-center gap-5 lg:gap-8">
+          {/* Subtle radial emerald aura behind the SABR Coming Soon banner */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0"
+            style={{
+              background:
+                'radial-gradient(circle at 50% 54%, rgba(16,185,129,0.22) 0%, rgba(5,150,105,0.06) 42%, transparent 70%)'
+            }}
+          />
+
+          {/* Diagonal SABR-themed top-right corner banner — mathematically centered on the 45° corner bisector */}
+          <div
+            aria-hidden="true"
+            className="gw-copy pointer-events-none absolute right-[-72px] top-[50px] z-20 flex h-[36px] w-[280px] rotate-45 items-center justify-center overflow-hidden border-y-2 border-emerald-300/70 bg-gradient-to-r from-[#040c09] via-[#062c21] to-[#040c09] shadow-[0_0_32px_rgba(16,185,129,0.65),inset_0_1px_0_rgba(255,255,255,0.2)] sm:right-[-84px] sm:top-[66px] sm:h-[44px] sm:w-[344px]"
+          >
+            <div className="gw-banner-sheen absolute inset-0 opacity-80" />
+            <span className="relative z-10 flex items-center justify-center gap-2.5 font-syne text-[10px] font-black uppercase tracking-[0.22em] text-white drop-shadow-[0_2px_8px_rgba(16,185,129,0.6)] sm:text-xs sm:tracking-[0.24em]">
+              <span className="relative flex h-2 w-2 shrink-0">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-300 opacity-85" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_10px_#34d399]" />
+              </span>
+              <span>
+                COMING <span className="text-emerald-300">SOON</span>
+              </span>
+              <span className="h-2 w-2 shrink-0 rounded-full bg-emerald-400 shadow-[0_0_10px_#34d399]" />
+            </span>
+          </div>
+
+          <div className="gw-copy relative z-10 flex flex-col items-center justify-center text-center">
             <h2
               id="gw-aio-heading"
-              className="gw-title font-syne font-black uppercase leading-[0.95] tracking-tighter text-white"
+              className="gw-title font-syne font-black uppercase leading-[0.95] tracking-tighter text-white text-center drop-shadow-[0_4px_16px_rgba(0,0,0,0.5)]"
             >
-              AI<br />
-              <span className="text-shimmer-blue italic">Optimisation.</span>
+              <span className="block text-center">AI</span>
+              <span className="block text-center text-shimmer-blue italic">Optimisation.</span>
             </h2>
-            <a
-              href="/ai-optimisation/"
-              onClick={select('ai-optimisation')}
-              className="group inline-flex items-center gap-2.5 rounded-xl bg-emerald-500 px-7 py-3.5 text-xs font-semibold tracking-wide text-[#07130f] shadow-lg shadow-emerald-900/40 transition-colors duration-300 hover:bg-emerald-400 focus:outline-none focus-visible:ring-4 focus-visible:ring-emerald-300/50 sm:text-sm"
-            >
-              Visit AI Optimisation
-              <ArrowRight size={15} aria-hidden="true" />
-            </a>
           </div>
         </section>
 
@@ -323,11 +343,23 @@ const GatewayPage: React.FC<GatewayPageProps> = ({ loadSite, onEnter }) => {
         @keyframes gw-done { to { visibility: hidden; } }
         .gw-curtain { animation: gw-done 0s linear 2.05s both; }
 
+        @keyframes gw-sheen {
+          0%   { transform: translate3d(-120%, 0, 0) skewX(-20deg); }
+          55%  { transform: translate3d(220%, 0, 0) skewX(-20deg); }
+          100% { transform: translate3d(220%, 0, 0) skewX(-20deg); }
+        }
+        .gw-banner-sheen {
+          background: linear-gradient(90deg, transparent 0%, rgba(52, 211, 153, 0.16) 50%, transparent 100%);
+          animation: gw-sheen 4.2s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+          will-change: transform;
+        }
+
         .gw-half, .gw-word, .gw-rule, .gw-card { will-change: transform, opacity; }
 
         @media (prefers-reduced-motion: reduce) {
           .gw-curtain { display: none; }
           .gw-panel, .gw-seam, .gw-copy { transition: none; }
+          .gw-banner-sheen { animation: none; }
         }
       `}</style>
     </div>

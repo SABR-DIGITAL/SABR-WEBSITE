@@ -24,6 +24,10 @@ export const triggerSiteSwitch = (
   href: string,
   event?: React.MouseEvent<HTMLAnchorElement>
 ) => {
+  if (target === 'ai-optimisation') {
+    event?.preventDefault();
+    return;
+  }
   if (event) {
     if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
       return;

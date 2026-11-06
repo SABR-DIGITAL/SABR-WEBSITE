@@ -78,7 +78,7 @@ export const headerWash =
 // Verified equestrian photography where every key matches its visual subject:
 export const images = {
   // Rider in white breeches & tall boots cantering in a white-fenced outdoor sand arena
-  hero: 'https://images.unsplash.com/photo-1511746687876-42cb762f6ac1?auto=format&fit=crop&q=85&w=2000',
+  hero: '/images/projects/equestrian-preview.webp',
   // Coach and young rider grooming/tacking up a chestnut horse in wooden stables
   lesson: 'https://images.unsplash.com/photo-1607273225241-035d579b8452?auto=format&fit=crop&q=80&w=1400',
   // Sunlit American barn aisle with loosebox stalls on both sides and a horse standing in the corridor

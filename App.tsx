@@ -127,16 +127,39 @@ const ScrollToTop = () => {
 const ComponentBase: any = Component;
 
 class ErrorBoundary extends ComponentBase {
-  state = { hasError: false, error: null };
+  state = { hasError: false, error: null, retryCount: 0, lastResetKey: '' };
 
   static getDerivedStateFromError(error: Error) {
     return { hasError: true, error };
   }
+
+  static getDerivedStateFromProps(_props: any, state: any) {
+    const currentPath = typeof window !== 'undefined' ? window.location.pathname + window.location.search : '';
+    if (currentPath && currentPath !== state.lastResetKey) {
+      return {
+        hasError: false,
+        error: null,
+        retryCount: 0,
+        lastResetKey: currentPath
+      };
+    }
+    return null;
+  }
+
   componentDidCatch(error: Error, errorInfo: any) {
     console.error('Captured by ErrorBoundary:', error, errorInfo);
+    if (this.state.retryCount < 3) {
+      this.setState((prev: any) => ({
+        hasError: false,
+        error: null,
+        retryCount: (prev.retryCount || 0) + 1
+      }));
+    }
   }
+
   render() {
-    if (this.state.hasError) {
+    const currentPath = typeof window !== 'undefined' ? window.location.pathname : 'root';
+    if (this.state.hasError && this.state.retryCount >= 3) {
       return (
         <div className="min-h-screen bg-[#F4F1EA] flex flex-col items-center justify-center p-8 text-center">
           <div className="max-w-md bg-white p-8 rounded-2xl shadow-xl border border-stone-200">
@@ -144,8 +167,7 @@ class ErrorBoundary extends ComponentBase {
             <p className="text-sm text-stone-600 mb-6">A page component encountered an issue. Click below to continue.</p>
             <button
               onClick={() => {
-                this.setState({ hasError: false, error: null });
-                window.location.reload();
+                this.setState({ hasError: false, error: null, retryCount: 0 });
               }}
               className="px-6 py-2.5 bg-emerald-600 text-white rounded-full text-xs uppercase font-bold tracking-wider hover:bg-emerald-500 transition-colors"
             >
@@ -155,7 +177,11 @@ class ErrorBoundary extends ComponentBase {
         </div>
       );
     }
-    return this.props.children;
+    return (
+      <div key={`${currentPath}-${this.state.retryCount}`}>
+        {this.props.children}
+      </div>
+    );
   }
 }
 

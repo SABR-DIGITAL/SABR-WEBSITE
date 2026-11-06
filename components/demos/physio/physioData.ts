@@ -15,7 +15,7 @@ export const clinic = {
 };
 
 export const images = {
-  hero: '/src/assets/images/pulteney_hero_rehab_1793904528479.jpg',
+  hero: '/images/projects/physio-preview.webp',
   handsOn: '/src/assets/images/pulteney_manual_therapy_1793904530315.jpg',
   assessment: '/src/assets/images/pulteney_hand_workplace_1793904533245.jpg',
   studio: '/src/assets/images/pulteney_sports_rehab_1793904531567.jpg',

@@ -76,34 +76,38 @@ const ContactForm: React.FC = () => {
   return (
     <section
       aria-labelledby="contact-heading"
-      className="bg-[#fdfbf7] min-h-screen flex items-center px-6 md:px-10 lg:px-16 pt-32 md:pt-40 pb-24 md:pb-32"
+      className="bg-[#fdfbf7] min-h-screen px-6 md:px-10 lg:px-16 pt-32 md:pt-48 pb-24 md:pb-32"
     >
-      <div className="w-full max-w-5xl mx-auto">
+      <div className="w-full max-w-7xl mx-auto">
 
-        <p
-          className="contact-rise text-[10px] md:text-[11px] font-black uppercase tracking-[0.5em] text-emerald-600 mb-7"
-          style={{ animationDelay: '0ms' }}
-        >
-          Contact
-        </p>
+        <div className="mb-20 md:mb-28">
+          <p
+            className="contact-rise mb-6 text-[9px] md:text-[11px] font-black uppercase tracking-[0.45em] text-emerald-700"
+            style={{ animationDelay: '0ms' }}
+          >
+            CONTACT
+          </p>
 
-        {/* Same scale and treatment as the projects page hero: black first line,
-            shimmering emerald italic second line. */}
-        <h1
-          id="contact-heading"
-          className="contact-rise font-syne text-[clamp(2.5rem,10vw,5rem)] font-black text-slate-950 tracking-tighter uppercase leading-[0.9] mb-8"
-          style={{ animationDelay: '70ms' }}
-        >
-          LET&rsquo;S <br />
-          <span className="text-shimmer-blue italic">TALK.</span>
-        </h1>
+          {/* Same scale and treatment as the projects page hero: black first line,
+              shimmering emerald italic second line. */}
+          <h1
+            id="contact-heading"
+            className="contact-rise font-syne text-[clamp(2.5rem,10vw,5rem)] font-black text-slate-950 tracking-tighter uppercase leading-[0.9] mb-12"
+            style={{ animationDelay: '70ms' }}
+          >
+            LET&rsquo;S <br />
+            <span className="text-shimmer-blue italic">TALK.</span>
+          </h1>
 
-        <p
-          className="contact-rise text-lg md:text-2xl text-slate-600 font-medium leading-snug max-w-xl mb-16 md:mb-20"
-          style={{ animationDelay: '140ms' }}
-        >
-          Tell us what you need. You get a price and a timescale back.
-        </p>
+          <div
+            className="contact-rise max-w-3xl border-l-[6px] md:border-l-[8px] border-emerald-100 pl-8 md:pl-14"
+            style={{ animationDelay: '140ms' }}
+          >
+            <p className="text-lg md:text-xl lg:text-2xl text-slate-500 font-medium italic leading-relaxed">
+              Tell us what you need. You get a price and a timescale back.
+            </p>
+          </div>
+        </div>
 
         <div className="border-b border-slate-200">
           {channels.map((c, i) => (
