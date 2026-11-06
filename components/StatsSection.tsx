@@ -78,6 +78,48 @@ interface AmbientParticle {
   ph: number;
 }
 
+/*
+ * Layout rules that must not depend on Tailwind's output order or on JS running:
+ *
+ * - The sticky stage is exactly 100vh tall. On phones that is the *large* viewport
+ *   (browser toolbars collapsed), which never changes while scrolling, so the canvas
+ *   is never resized or rebuilt mid-scroll. (The old `h-[100vh] h-[100dvh]` pair
+ *   resolved to whichever class Tailwind happened to emit last.)
+ *
+ * - The bottom copy is positioned so that it always clears the browser toolbar even
+ *   while the toolbar is expanded: `100vh - 100svh` is exactly the toolbar height on
+ *   phones, so the text is kept at least 56px above the visible bottom edge in every
+ *   toolbar state. On desktop that term is 0 and the offsets are unchanged.
+ *
+ * - Which copy (88 or 77) is on screen is driven by one `data-stage` attribute on the
+ *   stage. Stage 1 is visible by default, before any JavaScript runs.
+ *
+ * - On touch devices the shimmer on the stage-2 headline is frozen to a static
+ *   gradient. The infinite `background-position` animation on a `background-clip:
+ *   text` element forces iOS Safari to repaint that text on every frame inside the
+ *   pinned stage, fighting the canvas for the main thread.
+ */
+const STATS_CSS = `
+.stats-stage { height: 100vh; }
+.stats-stage[data-stage="1"] .stats-s2,
+.stats-stage[data-stage="2"] .stats-s1 { visibility: hidden; }
+.stats-stage .stats-bottom { bottom: clamp(124px, 18vh, 164px); }
+@supports (height: 100svh) {
+  .stats-stage .stats-bottom { bottom: max(clamp(124px, 18vh, 164px), calc(100vh - 100svh + 56px)); }
+}
+@media (min-width: 640px) { .stats-stage .stats-bottom { bottom: 68px; } }
+@media (min-width: 768px) { .stats-stage .stats-bottom { bottom: 80px; } }
+@media (min-width: 1024px) { .stats-stage .stats-bottom { bottom: 92px; } }
+@media (hover: none) {
+  .stats-stage .text-shimmer-blue,
+  .stats-stage .text-shimmer-emerald {
+    animation: none;
+    will-change: auto;
+    background-position: 150% center;
+  }
+}
+`;
+
 export const StatsSection: React.FC<StatsSectionProps> = ({
   stage1 = DEFAULT_STAGE_1,
   stage2 = DEFAULT_STAGE_2,
@@ -119,12 +161,26 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
     let rafId = 0;
     let resizeTimer: ReturnType<typeof setTimeout> | null = null;
     let lastT = 0;
+    let lastDrawT = 0;
+    let frame = 0;
+    // Frames that must be drawn regardless of the idle frame-skip (trail settle, recovery).
+    let forceDraw = 0;
+    let wasMoving = false;
     let pendingRebuild = false;
+    let disposed = false;
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     // Particles are grouped into a few colour/alpha buckets so each frame issues a handful of
-    // stroke() calls instead of one per figure — this is what keeps iPhones at full frame rate.
+    // stroke() calls instead of one per figure.
     const BUCKETS = 10;
     let buckets: number[][] = [];
+    // One reusable offscreen canvas for glyph sampling: iOS Safari has a hard budget for
+    // total canvas memory per page, so we never allocate a fresh one per rebuild.
+    const sampler = document.createElement('canvas');
+
+    // Adaptive resolution: if a phone cannot push a frame in time, drop the canvas
+    // pixel ratio (never the figure count or the look) until it can.
+    let costEma = 0;
+    let costSamples = 0;
 
     const clamp = (x: number) => Math.max(0, Math.min(1, x));
     const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
@@ -136,11 +192,11 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
     let lastBuildH = 0;
 
     function sample(txt: string, yTop: number, yBot: number): [number, number][] {
-      const o = document.createElement('canvas');
+      const o = sampler;
       const s = 0.5;
       o.width = Math.max(1, Math.floor(W * s));
       o.height = Math.max(1, Math.floor(H * s));
-      const x = o.getContext('2d');
+      const x = o.getContext('2d', { willReadFrequently: true } as CanvasRenderingContext2DSettings);
 
       const centerY = (yTop + yBot) * 0.5;
       const maxSpanY = Math.max(72, yBot - yTop);
@@ -150,6 +206,7 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
       const isMobile = W < 700;
       // Size the glyph so its cap height comfortably fits inside maxSpanY with generous breathing room
       const fs = Math.min(isMobile ? W * 0.54 : W * 0.34, maxSpanY / 0.8) * s;
+      x.clearRect(0, 0, o.width, o.height);
       x.fillStyle = '#fff';
       x.font = (isMobile ? '800 ' : '900 ') + fs + 'px Inter,Arial,sans-serif';
       x.textAlign = 'center';
@@ -246,18 +303,28 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
       return [yTop, yBot];
     }
 
+    // Size the bitmap for the current pixel ratio and clear it to the stage's white.
+    function applyCanvasSize() {
+      if (!cv || !ctx) return;
+      cv.width = Math.max(1, Math.round(W * dpr));
+      cv.height = Math.max(1, Math.round(H * dpr));
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.globalAlpha = 1;
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, W, H);
+    }
+
     function build() {
       if (!stage || !cv || !ctx) return;
       dpr = Math.min(window.devicePixelRatio || 1, 2);
+      costEma = 0;
+      costSamples = 0;
       W = stage.clientWidth || window.innerWidth;
       H = stage.clientHeight || window.innerHeight;
       lastBuildW = W;
       lastBuildH = H;
-      cv.width = W * dpr;
-      cv.height = H * dpr;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(0, 0, W, H);
+      applyCanvasSize();
 
       const [yTop, yBot] = computeSafeBand();
       const A = sample('88', yTop, yBot);
@@ -309,7 +376,9 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
 
     let lastFlBg = '';
     let lastFlOp = '';
-    function draw(t: number) {
+    // `dt` is the time since the previous drawn frame, so drift speed is identical whether
+    // the canvas is being redrawn every frame or only every few frames while idle.
+    function draw(t: number, dt: number) {
       if (!ctx || !fl) return;
       const p = cur;
       const isMobile = W < 700;
@@ -326,6 +395,7 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
 
       // Motion-trail fade onto pure white canvas background
       ctx.globalCompositeOperation = 'source-over';
+      ctx.globalAlpha = 1;
       ctx.fillStyle = isMobile ? 'rgba(255, 255, 255, 0.55)' : 'rgba(255, 255, 255, 0.34)';
       ctx.fillRect(-30, -30, W + 60, H + 60);
 
@@ -394,15 +464,19 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
 
       ctx.globalAlpha = 1;
       ctx.fillStyle = 'hsl(' + hue + ',55%,40%)';
+      const drift = Math.min(6, dt / 16.67);
       for (let j = 0; j < amb.length; j++) {
         const a = amb[j];
-        a.y -= a.v * 0.5;
+        a.y -= a.v * 0.5 * drift;
         if (a.y < -5) a.y = H + 5;
         ctx.globalAlpha = 0.09 + 0.07 * Math.sin(t * 0.0004 + a.ph);
         ctx.fillRect(a.x + Math.sin(t * 0.00025 + a.ph) * 8, a.y, a.r, a.r);
       }
       ctx.globalAlpha = 1;
 
+      // The 4% colour wash is imperceptible on a phone screen, and every change to it is
+      // another full-screen layer update for the browser to schedule while scrolling.
+      if (isMobile) return;
       const fr = Math.max(0, 1 - Math.abs(p - 0.36) * 30);
       const fg = Math.max(0, 1 - Math.abs(p - 0.64) * 30);
       const flBg = fg > fr ? '#059669' : '#ff4d3d';
@@ -411,117 +485,188 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
       if (flOp !== lastFlOp) fl.style.opacity = lastFlOp = flOp;
     }
 
-    // The text is always on screen: no fade, no slide, no GPU layer. Only the swap between the
-    // 88 copy and the 77 copy happens, instantly, and only when the stage actually changes —
-    // so iOS Safari never has to repaint (or blank) the text while momentum scrolling.
-    let shownStage = 1;
+    // Which copy is on screen is one attribute on the stage, resolved by CSS. Stage 1 is
+    // the default before any script runs. A small hysteresis stops the swap flickering
+    // if the scroll position settles right on the midpoint.
+    let shownStage = stage.dataset.stage === '2' ? 2 : 1;
     function ui(p: number) {
-      if (!t1 || !t2 || !q1 || !q2) return;
-      const stageNow = p >= 0.5 ? 2 : 1;
-      if (stageNow === shownStage) return;
-      shownStage = stageNow;
-      const one = stageNow === 1;
-      t1.style.visibility = one ? 'visible' : 'hidden';
-      q1.style.visibility = one ? 'visible' : 'hidden';
-      t2.style.visibility = one ? 'hidden' : 'visible';
-      q2.style.visibility = one ? 'hidden' : 'visible';
+      if (!stage) return;
+      const next = shownStage === 1 ? (p >= 0.505 ? 2 : 1) : p < 0.495 ? 1 : 2;
+      if (next === shownStage) return;
+      shownStage = next;
+      stage.dataset.stage = String(next);
     }
 
     function prog(): boolean {
-      if (!track) return false;
+      if (!track || !stage) return false;
       const r = track.getBoundingClientRect();
       const vh = window.innerHeight || H || 800;
-      const max = Math.max(1, track.offsetHeight - vh);
+      // The stage stays pinned until the track's bottom meets the stage's bottom, so the
+      // scrollable distance is track height minus *stage* height — not minus the window
+      // height, which changes every time a phone's toolbar collapses or expands.
+      const max = Math.max(1, track.offsetHeight - (stage.offsetHeight || H || vh));
       // Hold 88 steady as the section enters the screen (r.top > 0), then progress 0 -> 1 through the sticky track
       tgt = clamp(-r.top / max);
       // Active whenever the track is within 1.5 viewports of the screen
       return r.bottom > -vh * 0.5 && r.top < vh * 1.8;
     }
 
+    function paintNow(t: number, times: number) {
+      for (let w = 0; w < times; w++) draw(t, 16.67);
+      lastDrawT = t;
+    }
+
     function loop(t: number) {
-      // Read scroll position directly inside rAF so iOS Safari momentum scrolling never defers updates
-      const isNear = prog();
-      // Frame-rate independent smoothing: iPhones in Low Power Mode run rAF at 30fps, which
-      // previously halved the catch-up speed and left the 88 lagging far behind the scroll.
-      const dt = lastT ? Math.min(100, t - lastT) : 16.67;
-      lastT = t;
-      if (isNear) {
-        const isMobile = W < 700;
-        const base = isMobile ? 0.22 : 0.055;
-        const step = 1 - Math.pow(1 - base, dt / 16.67);
-        cur += (tgt - cur) * step;
-        if (Math.abs(tgt - cur) < 0.0005) cur = tgt;
-        draw(t);
-        ui(cur);
-      } else {
-        cur = tgt;
-        if (pendingRebuild) {
-          pendingRebuild = false;
-          build();
-          for (let w = 0; w < 6; w++) draw(t);
-        }
-      }
+      if (disposed) return;
+      // Re-arm first so a thrown exception in one frame can never stop the animation.
       rafId = requestAnimationFrame(loop);
+      try {
+        frame++;
+        const isNear = prog();
+        // Frame-rate independent smoothing: iPhones in Low Power Mode run rAF at 30fps, which
+        // would otherwise halve the catch-up speed and leave the figures behind the scroll.
+        const dt = lastT ? Math.min(100, t - lastT) : 16.67;
+        lastT = t;
+
+        if (!isNear) {
+          cur = tgt;
+          ui(cur);
+          wasMoving = false;
+          if (pendingRebuild) {
+            pendingRebuild = false;
+            build();
+            paintNow(t, 2);
+          }
+          return;
+        }
+
+        const isMobile = W < 700;
+        const base = isMobile ? 0.3 : 0.055;
+        const step = 1 - Math.pow(1 - base, dt / 16.67);
+        const moving = Math.abs(tgt - cur) > 0.0003;
+        if (moving) {
+          cur += (tgt - cur) * step;
+          if (Math.abs(tgt - cur) < 0.0005) cur = tgt;
+        } else if (wasMoving) {
+          // Motion just stopped: draw a few more frames so the motion trail fully clears.
+          forceDraw = Math.max(forceDraw, 6);
+        }
+        wasMoving = moving;
+        ui(cur);
+
+        // While the figures are moving (scroll, or the time-based scatter between 88 and 77)
+        // every frame is drawn. When they are standing still on a phone, only every fourth
+        // frame is, which hands the main thread back to the browser for painting the page
+        // while the visitor scrolls the section into view.
+        const live = moving || (cur > 0.27 && cur < 0.75) || forceDraw > 0;
+        if (isMobile && !live && frame % 4 !== 0) return;
+        if (forceDraw > 0) forceDraw--;
+
+        const drawDt = lastDrawT ? Math.min(200, t - lastDrawT) : 16.67;
+        lastDrawT = t;
+        const t0 = performance.now();
+        draw(t, drawDt);
+
+        if (isMobile && live) {
+          const cost = performance.now() - t0;
+          costEma = costSamples === 0 ? cost : costEma * 0.9 + cost * 0.1;
+          costSamples++;
+          if (costSamples > 30 && costEma > 12 && dpr > 1) {
+            dpr = Math.max(1, dpr - 0.5);
+            applyCanvasSize();
+            paintNow(t, 2);
+            costEma = 0;
+            costSamples = 0;
+          }
+        }
+      } catch {
+        // Keep the loop alive; the next frame will try again.
+      }
     }
 
     const handleResize = () => {
       if (resizeTimer) clearTimeout(resizeTimer);
       resizeTimer = setTimeout(() => {
-        if (!stage) return;
+        if (!stage || disposed) return;
         const newW = stage.clientWidth || window.innerWidth;
         const newH = stage.clientHeight || window.innerHeight;
-        // Ignore minor mobile address-bar height changes (< 120px) when width hasn't changed
+        // The stage is 100vh so phone toolbar changes never alter it; ignore any residual
+        // sub-120px height jitter when the width hasn't changed.
         if (newW === lastBuildW && Math.abs(newH - lastBuildH) < 120) {
           return;
         }
         build();
         prog();
-        for (let w = 0; w < 4; w++) {
-          draw(performance.now());
-        }
+        paintNow(performance.now(), 2);
         ui(cur);
       }, 150);
     };
 
+    // If the browser throws the canvas bitmap away (iOS does this under memory pressure,
+    // and when a tab comes back from the background) paint it again straight away.
+    const recover = () => {
+      if (disposed) return;
+      lastT = 0;
+      forceDraw = Math.max(forceDraw, 3);
+    };
+    const onContextRestored = () => {
+      if (disposed || !ctx) return;
+      applyCanvasSize();
+      prog();
+      cur = tgt;
+      paintNow(performance.now(), 2);
+      ui(cur);
+      recover();
+    };
+    const onVisibility = () => {
+      if (!document.hidden) recover();
+    };
+
     window.addEventListener('scroll', prog, { passive: true });
     window.addEventListener('resize', handleResize);
+    window.addEventListener('orientationchange', handleResize);
+    window.addEventListener('pageshow', recover);
+    document.addEventListener('visibilitychange', onVisibility);
+    cv.addEventListener('contextrestored', onContextRestored);
 
     // Always build: the animation is driven purely by the user's own scroll, so it still runs
     // with iOS "Reduce Motion" on (the camera shake is disabled in that case instead).
-    {
-      build();
-      prog();
-      cur = tgt;
-      // Pre-paint 6 frames on mount so the canvas has a crisp, fully opaque 88 before the user ever scrolls here
-      for (let w = 0; w < 6; w++) {
-        draw(0);
-      }
-      ui(cur);
-      rafId = requestAnimationFrame(loop);
+    build();
+    prog();
+    cur = tgt;
+    // Pre-paint on mount so the canvas holds a crisp, fully opaque 88 before the user ever scrolls here
+    paintNow(0, 2);
+    ui(cur);
+    rafId = requestAnimationFrame(loop);
 
-      // Re-sample once the Inter webfont is available (the font stylesheet loads async, so
-      // fonts.ready alone can resolve too early). If the section is already on screen, defer
-      // the rebuild until it is off screen so the figures never visibly jump.
-      const fonts = (document as any).fonts;
-      if (fonts?.load) {
-        Promise.all([fonts.load('900 100px Inter'), fonts.load('800 100px Inter')])
-          .then((faces: unknown[][]) => {
-            if (!faces.some((f) => f && f.length)) return;
-            if (prog()) {
-              pendingRebuild = true;
-              return;
-            }
-            build();
-            for (let w = 0; w < 6; w++) draw(performance.now());
-            ui(cur);
-          })
-          .catch(() => {});
-      }
+    // Re-sample once the Inter webfont is available (the font stylesheet loads async, so
+    // fonts.ready alone can resolve too early). If the section is already on screen, defer
+    // the rebuild until it is off screen so the figures never visibly jump.
+    const fonts = (document as any).fonts;
+    if (fonts?.load) {
+      Promise.all([fonts.load('900 100px Inter'), fonts.load('800 100px Inter')])
+        .then((faces: unknown[][]) => {
+          if (disposed) return;
+          if (!faces.some((f) => f && f.length)) return;
+          if (prog()) {
+            pendingRebuild = true;
+            return;
+          }
+          build();
+          paintNow(performance.now(), 2);
+          ui(cur);
+        })
+        .catch(() => {});
     }
 
     return () => {
+      disposed = true;
       window.removeEventListener('scroll', prog);
       window.removeEventListener('resize', handleResize);
+      window.removeEventListener('orientationchange', handleResize);
+      window.removeEventListener('pageshow', recover);
+      document.removeEventListener('visibilitychange', onVisibility);
+      cv.removeEventListener('contextrestored', onContextRestored);
       if (resizeTimer) clearTimeout(resizeTimer);
       if (rafId) cancelAnimationFrame(rafId);
     };
@@ -529,21 +674,23 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
 
   return (
     <section className="relative bg-white text-slate-900 pt-10 sm:pt-14 md:pt-20 pb-20 sm:pb-28 md:pb-36">
+      <style>{STATS_CSS}</style>
       {/* 360vh Scroll Track (260vh scrollable distance = 2x longer / 50% slower to scroll than 130vh) */}
       <div ref={trackRef} className="relative h-[360vh] bg-white">
-        {/* Sticky Stage — no forced GPU layer: on iOS Safari a composited sticky layer can stop
-            the canvas repainting until momentum scrolling ends, freezing the 88 on screen */}
+        {/* Sticky Stage — exactly 100vh (see STATS_CSS); no forced GPU layer: on iOS Safari a
+            composited sticky layer can stop the canvas repainting until momentum scrolling ends */}
         <div
           ref={stageRef}
-          className="sticky top-0 h-[100vh] h-[100dvh] w-full overflow-hidden bg-white"
+          data-stage="1"
+          className="stats-stage sticky top-0 w-full overflow-hidden bg-white"
         >
           {/* Stick-Figure Canvas */}
           <canvas
             ref={canvasRef}
-            className="absolute inset-0 w-full h-full block"
+            className="absolute inset-0 w-full h-full block bg-white"
           />
 
-          {/* Subtle Flash Overlay */}
+          {/* Subtle Flash Overlay (desktop only; see draw()) */}
           <div
             ref={flashRef}
             className="absolute inset-0 pointer-events-none opacity-0 z-10"
@@ -552,7 +699,7 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
           {/* STAGE 1 TOP TITLE: Minimalistic, bold luxury serif, well below navbar and well above 88 */}
           <div
             ref={t1Ref}
-            className="absolute left-0 right-0 top-[68px] sm:top-[92px] md:top-[102px] lg:top-[108px] px-5 sm:px-8 text-center max-w-5xl mx-auto pointer-events-none z-20"
+            className="stats-s1 absolute left-0 right-0 top-[68px] sm:top-[92px] md:top-[102px] lg:top-[108px] px-5 sm:px-8 text-center max-w-5xl mx-auto pointer-events-none z-20"
           >
             <h2 className="font-serif text-[clamp(1.35rem,2.8vw,2.45rem)] font-semibold tracking-tight text-slate-900 leading-[1.12]">
               {stage1.headline}
@@ -562,17 +709,17 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
           {/* STAGE 2 TOP TITLE: Minimalistic, bold luxury serif with classic SABR Digital shimmer, well below navbar and well above 77 */}
           <div
             ref={t2Ref}
-            className="absolute left-0 right-0 top-[68px] sm:top-[92px] md:top-[102px] lg:top-[108px] px-5 sm:px-8 text-center max-w-5xl mx-auto invisible pointer-events-none z-20"
+            className="stats-s2 absolute left-0 right-0 top-[68px] sm:top-[92px] md:top-[102px] lg:top-[108px] px-5 sm:px-8 text-center max-w-5xl mx-auto pointer-events-none z-20"
           >
             <h2 className="font-serif text-[clamp(1.35rem,2.8vw,2.45rem)] font-semibold tracking-tight text-slate-900 leading-[1.12]">
               {stage2.headline}
             </h2>
           </div>
 
-          {/* STAGE 1 BOTTOM TEXT: Raised ~15% higher on mobile so the full paragraph clears the iPhone Safari bottom bar */}
+          {/* STAGE 1 BOTTOM TEXT: offset from the bottom is set in STATS_CSS so it always clears the phone's browser toolbar */}
           <div
             ref={q1Ref}
-            className="absolute left-0 right-0 bottom-[clamp(124px,18vh,164px)] sm:bottom-[68px] md:bottom-[80px] lg:bottom-[92px] px-5 sm:px-[6vw] text-center max-w-[820px] mx-auto pointer-events-none z-20"
+            className="stats-s1 stats-bottom absolute left-0 right-0 px-5 sm:px-[6vw] text-center max-w-[820px] mx-auto pointer-events-none z-20"
           >
             <div className="font-serif text-[clamp(15px,1.85vw,23px)] leading-[1.32] font-normal text-slate-900 mb-2">
               {stage1.quote}
@@ -582,10 +729,10 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
             </p>
           </div>
 
-          {/* STAGE 2 BOTTOM TEXT: Raised ~15% higher on mobile so the full paragraph clears the iPhone Safari bottom bar */}
+          {/* STAGE 2 BOTTOM TEXT: offset from the bottom is set in STATS_CSS so it always clears the phone's browser toolbar */}
           <div
             ref={q2Ref}
-            className="absolute left-0 right-0 bottom-[clamp(124px,18vh,164px)] sm:bottom-[68px] md:bottom-[80px] lg:bottom-[92px] px-5 sm:px-[6vw] text-center max-w-[820px] mx-auto invisible pointer-events-none z-20"
+            className="stats-s2 stats-bottom absolute left-0 right-0 px-5 sm:px-[6vw] text-center max-w-[820px] mx-auto pointer-events-none z-20"
           >
             <div className="font-serif text-[clamp(15px,1.85vw,23px)] leading-[1.32] font-normal text-slate-900 mb-2">
               {stage2.quote}
