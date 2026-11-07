@@ -66,6 +66,7 @@ const EquestrianHome: React.FC = () => {
           <img
             src={images.hero}
             alt="Horse and rider cantering in the outdoor arena at Bramble & Bay"
+            loading="eager"
             fetchPriority="high"
             decoding="async"
             className="w-full h-full object-cover object-center"
@@ -255,6 +256,8 @@ const EquestrianHome: React.FC = () => {
                     key={activeLesson.id}
                     src={activeLesson.photo}
                     alt={activeLesson.name}
+                    loading="lazy"
+                    decoding="async"
                     initial={{ opacity: 0, scale: 1.04 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0 }}

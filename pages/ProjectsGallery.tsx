@@ -5,28 +5,17 @@ import * as RouterDOM from 'react-router-dom';
 const { Link } = RouterDOM as any;
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { demoChunks, warmDemoChunk, type DemoId } from '../components/demos/demoChunks';
 
 gsap.registerPlugin(ScrollTrigger);
 
 // Warming a demo means two things: its route chunk and the photograph that
 // fills its first screen. Both are pulled in before the visitor clicks, so the
 // demo paints immediately instead of loading in front of them.
-const demoChunks: Record<string, () => Promise<unknown>> = {
-  landscaping: () => import('../components/demos/landscaping/Home'),
-  equestrian: () => import('../components/demos/equestrian/EquestrianHome'),
-  physio: () => import('../components/demos/physio/PhysioHome'),
-  spa: () => import('../components/demos/spa/SpaHome'),
-  cafe: () => import('../components/demos/cafe/CafeHome')
-};
-
-const warmedChunks = new Set<string>();
 const warmedImages = new Set<string>();
 
-const warmDemo = (id: string, heroImage?: string) => {
-  if (!warmedChunks.has(id) && demoChunks[id]) {
-    warmedChunks.add(id);
-    demoChunks[id]().catch(() => warmedChunks.delete(id));
-  }
+const warmDemo = (id: DemoId, heroImage?: string) => {
+  warmDemoChunk(id);
   if (heroImage && !warmedImages.has(heroImage)) {
     warmedImages.add(heroImage);
     const img = new Image();
@@ -36,7 +25,7 @@ const warmDemo = (id: string, heroImage?: string) => {
 };
 
 interface Project {
-  id: string;
+  id: DemoId;
   /* The trading name the demo actually uses. */
   wordmark: string;
   industry: string;
@@ -135,19 +124,33 @@ const projects: Project[] = [
   }
 ];
 
-// Preload and pre-decode all 5 project preview photos into memory immediately on module load
-// so they are already decoded in RAM before the user opens or scrolls the Projects tab.
+// Pull the five preview photos into the browser cache ahead of time, so they
+// are already local by the time anyone opens the Projects page. This file is
+// part of the studio's main chunk, so it runs on the homepage too: the warm-up
+// therefore waits until the page has finished loading and the browser is idle,
+// and asks at low priority, so it can never compete with the hero photo, the
+// fonts or the founder portrait for the first paint. (It used to fire five
+// high-priority, synchronously-decoded requests the instant the chunk parsed.)
 const predecodedProjectImages: HTMLImageElement[] = [];
 if (typeof window !== 'undefined') {
-  projects.forEach((p) => {
-    const img = new Image();
-    img.decoding = 'sync';
-    (img as any).fetchPriority = 'high';
-    img.src = p.heroImage;
-    img.decode?.().catch(() => {});
-    predecodedProjectImages.push(img);
-    warmedImages.add(p.heroImage);
-  });
+  const warmPreviews = () => {
+    projects.forEach((p) => {
+      if (warmedImages.has(p.heroImage)) return;
+      warmedImages.add(p.heroImage);
+      const img = new Image();
+      img.decoding = 'async';
+      (img as any).fetchPriority = 'low';
+      img.src = p.heroImage;
+      predecodedProjectImages.push(img);
+    });
+  };
+  const whenIdle = () => {
+    const idle = (window as any).requestIdleCallback;
+    if (typeof idle === 'function') idle(warmPreviews, { timeout: 4000 });
+    else window.setTimeout(warmPreviews, 1500);
+  };
+  if (document.readyState === 'complete') whenIdle();
+  else window.addEventListener('load', whenIdle, { once: true });
 }
 
 // A browser window holding the demo's own first screen. Chrome, caption strip
@@ -350,7 +353,7 @@ const ProjectsGallery: React.FC = () => {
   // Once the gallery itself is settled, pull every demo's route chunk down in
   // the background. By the time anyone picks one, the code is already here.
   useEffect(() => {
-    const warmAll = () => Object.keys(demoChunks).forEach((id) => warmDemo(id));
+    const warmAll = () => (Object.keys(demoChunks) as DemoId[]).forEach((id) => warmDemo(id));
     const idle = (window as any).requestIdleCallback;
     if (typeof idle === 'function') {
       const handle = idle(warmAll, { timeout: 2500 });

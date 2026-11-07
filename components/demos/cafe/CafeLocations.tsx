@@ -44,7 +44,8 @@ const CafeLocations: React.FC = () => {
           alt={activeLoc.name}
           className="absolute inset-0 w-full h-full object-cover opacity-40"
           loading="eager"
-          decoding="sync"
+          fetchPriority="high"
+          decoding="async"
         />
 
         {/* Interactive Map Embed */}
@@ -208,7 +209,7 @@ const CafeLocations: React.FC = () => {
                       src={loc.img}
                       alt={loc.name}
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                      loading="eager"
+                      loading="lazy"
                       decoding="async"
                     />
                     {isSelected && (

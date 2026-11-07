@@ -66,10 +66,10 @@ export const SPA_DATA = {
       pricePerNight: 490,
       sizeSqm: 68,
       capacity: '2 Adults · 1 Child',
-      heroImage: '/src/assets/images/verdant_pine_cottage_1793919178058.jpg',
+      heroImage: '/src/assets/images/verdant_pine_cottage_1793919178058.webp',
       gallery: [
-        '/src/assets/images/verdant_pine_cottage_1793919178058.jpg',
-        '/src/assets/images/verdant_forest_suite_1793919180207.jpg'
+        '/src/assets/images/verdant_pine_cottage_1793919178058.webp',
+        '/src/assets/images/verdant_forest_suite_1793919180207.webp'
       ],
       description:
         'Freestanding timber and glass cottage with a private cedar sauna, wood-burning fireplace, and recessed deck overlooking ancient pine woodland.',
@@ -94,10 +94,10 @@ export const SPA_DATA = {
       pricePerNight: 320,
       sizeSqm: 42,
       capacity: '2 Adults',
-      heroImage: '/src/assets/images/verdant_forest_suite_1793919180207.jpg',
+      heroImage: '/src/assets/images/verdant_forest_suite_1793919180207.webp',
       gallery: [
-        '/src/assets/images/verdant_forest_suite_1793919180207.jpg',
-        '/src/assets/images/verdant_pine_cottage_1793919178058.jpg'
+        '/src/assets/images/verdant_forest_suite_1793919180207.webp',
+        '/src/assets/images/verdant_pine_cottage_1793919178058.webp'
       ],
       description:
         'Set within the main lodge with a west-facing woodland balcony, rainfall stone shower, and direct heated walkway access to the thermal pools.',
@@ -122,10 +122,10 @@ export const SPA_DATA = {
       pricePerNight: 780,
       sizeSqm: 115,
       capacity: '4 Adults · 2 Children',
-      heroImage: '/src/assets/images/verdant_lake_chalet_1793919181022.jpg',
+      heroImage: '/src/assets/images/verdant_lake_chalet_1793919181022.webp',
       gallery: [
-        '/src/assets/images/verdant_lake_chalet_1793919181022.jpg',
-        '/src/assets/images/verdant_forest_suite_1793919180207.jpg'
+        '/src/assets/images/verdant_lake_chalet_1793919181022.webp',
+        '/src/assets/images/verdant_forest_suite_1793919180207.webp'
       ],
       description:
         'Positioned directly on the sanctuary lakefront with a steaming outdoor cedar hot tub, open-plan fireplace lounge, and two master suites.',
@@ -150,10 +150,10 @@ export const SPA_DATA = {
       pricePerNight: 1450,
       sizeSqm: 240,
       capacity: '6 Adults · 4 Children',
-      heroImage: '/src/assets/images/verdant_forest_villa_1793919208723.jpg',
+      heroImage: '/src/assets/images/verdant_forest_villa_1793919208723.webp',
       gallery: [
-        '/src/assets/images/verdant_forest_villa_1793919208723.jpg',
-        '/src/assets/images/verdant_forest_suite_1793919180207.jpg'
+        '/src/assets/images/verdant_forest_villa_1793919208723.webp',
+        '/src/assets/images/verdant_forest_suite_1793919180207.webp'
       ],
       description:
         'Complete privacy deep within the pine reserve. Features a 12-metre heated outdoor pool, detached cedar sauna pavilion, three master suites, and 24-hour host.',
@@ -192,7 +192,7 @@ export const SPA_DATA = {
       hours: '12:00 – 22:30',
       description:
         'An intimate dark-timber dining room centred around an open birchwood fire, serving dry-aged British steaks, whole roasted sea bass, and stone-baked flatbreads.',
-      image: '/src/assets/images/verdant_hearth_kitchen_1793919209436.jpg',
+      image: '/src/assets/images/verdant_hearth_kitchen_1793919209436.webp',
       signatureDish: '45-Day Dry-Aged Ribeye Roasted Over Birch Embers',
       dressCode: 'Relaxed Evening',
       highlights: ['Open Birchwood Hearth', 'Stone-Baked Sourdough', 'Smoked Botanical Cocktails']
@@ -204,7 +204,7 @@ export const SPA_DATA = {
       hours: '09:00 – 21:00',
       description:
         'Set directly beside our 34°C outdoor geothermal pool. Serving fresh coastal seafood, crisp salads, botanical tonics, and chilled champagne.',
-      image: '/src/assets/images/verdant_thermal_pool_1793919176502.jpg',
+      image: '/src/assets/images/verdant_thermal_pool_1793919176502.webp',
       signatureDish: 'Hand-Dived Scallop Ceviche with Citrus & Pine Needle Spritz',
       dressCode: 'Spa Attire Welcome',
       highlights: ['Heated Poolside Loungers', 'Cold-Pressed Tonics', 'Afternoon Champagne']
@@ -216,7 +216,7 @@ export const SPA_DATA = {
       hours: '08:00 – 20:00',
       description:
         'A quiet, cedar-lined lounge serving wild-harvested herbal infusions from our estate gardens, raw Wiltshire heather honey, and restorative broths.',
-      image: '/src/assets/images/verdant_tea_lounge_1793919210634.jpg',
+      image: '/src/assets/images/verdant_tea_lounge_1793919210634.webp',
       signatureDish: 'Estate Pine Needle, Chamomile & Wild Heather Honey Infusion',
       dressCode: 'Spa Robes Welcome',
       highlights: ['Bespoke Herbal Blending', 'Raw Estate Honey', 'Quiet Forest Outlook']
@@ -232,7 +232,7 @@ export const SPA_DATA = {
       price: 185,
       description:
         'Smooth volcanic river stones warmed in organic pine and cedarwood oils are used in long, unhurried strokes to melt away deep muscular tension.',
-      image: '/src/assets/images/verdant_hot_stone_1793919211791.jpg',
+      image: '/src/assets/images/verdant_hot_stone_1793919211791.webp',
       includes: ['Full-Body Basalt Stone Massage', 'Warm Pine & Cedarwood Oils', 'Heated Linen Compress']
     },
     {
@@ -243,7 +243,7 @@ export const SPA_DATA = {
       price: 150,
       description:
         'A restorative contrast ritual pairing aromatic birch-leaf cedar steam and a sea-salt polish with a private 36°C magnesium spring bath.',
-      image: '/src/assets/images/verdant_cedar_sauna_1793919246321.jpg',
+      image: '/src/assets/images/verdant_cedar_sauna_1793919246321.webp',
       includes: ['Aromatic Cedar & Birch Steam', 'Eucalyptus Sea-Salt Polish', 'Private Magnesium Mineral Bath']
     },
     {
@@ -286,7 +286,7 @@ export const SPA_DATA = {
       number: '02',
       title: 'HEATED PANORAMA POOLS',
       subtitle: 'Year-round 34°C outdoor mineral waters framed by towering evergreens.',
-      image: '/src/assets/images/verdant_thermal_pool_1793919176502.jpg',
+      image: '/src/assets/images/verdant_thermal_pool_1793919176502.webp',
       description:
         'Our 25-metre outdoor slate infinity pool is naturally heated to 34°C throughout the year, complete with hydro-massage jets and heated stone loungers.',
       tags: ['34°C Year-Round', 'Mineral Spring Water', 'Heated Loungers']
@@ -296,7 +296,7 @@ export const SPA_DATA = {
       number: '03',
       title: 'ELECTRIC FOREST BICYCLES',
       subtitle: 'Silent all-terrain electric bicycles for exploring 45 km of woodland trails.',
-      image: '/src/assets/images/verdant_forest_ebikes_1793919214449.jpg',
+      image: '/src/assets/images/verdant_forest_ebikes_1793919214449.webp',
       description:
         'Complimentary carbon electric mountain bikes with mapped scenic routes through the surrounding Wiltshire pine reserve and lakeside viewpoints.',
       tags: ['Complimentary for Guests', 'Mapped Scenic Trails', 'Picnic Hampers']
@@ -306,7 +306,7 @@ export const SPA_DATA = {
       number: '04',
       title: 'GLASS YOGA PAVILION',
       subtitle: 'Morning movement, breathwork, and evening sound baths surrounded by trees.',
-      image: '/src/assets/images/verdant_yoga_pavilion_1793919215496.jpg',
+      image: '/src/assets/images/verdant_yoga_pavilion_1793919215496.webp',
       description:
         'Practise daily guided yoga, restorative stretching, and acoustic sound meditation inside our heated 360-degree glass pavilion overlooking the forest.',
       tags: ['Daily Morning & Dusk', 'Private Tuition', 'Equipment Provided']

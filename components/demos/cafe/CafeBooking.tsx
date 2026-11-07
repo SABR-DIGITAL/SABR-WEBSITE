@@ -50,7 +50,7 @@ const CafeBooking: React.FC = () => {
               alt="Cafe Interior"
               loading="eager"
               fetchPriority="high"
-              decoding="sync"
+              decoding="async"
             />
           </div>
           <div className="absolute inset-0 bg-gradient-to-b from-[#4A403A]/85 via-[#4A403A]/90 to-[#4A403A]" />

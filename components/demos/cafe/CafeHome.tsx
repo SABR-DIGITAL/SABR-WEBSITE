@@ -179,7 +179,7 @@ const CafeHome: React.FC = () => {
             alt="High-end brunch table setting"
             loading="eager"
             fetchPriority="high"
-            decoding="sync"
+            decoding="async"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/20 to-[#FFF9F5]" />
         </div>
@@ -246,9 +246,8 @@ const CafeHome: React.FC = () => {
                     src={loc.img}
                     alt={loc.name}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    loading="eager"
-                    fetchPriority="high"
-                    decoding="sync"
+                    loading="lazy"
+                    decoding="async"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#4A403A]/70 via-transparent to-transparent" />
                   <div className="absolute top-5 left-5 inline-flex items-center gap-2 px-4 py-1.5 bg-[#FFF9F5]/95 backdrop-blur-md rounded-full">
@@ -309,9 +308,8 @@ const CafeHome: React.FC = () => {
           src="/images/projects/cafe-interior.webp"
           alt="The Rose Patisserie"
           className="absolute inset-0 w-full h-full object-cover"
-          loading="eager"
-          fetchPriority="high"
-          decoding="sync"
+          loading="lazy"
+          decoding="async"
         />
         <div className="absolute inset-0 bg-[#4A403A]/65" />
         <div className="relative z-10 text-center space-y-8 px-6 cafe-glide-up">
@@ -375,9 +373,8 @@ const CafeHome: React.FC = () => {
                   src="/images/projects/cafe-interior.webp"
                   className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
                   alt="Cafe Interior Ambiance"
-                  loading="eager"
-                  fetchPriority="high"
-                  decoding="sync"
+                  loading="lazy"
+                  decoding="async"
                 />
               </div>
               <div className="absolute -bottom-8 -right-8 bg-[#FDE2E4] p-10 rounded-[3rem] shadow-2xl border-[8px] border-white hidden md:block">

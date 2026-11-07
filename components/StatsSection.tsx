@@ -147,7 +147,10 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
       return;
     }
 
-    const ctx = cv.getContext('2d');
+    // The stage is painted edge-to-edge white every frame, so the bitmap never
+    // needs an alpha channel. An opaque canvas skips the per-frame blend with
+    // the white stage behind it when the browser composites the page.
+    const ctx = cv.getContext('2d', { alpha: false });
     if (!ctx) return;
 
     let W = 0;

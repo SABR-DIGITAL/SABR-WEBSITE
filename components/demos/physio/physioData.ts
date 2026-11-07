@@ -16,13 +16,13 @@ export const clinic = {
 
 export const images = {
   hero: '/images/projects/physio-preview.webp',
-  handsOn: '/src/assets/images/pulteney_manual_therapy_1793904530315.jpg',
-  assessment: '/src/assets/images/pulteney_hand_workplace_1793904533245.jpg',
-  studio: '/src/assets/images/pulteney_sports_rehab_1793904531567.jpg',
-  care: '/src/assets/images/pulteney_hydro_balance_1793904533484.jpg',
-  hydro: '/src/assets/images/pulteney_hydro_balance_1793904533484.jpg',
-  sports: '/src/assets/images/pulteney_sports_rehab_1793904531567.jpg',
-  hand: '/src/assets/images/pulteney_hand_workplace_1793904533245.jpg'
+  handsOn: '/src/assets/images/pulteney_manual_therapy_1793904530315.webp',
+  assessment: '/src/assets/images/pulteney_hand_workplace_1793904533245.webp',
+  studio: '/src/assets/images/pulteney_sports_rehab_1793904531567.webp',
+  care: '/src/assets/images/pulteney_hydro_balance_1793904533484.webp',
+  hydro: '/src/assets/images/pulteney_hydro_balance_1793904533484.webp',
+  sports: '/src/assets/images/pulteney_sports_rehab_1793904531567.webp',
+  hand: '/src/assets/images/pulteney_hand_workplace_1793904533245.webp'
 };
 
 export interface UkLocation {
@@ -60,7 +60,7 @@ export const ukLocations: UkLocation[] = [
     leadPhysio: 'Rachel Whitcombe, MSc MCSP',
     parkingAndAccess: 'Step-free ground floor access · 5 mins walk from Bath Spa station · Podium car park 4 mins away',
     facilities: ['4 Private Treatment Suites', 'Heated Hydrotherapy Pool', 'Rehabilitation Gym Studio'],
-    image: '/src/assets/images/pulteney_hero_rehab_1793904528479.jpg',
+    image: '/src/assets/images/pulteney_hero_rehab_1793904528479.webp',
     coordinatesLabel: '51.3837° N, 2.3568° W'
   },
   {
@@ -78,7 +78,7 @@ export const ukLocations: UkLocation[] = [
     leadPhysio: 'Daniel Osei, BSc MCSP',
     parkingAndAccess: 'Ground-floor consulting rooms · Clifton Down station 8 mins · Pay & display bays outside',
     facilities: ['Biomechanical Running Lab', 'Strength & Conditioning Bay', 'Sports Injury Clinic'],
-    image: '/src/assets/images/pulteney_sports_rehab_1793904531567.jpg',
+    image: '/src/assets/images/pulteney_sports_rehab_1793904531567.webp',
     coordinatesLabel: '51.4553° N, 2.6179° W'
   },
   {
@@ -96,7 +96,7 @@ export const ukLocations: UkLocation[] = [
     leadPhysio: 'Priya Raman, BSc MCSP',
     parkingAndAccess: 'Dedicated patient parking at rear · Level access throughout · Montpellier Gardens opposite',
     facilities: ['Hand & Upper Limb Suite', 'Balance & Vestibular Studio', 'Clinical Pilates & Rehab Room'],
-    image: '/src/assets/images/pulteney_manual_therapy_1793904530315.jpg',
+    image: '/src/assets/images/pulteney_manual_therapy_1793904530315.webp',
     coordinatesLabel: '51.8962° N, 2.0811° W'
   }
 ];
@@ -137,7 +137,7 @@ export const coreServices: ServiceOffering[] = [
     shortDesc: 'Hands-on joint mobilisation, soft-tissue release, and tailored movement plans to resolve back, neck, and joint pain at its root.',
     fullDesc: 'Every course of care begins with a thorough 50-minute diagnostic assessment. We combine gentle manual therapy with progressive strength loading so you recover quickly and stay pain-free long term.',
     highlights: ['50-minute 1-to-1 initial assessment', 'Spinal & peripheral joint mobilisation', 'Written recovery plan & video exercises'],
-    image: '/src/assets/images/pulteney_manual_therapy_1793904530315.jpg',
+    image: '/src/assets/images/pulteney_manual_therapy_1793904530315.webp',
     duration: '50 mins initial / 30 mins follow-up',
     price: '£68'
   },
@@ -149,7 +149,7 @@ export const coreServices: ServiceOffering[] = [
     shortDesc: 'Biomechanical gait analysis, tendon loading programmes, and sport-specific conditioning for runners, cyclists, rugby, and club athletes.',
     fullDesc: 'Used by club and county athletes across Bath, Bristol, and Cheltenham. We test force symmetry, movement mechanics, and tissue capacity inside our rehab gym so you return to sport stronger than before.',
     highlights: ['Video running & gait biomechanics', 'ACL, meniscus & tendon rehabilitation', 'Objective return-to-sport testing'],
-    image: '/src/assets/images/pulteney_sports_rehab_1793904531567.jpg',
+    image: '/src/assets/images/pulteney_sports_rehab_1793904531567.webp',
     duration: '50 minutes',
     price: '£74'
   },
@@ -161,7 +161,7 @@ export const coreServices: ServiceOffering[] = [
     shortDesc: 'Guided rehabilitation in our 34°C heated indoor therapy pool — ideal after hip, knee, or spinal surgery when land movement is painful.',
     fullDesc: 'Warm water buoyancy reduces joint weight-bearing by up to 80%, allowing early gait re-education, gentle range-of-motion recovery, and confidence building immediately after orthopaedic surgery.',
     highlights: ['34°C warm therapeutic pool in Bath', 'Post-operative hip & knee replacement rehab', '1-to-1 chartered physiotherapist in water'],
-    image: '/src/assets/images/pulteney_hydro_balance_1793904533484.jpg',
+    image: '/src/assets/images/pulteney_hydro_balance_1793904533484.webp',
     duration: '45 minutes',
     price: '£78'
   },
@@ -173,7 +173,7 @@ export const coreServices: ServiceOffering[] = [
     shortDesc: 'Specialist balance retraining, vestibular physiotherapy for vertigo, and progressive strength programmes to keep older adults confident and independent.',
     fullDesc: 'Our AgeWell & Balance programme addresses dizziness (BPPV), unsteadiness, and post-fall confidence through targeted vestibular manoeuvres, proprioceptive training, and functional strength.',
     highlights: ['Vestibular & Epley manoeuvre treatment', 'Falls prevention & postural stability', 'Small-group AgeWell studio sessions'],
-    image: '/src/assets/images/pulteney_hero_rehab_1793904528479.jpg',
+    image: '/src/assets/images/pulteney_hero_rehab_1793904528479.webp',
     duration: '45 minutes',
     price: '£64'
   },
@@ -185,7 +185,7 @@ export const coreServices: ServiceOffering[] = [
     shortDesc: 'Dedicated rehabilitation for carpal tunnel, tendon repairs, fractures, tennis elbow, and rotator cuff conditions with custom thermoplastic splinting.',
     fullDesc: 'Fine motor recovery requires specialist precision. We work closely with South West orthopaedic hand and shoulder surgeons to restore grip strength, dexterity, and pain-free reach.',
     highlights: ['Custom splint fabrication & fitting', 'Fracture, tendon & nerve recovery', 'Rotator cuff & frozen shoulder care'],
-    image: '/src/assets/images/pulteney_hand_workplace_1793904533245.jpg',
+    image: '/src/assets/images/pulteney_hand_workplace_1793904533245.webp',
     duration: '45 minutes',
     price: '£68'
   },
@@ -197,7 +197,7 @@ export const coreServices: ServiceOffering[] = [
     shortDesc: 'Comprehensive UK workplace physiotherapy, DSE ergonomic assessments, functional capacity evaluations, and phased return-to-work plans.',
     fullDesc: 'Partnering with employers across the West of England to prevent musculoskeletal absence, conduct on-site workstation assessments, and rehabilitate staff safely back into active roles.',
     highlights: ['HSE-compliant DSE & ergonomic audits', 'Functional Capacity Evaluations (FCE)', 'On-site injury prevention workshops'],
-    image: '/src/assets/images/pulteney_manual_therapy_1793904530315.jpg',
+    image: '/src/assets/images/pulteney_manual_therapy_1793904530315.webp',
     duration: 'Bespoke / Clinic or On-Site',
     price: '£85'
   }
@@ -319,7 +319,7 @@ export const spotlightSlides = [
     ctaLabel: 'Explore AgeWell Rehab',
     ctaPath: '/demo/physio/prices',
     metric: '96% of participants report improved daily balance within 6 weeks',
-    image: '/src/assets/images/pulteney_hero_rehab_1793904528479.jpg'
+    image: '/src/assets/images/pulteney_hero_rehab_1793904528479.webp'
   },
   {
     id: 'sports-partners',
@@ -330,7 +330,7 @@ export const spotlightSlides = [
     ctaLabel: 'View Sports Rehab',
     ctaPath: '/demo/physio/prices',
     metric: 'Supporting 18+ local sports clubs and 4,200+ runners annually',
-    image: '/src/assets/images/pulteney_sports_rehab_1793904531567.jpg'
+    image: '/src/assets/images/pulteney_sports_rehab_1793904531567.webp'
   },
   {
     id: 'workplace-wellbeing',
@@ -341,7 +341,7 @@ export const spotlightSlides = [
     ctaLabel: 'Corporate Solutions',
     ctaPath: '/demo/physio/contact',
     metric: 'Trusted by 35+ regional employers across the West of England',
-    image: '/src/assets/images/pulteney_hand_workplace_1793904533245.jpg'
+    image: '/src/assets/images/pulteney_hand_workplace_1793904533245.webp'
   }
 ];
 

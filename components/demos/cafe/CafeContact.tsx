@@ -77,7 +77,7 @@ const CafeContact: React.FC = () => {
                 src="https://images.unsplash.com/photo-1445116572660-236099ec97a0?auto=format&fit=crop&q=75&w=1000"
                 className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
                 alt="Cafe exterior window view"
-                loading="eager"
+                loading="lazy"
                 decoding="async"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#4A403A]/65 to-transparent" />

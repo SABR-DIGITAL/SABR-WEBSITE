@@ -342,6 +342,8 @@ export const Gallery: React.FC = () => {
               <img
                 src={selectedGarden.img}
                 alt={selectedGarden.title}
+                loading="lazy"
+                decoding="async"
                 className="w-full h-full object-cover"
               />
               <button

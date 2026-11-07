@@ -67,7 +67,7 @@ const CafeAbout: React.FC = () => {
                 className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
                 loading="eager"
                 fetchPriority="high"
-                decoding="sync"
+                decoding="async"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#4A403A]/45 to-transparent" />
             </div>
@@ -148,8 +148,8 @@ const CafeAbout: React.FC = () => {
                 src="/images/projects/cafe-hero.webp"
                 className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
                 alt="Interior Architecture"
-                loading="eager"
-                decoding="sync"
+                loading="lazy"
+                decoding="async"
               />
             </div>
           </div>

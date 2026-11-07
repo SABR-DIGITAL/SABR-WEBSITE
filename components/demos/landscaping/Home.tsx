@@ -233,6 +233,7 @@ export const Home: React.FC = () => {
                 alt={slide.alt}
                 loading={idx === 0 ? 'eager' : 'lazy'}
                 decoding="async"
+                fetchPriority={idx === 0 ? 'high' : undefined}
                 className={`w-full h-full object-cover object-center transition-transform duration-[8500ms] ease-out ${
                   isCurrent ? 'scale-100' : 'scale-105'
                 }`}

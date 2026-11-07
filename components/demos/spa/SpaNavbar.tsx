@@ -25,28 +25,28 @@ export const SpaMenuModal: React.FC<{ isOpen: boolean; onClose: () => void; onOp
       title: 'ACCOMMODATION',
       path: '/demo/spa/suites',
       tagline: 'Private timber and glass residences nestled within 180 acres of ancient pines.',
-      image: '/src/assets/images/verdant_pine_cottage_1793919178058.jpg'
+      image: '/src/assets/images/verdant_pine_cottage_1793919178058.webp'
     },
     {
       num: '02',
       title: 'FOOD & BEVERAGE',
       path: '/demo/spa/dining',
       tagline: 'Seasonal woodland dining, open-hearth cooking, and botanical infusions.',
-      image: '/src/assets/images/verdant_hearth_kitchen_1793919209436.jpg'
+      image: '/src/assets/images/verdant_hearth_kitchen_1793919209436.webp'
     },
     {
       num: '03',
       title: 'SPA & WELLNESS',
       path: '/demo/spa/treatments',
       tagline: 'Geothermal mineral pools, volcanic basalt stone rituals, and cedar saunas.',
-      image: '/src/assets/images/verdant_thermal_pool_1793919176502.jpg'
+      image: '/src/assets/images/verdant_thermal_pool_1793919176502.webp'
     },
     {
       num: '04',
       title: 'ACTIVITIES & PARK',
       path: '/demo/spa/activities',
       tagline: 'Private equestrian trails, heated outdoor pools, woodland cycling, and clay tennis.',
-      image: '/src/assets/images/verdant_forest_ebikes_1793919214449.jpg'
+      image: '/src/assets/images/verdant_forest_ebikes_1793919214449.webp'
     },
     {
       num: '05',
@@ -164,6 +164,8 @@ export const SpaMenuModal: React.FC<{ isOpen: boolean; onClose: () => void; onOp
                   key={currentActive.image}
                   src={currentActive.image}
                   alt={currentActive.title}
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
                 />
               </Link>

@@ -60,6 +60,8 @@ export const SpaSuites: React.FC = () => {
                   <img
                     src={suite.heroImage}
                     alt={suite.name}
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
                   />
                 </div>

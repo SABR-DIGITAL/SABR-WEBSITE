@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { Page } from '../App';
 import { ArrowRight } from 'lucide-react';
+import { HERO } from '../gateway/GatewayPage';
 
 interface HeroProps { 
   navigateTo: (page: Page) => void; 
@@ -40,16 +41,22 @@ const Hero: React.FC<HeroProps> = ({ navigateTo, startAnimation = true }) => {
     <section ref={containerRef} className="relative h-[100dvh] flex items-center px-6 lg:px-24 overflow-hidden bg-[#0b0d10]">
       {/* Background Image with Lighter Top Overlay */}
       <div className="absolute inset-0 z-0">
-        <img
-          src="/images/hero-bg-1920.jpg"
-          srcSet="/images/hero-bg-1280.jpg 1280w, /images/hero-bg-1920.jpg 1920w, /images/hero-bg.jpg 3840w"
-          sizes="100vw"
-          alt="Misty Wiltshire countryside at sunrise"
-          className="w-full h-full object-cover"
-          loading="eager"
-          decoding="async"
-          fetchPriority="high"
-        />
+        {/* Same candidates as HERO['web-design'] in gateway/GatewayPage.tsx, so the
+            file the gateway panel (or index.html's preload) already fetched is
+            exactly the one this element asks for. */}
+        <picture>
+          <source type="image/webp" srcSet={HERO['web-design'].srcSet} sizes="100vw" />
+          <img
+            src="/images/hero-bg-1920.jpg"
+            srcSet="/images/hero-bg-1280.jpg 1280w, /images/hero-bg-1920.jpg 1920w, /images/hero-bg.jpg 3840w"
+            sizes="100vw"
+            alt="Misty Wiltshire countryside at sunrise"
+            className="w-full h-full object-cover"
+            loading="eager"
+            decoding="async"
+            fetchPriority="high"
+          />
+        </picture>
         {/* Lightened overlay at top to let the sunrise landscape breathe */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/45 to-black/75"></div>
       </div>

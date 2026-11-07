@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useLayoutEffect, Component } from 'react';
+import React, { Suspense, lazy, useState, useEffect, useRef, useLayoutEffect, Component } from 'react';
 // Fix react-router-dom missing exports
 import * as RouterDOM from 'react-router-dom';
 const { BrowserRouter, Routes, Route, Navigate, Link, useLocation, useNavigate } = RouterDOM as any;
@@ -17,53 +17,54 @@ import WebsiteScoreScanner from './components/WebsiteScoreScanner';
 import WhyWebsiteSection from './components/WhyWebsiteSection';
 import AboutFounderSection from './components/AboutFounderSection';
 
-// Direct Eagerly Loaded Pages — Zero loading screen flashes when switching pages or demos
+// The studio's own pages stay in this chunk so moving between them never waits on the network.
 import ProjectsGallery from './pages/ProjectsGallery';
 import SnakeTimeline from './components/SnakeTimeline';
 import FAQSection from './components/FAQSection';
 import ContactForm from './components/ContactForm';
 
-// Equestrian Demo Pages
-import EquestrianHome from './components/demos/equestrian/EquestrianHome';
-import EquestrianLessons from './components/demos/equestrian/EquestrianLessons';
-import EquestrianHorses from './components/demos/equestrian/EquestrianHorses';
-import EquestrianFacilities from './components/demos/equestrian/EquestrianFacilities';
-import EquestrianFaqs from './components/demos/equestrian/EquestrianFaqs';
-import EquestrianContact from './components/demos/equestrian/EquestrianContact';
-import EquestrianBooking from './components/demos/equestrian/EquestrianBooking';
+// Demo websites. Each is its own route chunk, so a visitor only downloads a
+// demo when they are about to look at it. The gallery warms every demo chunk
+// while the browser is idle (and again on hover of a "View demo" link), the
+// router keeps the current page on screen until a chunk has arrived, and a
+// direct /demo/... link starts the chunk download alongside this file (see
+// index.tsx) — so in practice nobody sees a loading state.
+const EquestrianHome = lazy(() => import('./components/demos/equestrian/EquestrianHome'));
+const EquestrianLessons = lazy(() => import('./components/demos/equestrian/EquestrianLessons'));
+const EquestrianHorses = lazy(() => import('./components/demos/equestrian/EquestrianHorses'));
+const EquestrianFacilities = lazy(() => import('./components/demos/equestrian/EquestrianFacilities'));
+const EquestrianFaqs = lazy(() => import('./components/demos/equestrian/EquestrianFaqs'));
+const EquestrianContact = lazy(() => import('./components/demos/equestrian/EquestrianContact'));
+const EquestrianBooking = lazy(() => import('./components/demos/equestrian/EquestrianBooking'));
 
-// Landscaping Demo Pages (Oak & Ash)
-import LandscaperHome from './components/demos/landscaping/Home';
-import LandscaperContact from './components/demos/landscaping/Contact';
-import LandscaperServices from './components/demos/landscaping/Services';
-import LandscaperAbout from './components/demos/landscaping/About';
-import LandscaperGallery from './components/demos/landscaping/Gallery';
+const LandscaperHome = lazy(() => import('./components/demos/landscaping/Home'));
+const LandscaperContact = lazy(() => import('./components/demos/landscaping/Contact'));
+const LandscaperServices = lazy(() => import('./components/demos/landscaping/Services'));
+const LandscaperAbout = lazy(() => import('./components/demos/landscaping/About'));
+const LandscaperGallery = lazy(() => import('./components/demos/landscaping/Gallery'));
 
-// Cafe Demo Pages
-import CafeHome from './components/demos/cafe/CafeHome';
-import CafeMenu from './components/demos/cafe/CafeMenu';
-import CafeLocations from './components/demos/cafe/CafeLocations';
-import CafeAbout from './components/demos/cafe/CafeAbout';
-import CafeContact from './components/demos/cafe/CafeContact';
-import CafeBooking from './components/demos/cafe/CafeBooking';
+const CafeHome = lazy(() => import('./components/demos/cafe/CafeHome'));
+const CafeMenu = lazy(() => import('./components/demos/cafe/CafeMenu'));
+const CafeLocations = lazy(() => import('./components/demos/cafe/CafeLocations'));
+const CafeAbout = lazy(() => import('./components/demos/cafe/CafeAbout'));
+const CafeContact = lazy(() => import('./components/demos/cafe/CafeContact'));
+const CafeBooking = lazy(() => import('./components/demos/cafe/CafeBooking'));
 
-// Physio Demo Pages
-import PhysioHome from './components/demos/physio/PhysioHome';
-import PhysioPrices from './components/demos/physio/PhysioPrices';
-import PhysioTeam from './components/demos/physio/PhysioTeam';
-import PhysioFAQ from './components/demos/physio/PhysioFAQ';
-import PhysioContact from './components/demos/physio/PhysioContact';
+const PhysioHome = lazy(() => import('./components/demos/physio/PhysioHome'));
+const PhysioPrices = lazy(() => import('./components/demos/physio/PhysioPrices'));
+const PhysioTeam = lazy(() => import('./components/demos/physio/PhysioTeam'));
+const PhysioFAQ = lazy(() => import('./components/demos/physio/PhysioFAQ'));
+const PhysioContact = lazy(() => import('./components/demos/physio/PhysioContact'));
 
-// Luxury Spa Demo Pages
-import SpaHome from './components/demos/spa/SpaHome';
-import SpaSuites from './components/demos/spa/SpaSuites';
-import SpaTreatments from './components/demos/spa/SpaTreatments';
-import SpaDining from './components/demos/spa/SpaDining';
-import SpaActivities from './components/demos/spa/SpaActivities';
-import SpaPhilosophy from './components/demos/spa/SpaPhilosophy';
-import SpaTransfers from './components/demos/spa/SpaTransfers';
-import SpaContact from './components/demos/spa/SpaContact';
-import SpaBooking from './components/demos/spa/SpaBooking';
+const SpaHome = lazy(() => import('./components/demos/spa/SpaHome'));
+const SpaSuites = lazy(() => import('./components/demos/spa/SpaSuites'));
+const SpaTreatments = lazy(() => import('./components/demos/spa/SpaTreatments'));
+const SpaDining = lazy(() => import('./components/demos/spa/SpaDining'));
+const SpaActivities = lazy(() => import('./components/demos/spa/SpaActivities'));
+const SpaPhilosophy = lazy(() => import('./components/demos/spa/SpaPhilosophy'));
+const SpaTransfers = lazy(() => import('./components/demos/spa/SpaTransfers'));
+const SpaContact = lazy(() => import('./components/demos/spa/SpaContact'));
+const SpaBooking = lazy(() => import('./components/demos/spa/SpaBooking'));
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -363,6 +364,13 @@ const MainApp: React.FC = () => {
         <main className="relative flex-grow">
           <div ref={contentRef} className="w-full">
             <ErrorBoundary>
+              {/* Only ever shown on a direct link straight into a demo, while its
+                  chunk is still arriving: the same dark shell index.tsx paints
+                  while this file loads, so the sequence reads as one wait, not
+                  a flash of the studio's cream page in between. In-app
+                  navigation never shows it (see the router's startTransition
+                  flag below). */}
+              <Suspense fallback={<div aria-hidden="true" className="fixed inset-0 z-[5000] bg-[#0A0D14]" />}>
               <Routes>
                 <Route path="/" element={renderHomeContent()} />
                 <Route path="/about" element={<Navigate to="/#about" replace />} />
@@ -404,6 +412,7 @@ const MainApp: React.FC = () => {
                 <Route path="/demo/spa/book" element={<SpaBooking />} />
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>
+              </Suspense>
             </ErrorBoundary>
           </div>
 
@@ -524,7 +533,10 @@ const MainApp: React.FC = () => {
 };
 
 const App: React.FC = () => (
-  <BrowserRouter basename="/web-design">
+  // v7_startTransition wraps every navigation in React.startTransition, so
+  // when a link leads to a demo whose chunk has not arrived yet, the page the
+  // visitor is on stays put until it has — no fallback, no blank frame.
+  <BrowserRouter basename="/web-design" future={{ v7_startTransition: true }}>
     <MainApp />
   </BrowserRouter>
 );

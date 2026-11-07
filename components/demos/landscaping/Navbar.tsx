@@ -173,6 +173,8 @@ export const Navbar: React.FC = () => {
               key={item.name}
               src={item.image}
               alt={item.name}
+              loading="lazy"
+              decoding="async"
               className={`absolute inset-0 w-full h-full object-cover transition-all duration-[1100ms] ease-out ${
                 idx === hoveredIdx ? 'opacity-100 scale-100' : 'opacity-0 scale-105'
               }`}

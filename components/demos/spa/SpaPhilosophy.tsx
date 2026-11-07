@@ -95,6 +95,8 @@ export const SpaPhilosophy: React.FC = () => {
               <img
                 src="https://images.unsplash.com/photo-1510798831971-661eb04b3739?auto=format&fit=crop&q=90&w=2400"
                 alt="Timber and Glass Woodland Architecture"
+                loading="lazy"
+                decoding="async"
                 className="w-full h-full object-cover"
               />
             </div>
