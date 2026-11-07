@@ -17,12 +17,28 @@ interface NavbarProps {
 }
 
 const Navbar: React.FC<NavbarProps> = ({ currentPage, startAnimation = true }) => {
-  const [scrolled, setScrolled] = useState(false);
+  const [scrolled, setScrolled] = useState(() => typeof window !== 'undefined' ? window.scrollY > 20 : false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
+    let ticking = false;
+    let lastScrolled = window.scrollY > 20;
+
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const isScrolled = window.scrollY > 20;
+          if (isScrolled !== lastScrolled) {
+            lastScrolled = isScrolled;
+            setScrolled(isScrolled);
+          }
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -45,12 +61,12 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, startAnimation = true }) =
       <header 
         className={`fixed top-0 left-0 right-0 z-[100] px-4 md:px-8 py-4 pointer-events-none transition-opacity duration-700 ${startAnimation ? 'opacity-100' : 'opacity-0'}`}
       >
-        <div className={`max-w-7xl mx-auto flex items-center justify-between pointer-events-auto transition-all duration-500 lg:px-8 lg:py-3.5 lg:rounded-full lg:border ${
+        <div className={`max-w-7xl mx-auto flex items-center justify-between pointer-events-auto transition-[background-color,border-color,box-shadow] duration-300 ease-out transform-gpu lg:px-8 lg:py-3.5 lg:rounded-full lg:border lg:backdrop-blur-md ${
           scrolled 
             ? 'lg:bg-white/95 lg:border-stone-200/80 lg:shadow-md' 
             : isHomeUnscrolled 
-            ? 'bg-transparent border-transparent lg:bg-black/20 lg:border-white/15 lg:backdrop-blur-md' 
-            : 'bg-transparent border-transparent lg:bg-white/70 lg:border-stone-200/60 lg:backdrop-blur-md'
+            ? 'bg-transparent border-transparent lg:bg-black/20 lg:border-white/15' 
+            : 'bg-transparent border-transparent lg:bg-white/70 lg:border-stone-200/60'
         } ${mobileMenuOpen ? 'opacity-0' : 'opacity-100'} lg:opacity-100 shadow-none`}>
           
           {/* BRAND LOGO WITH WILTSHIRE WEB DESIGN STUDIO */}
@@ -103,7 +119,7 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, startAnimation = true }) =
             <Link
               to={PAGE_PATHS.contact}
               onClick={() => handleNav('contact')}
-              className={`px-7 py-2.5 rounded-full text-[11px] uppercase tracking-[0.2em] font-semibold transition-all focus:outline-none ${
+              className={`px-7 py-2.5 rounded-full text-[11px] uppercase tracking-[0.2em] font-semibold transition-[transform,background-color,box-shadow] duration-200 ease-out focus:outline-none transform-gpu ${
                 scrolled 
                   ? 'bg-emerald-600 text-white hover:bg-emerald-500 shadow-sm' 
                   : 'bg-[#f5f2eb] text-stone-900 hover:bg-white shadow-md'

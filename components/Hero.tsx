@@ -1,6 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
-import { Page } from '../App';
+import { Page, PAGE_PATHS } from '../App';
+import * as RouterDOM from 'react-router-dom';
+const { Link } = RouterDOM as any;
 import { ArrowRight } from 'lucide-react';
 import { HERO } from '../gateway/GatewayPage';
 
@@ -16,21 +18,30 @@ const Hero: React.FC<HeroProps> = ({ navigateTo, startAnimation = true }) => {
     if (!startAnimation) return;
 
     const ctx = gsap.context(() => {
-      const tl = gsap.timeline({
-        defaults: { ease: "expo.out", force3D: true }
-      });
-      
-      tl.fromTo(".hero-title-top", 
-        // No blur filter here: blurring a headline this size repaints it every
-        // frame and was the main stutter as the page arrived.
-        { opacity: 0, y: 35 },
-        { opacity: 1, y: 0, duration: 0.8 }
+      // Butter-smooth entrance that never delays or bugs text or CTAs
+      gsap.fromTo(
+        ".hero-title-top",
+        { opacity: 0.25, y: 12 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.35,
+          ease: "power2.out",
+          clearProps: "all"
+        }
       );
 
-      tl.fromTo(".hero-reveal-bottom",
-        { opacity: 0, y: 25 },
-        { opacity: 1, y: 0, duration: 0.7, stagger: 0.08 },
-        "-=0.5"
+      gsap.fromTo(
+        ".hero-subtext",
+        { opacity: 0.25, y: 10 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.32,
+          ease: "power2.out",
+          delay: 0.04,
+          clearProps: "all"
+        }
       );
     }, containerRef);
 
@@ -47,10 +58,12 @@ const Hero: React.FC<HeroProps> = ({ navigateTo, startAnimation = true }) => {
         <picture>
           <source type="image/webp" srcSet={HERO['web-design'].srcSet} sizes="100vw" />
           <img
-            src="/images/hero-bg-1920.jpg"
-            srcSet="/images/hero-bg-1280.jpg 1280w, /images/hero-bg-1920.jpg 1920w, /images/hero-bg.jpg 3840w"
+            src="/images/hero-bg-1920.webp"
+            srcSet="/images/hero-bg-1280.webp 1280w, /images/hero-bg-1920.webp 1920w, /images/hero-bg-2560.webp 2560w, /images/hero-bg-3840.webp 3840w"
             sizes="100vw"
-            alt="Misty Wiltshire countryside at sunrise"
+            width={1920}
+            height={1080}
+            alt="Misty Wiltshire countryside at sunrise - SABR Digital Web Design Studio"
             className="w-full h-full object-cover"
             loading="eager"
             decoding="async"
@@ -67,36 +80,38 @@ const Hero: React.FC<HeroProps> = ({ navigateTo, startAnimation = true }) => {
 
         {/* HERO TITLE: Dense, bold, not all capitals */}
         <h1 className="font-syne text-[clamp(2.6rem,7vw,4.4rem)] font-black leading-[0.98] tracking-[-0.035em] text-white">
-          <span className="hero-title-top inline-block opacity-0 drop-shadow-[0_4px_16px_rgba(0,0,0,0.5)]">
+          <span className="hero-title-top inline-block [text-shadow:0_3px_14px_rgba(0,0,0,0.55)] will-change-transform">
             Rooted in <span className="text-shimmer-blue italic font-black">Wiltshire.</span>
           </span>
         </h1>
 
         {/* SUBTEXT: Reduced by 20%, clean legible font */}
-        <div className="hero-reveal-bottom opacity-0 max-w-2xl">
-          <p className="font-inter text-lg sm:text-xl md:text-2xl text-stone-100 font-normal leading-relaxed tracking-normal drop-shadow-[0_2px_10px_rgba(0,0,0,0.6)]">
+        <div className="hero-subtext max-w-2xl will-change-transform">
+          <p className="font-inter text-lg sm:text-xl md:text-2xl text-stone-100 font-normal leading-relaxed tracking-normal [text-shadow:0_2px_8px_rgba(0,0,0,0.6)]">
             Custom designs for Ambitous brands.
           </p>
         </div>
 
-        {/* ACTION BUTTONS: One warm off-white solid + one refined ghost button, smaller, softer radius */}
-        <div className="hero-reveal-bottom opacity-0 flex flex-col sm:flex-row gap-4 items-center sm:items-start pt-2">
+        {/* ACTION BUTTONS: Instantly available, interactive, zero lag on load */}
+        <div className="flex flex-col sm:flex-row gap-4 items-center sm:items-start pt-2">
           {/* Primary Warm Off-White Button */}
-          <button 
+          <Link 
+            to={PAGE_PATHS.contact}
             onClick={() => navigateTo('contact')}
-            className="w-full sm:w-auto px-7 py-3.5 bg-[#f5f2eb] hover:bg-white text-stone-900 rounded-xl font-semibold text-xs sm:text-sm tracking-wide transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2.5 cursor-pointer"
+            className="w-full sm:w-auto px-7 py-3.5 bg-[#f5f2eb] hover:bg-white text-stone-900 rounded-xl font-semibold text-xs sm:text-sm tracking-wide transition-[transform,background-color,box-shadow] duration-150 ease-out shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2.5 cursor-pointer transform-gpu"
           >
             <span>Start Your Project</span>
             <ArrowRight size={15} />
-          </button>
+          </Link>
 
           {/* Outlined Ghost Button */}
-          <button 
+          <Link 
+            to={PAGE_PATHS.work}
             onClick={() => navigateTo('work')}
-            className="w-full sm:w-auto px-7 py-3.5 bg-white/10 hover:bg-white/20 text-white/95 border border-white/25 hover:border-white/40 rounded-xl font-medium text-xs sm:text-sm tracking-wide transition-all duration-300 backdrop-blur-sm hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
+            className="w-full sm:w-auto px-7 py-3.5 bg-white/10 hover:bg-white/20 text-white/95 border border-white/25 hover:border-white/40 rounded-xl font-medium text-xs sm:text-sm tracking-wide transition-[transform,background-color,border-color] duration-150 ease-out backdrop-blur-sm hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2 cursor-pointer transform-gpu"
           >
             <span>The Work</span>
-          </button>
+          </Link>
         </div>
 
       </div>

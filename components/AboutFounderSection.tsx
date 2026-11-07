@@ -69,40 +69,38 @@ const AboutFounderSection: React.FC<AboutFounderSectionProps> = ({
     if (!canAnimate) return;
 
     const ctx = gsap.context(() => {
-      gsap.set(imgCol, { x: -70, opacity: 0 });
-      gsap.set(txtCol, { x: 70, opacity: 0 });
-
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: section,
-          start: 'top 80%',
-          once: true,
-          fastScrollEnd: true
-        }
-      });
-
-      tl.to(
+      gsap.fromTo(
         imgCol,
+        { x: -24, opacity: 0.3 },
         {
           x: 0,
           opacity: 1,
-          duration: 1.15,
-          ease: 'power3.out',
-          force3D: true,
-          clearProps: 'transform'
-        },
-        0
-      ).to(
+          duration: 0.42,
+          ease: 'power2.out',
+          clearProps: 'all',
+          scrollTrigger: {
+            trigger: section,
+            start: 'top 90%',
+            once: true
+          }
+        }
+      );
+
+      gsap.fromTo(
         txtCol,
+        { x: 24, opacity: 0.3 },
         {
           x: 0,
           opacity: 1,
-          duration: 1.15,
-          ease: 'power3.out',
-          force3D: true,
-          clearProps: 'transform'
-        },
-        0.06
+          duration: 0.42,
+          ease: 'power2.out',
+          clearProps: 'all',
+          scrollTrigger: {
+            trigger: section,
+            start: 'top 90%',
+            once: true
+          }
+        }
       );
     }, section);
 
@@ -122,7 +120,7 @@ const AboutFounderSection: React.FC<AboutFounderSectionProps> = ({
           {/* LEFT COLUMN: Founder Portrait glides in smoothly from the left */}
           <div
             ref={imageColRef}
-            className="lg:col-span-5 flex justify-center lg:justify-start will-change-transform"
+            className="lg:col-span-5 flex justify-center lg:justify-start will-change-transform transform-gpu"
           >
             <div className="relative w-full max-w-[340px] sm:max-w-[380px] group">
               
@@ -137,7 +135,7 @@ const AboutFounderSection: React.FC<AboutFounderSectionProps> = ({
                 <picture className="block w-full h-full">
                   <source srcSet="/assets/aistudio/image_c05e976f.webp" type="image/webp" />
                   <img
-                    src="/assets/aistudio/image_c05e976f.png"
+                    src="/assets/aistudio/image_c05e976f.webp"
                     alt="Raphael - Founder of SABR Digital in Wiltshire"
                     width={1069}
                     height={1472}
@@ -206,7 +204,7 @@ const AboutFounderSection: React.FC<AboutFounderSectionProps> = ({
               <Link
                 to={ctaTo ?? PAGE_PATHS.contact}
                 onClick={() => !ctaTo && navigateTo && navigateTo('contact')}
-                className="inline-flex items-center gap-2.5 px-7 py-3 bg-emerald-600 hover:bg-slate-950 text-white rounded-full font-semibold text-xs uppercase tracking-wider transition-all duration-300 shadow-md hover:scale-105 active:scale-95"
+                className="inline-flex items-center gap-2.5 px-7 py-3 bg-emerald-600 hover:bg-slate-950 text-white rounded-full font-semibold text-xs uppercase tracking-wider transition-[transform,background-color,box-shadow] duration-200 ease-out shadow-md hover:scale-105 active:scale-95 transform-gpu"
               >
                 <span>{ctaLabel}</span>
                 <ArrowRight size={14} />

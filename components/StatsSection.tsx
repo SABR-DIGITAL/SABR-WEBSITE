@@ -101,15 +101,45 @@ interface AmbientParticle {
  */
 const STATS_CSS = `
 .stats-stage { height: 100vh; }
-.stats-stage[data-stage="1"] .stats-s2,
-.stats-stage[data-stage="2"] .stats-s1 { visibility: hidden; }
-.stats-stage .stats-bottom { bottom: clamp(124px, 18vh, 164px); }
-@supports (height: 100svh) {
-  .stats-stage .stats-bottom { bottom: max(clamp(124px, 18vh, 164px), calc(100vh - 100svh + 56px)); }
+.stats-stage .stats-s1 {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  pointer-events: none;
 }
-@media (min-width: 640px) { .stats-stage .stats-bottom { bottom: 68px; } }
-@media (min-width: 768px) { .stats-stage .stats-bottom { bottom: 80px; } }
-@media (min-width: 1024px) { .stats-stage .stats-bottom { bottom: 92px; } }
+.stats-stage .stats-s2 {
+  opacity: 0;
+  transform: translate3d(0, 10px, 0);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  pointer-events: none;
+}
+.stats-stage[data-stage="2"] .stats-s1 {
+  opacity: 0;
+  transform: translate3d(0, -10px, 0);
+  pointer-events: none;
+}
+.stats-stage[data-stage="2"] .stats-s2 {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  pointer-events: none;
+}
+.stats-stage .stats-bottom {
+  bottom: clamp(124px, 18vh, 164px);
+}
+@supports (height: 100svh) {
+  .stats-stage .stats-bottom {
+    bottom: max(clamp(124px, 18vh, 164px), calc(100vh - 100svh + 56px));
+  }
+}
+@media (min-width: 640px) {
+  .stats-stage .stats-bottom { bottom: 68px; }
+}
+@media (min-width: 768px) {
+  .stats-stage .stats-bottom { bottom: 80px; }
+}
+@media (min-width: 1024px) {
+  .stats-stage .stats-bottom { bottom: 92px; }
+}
 @media (hover: none) {
   .stats-stage .text-shimmer-blue,
   .stats-stage .text-shimmer-emerald {
@@ -211,7 +241,7 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
       const fs = Math.min(isMobile ? W * 0.54 : W * 0.34, maxSpanY / 0.8) * s;
       x.clearRect(0, 0, o.width, o.height);
       x.fillStyle = '#fff';
-      x.font = (isMobile ? '800 ' : '900 ') + fs + 'px Inter,Arial,sans-serif';
+      x.font = (isMobile ? '800 ' : '900 ') + fs + 'px Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
       x.textAlign = 'center';
       x.textBaseline = 'middle';
       x.fillText(txt, o.width / 2, centerY * s);
@@ -379,8 +409,7 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
 
     let lastFlBg = '';
     let lastFlOp = '';
-    // `dt` is the time since the previous drawn frame, so drift speed is identical whether
-    // the canvas is being redrawn every frame or only every few frames while idle.
+    // `dt` is the time since the previous drawn frame
     function draw(t: number, dt: number) {
       if (!ctx || !fl) return;
       const p = cur;
@@ -396,10 +425,10 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
         Math.cos(cur * 880) * shk * shakeAmp * dpr
       );
 
-      // Motion-trail fade onto pure white canvas background
+      // Clean motion-trail fade onto pure white canvas background
       ctx.globalCompositeOperation = 'source-over';
       ctx.globalAlpha = 1;
-      ctx.fillStyle = isMobile ? 'rgba(255, 255, 255, 0.55)' : 'rgba(255, 255, 255, 0.34)';
+      ctx.fillStyle = isMobile ? 'rgba(255, 255, 255, 0.45)' : 'rgba(255, 255, 255, 0.32)';
       ctx.fillRect(-30, -30, W + 60, H + 60);
 
       // Colour: Crimson Red (88) -> Classic SABR Emerald Green (77)
@@ -421,7 +450,7 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
         const bd = (bi + 0.5) / BUCKETS;
         const be2 = phase(p, 0.28, 0.22, bd);
         const be3 = phase(p, 0.52, 0.22, bd);
-        ctx.globalAlpha = 0.95 - 0.7 * be2 * (1 - be3);
+        ctx.globalAlpha = Math.max(0.2, 0.95 - 0.7 * be2 * (1 - be3));
         ctx.strokeStyle = 'hsl(' + hue + ',' + sat + '%,' + (lig + (bd - 0.5) * 28) + '%)';
         ctx.beginPath();
 
@@ -510,24 +539,37 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
       const max = Math.max(1, track.offsetHeight - (stage.offsetHeight || H || vh));
       // Hold 88 steady as the section enters the screen (r.top > 0), then progress 0 -> 1 through the sticky track
       tgt = clamp(-r.top / max);
-      // Active whenever the track is within 1.5 viewports of the screen
-      return r.bottom > -vh * 0.5 && r.top < vh * 1.8;
+      // Active whenever the track is near or within view
+      return r.bottom > -vh * 0.8 && r.top < vh * 2.0;
     }
+
+    let inView = false;
+    let observer: IntersectionObserver | null = null;
 
     function paintNow(t: number, times: number) {
       for (let w = 0; w < times; w++) draw(t, 16.67);
       lastDrawT = t;
     }
 
+    function startLoop() {
+      if (!rafId && !disposed) {
+        lastT = performance.now();
+        rafId = requestAnimationFrame(loop);
+      }
+    }
+
     function loop(t: number) {
       if (disposed) return;
+      if (!inView && forceDraw <= 0) {
+        rafId = 0;
+        return;
+      }
       // Re-arm first so a thrown exception in one frame can never stop the animation.
       rafId = requestAnimationFrame(loop);
       try {
         frame++;
         const isNear = prog();
-        // Frame-rate independent smoothing: iPhones in Low Power Mode run rAF at 30fps, which
-        // would otherwise halve the catch-up speed and leave the figures behind the scroll.
+        // Frame-rate independent smoothing
         const dt = lastT ? Math.min(100, t - lastT) : 16.67;
         lastT = t;
 
@@ -544,25 +586,28 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
         }
 
         const isMobile = W < 700;
-        const base = isMobile ? 0.3 : 0.055;
+        const isUpward = tgt < cur;
+        const diff = Math.abs(tgt - cur);
+        // Responsive, butter-smooth lerp step on all devices without stalling,
+        // tuned specifically so scrolling upwards snaps immediately to the user's motion
+        let base = isMobile ? 0.22 : 0.14;
+        if (isUpward) {
+          base = isMobile ? 0.40 : 0.28;
+        }
+        if (diff > 0.03) {
+          base = Math.min(0.55, base + (diff - 0.03) * 2.0);
+        }
         const step = 1 - Math.pow(1 - base, dt / 16.67);
-        const moving = Math.abs(tgt - cur) > 0.0003;
+        const moving = diff > 0.0003;
         if (moving) {
           cur += (tgt - cur) * step;
           if (Math.abs(tgt - cur) < 0.0005) cur = tgt;
         } else if (wasMoving) {
-          // Motion just stopped: draw a few more frames so the motion trail fully clears.
           forceDraw = Math.max(forceDraw, 6);
         }
         wasMoving = moving;
         ui(cur);
 
-        // While the figures are moving (scroll, or the time-based scatter between 88 and 77)
-        // every frame is drawn. When they are standing still on a phone, only every fourth
-        // frame is, which hands the main thread back to the browser for painting the page
-        // while the visitor scrolls the section into view.
-        const live = moving || (cur > 0.27 && cur < 0.75) || forceDraw > 0;
-        if (isMobile && !live && frame % 4 !== 0) return;
         if (forceDraw > 0) forceDraw--;
 
         const drawDt = lastDrawT ? Math.min(200, t - lastDrawT) : 16.67;
@@ -570,12 +615,12 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
         const t0 = performance.now();
         draw(t, drawDt);
 
-        if (isMobile && live) {
+        if (isMobile) {
           const cost = performance.now() - t0;
           costEma = costSamples === 0 ? cost : costEma * 0.9 + cost * 0.1;
           costSamples++;
-          if (costSamples > 30 && costEma > 12 && dpr > 1) {
-            dpr = Math.max(1, dpr - 0.5);
+          if (costSamples > 25 && costEma > 14 && dpr > 1) {
+            dpr = 1;
             applyCanvasSize();
             paintNow(t, 2);
             costEma = 0;
@@ -611,6 +656,7 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
       if (disposed) return;
       lastT = 0;
       forceDraw = Math.max(forceDraw, 3);
+      if (inView) startLoop();
     };
     const onContextRestored = () => {
       if (disposed || !ctx) return;
@@ -625,12 +671,36 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
       if (!document.hidden) recover();
     };
 
-    window.addEventListener('scroll', prog, { passive: true });
+    const onScroll = () => {
+      if (inView) {
+        prog();
+        startLoop();
+      }
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', handleResize);
     window.addEventListener('orientationchange', handleResize);
     window.addEventListener('pageshow', recover);
     document.addEventListener('visibilitychange', onVisibility);
     cv.addEventListener('contextrestored', onContextRestored);
+
+    if (typeof IntersectionObserver !== 'undefined') {
+      observer = new IntersectionObserver(
+        (entries) => {
+          const entry = entries[0];
+          inView = entry ? entry.isIntersecting : true;
+          if (inView) {
+            prog();
+            startLoop();
+          }
+        },
+        { rootMargin: '300px 0px 300px 0px' }
+      );
+      observer.observe(track);
+    } else {
+      inView = true;
+    }
 
     // Always build: the animation is driven purely by the user's own scroll, so it still runs
     // with iOS "Reduce Motion" on (the camera shake is disabled in that case instead).
@@ -640,7 +710,7 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
     // Pre-paint on mount so the canvas holds a crisp, fully opaque 88 before the user ever scrolls here
     paintNow(0, 2);
     ui(cur);
-    rafId = requestAnimationFrame(loop);
+    if (inView) startLoop();
 
     // Re-sample once the Inter webfont is available (the font stylesheet loads async, so
     // fonts.ready alone can resolve too early). If the section is already on screen, defer
@@ -664,7 +734,8 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
 
     return () => {
       disposed = true;
-      window.removeEventListener('scroll', prog);
+      if (observer) observer.disconnect();
+      window.removeEventListener('scroll', onScroll);
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('orientationchange', handleResize);
       window.removeEventListener('pageshow', recover);

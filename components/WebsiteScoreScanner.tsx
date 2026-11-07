@@ -298,7 +298,7 @@ export const WebsiteScoreScanner: React.FC<WebsiteScoreScannerProps> = ({
             {/* SEARCH BOX: Wide, spacious, all placeholder writing is 100% visible */}
             <div className="max-w-2xl mx-auto w-full">
               <form onSubmit={handleScan} className="relative group">
-                <div className="flex flex-col sm:flex-row items-stretch sm:items-center bg-[#0d1117] border border-white/15 focus-within:border-emerald-500 focus-within:ring-2 focus-within:ring-emerald-500/20 rounded-2xl sm:rounded-full p-2.5 sm:p-2 transition-all duration-300 shadow-2xl gap-2 sm:gap-0">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center bg-[#0d1117] border border-white/15 focus-within:border-emerald-500 focus-within:ring-2 focus-within:ring-emerald-500/20 rounded-2xl sm:rounded-full p-2.5 sm:p-2 transition-[border-color,box-shadow] duration-150 ease-out shadow-2xl gap-2 sm:gap-0">
                   <div className="flex items-center px-4 py-2 sm:py-0 flex-1 gap-3 min-w-0">
                     <Globe size={19} className="text-emerald-400 shrink-0" />
                     <input
@@ -314,7 +314,7 @@ export const WebsiteScoreScanner: React.FC<WebsiteScoreScannerProps> = ({
                   <button
                     type="submit"
                     disabled={loading}
-                    className="inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl sm:rounded-full font-semibold text-xs uppercase tracking-wider transition-all cursor-pointer shadow-lg disabled:opacity-50 shrink-0"
+                    className="inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl sm:rounded-full font-semibold text-xs uppercase tracking-wider transition-[transform,background-color,box-shadow] duration-200 ease-out cursor-pointer shadow-lg hover:scale-105 active:scale-95 disabled:opacity-50 shrink-0 transform-gpu"
                   >
                     {loading ? (
                       <>
@@ -420,7 +420,7 @@ export const WebsiteScoreScanner: React.FC<WebsiteScoreScannerProps> = ({
                 <Link
                   to={ctaTo ?? PAGE_PATHS.contact}
                   onClick={() => !ctaTo && navigateTo && navigateTo('contact')}
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-semibold text-xs uppercase tracking-wider transition-all cursor-pointer shadow-lg hover:scale-105 active:scale-95 duration-200"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-semibold text-xs uppercase tracking-wider transition-[transform,background-color,box-shadow] duration-200 ease-out cursor-pointer shadow-lg hover:scale-105 active:scale-95 transform-gpu"
                 >
                   <span>{ctaLabel}</span>
                   <ArrowRight size={14} />

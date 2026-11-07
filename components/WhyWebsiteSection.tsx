@@ -192,20 +192,21 @@ const WhyWebsiteSection: React.FC<WhyWebsiteSectionProps> = ({
             {sabrPros.map((item, idx) => (
               <button 
                 key={idx}
+                type="button"
                 onClick={() => setSelectedPro(item)}
-                className="w-full flex items-center gap-3 p-5 bg-white border border-slate-100 rounded-[1.8rem] shadow-sm hover:border-blue-600 hover:shadow-md transition-all duration-300 group focus:outline-none text-left transform-gpu"
+                className="w-full flex items-center gap-3 p-5 bg-white border border-slate-100 rounded-[1.8rem] shadow-sm hover:border-blue-600 hover:shadow-md transition-[border-color,box-shadow,transform] duration-150 ease-out group focus:outline-none text-left transform-gpu cursor-pointer active:scale-[0.98]"
               >
-                <div className={`w-10 h-10 rounded-xl ${item.bg} ${item.color} flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform shadow-sm`}>
+                <div className={`w-10 h-10 rounded-xl ${item.bg} ${item.color} flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform duration-150 shadow-sm`}>
                   {item.icon}
                 </div>
                 <div className="flex-1 overflow-hidden">
-                  <h3 className="font-syne text-[10px] sm:text-[11px] font-black uppercase tracking-tight text-slate-900 group-hover:text-blue-600 transition-colors flex flex-col leading-none gap-0.5">
+                  <h3 className="font-syne text-[10px] sm:text-[11px] font-black uppercase tracking-tight text-slate-900 group-hover:text-blue-600 transition-colors duration-150 flex flex-col leading-none gap-0.5">
                     {item.title.split(' ').map((word, wIdx) => (
                       <span key={wIdx} className="block whitespace-nowrap overflow-hidden text-ellipsis">{word}</span>
                     ))}
                   </h3>
                 </div>
-                <ArrowRight size={12} className="text-slate-200 group-hover:text-blue-600 transition-all group-hover:translate-x-1" />
+                <ArrowRight size={12} className="text-slate-200 group-hover:text-blue-600 transition-[transform,color] duration-150 group-hover:translate-x-1" />
               </button>
             ))}
           </div>

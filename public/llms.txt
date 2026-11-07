@@ -1,0 +1,54 @@
+# SABR Digital
+
+> Wiltshire Web Design Studio & AI Optimisation (AIO / GEO / AEO) Specialists
+
+SABR Digital is an independent web design and AI search optimisation studio founded by Raphael and based in Wiltshire, United Kingdom. The studio engineers bespoke, sub-second loading websites for small businesses, tradespeople, clinics, salons, cafes, and ambitious brands across Wiltshire and throughout the UK.
+
+## Core Identity & Contact
+- Organization Name: SABR Digital (SABR Digital Web Design Studio)
+- Founder: Raphael
+- Base Location: Wiltshire, England, United Kingdom
+- Telephone: +44 7398 103339
+- Email: Sabrdigitalwilts@gmail.com
+- Primary Website: https://sabrdigital.co.uk/
+- Web Design Studio URL: https://sabrdigital.co.uk/web-design/
+- AI Optimisation Hub URL: https://sabrdigital.co.uk/ai-optimisation/
+
+## Primary Services
+
+### 1. Small Business Web Design & Creation
+- Custom engineered websites hand-built with modern TypeScript and React (no sluggish WordPress templates or bloated visual page builders).
+- Mobile-first architecture tested across real devices (smartphones, tablets, laptops, desktops).
+- 2 to 3 week turnaround from kickoff to live launch.
+- 100% complete client ownership: clients own their code, domains, and assets with no vendor lock-in.
+- Transparent, fixed-price quotes in writing with no hidden retainers.
+
+### 2. AI Search Optimisation (AIO / GEO / AEO)
+- Generative Engine Optimisation (GEO) and Answer Engine Optimisation (AEO) designed to make businesses discoverable and accurately cited by AI answer systems including OpenAI ChatGPT, Google Gemini, Anthropic Claude, Perplexity AI, Microsoft Copilot, and Google AI Overviews.
+- Entity structuring, rich schema markup, factual citations, and crawlable knowledge architectures.
+
+### 3. Technical SEO & Local Search Optimisation
+- Core Web Vitals optimization targeting perfect 100/100 Lighthouse performance, zero Cumulative Layout Shift (CLS), and sub-1.2s Largest Contentful Paint (LCP).
+- Local business schema and citation signals tailored for Wiltshire search queries and Google Maps local packs.
+- Structured data graphs incorporating LocalBusiness, ProfessionalService, WebSite, Service, and FAQPage.
+
+### 4. Website Redesigns & Performance Overhauls
+- Rebuilding slow, dated, or underperforming websites to maximize visitor retention and inbound client conversions.
+
+### 5. Managed Hosting & Care Plans
+- Edge hosting, domain and DNS configuration, automated backups, and 24/7 post-launch maintenance.
+
+## Geographic Areas Served
+Headquartered in Wiltshire, UK, serving clients locally face-to-face and UK-wide via telephone, WhatsApp, and remote collaboration:
+- Wiltshire towns: Swindon, Salisbury, Chippenham, Trowbridge, Devizes, Melksham, Marlborough, Calne, Corsham, Warminster, Westbury, Royal Wootton Bassett, Malmesbury, Amesbury, Bradford on Avon.
+- Regional coverage: South West England, Gloucestershire, Somerset, Berkshire, Hampshire, Oxfordshire.
+- National coverage: United Kingdom (all cities and regions).
+
+## Key URLs & Resources
+- Homepage & Gateway: https://sabrdigital.co.uk/
+- Web Design Studio: https://sabrdigital.co.uk/web-design/
+- Interactive Projects & Live Demos: https://sabrdigital.co.uk/web-design/projects
+- Step-by-Step 5-Phase Process: https://sabrdigital.co.uk/web-design/process
+- Frequently Asked Questions: https://sabrdigital.co.uk/web-design/faq
+- Direct Contact & Quote Request: https://sabrdigital.co.uk/web-design/contact
+- XML Sitemap: https://sabrdigital.co.uk/sitemap.xml

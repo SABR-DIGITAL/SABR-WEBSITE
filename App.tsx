@@ -22,6 +22,7 @@ import ProjectsGallery from './pages/ProjectsGallery';
 import SnakeTimeline from './components/SnakeTimeline';
 import FAQSection from './components/FAQSection';
 import ContactForm from './components/ContactForm';
+import NotFound from './components/NotFound';
 
 // Demo websites. Each is its own route chunk, so a visitor only downloads a
 // demo when they are about to look at it. The gallery warms every demo chunk
@@ -190,28 +191,28 @@ const SITE_URL = 'https://sabrdigital.co.uk/web-design';
 
 const SEO_META: Record<Page, { title: string; description: string }> = {
   home: {
-    title: 'SABR Digital | Web Design for Small Businesses',
-    description: 'We design and build fast, easy-to-find websites for small businesses. Most sites go live in two to three weeks.'
+    title: 'Web Design Wiltshire & UK Website Creation | SABR Digital',
+    description: 'Bespoke, high-speed websites for ambitious small businesses in Wiltshire and across the UK. Engineered for top Google rankings, conversions, and AI search.'
   },
   work: {
-    title: 'Our Work | Website Projects & Live Demos | SABR Digital',
-    description: 'Click through websites we have designed for trades, salons, clinics and cafes, then picture the same care applied to your own business.'
+    title: 'Website Projects & Interactive Demos | SABR Digital Wiltshire',
+    description: 'Explore custom websites built for trades, salons, clinics, and hospitality. Clean code, sub-second load times, and conversion-focused design across the UK.'
   },
   about: {
-    title: 'About Us | Architectural Web Engineering | SABR Digital',
-    description: 'Learn about SABR Digital. We build high-performing digital flagships with zero bloat and complete client ownership.'
+    title: 'About SABR Digital | Wiltshire Web Designer & AI Studio',
+    description: 'Meet Raphael, founder of SABR Digital in Wiltshire. Custom web engineering with zero WordPress bloat, sub-second load times, and built-in AI search readiness.'
   },
   process: {
-    title: 'How We Work | The Web Design Process | SABR Digital',
-    description: 'First chat, design, build, review, launch, aftercare. Here is exactly what happens when you ask us for a website, and how long each part takes.'
+    title: 'Our Web Design Process | 5-Step Transparent Build | SABR',
+    description: 'From first chat to live launch in 2 to 3 weeks. See our transparent web design process with fixed pricing, clear communication, and complete client ownership.'
   },
   faq: {
-    title: 'Web Design FAQs | Prices, Timings & Hosting | SABR Digital',
-    description: 'What a website costs, how long it takes, who owns it, how hosting works and how we help you get found on Google. Straight answers, no jargon.'
+    title: 'Web Design FAQs | Pricing, Timelines & SEO | SABR Digital',
+    description: 'Clear answers on website costs, deposit terms, 2-3 week build timelines, Google SEO, mobile responsiveness, and hosting for Wiltshire & UK businesses.'
   },
   contact: {
-    title: 'Contact SABR Digital | Start Your Website',
-    description: 'Send a WhatsApp or an email and we will reply within 12 hours. A free, no-pressure chat about your website.'
+    title: 'Contact SABR Digital | Wiltshire Web Design & AI Optimisation',
+    description: 'Get in touch with Raphael at SABR Digital. Fast WhatsApp and email responses within 12 hours. Free, honest website advice and fixed written quotes.'
   }
 };
 
@@ -410,7 +411,7 @@ const MainApp: React.FC = () => {
                 <Route path="/demo/spa/transfers" element={<SpaTransfers />} />
                 <Route path="/demo/spa/contact" element={<SpaContact />} />
                 <Route path="/demo/spa/book" element={<SpaBooking />} />
-                <Route path="*" element={<Navigate to="/" replace />} />
+                <Route path="*" element={<NotFound navigateTo={navigateTo} />} />
               </Routes>
               </Suspense>
             </ErrorBoundary>
