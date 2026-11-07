@@ -166,6 +166,7 @@ export const About: React.FC = () => {
                 alt="RHS Chelsea Gold Medal show garden"
                 className="w-full h-full object-cover"
                 loading="lazy"
+                decoding="async"
               />
             </div>
           </div>

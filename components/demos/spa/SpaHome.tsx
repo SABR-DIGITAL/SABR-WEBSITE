@@ -250,6 +250,9 @@ const SpaHome: React.FC = () => {
           <img
             src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&q=85&w=2200"
             alt="Verdant Relax Park Atmosphere"
+            loading="eager"
+            decoding="async"
+            fetchPriority="high"
             className="w-full h-full object-cover opacity-60 transition-transform duration-[14000ms] hover:scale-105"
           />
           {/* Subtle dark gradient overlay - lets the photo breathe */}
@@ -312,8 +315,10 @@ const SpaHome: React.FC = () => {
           <div className="lg:col-span-7">
             <div className="relative overflow-hidden aspect-[16/10] bg-[#0C100E] group">
               <img
-                src="/src/assets/images/verdant_pine_cottage_1793919178058.jpg"
+                src="/src/assets/images/verdant_pine_cottage_1793919178058.webp"
                 alt="Timber and Glass Forest Architecture"
+                loading="lazy"
+                decoding="async"
                 className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
               />
             </div>
@@ -384,6 +389,8 @@ const SpaHome: React.FC = () => {
                   <img
                     src={currentSuite.heroImage}
                     alt={currentSuite.name}
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
                   />
                 </div>
@@ -487,6 +494,8 @@ const SpaHome: React.FC = () => {
                       <img
                         src={t.image}
                         alt={t.name}
+                        loading="lazy"
+                        decoding="async"
                         className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
                       />
                     </div>
@@ -624,6 +633,8 @@ const SpaHome: React.FC = () => {
                 <img
                   src={currentDining.image}
                   alt={currentDining.name}
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
                 />
               </div>
@@ -670,6 +681,8 @@ const SpaHome: React.FC = () => {
                 <img
                   src={SPA_DATA.activities[activityIdx].image}
                   alt={SPA_DATA.activities[activityIdx].title}
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-cover transition-transform duration-1000 hover:scale-105"
                 />
               </div>

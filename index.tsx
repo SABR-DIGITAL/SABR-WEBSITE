@@ -2,8 +2,9 @@
 import React, { Suspense, lazy, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import './styles/tailwind.css';
-import GatewayPage, { decodeHero, HERO, type GatewaySite } from './gateway/GatewayPage';
+import GatewayPage, { decodeHero, HERO, HERO_JPEG, type GatewaySite } from './gateway/GatewayPage';
 import { markGatewayHandoff, registerSiteSwitcher } from './components/introSkip';
+import { demoIdFromPath, warmDemoChunk } from './components/demos/demoChunks';
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {
@@ -38,6 +39,14 @@ const siteForPath = (path: string): GatewaySite | null => {
 
 const initialSite = siteForPath(window.location.pathname);
 const InitialSite = initialSite ? lazy(loadSite[initialSite]) : null;
+
+// A direct link into one of the demo websites needs two chunks: the studio
+// site and that demo. Request the demo now, alongside the studio chunk, rather
+// than only once the studio has arrived and rendered its router.
+if (initialSite === 'web-design') {
+  const demo = demoIdFromPath(window.location.pathname);
+  if (demo) warmDemoChunk(demo);
+}
 // Which site is on screen right now — updated on gateway handover and site switches.
 let currentSite: GatewaySite | null = initialSite;
 
@@ -287,22 +296,25 @@ const Shell: React.FC = () => {
               willChange: 'transform'
             }}
           >
-            <img
-              src={HERO[swoosh.target].src}
-              srcSet={HERO[swoosh.target].srcSet}
-              sizes="100vw"
-              alt=""
-              className="absolute inset-0 h-full w-full object-cover"
-              style={{
-                transform: isGlidingOrPast
-                  ? 'translate3d(0%, 0, 0) scale(1)'
-                  : `translate3d(${innerParallaxStart}, 0, 0) scale(1.05)`,
-                transition: isGlidingOrPast
-                  ? 'transform 660ms cubic-bezier(0.22, 1, 0.36, 1) 45ms'
-                  : undefined,
-                willChange: 'transform'
-              }}
-            />
+            <picture>
+              <source type="image/webp" srcSet={HERO[swoosh.target].srcSet} sizes="100vw" />
+              <img
+                src={HERO_JPEG[swoosh.target].src}
+                srcSet={HERO_JPEG[swoosh.target].srcSet}
+                sizes="100vw"
+                alt=""
+                className="absolute inset-0 h-full w-full object-cover"
+                style={{
+                  transform: isGlidingOrPast
+                    ? 'translate3d(0%, 0, 0) scale(1)'
+                    : `translate3d(${innerParallaxStart}, 0, 0) scale(1.05)`,
+                  transition: isGlidingOrPast
+                    ? 'transform 660ms cubic-bezier(0.22, 1, 0.36, 1) 45ms'
+                    : undefined,
+                  willChange: 'transform'
+                }}
+              />
+            </picture>
             {swoosh.target === 'web-design' ? (
               <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/45 to-black/75" />
             ) : (

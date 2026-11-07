@@ -52,6 +52,8 @@ export const SpaTransfers: React.FC = () => {
               <img
                 src="https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&q=90&w=2400"
                 alt="Private Chauffeur Fleet Arrival"
+                loading="lazy"
+                decoding="async"
                 className="w-full h-full object-cover"
               />
             </div>

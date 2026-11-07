@@ -167,17 +167,24 @@ const AIOHero: React.FC<AIOHeroProps> = ({ startAnimation }) => {
   return (
     <section ref={containerRef} className="relative h-[100dvh] flex items-center px-6 lg:px-24 overflow-hidden bg-[#0f241d]">
       <div className="absolute inset-0 z-0">
-        <img
-          src="/images/aio-panel-1735.jpg"
-          srcSet="/images/aio-panel-1100.jpg 1100w, /images/aio-panel-1735.jpg 1735w"
-          sizes="100vw"
-          alt=""
-          aria-hidden="true"
-          className="w-full h-full object-cover"
-          loading="eager"
-          decoding="async"
-          fetchPriority="high"
-        />
+        <picture>
+          <source
+            type="image/webp"
+            srcSet="/images/aio-panel-1100.webp 1100w, /images/aio-panel-1735.webp 1735w"
+            sizes="100vw"
+          />
+          <img
+            src="/images/aio-panel-1735.jpg"
+            srcSet="/images/aio-panel-1100.jpg 1100w, /images/aio-panel-1735.jpg 1735w"
+            sizes="100vw"
+            alt=""
+            aria-hidden="true"
+            className="w-full h-full object-cover"
+            loading="eager"
+            decoding="async"
+            fetchPriority="high"
+          />
+        </picture>
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-0"

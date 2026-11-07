@@ -457,14 +457,33 @@
     <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png">
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="manifest" href="/site.webmanifest">
-    <link rel="preload" as="image" href="/assets/aistudio/image_c05e976f.webp" type="image/webp" fetchpriority="high">
-    <link rel="preload" as="image" href="/images/projects/landscaping-preview.webp" type="image/webp" fetchpriority="high">
-    <link rel="preload" as="image" href="/images/projects/equestrian-preview.webp" type="image/webp" fetchpriority="high">
-    <link rel="preload" as="image" href="/images/projects/physio-preview.webp" type="image/webp" fetchpriority="high">
-    <link rel="preload" as="image" href="/images/projects/spa-preview.webp" type="image/webp" fetchpriority="high">
-    <link rel="preload" as="image" href="/images/projects/cafe-preview.webp" type="image/webp" fetchpriority="high">
-    <link rel="preload" as="image" href="/images/projects/cafe-three-coffees-hero.jpg" type="image/jpeg" fetchpriority="high">
-    <link rel="preload" as="image" href="/images/projects/cafe-interior.webp" type="image/webp" fetchpriority="high">
+    <!-- Start the first screen's photograph downloading before any script has
+         run. Only what this URL will actually paint is preloaded: the gateway
+         shows both site panels, the studio homepage shows its hero. (Blanket
+         preloads of every project preview and demo photo on every page used to
+         put ~2.5MB of images in front of the scripts that paint the page.)
+         The candidate lists match the <picture> sources exactly, so the file
+         chosen here is the one the element asks for and it is used from cache. -->
+    <script>
+      (function () {
+        var p = location.pathname;
+        var studio = p === '/web-design' || p === '/web-design/';
+        var gateway = p === '/' || p === '/index.html';
+        if (!studio && !gateway) return;
+        var add = function (set) {
+          var l = document.createElement('link');
+          l.rel = 'preload';
+          l.as = 'image';
+          l.type = 'image/webp';
+          l.setAttribute('imagesrcset', set);
+          l.setAttribute('imagesizes', '100vw');
+          l.setAttribute('fetchpriority', 'high');
+          document.head.appendChild(l);
+        };
+        add('/images/hero-bg-1280.webp 1280w, /images/hero-bg-1920.webp 1920w, /images/hero-bg-2560.webp 2560w, /images/hero-bg-3840.webp 3840w');
+        if (gateway) add('/images/aio-panel-1100.webp 1100w, /images/aio-panel-1735.webp 1735w');
+      })();
+    </script>
     <!-- Fonts load without blocking first paint. Every font uses display=swap
          and the title cards already wait briefly for Syne before animating. -->
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&family=Inter:wght@400;700;900&family=Manrope:wght@300;400;600;800&family=Oswald:wght@700&family=Syne:wght@800&display=swap">
@@ -601,8 +620,12 @@
     <script type="module">
       /* The soft background wash only ever shows on the web design studio:
          the gateway and the AI Optimisation site paint opaque backgrounds
-         over it. So Three.js (and the WebGL context) is only fetched there,
-         keeping those two pages light. */
+         over it. So the WebGL context is only created there, keeping those
+         two pages light. */
+      /* This used to pull in the whole of Three.js (about 160KB compressed,
+         plus parse time on every studio page) to draw one full-screen quad
+         with one fragment shader. It is the same quad, the same shader and
+         the same output, drawn with the browser's own WebGL API instead. */
       /* Exposed so the gateway can start it after handing over to the
          studio inside the same page (index.tsx) — there is no fresh page
          load for the path check below to see in that case. */
@@ -610,29 +633,37 @@
       window.__sabrStartFluidBg = () => {
         if (fluidStarted) return;
         fluidStarted = true;
-        import('three').then((THREE) => {
         const canvas = document.getElementById('fluid-bg');
-        const renderer = new THREE.WebGLRenderer({
-          canvas,
+        if (!canvas) return;
+        const gl = canvas.getContext('webgl', {
           alpha: true,
           antialias: false,
-          powerPreference: "high-performance",
+          powerPreference: 'high-performance',
           stencil: false,
           depth: false
         });
-        /* This is a 15%-opacity pastel gradient with no detail in it, so there is
-           nothing for extra device pixels to resolve. At devicePixelRatio 2 on a
-           laptop screen it was pushing five million fragments a frame and handing
-           the compositor a full-viewport layer to re-blend on every one of them,
-           which is felt as scroll stutter across the whole site rather than as a
-           slow background. */
-        renderer.setPixelRatio(1);
-        const scene = new THREE.Scene();
-        const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-        const material = new THREE.ShaderMaterial({
-          uniforms: { uTime: { value: 0 } },
-          vertexShader: `varying vec2 vUv; void main() { vUv = uv; gl_Position = vec4(position, 1.0); }`,
-          fragmentShader: `
+        if (!gl) return;
+
+        const compile = (type, source) => {
+          const shader = gl.createShader(type);
+          gl.shaderSource(shader, source);
+          gl.compileShader(shader);
+          return shader;
+        };
+        const program = gl.createProgram();
+        gl.attachShader(
+          program,
+          compile(
+            gl.VERTEX_SHADER,
+            'attribute vec2 position; varying vec2 vUv;' +
+              'void main() { vUv = position * 0.5 + 0.5; gl_Position = vec4(position, 0.0, 1.0); }'
+          )
+        );
+        gl.attachShader(
+          program,
+          compile(
+            gl.FRAGMENT_SHADER,
+            `
             precision lowp float;
             uniform float uTime;
             varying vec2 vUv;
@@ -646,9 +677,21 @@
               gl_FragColor = vec4(color, 1.0);
             }
           `
-        });
-        scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material));
-        let animationId;
+          )
+        );
+        gl.linkProgram(program);
+        if (!gl.getProgramParameter(program, gl.LINK_STATUS)) return;
+        gl.useProgram(program);
+
+        /* One quad covering clip space, so every pixel is written each draw
+           and nothing needs clearing. */
+        gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+        const position = gl.getAttribLocation(program, 'position');
+        gl.enableVertexAttribArray(position);
+        gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0);
+        const uTime = gl.getUniformLocation(program, 'uTime');
+
         const stillOnly = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         /* The wave phase advances at 0.05 rad/s, so between two 60Hz frames it
            moves 0.0008 rad — nothing you can see. Drawing at 12fps looks identical
@@ -657,12 +700,20 @@
         let lastDraw = -Infinity;
 
         function draw(seconds) {
-          material.uniforms.uTime.value = seconds;
-          renderer.render(scene, camera);
+          gl.uniform1f(uTime, seconds);
+          gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
         }
 
         function resize() {
-          renderer.setSize(window.innerWidth, window.innerHeight, false);
+          /* This is a 15%-opacity pastel gradient with no detail in it, so there
+             is nothing for extra device pixels to resolve: one bitmap pixel per
+             CSS pixel. At devicePixelRatio 2 on a laptop it was otherwise five
+             million fragments a frame and a full-viewport layer for the
+             compositor to re-blend on every one of them, felt as scroll stutter
+             across the whole site. */
+          canvas.width = window.innerWidth;
+          canvas.height = window.innerHeight;
+          gl.viewport(0, 0, canvas.width, canvas.height);
           // Let the next animation frame through immediately so the new size is
           // painted without waiting out the throttle interval.
           lastDraw = -Infinity;
@@ -672,7 +723,7 @@
         resize();
 
         function animate(time) {
-          animationId = requestAnimationFrame(animate);
+          requestAnimationFrame(animate);
           if (document.hidden) return;
           if (time - lastDraw < FRAME_MS) return;
           lastDraw = time;
@@ -680,7 +731,6 @@
         }
 
         if (!stillOnly) animate(0);
-        });
       };
       if (location.pathname === '/web-design' || location.pathname.startsWith('/web-design/')) {
         window.__sabrStartFluidBg();

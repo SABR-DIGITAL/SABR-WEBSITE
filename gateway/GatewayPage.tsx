@@ -11,10 +11,26 @@ const EXIT_MS = 650;
 // panel: past this, the handover goes ahead without waiting on the photo.
 const IMAGE_WAIT_MS = 2500;
 
-// Each destination's hero photo, exactly as its hero <img> declares it. The
-// gateway panels use the same srcset and sizes, so the browser has already
-// picked, downloaded and decoded the very file the hero is about to ask for.
+// Each destination's hero photo, exactly as its hero <picture> declares it.
+// The gateway panels use the same srcset and sizes, so the browser has
+// already picked, downloaded and decoded the very file the hero is about to
+// ask for. These are the WebP candidates (every current browser decodes
+// WebP); the <picture> elements keep the original JPEGs as a fallback. The
+// extra 2560 step stops Retina laptops jumping straight to the 3840 file.
 export const HERO: Record<Site, { src: string; srcSet: string }> = {
+  'web-design': {
+    src: '/images/hero-bg-1920.webp',
+    srcSet:
+      '/images/hero-bg-1280.webp 1280w, /images/hero-bg-1920.webp 1920w, /images/hero-bg-2560.webp 2560w, /images/hero-bg-3840.webp 3840w'
+  },
+  'ai-optimisation': {
+    src: '/images/aio-panel-1735.webp',
+    srcSet: '/images/aio-panel-1100.webp 1100w, /images/aio-panel-1735.webp 1735w'
+  }
+};
+
+// JPEG fallbacks for the <picture> elements, for anything that cannot decode WebP.
+export const HERO_JPEG: Record<Site, { src: string; srcSet: string }> = {
   'web-design': {
     src: '/images/hero-bg-1920.jpg',
     srcSet: '/images/hero-bg-1280.jpg 1280w, /images/hero-bg-1920.jpg 1920w, /images/hero-bg.jpg 3840w'
@@ -104,17 +120,20 @@ const GatewayPage: React.FC<GatewayPageProps> = ({ loadSite, onEnter }) => {
         >
           {/* The studio site's own hero photograph, so this half reads as
               the existing site from the first glance. */}
-          <img
-            src="/images/hero-bg-1920.jpg"
-            srcSet="/images/hero-bg-1280.jpg 1280w, /images/hero-bg-1920.jpg 1920w, /images/hero-bg.jpg 3840w"
-            sizes="100vw"
-            alt=""
-            aria-hidden="true"
-            className="absolute inset-0 h-full w-full object-cover"
-            loading="eager"
-            decoding="async"
-            fetchPriority="high"
-          />
+          <picture>
+            <source type="image/webp" srcSet={HERO['web-design'].srcSet} sizes="100vw" />
+            <img
+              src={HERO_JPEG['web-design'].src}
+              srcSet={HERO_JPEG['web-design'].srcSet}
+              sizes="100vw"
+              alt=""
+              aria-hidden="true"
+              className="absolute inset-0 h-full w-full object-cover"
+              loading="eager"
+              decoding="async"
+              fetchPriority="high"
+            />
+          </picture>
           {/* Same overlay strength as the web design studio's own hero
               (components/Hero.tsx), so picking this side hands off to an
               identical frame instead of a visible jump in contrast. */}
@@ -145,16 +164,19 @@ const GatewayPage: React.FC<GatewayPageProps> = ({ loadSite, onEnter }) => {
           className="gw-panel gw-panel-aio relative flex flex-col items-center justify-center overflow-hidden bg-[#0f241d] px-6 text-center select-none"
         >
           {/* The AI Optimisation site's own hero image. */}
-          <img
-            src="/images/aio-panel-1735.jpg"
-            srcSet="/images/aio-panel-1100.jpg 1100w, /images/aio-panel-1735.jpg 1735w"
-            sizes="100vw"
-            alt=""
-            aria-hidden="true"
-            className="absolute inset-0 h-full w-full object-cover"
-            loading="eager"
-            decoding="async"
-          />
+          <picture>
+            <source type="image/webp" srcSet={HERO['ai-optimisation'].srcSet} sizes="100vw" />
+            <img
+              src={HERO_JPEG['ai-optimisation'].src}
+              srcSet={HERO_JPEG['ai-optimisation'].srcSet}
+              sizes="100vw"
+              alt=""
+              aria-hidden="true"
+              className="absolute inset-0 h-full w-full object-cover"
+              loading="eager"
+              decoding="async"
+            />
+          </picture>
           {/* Same overlay strength as the AI Optimisation site's own hero
               (aio/pages/AIOHome.tsx), so the panel keeps its rich emerald depth. */}
           <div

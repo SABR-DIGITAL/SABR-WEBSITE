@@ -65,6 +65,7 @@ const PhysioHome: React.FC = () => {
           alt="Pulteney Physiotherapy rehabilitation studio"
           referrerPolicy="no-referrer"
           loading="eager"
+          decoding="async"
           fetchPriority="high"
           className="absolute inset-0 w-full h-full object-cover object-center scale-[1.02]"
         />
@@ -180,6 +181,7 @@ const PhysioHome: React.FC = () => {
                 alt="Hands-on cervical and shoulder manual therapy"
                 referrerPolicy="no-referrer"
                 loading="lazy"
+                decoding="async"
                 className="w-full h-full object-cover hover:scale-105 transition-transform duration-1000 ease-out"
               />
             </div>
@@ -189,6 +191,7 @@ const PhysioHome: React.FC = () => {
                 alt="Heated indoor hydrotherapy pool at our Bath clinic"
                 referrerPolicy="no-referrer"
                 loading="lazy"
+                decoding="async"
                 className="w-full h-full object-cover hover:scale-105 transition-transform duration-1000 ease-out"
               />
             </div>
@@ -285,6 +288,7 @@ const PhysioHome: React.FC = () => {
                     src={spotlightSlides[activeSlide].image}
                     alt={spotlightSlides[activeSlide].programName}
                     referrerPolicy="no-referrer"
+                    decoding="async"
                     className="w-full h-full object-cover"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t lg:bg-gradient-to-r from-[#0F2942]/60 via-transparent to-transparent" />
@@ -343,6 +347,7 @@ const PhysioHome: React.FC = () => {
                     alt={service.title}
                     referrerPolicy="no-referrer"
                     loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000 ease-out"
                   />
                 </div>
@@ -587,6 +592,7 @@ const PhysioHome: React.FC = () => {
                     alt={loc.clinicName}
                     referrerPolicy="no-referrer"
                     loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000 ease-out"
                   />
                 </div>
