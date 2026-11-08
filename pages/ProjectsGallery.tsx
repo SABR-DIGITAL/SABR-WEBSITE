@@ -1,12 +1,15 @@
-import React, { useEffect, useRef } from 'react';
-import { ArrowUpRight, MoveRight } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
+import { ArrowUpRight, ChevronDown, MoveRight, Check } from 'lucide-react';
 // Fix react-router-dom missing exports
 import * as RouterDOM from 'react-router-dom';
-const { Link } = RouterDOM as any;
+const { Link, useNavigate } = RouterDOM as any;
+import { motion as framerMotion, AnimatePresence } from 'framer-motion';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { demoChunks, warmDemoChunk, type DemoId } from '../components/demos/demoChunks';
+import { HERO_SLIDES } from '../components/demos/landscaping/landscapingData';
 
+const motion = framerMotion as any;
 gsap.registerPlugin(ScrollTrigger);
 
 // Warming a demo means two things: its route chunk and the photograph that
@@ -23,6 +26,89 @@ const warmDemo = (id: DemoId, heroImage?: string) => {
     img.src = heroImage;
   }
 };
+
+export type LandscapingTierKey = 'traditional' | 'minimalistic' | 'luxury';
+
+interface LandscapingTierConfig {
+  key: LandscapingTierKey;
+  id: DemoId;
+  tierName: string;
+  shortLabel: string;
+  styleLabel: string;
+  cardIndex: string;
+  path: string;
+  accent: string;
+  badgeBg: string;
+  badgeText: string;
+  description: string;
+  features: string[];
+}
+
+const LANDSCAPING_TIERS: Record<LandscapingTierKey, LandscapingTierConfig> = {
+  traditional: {
+    key: 'traditional',
+    id: 'landscaping-traditional',
+    tierName: 'Essential (Traditional)',
+    shortLabel: 'Essential',
+    styleLabel: 'Traditional & easy to scroll',
+    cardIndex: '01',
+    path: '/demo/landscaping-traditional',
+    accent: '#15803D',
+    badgeBg: '#ECFDF5',
+    badgeText: '#15803D',
+    description:
+      'A classic, high-trust green landscaper website designed for effortless scrolling, clear service checklists, instant telephone enquiries, and straightforward quote requests.',
+    features: [
+      'Traditional & easy-to-scroll layout inspired by trusted local trades',
+      'Standard high-contrast green palette with clear service breakdowns',
+      'Direct phone bar & simple quote form built for budget-friendly clarity'
+    ]
+  },
+  minimalistic: {
+    key: 'minimalistic',
+    id: 'landscaping',
+    tierName: 'Premier (Minimalistic)',
+    shortLabel: 'Premier',
+    styleLabel: 'Minimalistic & formal',
+    cardIndex: '02',
+    path: '/demo/landscaping',
+    accent: '#5B6450',
+    badgeBg: '#F4F1EA',
+    badgeText: '#44503B',
+    description:
+      'A formal, minimalist landscape architecture showcase built with spacious editorial pacing, unobstructed full-bleed photography, and a refined private consultation journey.',
+    features: [
+      'Minimalistic & formal layout that lets the gardens speak first',
+      'Spacious architectural typography across desktop and mobile',
+      'Frictionless enquiry flow tailored for discerning estate clients'
+    ]
+  },
+  luxury: {
+    key: 'luxury',
+    id: 'landscaping-luxury',
+    tierName: 'Prestige (Luxury)',
+    shortLabel: 'Prestige',
+    styleLabel: 'Luxury & heavier animations',
+    cardIndex: '03',
+    path: '/demo/landscaping-luxury',
+    accent: '#C8B88A',
+    badgeBg: '#18140F',
+    badgeText: '#C8B88A',
+    description:
+      'An ultra-luxury warm obsidian and tan architectural experience featuring a real cylinder lawn-mowing intro animation, bespoke 5-column atelier index, and smooth glide choreography.',
+    features: [
+      'Real 60fps lawn-mowing intro animation that trims tall grass into stripes',
+      'Warm obsidian & champagne-tan palette with smooth, glide-heavy motion',
+      'Bespoke 5-pillar architectural index drawer and private commission dossier'
+    ]
+  }
+};
+
+const LANDSCAPING_TIER_ORDER: LandscapingTierKey[] = ['traditional', 'minimalistic', 'luxury'];
+
+// Always sync the Landscaping preview photo with the primary homepage slide in landscapingData.ts / Home.tsx
+const SHARED_LANDSCAPING_HERO_IMAGE =
+  HERO_SLIDES[0]?.image || '/images/projects/landscaping-preview.webp';
 
 interface Project {
   id: DemoId;
@@ -45,10 +131,10 @@ const projects: Project[] = [
   {
     id: 'landscaping',
     wordmark: 'Oak & Ash',
-    industry: 'Garden Design & Build',
+    industry: 'Garden Design & Build · 3 Tiers',
     headline: ['28 years of', 'award-winning gardens.'],
     path: '/demo/landscaping',
-    heroImage: '/images/projects/landscaping-preview.webp',
+    heroImage: SHARED_LANDSCAPING_HERO_IMAGE,
     accent: '#5B6450',
     description:
       'A luxury landscape architecture and construction showcase built with spacious editorial pacing, unobstructed full-bleed photography, and an effortless private consultation journey.',
@@ -125,12 +211,7 @@ const projects: Project[] = [
 ];
 
 // Pull the five preview photos into the browser cache ahead of time, so they
-// are already local by the time anyone opens the Projects page. This file is
-// part of the studio's main chunk, so it runs on the homepage too: the warm-up
-// therefore waits until the page has finished loading and the browser is idle,
-// and asks at low priority, so it can never compete with the hero photo, the
-// fonts or the founder portrait for the first paint. (It used to fire five
-// high-priority, synchronously-decoded requests the instant the chunk parsed.)
+// are already local by the time anyone opens the Projects page.
 const predecodedProjectImages: HTMLImageElement[] = [];
 if (typeof window !== 'undefined') {
   const warmPreviews = () => {
@@ -201,11 +282,368 @@ const PreviewWindow: React.FC<{ project: Project; priority?: boolean }> = ({ pro
   </div>
 );
 
+/**
+ * Clean, unobstructed Hero Screen for each of the 3 Oak & Ash tiers.
+ * Uses the exact shared homepage photo (`HERO_SLIDES[0].image`) so changing
+ * the homepage photo updates all 3 preview cards automatically.
+ */
+const TierHeroScreen: React.FC<{
+  tierKey: LandscapingTierKey;
+  heroImage: string;
+}> = ({ tierKey, heroImage }) => {
+  if (tierKey === 'traditional') {
+    // Tier 1: Essential — Traditional & Easy to Scroll (Standard Green Landscaper)
+    return (
+      <div className="relative w-full h-full overflow-hidden select-none">
+        <img
+          src={heroImage}
+          alt="Oak & Ash Essential Traditional tier preview"
+          loading="eager"
+          decoding="sync"
+          className="preview-shot absolute inset-0 w-full h-full object-cover transition-transform duration-1000 ease-out group-hover/card:scale-[1.03]"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#052e16]/80 via-[#052e16]/20 to-black/35" />
+
+        {/* Clean Top Traditional Green Strip */}
+        <div className="relative z-10 flex items-center justify-between px-3.5 py-2 bg-[#15803d]/95 text-white border-b border-emerald-500/30">
+          <span className="text-[7.5px] sm:text-[8.5px] font-extrabold uppercase tracking-[0.16em]">
+            OAK &amp; ASH LANDSCAPING
+          </span>
+          <span className="px-2 py-0.5 rounded bg-white text-[#15803d] text-[6.5px] sm:text-[7.5px] font-extrabold uppercase tracking-wider">
+            Free Quote
+          </span>
+        </div>
+
+        {/* Clean Bottom Traditional Caption */}
+        <div className="absolute bottom-3 left-3.5 right-3.5 z-10 flex items-end justify-between gap-2 text-white">
+          <div>
+            <span className="inline-block px-2 py-0.5 rounded bg-[#15803d] text-[6px] sm:text-[7px] font-bold uppercase tracking-wider text-white mb-1">
+              ✓ Trusted Local Landscapers
+            </span>
+            <p className="font-serif text-[11px] sm:text-[14px] font-bold leading-tight drop-shadow-xs">
+              28 Years of Award-Winning Gardens.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (tierKey === 'luxury') {
+    // Tier 3: Prestige — Luxury & Heavier Animations (Obsidian & Tan — Zero Green)
+    return (
+      <div className="relative w-full h-full overflow-hidden select-none">
+        <img
+          src={heroImage}
+          alt="Oak & Ash Prestige Luxury tier preview"
+          loading="eager"
+          decoding="sync"
+          className="preview-shot absolute inset-0 w-full h-full object-cover transition-transform duration-1000 ease-out group-hover/card:scale-[1.03]"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0C0A08]/90 via-[#0C0A08]/25 to-[#0C0A08]/70" />
+
+        {/* Top Luxury Tan & Obsidian Bar */}
+        <div className="relative z-10 flex items-center justify-between px-3.5 py-2 border-b border-[#C8B88A]/30 bg-[#0C0A08]/70 backdrop-blur-xs">
+          <span className="text-[6.5px] sm:text-[7.5px] font-mono uppercase tracking-[0.26em] text-[#C8B88A]">
+            INDEX
+          </span>
+          <span className="font-cinzel text-[8.5px] sm:text-[10px] font-bold uppercase tracking-[0.3em] text-[#F4F1EA]">
+            OAK &amp; ASH
+          </span>
+          <span className="px-2 py-0.5 bg-[#C8B88A] text-[#0C0A08] text-[6px] sm:text-[7px] font-bold uppercase tracking-[0.2em]">
+            Commission
+          </span>
+        </div>
+
+        {/* Bottom Clean Luxury Hero Typography */}
+        <div className="absolute bottom-3 left-3.5 right-3.5 z-10">
+          <span className="block text-[5.5px] sm:text-[6.5px] font-mono uppercase tracking-[0.3em] text-[#C8B88A] mb-0.5">
+            EST. 1998 · WILTSHIRE, SURREY &amp; LONDON
+          </span>
+          <p className="font-cinzel text-[10px] sm:text-[13px] font-bold uppercase tracking-wider text-[#F4F1EA] leading-[1.05]">
+            TWENTY-EIGHT <br />
+            YEARS OF RARE <br />
+            <span className="font-cormorant italic font-normal capitalize text-[#C8B88A]">
+              Award-Winning Gardens.
+            </span>
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // Tier 2: Premier — Minimalistic & Formal (Clean unobstructed full-bleed photo)
+  return (
+    <div className="relative w-full h-full overflow-hidden select-none">
+      <img
+        src={heroImage}
+        alt="Oak & Ash Premier Minimalistic tier preview"
+        loading="eager"
+        decoding="sync"
+        className="preview-shot absolute inset-0 w-full h-full object-cover transition-transform duration-1000 ease-out group-hover/card:scale-[1.03]"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-black/25" />
+
+      {/* Minimalist Top Bar */}
+      <div className="relative z-10 flex items-center justify-between px-3.5 py-2 text-white border-b border-white/15">
+        <span className="font-serif text-[8.5px] sm:text-[10px] tracking-[0.26em] uppercase font-semibold">
+          OAK &amp; ASH
+        </span>
+        <span className="px-2 py-0.5 border border-white/45 text-[6.5px] sm:text-[7.5px] uppercase tracking-[0.22em]">
+          Enquire
+        </span>
+      </div>
+
+      {/* Minimalist Bottom Caption */}
+      <div className="absolute bottom-3 left-3.5 right-3.5 z-10 flex items-end justify-between gap-2 text-white">
+        <div>
+          <span className="block text-[6px] sm:text-[7px] uppercase tracking-[0.3em] text-white/80 mb-0.5">
+            01 / 04 — Surrey &amp; Wiltshire
+          </span>
+          <p className="font-serif text-[11px] sm:text-[14px] leading-tight">
+            28 years of <span className="italic">award-winning gardens.</span>
+          </p>
+        </div>
+        <span className="px-2.5 py-1 bg-white text-stone-900 text-[6.5px] sm:text-[7.5px] font-bold uppercase tracking-[0.22em] shrink-0">
+          Explore
+        </span>
+      </div>
+    </div>
+  );
+};
+
+/**
+ * Clean 3-Card Fanned Spread for Oak & Ash Landscaping.
+ * - All 4 corners of all 3 cards are completely visible with generous breathing room.
+ * - Zero grey filler blocks or clipped shadows.
+ * - Uses smooth cross-fade + gentle micro-glide transitions when switching tiers.
+ */
+const LandscapingSpreadPreview: React.FC<{
+  heroImage: string;
+  activeTier: LandscapingTierKey;
+  onSelectTier: (tier: LandscapingTierKey) => void;
+  onOpenDemo: (tier: LandscapingTierKey) => void;
+}> = ({ heroImage, activeTier, onSelectTier, onOpenDemo }) => {
+  // Put activeTier in Slot 0 (Front-Right), and the other two tiers in Slot 1 (Middle) and Slot 2 (Back-Left)
+  const orderedTiers: LandscapingTierKey[] = React.useMemo(() => {
+    const others = LANDSCAPING_TIER_ORDER.filter((k) => k !== activeTier);
+    return [activeTier, others[0], others[1]];
+  }, [activeTier]);
+
+  // Fixed geometry for the 3 fan slots so every corner of every card stays inside the frame
+  const SLOTS = [
+    {
+      // Slot 0: Front-right card (active)
+      transform: 'translate3d(6%, 3%, 0) rotate(3deg) scale(1)',
+      zIndex: 30,
+    },
+    {
+      // Slot 1: Middle card
+      transform: 'translate3d(-1.5%, -0.5%, 0) rotate(-2.5deg) scale(0.96)',
+      zIndex: 20,
+    },
+    {
+      // Slot 2: Back-left card
+      transform: 'translate3d(-9%, 1.5%, 0) rotate(-8deg) scale(0.92)',
+      zIndex: 10,
+    },
+  ];
+
+  return (
+    <div className="relative w-full py-6 sm:py-8 px-4 sm:px-8 flex items-center justify-center select-none overflow-visible">
+      {/* Stage sized with generous margin around all 4 corners so rotated cards are never clipped */}
+      <div className="relative w-[86%] sm:w-[84%] aspect-[16/11.5]">
+        {SLOTS.map((slot, slotIdx) => {
+          const tierKey = orderedTiers[slotIdx];
+          const tier = LANDSCAPING_TIERS[tierKey];
+          const isFront = slotIdx === 0;
+          const isLuxury = tierKey === 'luxury';
+
+          return (
+            <div
+              key={slotIdx}
+              style={{
+                transform: slot.transform,
+                zIndex: slot.zIndex,
+                transformOrigin: '35% 90%',
+              }}
+              className="absolute inset-0 transition-transform duration-700 ease-out"
+            >
+              <AnimatePresence mode="sync">
+                <motion.div
+                  key={tier.key}
+                  initial={{ opacity: 0, scale: 0.97 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.97 }}
+                  transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={
+                    isFront
+                      ? `Open ${tier.tierName} — ${tier.styleLabel} live demo`
+                      : `Bring ${tier.tierName} (${tier.styleLabel}) card to the front`
+                  }
+                  onMouseEnter={() => warmDemo(tier.id, heroImage)}
+                  onFocus={() => warmDemo(tier.id, heroImage)}
+                  onTouchStart={() => warmDemo(tier.id, heroImage)}
+                  onClick={() => {
+                    if (isFront) {
+                      onOpenDemo(tier.key);
+                    } else {
+                      onSelectTier(tier.key);
+                    }
+                  }}
+                  onKeyDown={(e: React.KeyboardEvent) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      if (isFront) onOpenDemo(tier.key);
+                      else onSelectTier(tier.key);
+                    }
+                  }}
+                  className={`
+                    group/card absolute inset-0 flex flex-col rounded-[1.15rem] sm:rounded-[1.35rem] overflow-hidden cursor-pointer border
+                    ${
+                      isLuxury
+                        ? 'bg-[#120F0B] border-[#C8B88A]/65'
+                        : 'bg-white border-slate-200'
+                    }
+                    ${
+                      isFront
+                        ? 'shadow-[0_28px_65px_-22px_rgba(15,23,42,0.45)]'
+                        : 'shadow-[0_18px_40px_-20px_rgba(15,23,42,0.32)] hover:brightness-105'
+                    }
+                  `}
+                >
+                  {/* TOP CHROME BAR (Clean integrated index pill — no overlapping floating boxes or grey dots) */}
+                  <div
+                    className={`
+                      shrink-0 flex items-center gap-2.5 px-3 sm:px-4 py-2 sm:py-2.5 border-b
+                      ${
+                        isLuxury
+                          ? 'bg-[#16130E] border-[#C8B88A]/25'
+                          : 'bg-white border-slate-200'
+                      }
+                    `}
+                  >
+                    <span
+                      className="inline-flex items-center justify-center px-2 py-0.5 rounded-md text-[8px] sm:text-[9px] font-syne font-black tracking-wider shrink-0"
+                      style={{
+                        backgroundColor: tier.badgeBg,
+                        color: tier.badgeText,
+                      }}
+                    >
+                      {tier.cardIndex} · {tier.shortLabel.toUpperCase()}
+                    </span>
+
+                    <span
+                      className={`
+                        flex-1 min-w-0 h-5 sm:h-6 px-2.5 rounded-md flex items-center justify-between gap-2 border
+                        ${
+                          isLuxury
+                            ? 'bg-[#0C0A08] border-[#C8B88A]/30 text-[#C8B88A]'
+                            : 'bg-slate-50 border-slate-200/90 text-slate-500'
+                        }
+                      `}
+                    >
+                      <span className="truncate text-[7.5px] sm:text-[8.5px] font-bold uppercase tracking-[0.15em]">
+                        sabrdigital.co.uk{tier.path}
+                      </span>
+                    </span>
+                  </div>
+
+                  {/* MIDDLE SCREEN (flex-1 so there is NEVER any gap or grey bleed) */}
+                  <div className="relative flex-1 min-h-0 w-full overflow-hidden">
+                    <TierHeroScreen tierKey={tier.key} heroImage={heroImage} />
+                  </div>
+
+                  {/* BOTTOM CAPTION STRIP */}
+                  <div
+                    className={`
+                      shrink-0 flex items-center justify-between gap-2 px-3.5 sm:px-5 py-2.5 sm:py-3 border-t
+                      ${
+                        isLuxury
+                          ? 'bg-[#120F0B] border-[#C8B88A]/25 text-[#F4F1EA]'
+                          : 'bg-white border-slate-200 text-slate-950'
+                      }
+                    `}
+                  >
+                    <span className="flex items-center gap-2.5 min-w-0">
+                      <span
+                        className="block w-1.5 h-4 sm:h-5 rounded-full shrink-0"
+                        style={{ backgroundColor: tier.accent }}
+                      />
+                      <span className="font-syne text-xs sm:text-sm font-black uppercase tracking-tight truncate">
+                        Oak &amp; Ash
+                      </span>
+                      <span
+                        className={`text-[7.5px] sm:text-[8.5px] font-extrabold uppercase tracking-[0.16em] truncate ${
+                          isLuxury ? 'text-[#C8B88A]' : 'text-slate-500'
+                        }`}
+                      >
+                        · {tier.styleLabel}
+                      </span>
+                    </span>
+
+                    <span
+                      className={`
+                        inline-flex items-center gap-1 text-[7.5px] sm:text-[8.5px] font-black uppercase tracking-[0.24em] shrink-0
+                        ${isLuxury ? 'text-[#C8B88A]' : 'text-emerald-700'}
+                      `}
+                    >
+                      {isFront ? 'Open demo ↗' : 'Select card'}
+                    </span>
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
 const ProjectRow: React.FC<{ project: Project; index: number }> = ({ project, index }) => {
   const rowRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
+
+  const isLandscaping = project.id === 'landscaping';
+  const [activeTier, setActiveTier] = useState<LandscapingTierKey>('minimalistic');
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
   const isEven = index % 2 === 0;
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    if (!dropdownOpen) return;
+    const handleOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleOutside);
+    return () => document.removeEventListener('mousedown', handleOutside);
+  }, [dropdownOpen]);
+
+  // Smooth cross-fade switch to the selected tier
+  const handleSelectLandscapingTier = (nextTier: LandscapingTierKey) => {
+    warmDemo(LANDSCAPING_TIERS[nextTier].id, project.heroImage);
+    setDropdownOpen(false);
+    setActiveTier(nextTier);
+  };
+
+  const handleOpenLandscapingDemo = (tierKey: LandscapingTierKey) => {
+    const tier = LANDSCAPING_TIERS[tierKey];
+    if (tierKey === 'luxury' && typeof window !== 'undefined') {
+      // Ensure the lawn-mowing intro plays fresh when entering from ProjectsGallery
+      (window as any).__oakAshLuxuryInternalNav = false;
+    }
+    warmDemo(tier.id, project.heroImage);
+    navigate(tier.path);
+  };
 
   useEffect(() => {
     const row = rowRef.current;
@@ -219,14 +657,18 @@ const ProjectRow: React.FC<{ project: Project; index: number }> = ({ project, in
     if (reduceMotion) return;
 
     const ctx = gsap.context(() => {
-      const shot = card.querySelector('.preview-shot');
+      const shot = card.querySelectorAll('.preview-shot');
       const items = text.querySelectorAll('.reveal-item');
 
-      // Start at the top (elevated + top-anchored clip) and slowly glide down
-      // as the user scrolls, finishing completely by the time the row is fully in sight.
-      gsap.set(card, { clipPath: 'inset(0% 0% 100% 0%)', y: -56, opacity: 0.25 });
+      // For the fanned 3-card spread, avoid rectangular clipPath on cardRef so
+      // rotated card corners and shadows are never sliced off.
+      if (isLandscaping) {
+        gsap.set(card, { y: -36, opacity: 0 });
+      } else {
+        gsap.set(card, { clipPath: 'inset(0% 0% 100% 0%)', y: -56, opacity: 0.25 });
+      }
       gsap.set(items, { y: -42, opacity: 0 });
-      if (shot) gsap.set(shot, { scale: 1.12, y: -24 });
+      if (shot.length && !isLandscaping) gsap.set(shot, { scale: 1.12, y: -24 });
 
       const tl = gsap.timeline({
         scrollTrigger: {
@@ -237,20 +679,34 @@ const ProjectRow: React.FC<{ project: Project; index: number }> = ({ project, in
         }
       });
 
-      tl.to(
-        card,
-        {
-          clipPath: 'inset(0% 0% 0% 0%)',
-          y: 0,
-          opacity: 1,
-          duration: 1,
-          ease: 'power2.out',
-          force3D: true
-        },
-        0
-      );
+      if (isLandscaping) {
+        tl.to(
+          card,
+          {
+            y: 0,
+            opacity: 1,
+            duration: 1,
+            ease: 'power2.out',
+            force3D: true
+          },
+          0
+        );
+      } else {
+        tl.to(
+          card,
+          {
+            clipPath: 'inset(0% 0% 0% 0%)',
+            y: 0,
+            opacity: 1,
+            duration: 1,
+            ease: 'power2.out',
+            force3D: true
+          },
+          0
+        );
+      }
 
-      if (shot) {
+      if (shot.length && !isLandscaping) {
         tl.to(
           shot,
           {
@@ -279,25 +735,38 @@ const ProjectRow: React.FC<{ project: Project; index: number }> = ({ project, in
     }, row);
 
     return () => ctx.revert();
-  }, [isEven]);
+  }, [isEven, isLandscaping]);
+
+  const currentTier = LANDSCAPING_TIERS[activeTier];
+  const displayedDescription = isLandscaping ? currentTier.description : project.description;
+  const displayedFeatures = isLandscaping ? currentTier.features : project.features;
 
   return (
     <div
       ref={rowRef}
-      className={`grid grid-cols-1 lg:grid-cols-12 gap-10 md:gap-14 lg:gap-20 items-center`}
+      className="grid grid-cols-1 lg:grid-cols-12 gap-10 md:gap-14 lg:gap-20 items-center"
     >
       <div
         ref={cardRef}
-        className={`lg:col-span-7 will-change-transform ${isEven ? 'lg:order-1' : 'lg:order-2'}`}
+        className={`lg:col-span-7 will-change-transform overflow-visible ${isEven ? 'lg:order-1' : 'lg:order-2'}`}
       >
-        <PreviewWindow project={project} priority />
+        {isLandscaping ? (
+          <LandscapingSpreadPreview
+            heroImage={SHARED_LANDSCAPING_HERO_IMAGE}
+            activeTier={activeTier}
+            onSelectTier={handleSelectLandscapingTier}
+            onOpenDemo={handleOpenLandscapingDemo}
+          />
+        ) : (
+          <PreviewWindow project={project} priority />
+        )}
       </div>
 
       <div
         ref={textRef}
         className={`lg:col-span-5 flex flex-col items-start ${isEven ? 'lg:order-2' : 'lg:order-1'}`}
       >
-        <div className="reveal-item flex items-center gap-4 mb-7">
+        <div className="reveal-item flex flex-wrap items-center gap-4 mb-7">
           <span className="font-syne text-base font-black text-slate-300 tabular-nums">
             {String(index + 1).padStart(2, '0')}
           </span>
@@ -305,6 +774,17 @@ const ProjectRow: React.FC<{ project: Project; index: number }> = ({ project, in
           <span className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.45em] text-emerald-700">
             {project.industry}
           </span>
+          {isLandscaping && (
+            <span
+              className="px-2.5 py-1 rounded-full text-[8px] font-black uppercase tracking-[0.25em] transition-colors duration-300"
+              style={{
+                backgroundColor: currentTier.badgeBg,
+                color: currentTier.badgeText
+              }}
+            >
+              {currentTier.styleLabel}
+            </span>
+          )}
         </div>
 
         <h3 className="reveal-item font-syne text-3xl md:text-4xl lg:text-[2.75rem] font-black text-slate-950 uppercase tracking-tighter leading-[0.95] mb-6">
@@ -313,11 +793,11 @@ const ProjectRow: React.FC<{ project: Project; index: number }> = ({ project, in
         </h3>
 
         <p className="reveal-item text-base md:text-lg text-slate-500 font-medium leading-relaxed max-w-lg mb-8">
-          {project.description}
+          {displayedDescription}
         </p>
 
         <ul className="reveal-item flex flex-col w-full max-w-lg mb-10 border-t border-slate-200">
-          {project.features.map((f) => (
+          {displayedFeatures.map((f) => (
             <li
               key={f}
               className="flex items-center gap-3 py-3 border-b border-slate-200 text-[10px] md:text-[11px] font-black uppercase tracking-[0.28em] text-slate-600"
@@ -328,18 +808,140 @@ const ProjectRow: React.FC<{ project: Project; index: number }> = ({ project, in
           ))}
         </ul>
 
-        <Link
-          to={project.path}
-          onMouseEnter={() => warmDemo(project.id, project.heroImage)}
-          onFocus={() => warmDemo(project.id, project.heroImage)}
-          onTouchStart={() => warmDemo(project.id, project.heroImage)}
-          className="reveal-item group/btn inline-flex items-center gap-5 pl-8 pr-2 py-2 rounded-full bg-slate-950 hover:bg-emerald-600 transition-colors duration-500"
-        >
-          <span className="text-[10px] font-black uppercase tracking-[0.35em] text-white">View demo</span>
-          <span className="w-11 h-11 rounded-full bg-white flex items-center justify-center text-slate-950 transition-transform duration-500 group-hover/btn:rotate-45">
-            <ArrowUpRight size={18} strokeWidth={2.5} />
-          </span>
-        </Link>
+        {isLandscaping ? (
+          <div ref={dropdownRef} className="reveal-item relative z-30 flex flex-wrap items-center gap-3">
+            {/* VIEW DEMO DROPDOWN BUTTON */}
+            <button
+              type="button"
+              onClick={() => {
+                LANDSCAPING_TIER_ORDER.forEach((k) =>
+                  warmDemo(LANDSCAPING_TIERS[k].id, SHARED_LANDSCAPING_HERO_IMAGE)
+                );
+                setDropdownOpen((prev) => !prev);
+              }}
+              aria-expanded={dropdownOpen}
+              aria-haspopup="listbox"
+              className="group/btn inline-flex items-center gap-4 pl-7 pr-2 py-2 rounded-full bg-slate-950 hover:bg-emerald-700 transition-colors duration-500 cursor-pointer shadow-md"
+            >
+              <span className="flex flex-col items-start text-left">
+                <span className="text-[8px] font-bold uppercase tracking-[0.28em] text-emerald-400">
+                  View demo · 3 tiers
+                </span>
+                <span className="text-[10px] font-black uppercase tracking-[0.26em] text-white">
+                  {currentTier.tierName}
+                </span>
+              </span>
+              <span className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-slate-950 transition-transform duration-300">
+                <ChevronDown
+                  size={17}
+                  strokeWidth={2.5}
+                  className={`transition-transform duration-300 ${dropdownOpen ? 'rotate-180' : ''}`}
+                />
+              </span>
+            </button>
+
+            {/* DIRECT LAUNCH BUTTON FOR THE CURRENT FRONT CARD */}
+            <button
+              type="button"
+              onClick={() => handleOpenLandscapingDemo(activeTier)}
+              onMouseEnter={() => warmDemo(currentTier.id, SHARED_LANDSCAPING_HERO_IMAGE)}
+              className="group/launch inline-flex items-center gap-3 pl-5 pr-2 py-2 rounded-full bg-white border border-slate-300 hover:border-emerald-600 text-slate-950 hover:text-emerald-700 transition-all duration-300 cursor-pointer shadow-xs"
+            >
+              <span className="text-[9.5px] font-black uppercase tracking-[0.26em]">
+                Open {currentTier.shortLabel}
+              </span>
+              <span className="w-9 h-9 rounded-full bg-slate-950 group-hover/launch:bg-emerald-600 text-white flex items-center justify-center transition-colors">
+                <ArrowUpRight size={15} strokeWidth={2.5} />
+              </span>
+            </button>
+
+            {/* DROPDOWN MENU: Essential (Traditional) → Premier (Minimalistic) → Prestige (Luxury) */}
+            {dropdownOpen && (
+              <div
+                role="listbox"
+                aria-label="Select Oak & Ash Landscaping website tier"
+                className="absolute left-0 top-[calc(100%+12px)] w-[min(92vw,420px)] rounded-2xl bg-white border border-slate-200 shadow-[0_30px_80px_-20px_rgba(15,23,42,0.38)] p-2.5 z-50"
+              >
+                <div className="px-3 py-2 border-b border-slate-100 flex items-center justify-between">
+                  <span className="text-[8.5px] font-black uppercase tracking-[0.3em] text-slate-400">
+                    Essential → Premier → Prestige
+                  </span>
+                  <span className="text-[8px] font-bold uppercase tracking-[0.2em] text-emerald-700">
+                    Click to preview or launch
+                  </span>
+                </div>
+
+                <div className="divide-y divide-slate-100 mt-1">
+                  {LANDSCAPING_TIER_ORDER.map((tierKey, idx) => {
+                    const tier = LANDSCAPING_TIERS[tierKey];
+                    const isSelected = activeTier === tierKey;
+                    return (
+                      <div
+                        key={tier.key}
+                        className={`flex items-center justify-between gap-2 p-2.5 rounded-xl transition-colors ${
+                          isSelected ? 'bg-emerald-50/70' : 'hover:bg-slate-50'
+                        }`}
+                      >
+                        <button
+                          type="button"
+                          onClick={() => handleSelectLandscapingTier(tier.key)}
+                          onMouseEnter={() => warmDemo(tier.id, SHARED_LANDSCAPING_HERO_IMAGE)}
+                          className="flex-1 flex items-start gap-3 text-left cursor-pointer"
+                        >
+                          <span
+                            className="mt-0.5 w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-black shrink-0"
+                            style={{
+                              backgroundColor: tier.badgeBg,
+                              color: tier.badgeText
+                            }}
+                          >
+                            0{idx + 1}
+                          </span>
+                          <span className="min-w-0">
+                            <span className="flex items-center gap-2">
+                              <span className="font-syne text-xs font-black uppercase tracking-tight text-slate-950">
+                                {tier.tierName}
+                              </span>
+                              {isSelected && (
+                                <Check size={13} className="text-emerald-600 shrink-0" strokeWidth={3} />
+                              )}
+                            </span>
+                            <span className="block text-[9.5px] font-bold uppercase tracking-[0.2em] text-slate-500 mt-0.5">
+                              {tier.styleLabel}
+                            </span>
+                          </span>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => handleOpenLandscapingDemo(tier.key)}
+                          onMouseEnter={() => warmDemo(tier.id, SHARED_LANDSCAPING_HERO_IMAGE)}
+                          className="px-3 py-2 rounded-lg bg-slate-950 hover:bg-emerald-600 text-white text-[8.5px] font-black uppercase tracking-[0.24em] inline-flex items-center gap-1 shrink-0 transition-colors cursor-pointer"
+                        >
+                          <span>Launch</span>
+                          <ArrowUpRight size={12} strokeWidth={2.5} />
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
+        ) : (
+          <Link
+            to={project.path}
+            onMouseEnter={() => warmDemo(project.id, project.heroImage)}
+            onFocus={() => warmDemo(project.id, project.heroImage)}
+            onTouchStart={() => warmDemo(project.id, project.heroImage)}
+            className="reveal-item group/btn inline-flex items-center gap-5 pl-8 pr-2 py-2 rounded-full bg-slate-950 hover:bg-emerald-600 transition-colors duration-500"
+          >
+            <span className="text-[10px] font-black uppercase tracking-[0.35em] text-white">View demo</span>
+            <span className="w-11 h-11 rounded-full bg-white flex items-center justify-center text-slate-950 transition-transform duration-500 group-hover/btn:rotate-45">
+              <ArrowUpRight size={18} strokeWidth={2.5} />
+            </span>
+          </Link>
+        )}
       </div>
     </div>
   );
@@ -348,6 +950,10 @@ const ProjectRow: React.FC<{ project: Project; index: number }> = ({ project, in
 const ProjectsGallery: React.FC = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
+    // Reset luxury internal nav flag when on Projects page so opening Prestige plays its lawn-mowing intro
+    if (typeof window !== 'undefined') {
+      (window as any).__oakAshLuxuryInternalNav = false;
+    }
   }, []);
 
   // Once the gallery itself is settled, pull every demo's route chunk down in

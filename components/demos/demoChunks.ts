@@ -3,10 +3,19 @@
 // that wants to warm a demo ahead of a click (the projects gallery, the
 // entry script for a direct /demo/... link) goes through this one map so the
 // chunk is only ever requested once.
-export type DemoId = 'landscaping' | 'equestrian' | 'physio' | 'spa' | 'cafe';
+export type DemoId =
+  | 'landscaping'
+  | 'landscaping-traditional'
+  | 'landscaping-luxury'
+  | 'equestrian'
+  | 'physio'
+  | 'spa'
+  | 'cafe';
 
 export const demoChunks: Record<DemoId, () => Promise<unknown>> = {
   landscaping: () => import('./landscaping/Home'),
+  'landscaping-traditional': () => import('./landscaping-traditional/TraditionalHome'),
+  'landscaping-luxury': () => import('./landscaping-luxury/LuxuryHome'),
   equestrian: () => import('./equestrian/EquestrianHome'),
   physio: () => import('./physio/PhysioHome'),
   spa: () => import('./spa/SpaHome'),
@@ -23,7 +32,7 @@ export const warmDemoChunk = (id: DemoId) => {
 
 // "/web-design/demo/spa/suites" -> "spa"
 export const demoIdFromPath = (pathname: string): DemoId | null => {
-  const match = /\/demo\/([a-z]+)/.exec(pathname);
+  const match = /\/demo\/([a-z-]+)/.exec(pathname);
   const id = match?.[1] as DemoId | undefined;
   return id && id in demoChunks ? id : null;
 };

@@ -104,13 +104,15 @@ const STATS_CSS = `
 .stats-stage .stats-s1 {
   opacity: 1;
   transform: translate3d(0, 0, 0);
-  transition: opacity 0.35s ease, transform 0.35s ease;
+  transition: opacity 0.32s cubic-bezier(0.16, 1, 0.3, 1), transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
   pointer-events: none;
 }
 .stats-stage .stats-s2 {
   opacity: 0;
   transform: translate3d(0, 10px, 0);
-  transition: opacity 0.35s ease, transform 0.35s ease;
+  transition: opacity 0.32s cubic-bezier(0.16, 1, 0.3, 1), transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
   pointer-events: none;
 }
 .stats-stage[data-stage="2"] .stats-s1 {
@@ -590,18 +592,18 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
         const diff = Math.abs(tgt - cur);
         // Responsive, butter-smooth lerp step on all devices without stalling,
         // tuned specifically so scrolling upwards snaps immediately to the user's motion
-        let base = isMobile ? 0.22 : 0.14;
+        let base = isMobile ? 0.28 : 0.18;
         if (isUpward) {
-          base = isMobile ? 0.40 : 0.28;
+          base = isMobile ? 0.48 : 0.36;
         }
-        if (diff > 0.03) {
-          base = Math.min(0.55, base + (diff - 0.03) * 2.0);
+        if (diff > 0.02) {
+          base = Math.min(0.78, base + (diff - 0.02) * 3.2);
         }
         const step = 1 - Math.pow(1 - base, dt / 16.67);
-        const moving = diff > 0.0003;
+        const moving = diff > 0.0002;
         if (moving) {
           cur += (tgt - cur) * step;
-          if (Math.abs(tgt - cur) < 0.0005) cur = tgt;
+          if (Math.abs(tgt - cur) < 0.0004) cur = tgt;
         } else if (wasMoving) {
           forceDraw = Math.max(forceDraw, 6);
         }
@@ -672,8 +674,11 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
     };
 
     const onScroll = () => {
-      if (inView) {
-        prog();
+      const isNear = prog();
+      if (isNear) {
+        inView = true;
+        startLoop();
+      } else if (inView) {
         startLoop();
       }
     };
@@ -695,7 +700,7 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
             startLoop();
           }
         },
-        { rootMargin: '300px 0px 300px 0px' }
+        { rootMargin: '1000px 0px 1000px 0px' }
       );
       observer.observe(track);
     } else {

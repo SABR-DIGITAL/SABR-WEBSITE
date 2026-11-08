@@ -17,18 +17,20 @@ interface NavbarProps {
 }
 
 const Navbar: React.FC<NavbarProps> = ({ currentPage, startAnimation = true }) => {
-  const [scrolled, setScrolled] = useState(() => typeof window !== 'undefined' ? window.scrollY > 20 : false);
+  const [scrolled, setScrolled] = useState(() => (typeof window !== 'undefined' ? window.scrollY > 25 : false));
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
     let ticking = false;
-    let lastScrolled = window.scrollY > 20;
+    let lastScrolled = window.scrollY > 25;
 
     const handleScroll = () => {
       if (!ticking) {
         window.requestAnimationFrame(() => {
-          const isScrolled = window.scrollY > 20;
+          const y = window.scrollY;
+          // Smooth hysteresis: activates when scrolling past 32px, deactivates when back above 12px
+          const isScrolled = lastScrolled ? y > 12 : y > 32;
           if (isScrolled !== lastScrolled) {
             lastScrolled = isScrolled;
             setScrolled(isScrolled);
@@ -59,9 +61,11 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, startAnimation = true }) =
   return (
     <>
       <header 
-        className={`fixed top-0 left-0 right-0 z-[100] px-4 md:px-8 py-4 pointer-events-none transition-opacity duration-700 ${startAnimation ? 'opacity-100' : 'opacity-0'}`}
+        className={`fixed top-0 left-0 right-0 z-[100] px-4 md:px-8 py-4 ${
+          startAnimation ? 'navbar-revealed' : 'navbar-hidden'
+        }`}
       >
-        <div className={`max-w-7xl mx-auto flex items-center justify-between pointer-events-auto transition-[background-color,border-color,box-shadow] duration-300 ease-out transform-gpu lg:px-8 lg:py-3.5 lg:rounded-full lg:border lg:backdrop-blur-md ${
+        <div className={`max-w-7xl mx-auto flex items-center justify-between pointer-events-auto transition-[background-color,border-color,box-shadow] duration-250 ease-out transform-gpu will-change-[background-color,border-color,box-shadow] lg:px-8 lg:py-3.5 lg:rounded-full lg:border lg:backdrop-blur-md ${
           scrolled 
             ? 'lg:bg-white/95 lg:border-stone-200/80 lg:shadow-md' 
             : isHomeUnscrolled 
@@ -78,7 +82,7 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, startAnimation = true }) =
                 aria-label="SABR Digital home"
                 className="flex items-center text-left group focus:outline-none focus:ring-0 appearance-none"
               >
-                <span className={`font-syne text-xl tracking-[0.05em] font-black flex items-center whitespace-nowrap ${isHomeUnscrolled ? 'text-white' : 'text-slate-900'}`}>
+                <span className={`font-syne text-xl tracking-[0.05em] font-black flex items-center whitespace-nowrap transition-colors duration-300 ease-out ${isHomeUnscrolled ? 'text-white' : 'text-slate-900'}`}>
                   SABR<span className="text-shimmer-blue ml-1.5">DIGITAL</span>
                 </span>
               </Link>
@@ -88,7 +92,7 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, startAnimation = true }) =
               to="/"
               onClick={() => handleNav('home')}
               tabIndex={-1}
-              className={`text-[7px] uppercase font-bold tracking-[0.35em] -mt-0.5 ${isHomeUnscrolled ? 'text-emerald-300' : 'text-emerald-700'}`}
+              className={`text-[7px] uppercase font-bold tracking-[0.35em] -mt-0.5 transition-colors duration-300 ease-out ${isHomeUnscrolled ? 'text-emerald-300' : 'text-emerald-700'}`}
             >
               Wiltshire Web Design Studio
             </Link>
@@ -101,7 +105,7 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, startAnimation = true }) =
                 key={item.id}
                 to={PAGE_PATHS[item.id]}
                 onClick={() => handleNav(item.id)}
-                className={`relative text-[11px] uppercase tracking-[0.3em] transition-colors font-semibold focus:outline-none ${
+                className={`relative text-[11px] uppercase tracking-[0.3em] transition-colors duration-300 font-semibold focus:outline-none ${
                   (currentPage === item.id && !isProjects) || (isProjects && item.id === 'work')
                     ? 'text-emerald-600' 
                     : isHomeUnscrolled 
@@ -193,6 +197,40 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, startAnimation = true }) =
           </motion.div>
         )}
       </AnimatePresence>
+
+      <style>{`
+        .navbar-hidden {
+          opacity: 0;
+          transform: translate3d(0, -20px, 0);
+          pointer-events: none;
+        }
+
+        .navbar-revealed {
+          animation: navbarUnveil 0.72s cubic-bezier(0.16, 1, 0.3, 1) 0.05s both;
+          pointer-events: auto;
+        }
+
+        @keyframes navbarUnveil {
+          0% {
+            opacity: 0;
+            transform: translate3d(0, -20px, 0);
+          }
+          100% {
+            opacity: 1;
+            transform: translate3d(0, 0, 0);
+          }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .navbar-hidden,
+          .navbar-revealed {
+            opacity: 1 !important;
+            transform: none !important;
+            animation: none !important;
+            pointer-events: auto !important;
+          }
+        }
+      `}</style>
     </>
   );
 };

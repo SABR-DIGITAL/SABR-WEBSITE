@@ -16,27 +16,8 @@ gsap.registerPlugin(ScrollTrigger);
 
 const Link = (RouterDOM as any).Link || (RouterDOM as any).default?.Link;
 
-const HERO_SLIDES = [
-  {
-    image: '/images/projects/landscaping-preview.webp',
-    alt: 'Contemporary architectural garden and lawn terrace in Surrey',
-  },
-  {
-    image:
-      'https://dmhdaawgg48dl.cloudfront.net/wp-content/uploads/2024/10/metal-pergola-palm-tree-patio-lawn-contemporary-oxshott-1920x1280.jpg',
-    alt: 'Bespoke metalwork pergola and natural stone terrace',
-  },
-  {
-    image:
-      'https://dmhdaawgg48dl.cloudfront.net/wp-content/uploads/2024/10/yorkstone-rill-water-feature-english-country-petworth-sussex-1920x1280.jpg',
-    alt: 'English country garden with Yorkstone water rill and herbaceous borders',
-  },
-  {
-    image:
-      'https://dmhdaawgg48dl.cloudfront.net/wp-content/uploads/2024/10/york-stone-patio-conservatory-hedges-classic-notting-hill-960x960.jpg',
-    alt: 'Classic town garden with Yorkstone terrace and clipped yew hedging',
-  },
-];
+import { HERO_SLIDES } from './landscapingData';
+export { HERO_SLIDES };
 
 const PORTFOLIO_COLLECTIONS = [
   {

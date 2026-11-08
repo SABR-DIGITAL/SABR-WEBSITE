@@ -44,6 +44,18 @@ const LandscaperServices = lazy(() => import('./components/demos/landscaping/Ser
 const LandscaperAbout = lazy(() => import('./components/demos/landscaping/About'));
 const LandscaperGallery = lazy(() => import('./components/demos/landscaping/Gallery'));
 
+const LandscaperTraditionalHome = lazy(() => import('./components/demos/landscaping-traditional/TraditionalHome'));
+const LandscaperTraditionalServices = lazy(() => import('./components/demos/landscaping-traditional/TraditionalServices'));
+const LandscaperTraditionalAbout = lazy(() => import('./components/demos/landscaping-traditional/TraditionalAbout'));
+const LandscaperTraditionalGallery = lazy(() => import('./components/demos/landscaping-traditional/TraditionalGallery'));
+const LandscaperTraditionalContact = lazy(() => import('./components/demos/landscaping-traditional/TraditionalContact'));
+
+const LandscaperLuxuryHome = lazy(() => import('./components/demos/landscaping-luxury/LuxuryHome'));
+const LandscaperLuxuryServices = lazy(() => import('./components/demos/landscaping-luxury/LuxuryServices'));
+const LandscaperLuxuryAbout = lazy(() => import('./components/demos/landscaping-luxury/LuxuryAbout'));
+const LandscaperLuxuryGallery = lazy(() => import('./components/demos/landscaping-luxury/LuxuryGallery'));
+const LandscaperLuxuryContact = lazy(() => import('./components/demos/landscaping-luxury/LuxuryContact'));
+
 const CafeHome = lazy(() => import('./components/demos/cafe/CafeHome'));
 const CafeMenu = lazy(() => import('./components/demos/cafe/CafeMenu'));
 const CafeLocations = lazy(() => import('./components/demos/cafe/CafeLocations'));
@@ -255,7 +267,7 @@ const MainApp: React.FC = () => {
   const [showIntro, setShowIntro] = useState(
     () => !window.location.pathname.includes('/demo') && !arrivedFromWithinSite('web-design')
   );
-  const [isRevealed, setIsRevealed] = useState(false);
+  const [isRevealed, setIsRevealed] = useState(() => !window.location.pathname.includes('/demo') && arrivedFromWithinSite('web-design'));
   const contentRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
   const navigate = useNavigate();
@@ -277,18 +289,12 @@ const MainApp: React.FC = () => {
 
   useEffect(() => {
     if (!showIntro && !isDemo) {
-      let raf2 = 0;
-      const raf1 = requestAnimationFrame(() => {
-        raf2 = requestAnimationFrame(() => setIsRevealed(true));
-      });
-
+      setIsRevealed(true);
       const timer = setTimeout(() => {
         ScrollTrigger.refresh();
-      }, 500);
+      }, 300);
 
       return () => {
-        cancelAnimationFrame(raf1);
-        cancelAnimationFrame(raf2);
         clearTimeout(timer);
       };
     }
@@ -340,6 +346,7 @@ const MainApp: React.FC = () => {
 
   const handleIntroComplete = () => {
     setShowIntro(false);
+    setIsRevealed(true);
   };
 
   // Swapped order per user request:
@@ -391,6 +398,16 @@ const MainApp: React.FC = () => {
                 <Route path="/demo/landscaping/about" element={<LandscaperAbout />} />
                 <Route path="/demo/landscaping/gallery" element={<LandscaperGallery />} />
                 <Route path="/demo/landscaping/contact" element={<LandscaperContact />} />
+                <Route path="/demo/landscaping-traditional" element={<LandscaperTraditionalHome />} />
+                <Route path="/demo/landscaping-traditional/services" element={<LandscaperTraditionalServices />} />
+                <Route path="/demo/landscaping-traditional/about" element={<LandscaperTraditionalAbout />} />
+                <Route path="/demo/landscaping-traditional/gallery" element={<LandscaperTraditionalGallery />} />
+                <Route path="/demo/landscaping-traditional/contact" element={<LandscaperTraditionalContact />} />
+                <Route path="/demo/landscaping-luxury" element={<LandscaperLuxuryHome />} />
+                <Route path="/demo/landscaping-luxury/services" element={<LandscaperLuxuryServices />} />
+                <Route path="/demo/landscaping-luxury/about" element={<LandscaperLuxuryAbout />} />
+                <Route path="/demo/landscaping-luxury/gallery" element={<LandscaperLuxuryGallery />} />
+                <Route path="/demo/landscaping-luxury/contact" element={<LandscaperLuxuryContact />} />
                 <Route path="/demo/cafe" element={<CafeHome />} />
                 <Route path="/demo/cafe/menu" element={<CafeMenu />} />
                 <Route path="/demo/cafe/locations" element={<CafeLocations />} />

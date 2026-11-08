@@ -69,18 +69,19 @@ const AboutFounderSection: React.FC<AboutFounderSectionProps> = ({
     if (!canAnimate) return;
 
     const ctx = gsap.context(() => {
+      // Butter-smooth, instantaneous presentation that never dips opacity or delays photo paint
       gsap.fromTo(
         imgCol,
-        { x: -24, opacity: 0.3 },
+        { x: -10, opacity: 0.82 },
         {
           x: 0,
           opacity: 1,
-          duration: 0.42,
+          duration: 0.32,
           ease: 'power2.out',
           clearProps: 'all',
           scrollTrigger: {
             trigger: section,
-            start: 'top 90%',
+            start: 'top 85%',
             once: true
           }
         }
@@ -88,16 +89,16 @@ const AboutFounderSection: React.FC<AboutFounderSectionProps> = ({
 
       gsap.fromTo(
         txtCol,
-        { x: 24, opacity: 0.3 },
+        { x: 10, opacity: 0.82 },
         {
           x: 0,
           opacity: 1,
-          duration: 0.42,
+          duration: 0.32,
           ease: 'power2.out',
           clearProps: 'all',
           scrollTrigger: {
             trigger: section,
-            start: 'top 90%',
+            start: 'top 85%',
             once: true
           }
         }
@@ -131,7 +132,7 @@ const AboutFounderSection: React.FC<AboutFounderSectionProps> = ({
               />
 
               {/* Founder Image Frame - More square with clean modern radius */}
-              <div className="relative rounded-lg overflow-hidden bg-stone-900 border border-stone-300/90 shadow-[0_12px_36px_-12px_rgba(0,0,0,0.15)] aspect-[3/4]">
+              <div className="relative rounded-lg overflow-hidden bg-stone-900 border border-stone-300/90 shadow-[0_12px_36px_-12px_rgba(0,0,0,0.15)] aspect-[3/4] transform-gpu will-change-transform">
                 <picture className="block w-full h-full">
                   <source srcSet="/assets/aistudio/image_c05e976f.webp" type="image/webp" />
                   <img
@@ -139,7 +140,7 @@ const AboutFounderSection: React.FC<AboutFounderSectionProps> = ({
                     alt="Raphael - Founder of SABR Digital in Wiltshire"
                     width={1069}
                     height={1472}
-                    className="w-full h-full object-cover object-top transform transition-transform duration-700 group-hover:scale-[1.03]"
+                    className="w-full h-full object-cover object-top transform-gpu transition-transform duration-700 group-hover:scale-[1.03]"
                     loading="eager"
                     decoding="async"
                     fetchPriority="high"
