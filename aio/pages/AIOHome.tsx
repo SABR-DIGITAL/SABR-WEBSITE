@@ -15,43 +15,9 @@ import {
 } from 'lucide-react';
 import { useAIOSeo } from '../useAIOSeo';
 import { AIO_PAGE_PATHS } from '../components/AIONavbar';
-import StatsSection, { StatsStage } from '../../components/StatsSection';
 import WebsiteScoreScanner from '../../components/WebsiteScoreScanner';
 import AboutFounderSection from '../../components/AboutFounderSection';
 import WhyWebsiteSection, { SabrPro } from '../../components/WhyWebsiteSection';
-
-// The AIO home follows the same section order as the web design studio's
-// home page (App.tsx → renderHomeContent): Hero, the scroll-pinned stats
-// story, the website scanner, the founder introduction and the clickable
-// pillars grid — reusing the same components with AI Optimisation copy.
-
-const STATS_STAGE_1: StatsStage = {
-  headline: 'The cost of being invisible to AI.',
-  count: 95,
-  quote: <>&ldquo;Ask an AI for a recommendation and it names a handful of businesses — not a page of ten links.&rdquo;</>,
-  body: (
-    <>
-      When a customer asks ChatGPT, Gemini or Google&rsquo;s AI Overview for a good local business, the answer is a
-      short list. If those tools can&rsquo;t clearly read what you do, where you work and why you&rsquo;re trusted,
-      you&rsquo;re simply not in it — and the customer never sees the businesses that were left out.
-    </>
-  ),
-  legend: ['95 Left out', '5 Named']
-};
-
-const STATS_STAGE_2: StatsStage = {
-  headline: 'The power of being part of the answer.',
-  count: 5,
-  quote: <>&ldquo;Clear, consistent, well-structured information gives AI tools a reason to name you.&rdquo;</>,
-  body: (
-    <>
-      AI Optimisation makes your business easy for answer engines to understand — accurate details, structured
-      data and pages that answer real customer questions. Nobody can guarantee what an AI says, but you can give
-      it every reason to describe you correctly and include you.
-    </>
-  ),
-  legend: ['5 Named', '95 Unseen']
-};
 
 const AIO_PILLARS: SabrPro[] = [
   {
@@ -242,12 +208,6 @@ const AIOHome: React.FC<AIOHomeProps> = ({ startAnimation = true }) => {
   return (
     <main className="bg-[#fdfbf7]">
       <AIOHero startAnimation={startAnimation} />
-
-      <StatsSection
-        stage1={STATS_STAGE_1}
-        stage2={STATS_STAGE_2}
-        footnote="Illustrative — a typical AI answer recommends only a handful of businesses. No one can guarantee what an AI model will say."
-      />
 
       <WebsiteScoreScanner
         headline={

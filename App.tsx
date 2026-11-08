@@ -12,7 +12,6 @@ import ExitPreviewButton from './components/ExitPreviewButton';
 
 // Home components
 import Hero from './components/Hero';
-import StatsSection from './components/StatsSection';
 import WebsiteScoreScanner from './components/WebsiteScoreScanner';
 import WhyWebsiteSection from './components/WhyWebsiteSection';
 import AboutFounderSection from './components/AboutFounderSection';
@@ -349,14 +348,11 @@ const MainApp: React.FC = () => {
     setIsRevealed(true);
   };
 
-  // Swapped order per user request:
-  // Hero -> About SABR -> WebsiteScoreScanner -> StatsSection (88/100 & 77%/100) -> WhyWebsiteSection (What we do well!)
   const renderHomeContent = () => (
     <>
       <Hero navigateTo={navigateTo} startAnimation={isRevealed} />
       <AboutFounderSection navigateTo={navigateTo} />
       <WebsiteScoreScanner navigateTo={navigateTo} />
-      <StatsSection />
       <WhyWebsiteSection />
     </>
   );
