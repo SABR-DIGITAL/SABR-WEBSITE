@@ -18,6 +18,7 @@ import AboutFounderSection from './components/AboutFounderSection';
 
 // The studio's own pages stay in this chunk so moving between them never waits on the network.
 import ProjectsGallery from './pages/ProjectsGallery';
+import WhyUsPage from './pages/WhyUsPage';
 import SnakeTimeline from './components/SnakeTimeline';
 import FAQSection from './components/FAQSection';
 import ContactForm from './components/ContactForm';
@@ -80,7 +81,7 @@ const SpaBooking = lazy(() => import('./components/demos/spa/SpaBooking'));
 
 gsap.registerPlugin(ScrollTrigger);
 
-export type Page = 'home' | 'work' | 'about' | 'process' | 'faq' | 'contact';
+export type Page = 'home' | 'work' | 'about' | 'process' | 'why-us' | 'faq' | 'contact';
 
 // Real, crawlable URLs — one per section, so every page can be indexed,
 // shared and shown as a sitelink under the search result.
@@ -89,6 +90,7 @@ export const PAGE_PATHS: Record<Page, string> = {
   work: '/projects',
   about: '/#about',
   process: '/process',
+  'why-us': '/why-us',
   faq: '/faq',
   contact: '/contact'
 };
@@ -98,6 +100,7 @@ const PATH_PAGES: Record<string, Page> = {
   '/projects': 'work',
   '/about': 'home',
   '/process': 'process',
+  '/why-us': 'why-us',
   '/faq': 'faq',
   '/contact': 'contact'
 };
@@ -216,6 +219,10 @@ const SEO_META: Record<Page, { title: string; description: string }> = {
   process: {
     title: 'Our Web Design Process | 5-Step Transparent Build | SABR',
     description: 'From first chat to live launch in 2 to 3 weeks. See our transparent web design process with fixed pricing, clear communication, and complete client ownership.'
+  },
+  'why-us': {
+    title: 'Why Choose SABR Digital | Custom Web Design & Conversion | Wiltshire',
+    description: 'Discover why ambitious UK businesses choose SABR Digital. Custom-engineered websites, conversion-first design, fixed pricing, and direct founder collaboration.'
   },
   faq: {
     title: 'Web Design FAQs | Pricing, Timelines & SEO | SABR Digital',
@@ -379,6 +386,7 @@ const MainApp: React.FC = () => {
                 <Route path="/" element={renderHomeContent()} />
                 <Route path="/about" element={<Navigate to="/#about" replace />} />
                 <Route path="/process" element={<SnakeTimeline navigateTo={navigateTo} />} />
+                <Route path="/why-us" element={<WhyUsPage navigateTo={navigateTo} />} />
                 <Route path="/faq" element={<FAQSection navigateTo={navigateTo} />} />
                 <Route path="/contact" element={<ContactForm />} />
                 <Route path="/projects" element={<ProjectsGallery />} />
@@ -440,13 +448,13 @@ const MainApp: React.FC = () => {
                   SABR <span className="text-emerald-600 italic">DIGITAL</span>
                 </Link>
                 <nav aria-label="Footer" className="flex flex-wrap justify-center gap-16 mb-24">
-                   {(['work', 'about', 'process', 'faq', 'contact'] as Page[]).map(p => (
+                   {(['work', 'about', 'process', 'why-us', 'faq', 'contact'] as Page[]).map(p => (
                      <Link
                        key={p}
                        to={PAGE_PATHS[p]}
                        className="text-[12px] uppercase tracking-[0.6em] text-slate-400 hover:text-emerald-600 transition-all font-black"
                      >
-                       {p === 'work' ? 'Projects' : p === 'about' ? 'About' : p === 'process' ? 'Process' : p === 'faq' ? 'FAQ' : 'Contact'}
+                       {p === 'work' ? 'Projects' : p === 'about' ? 'About' : p === 'process' ? 'Process' : p === 'why-us' ? 'Why Us?' : p === 'faq' ? 'FAQ' : 'Contact'}
                      </Link>
                    ))}
                 </nav>

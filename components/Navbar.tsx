@@ -51,6 +51,7 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, startAnimation = true }) =
   const links: { name: string, id: Page }[] = [
     { name: 'Projects', id: 'work' },
     { name: 'Process', id: 'process' },
+    { name: 'Why Us?', id: 'why-us' },
     { name: 'FAQ', id: 'faq' }
   ];
 
