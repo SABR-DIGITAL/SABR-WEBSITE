@@ -101,10 +101,10 @@ const FAQSection: React.FC<FAQSectionProps> = ({ navigateTo }) => {
             FAQ&rsquo;s
           </p>
           <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 md:gap-12 mb-6 md:mb-12">
-            <div>
-              <h2 className="font-syne text-[clamp(2.25rem,10vw,5rem)] font-black text-slate-950 tracking-tighter uppercase leading-[0.9] max-w-[90vw]">
+            <div className="w-full overflow-hidden">
+              <h2 className="font-syne text-[clamp(1.65rem,7vw,5rem)] sm:text-[clamp(2.5rem,8vw,5rem)] font-black text-slate-950 tracking-tighter uppercase leading-[0.92]">
                 COMMON <br />
-                <span className="text-shimmer-blue italic">QUESTIONS.</span>
+                <span className="text-shimmer-blue italic inline-block pr-2">QUESTIONS.</span>
               </h2>
             </div>
 

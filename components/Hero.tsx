@@ -14,7 +14,7 @@ const Hero: React.FC<HeroProps> = ({ navigateTo, startAnimation = true }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   return (
-    <section ref={containerRef} className="relative h-[100dvh] flex items-center px-6 lg:px-24 overflow-hidden bg-[#0b0d10]">
+    <section ref={containerRef} className="relative min-h-screen h-[100vh] min-h-[100lvh] md:h-screen flex items-center px-6 lg:px-24 overflow-hidden bg-[#0b0d10]">
       {/* Background Image with Lighter Top Overlay */}
       <div className="absolute inset-0 z-0">
         {/* Same candidates as HERO['web-design'] in gateway/GatewayPage.tsx, so the
@@ -58,13 +58,13 @@ const Hero: React.FC<HeroProps> = ({ navigateTo, startAnimation = true }) => {
           </p>
         </div>
 
-        {/* ACTION BUTTONS: Compact, content-sized buttons as before */}
-        <div className="hero-unveil-cta flex flex-row flex-wrap justify-center sm:justify-start gap-3 sm:gap-4 items-center pt-2">
+        {/* ACTION BUTTONS: Stacked on mobile, compact/shortened width */}
+        <div className="hero-unveil-cta flex flex-col sm:flex-row gap-3 sm:gap-4 items-center sm:items-start pt-2">
           {/* Primary Warm Off-White Button */}
           <Link 
             to={PAGE_PATHS.contact}
             onClick={() => navigateTo('contact')}
-            className="w-auto px-6 sm:px-7 py-3 sm:py-3.5 bg-[#f5f2eb] hover:bg-white text-stone-900 rounded-xl font-semibold text-xs sm:text-sm tracking-wide transition-colors duration-150 ease-out shadow-lg inline-flex items-center justify-center gap-2 cursor-pointer active:scale-95 whitespace-nowrap"
+            className="w-auto px-7 py-3.5 bg-[#f5f2eb] hover:bg-white text-stone-900 rounded-xl font-semibold text-xs sm:text-sm tracking-wide transition-colors duration-150 ease-out shadow-lg inline-flex items-center justify-center gap-2.5 cursor-pointer active:scale-95 whitespace-nowrap"
           >
             <span>Start Your Project</span>
             <ArrowRight size={15} />
@@ -74,7 +74,7 @@ const Hero: React.FC<HeroProps> = ({ navigateTo, startAnimation = true }) => {
           <Link 
             to={PAGE_PATHS.work}
             onClick={() => navigateTo('work')}
-            className="w-auto px-6 sm:px-7 py-3 sm:py-3.5 bg-white/10 hover:bg-white/20 text-white/95 border border-white/25 hover:border-white/40 rounded-xl font-medium text-xs sm:text-sm tracking-wide transition-colors duration-150 ease-out md:backdrop-blur-sm inline-flex items-center justify-center gap-2 cursor-pointer active:scale-95 whitespace-nowrap"
+            className="w-auto px-7 py-3.5 bg-white/10 hover:bg-white/20 text-white/95 border border-white/25 hover:border-white/40 rounded-xl font-medium text-xs sm:text-sm tracking-wide transition-colors duration-150 ease-out md:backdrop-blur-sm inline-flex items-center justify-center gap-2 cursor-pointer active:scale-95 whitespace-nowrap"
           >
             <span>The Work</span>
           </Link>

@@ -276,19 +276,18 @@ const SnakeTimeline: React.FC<{ navigateTo: (page: Page) => void }> = ({ navigat
       </section>
 
       {/* =================================================================== */}
-      {/* 3. MINIMALIST DARK HANDOVER SECTION — "PICK YOUR PATH"              */}
+      {/* 3. CONDENSED DARK HANDOVER SECTION — "PICK YOUR PATH"               */}
       {/* =================================================================== */}
-      <section className="relative bg-[#0A0D14] text-white py-28 md:py-40">
+      <section className="relative bg-[#0A0D14] text-white py-14 sm:py-16 md:py-24">
         <div className="max-w-6xl mx-auto px-6 md:px-12 lg:px-20">
-          {/* Header */}
-          <div className="mb-20 md:mb-28 flex flex-col md:flex-row md:items-end justify-between gap-8 pb-12 border-b border-white/10">
+          {/* Compact Header & Option Switcher */}
+          <div className="mb-8 md:mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-white/10">
             <div>
-              <p className="text-[10px] font-black uppercase tracking-[0.5em] text-emerald-400 mb-6">
+              <p className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.45em] text-emerald-400 mb-2.5">
                 After Launch
               </p>
-              <h2 className="font-syne text-[clamp(2.25rem,6vw,4.25rem)] font-black uppercase tracking-tighter leading-[0.9]">
-                PICK YOUR <br />
-                <span className="text-shimmer-blue italic">PATH.</span>
+              <h2 className="font-syne text-[clamp(1.85rem,5vw,3.25rem)] font-black uppercase tracking-tighter leading-[0.92]">
+                PICK YOUR <span className="text-shimmer-blue italic inline-block pr-2">PATH.</span>
               </h2>
             </div>
 
@@ -296,7 +295,7 @@ const SnakeTimeline: React.FC<{ navigateTo: (page: Page) => void }> = ({ navigat
             <div
               role="tablist"
               aria-label="Deployment options"
-              className="flex flex-wrap gap-8 md:gap-12"
+              className="flex flex-wrap gap-6 md:gap-10"
             >
               {(Object.keys(DeploymentOptions) as DeploymentMode[]).map((mode) => {
                 const option = DeploymentOptions[mode];
@@ -308,16 +307,16 @@ const SnakeTimeline: React.FC<{ navigateTo: (page: Page) => void }> = ({ navigat
                     role="tab"
                     aria-selected={isActive}
                     onClick={() => setDeploymentMode(mode)}
-                    className={`group text-left pb-4 border-b-2 transition-all duration-500 cursor-pointer focus:outline-none ${
+                    className={`group text-left pb-2.5 border-b-2 transition-all duration-300 cursor-pointer focus:outline-none ${
                       isActive
                         ? 'border-emerald-400 text-white'
                         : 'border-white/15 text-white/40 hover:text-white/75 hover:border-white/35'
                     }`}
                   >
-                    <span className="block text-[9px] font-black uppercase tracking-[0.45em] text-emerald-400 mb-2">
+                    <span className="block text-[8.5px] font-black uppercase tracking-[0.4em] text-emerald-400 mb-1">
                       {option.option}
                     </span>
-                    <span className="font-syne text-xl md:text-2xl font-black uppercase tracking-tight">
+                    <span className="font-syne text-base sm:text-lg md:text-xl font-black uppercase tracking-tight">
                       {option.label}
                     </span>
                   </button>
@@ -326,46 +325,53 @@ const SnakeTimeline: React.FC<{ navigateTo: (page: Page) => void }> = ({ navigat
             </div>
           </div>
 
-          {/* Active Path Content — Open & Minimalist */}
-          <div key={deploymentMode} className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-start">
-            <div className="lg:col-span-5 path-in">
-              <p className="text-xl md:text-2xl font-light italic text-white/80 leading-relaxed mb-10">
+          {/* Active Path Content — Condensed Quote + Compact 5-Step List */}
+          <div key={deploymentMode} className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12 items-start">
+            <div className="lg:col-span-4 path-in">
+              <p className="text-base sm:text-lg md:text-xl font-light italic text-white/85 leading-relaxed">
                 {active.quote}
               </p>
-              <button
-                type="button"
-                onClick={() => navigateTo('contact')}
-                className="group inline-flex items-center gap-4 pl-8 pr-6 py-4 rounded-full bg-white text-slate-950 font-black uppercase text-[10px] md:text-[11px] tracking-[0.3em] hover:bg-emerald-500 hover:text-slate-950 transition-all duration-300 cursor-pointer"
-              >
-                <span>Start Your Project</span>
-                <MoveRight
-                  size={17}
-                  className="group-hover:translate-x-1 transition-transform duration-300"
-                />
-              </button>
             </div>
 
-            <ul className="lg:col-span-7 divide-y divide-white/10 border-t border-b border-white/10">
+            <ul className="lg:col-span-8 divide-y divide-white/10 border-t border-b border-white/10">
               {active.points.map((point, idx) => (
                 <li
                   key={point.id}
-                  className="path-in py-6 flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 sm:gap-8"
-                  style={{ animationDelay: `${idx * 65}ms` }}
+                  className="path-in py-3 sm:py-3.5 flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 sm:gap-6"
+                  style={{ animationDelay: `${idx * 45}ms` }}
                 >
-                  <div className="flex items-baseline gap-5">
-                    <span className="font-mono text-xs text-emerald-400 tabular-nums">
+                  <div className="flex items-baseline gap-3.5">
+                    <span className="font-mono text-[11px] text-emerald-400 tabular-nums">
                       {point.id}
                     </span>
-                    <span className="font-syne text-lg md:text-xl font-black uppercase tracking-tight text-white">
+                    <span className="font-syne text-sm sm:text-base font-black uppercase tracking-tight text-white">
                       {point.title}
                     </span>
                   </div>
-                  <span className="text-sm text-white/55 sm:text-right pl-9 sm:pl-0">
+                  <span className="text-xs sm:text-sm text-white/60 sm:text-right pl-7 sm:pl-0">
                     {point.desc}
                   </span>
                 </li>
               ))}
             </ul>
+          </div>
+
+          {/* Bottom Page CTA */}
+          <div className="mt-8 sm:mt-10 pt-6 sm:pt-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <p className="text-xs sm:text-sm text-white/55">
+              Ready to lock in your slot? Most websites go live in up to 10 days.
+            </p>
+            <button
+              type="button"
+              onClick={() => navigateTo('contact')}
+              className="group inline-flex items-center justify-center gap-3.5 pl-7 pr-6 py-3.5 rounded-full bg-white text-slate-950 font-black uppercase text-[10px] md:text-[11px] tracking-[0.28em] hover:bg-emerald-500 hover:text-slate-950 transition-all duration-300 cursor-pointer self-start sm:self-auto shrink-0"
+            >
+              <span>Start Your Project</span>
+              <MoveRight
+                size={16}
+                className="group-hover:translate-x-1 transition-transform duration-300"
+              />
+            </button>
           </div>
         </div>
       </section>

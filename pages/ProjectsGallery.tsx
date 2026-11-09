@@ -954,11 +954,11 @@ const ProjectsGallery: React.FC = () => {
             Web design demos
           </p>
           <h1
-            className="pg-rise font-syne text-[clamp(2.25rem,10vw,5rem)] font-black text-slate-950 tracking-tighter uppercase leading-[0.9] mb-6 md:mb-12"
+            className="pg-rise font-syne text-[clamp(1.65rem,7vw,5rem)] sm:text-[clamp(2.5rem,8vw,5rem)] font-black text-slate-950 tracking-tighter uppercase leading-[0.92] mb-6 md:mb-12"
             style={{ animationDelay: '80ms' }}
           >
             SITES THAT <br />
-            <span className="text-shimmer-blue italic">GET RESULTS.</span>
+            <span className="text-shimmer-blue italic inline-block pr-2">GET RESULTS.</span>
           </h1>
           <div
             className="pg-rise max-w-3xl border-l-[4px] md:border-l-[8px] border-emerald-100 pl-5 md:pl-14"

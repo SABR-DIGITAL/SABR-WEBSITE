@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import * as RouterDOM from 'react-router-dom';
 const { Link } = RouterDOM as any;
+import { motion as framerMotion } from 'framer-motion';
 import { ArrowRight, ArrowUpRight, Phone } from 'lucide-react';
 import EquestrianNav from './EquestrianNav';
 import EquestrianFooter from './EquestrianFooter';
@@ -12,6 +13,8 @@ import {
   testimonials,
   images
 } from './equestrianData';
+
+const motion = framerMotion as any;
 
 const pillars = [
   {
@@ -52,18 +55,23 @@ const EquestrianHome: React.FC = () => {
       <HoofPrintTrail />
       <EquestrianNav transparentOnTop />
 
-      {/* ── FULL-SCREEN LUXURY HERO (MINIMALISTIC TITLE ONLY, INSTANT MOBILE SCROLL) ─────── */}
-      <section className="relative z-10 h-[100svh] md:h-screen md:min-h-[640px] w-full overflow-hidden bg-[#1E2822] flex items-end md:items-center pb-14 sm:pb-20 md:pb-0">
-        <div className="absolute inset-0">
+      {/* ── FULL-SCREEN LUXURY HERO (MINIMALISTIC TITLE ONLY, CENTERED ON HORSE HEAD & RIDER) ─────── */}
+      <section className="relative z-10 min-h-screen h-[100vh] min-h-[100lvh] md:h-screen md:min-h-[680px] w-full overflow-hidden bg-[#1E2822] flex items-end md:items-center pb-16 sm:pb-20 md:pb-0">
+        <motion.div
+          className="absolute inset-0"
+          initial={{ scale: 1.08, opacity: 0.8 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 2.6, ease: [0.16, 1, 0.3, 1] }}
+        >
           <img
             src={images.hero}
             alt="Horse and rider cantering in the outdoor arena at Bramble & Bay"
             loading="eager"
             fetchPriority="high"
             decoding="async"
-            className="w-full h-full object-cover object-[58%_center] sm:object-center block"
+            className="w-full h-full object-cover object-[70%_38%] sm:object-[66%_42%] md:object-[60%_center] block"
           />
-        </div>
+        </motion.div>
 
         <div
           aria-hidden="true"
@@ -75,16 +83,35 @@ const EquestrianHome: React.FC = () => {
         />
 
         <div className="relative z-10 max-w-[1440px] w-full mx-auto px-5 sm:px-6 md:px-12 md:pt-12">
-          <p className="text-[10px] sm:text-[11px] uppercase tracking-[0.34em] sm:tracking-[0.42em] font-semibold text-[#CFE3D6] mb-3.5 sm:mb-5">
+          <motion.p
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.05, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+            className="text-[10px] sm:text-[11px] uppercase tracking-[0.34em] sm:tracking-[0.42em] font-semibold text-[#CFE3D6] mb-3.5 sm:mb-5"
+          >
             Bramble &amp; Bay &middot; Pewsey Vale, Wiltshire
-          </p>
+          </motion.p>
 
           <h1 className="font-serif text-[#FAF6EE] text-[clamp(2.35rem,6.6vw,6.2rem)] leading-[1.04] tracking-[-0.025em] max-w-4xl">
-            <span className="block font-semibold text-white">
-              Classical Equitation.
+            <span className="block overflow-hidden pb-1.5 sm:pb-2">
+              <motion.span
+                className="block font-semibold text-white"
+                initial={{ y: '105%', opacity: 0 }}
+                animate={{ y: '0%', opacity: 1 }}
+                transition={{ duration: 1.25, delay: 0.28, ease: [0.16, 1, 0.3, 1] }}
+              >
+                Classical Equitation.
+              </motion.span>
             </span>
-            <span className="block italic font-normal text-[#CFE3D6] mt-1 md:mt-2">
-              Four hundred private acres.
+            <span className="block overflow-hidden pb-1.5 sm:pb-2 mt-1 md:mt-2">
+              <motion.span
+                className="block italic font-normal text-[#CFE3D6]"
+                initial={{ y: '105%', opacity: 0 }}
+                animate={{ y: '0%', opacity: 1 }}
+                transition={{ duration: 1.25, delay: 0.46, ease: [0.16, 1, 0.3, 1] }}
+              >
+                Four hundred private acres.
+              </motion.span>
             </span>
           </h1>
         </div>
