@@ -23,7 +23,7 @@ const DEFAULT_POINTS = [
   'Face to face in Wiltshire',
   '24/7 Fast support after launch',
   'Fixed pricing, no surprises',
-  'Live in weeks, not months'
+  'Live in up to 10 days'
 ];
 
 // Preload and pre-decode the founder portrait at module load time so it is
@@ -58,18 +58,12 @@ const AboutFounderSection: React.FC<AboutFounderSectionProps> = ({
       window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduceMotion) return;
 
-    // Phones and tablets show this section straight away. Hiding it until a
-    // scroll trigger fires left it blank on iPhones: while the page is still
-    // busy loading, iOS Safari runs that trigger late, so visitors scrolled
-    // past the hero into an empty off-white block for several seconds. The
-    // slide-in stays on desktop, where scroll triggers fire promptly.
     const canAnimate =
       typeof window.matchMedia === 'function' &&
       window.matchMedia('(hover: hover) and (pointer: fine) and (min-width: 1024px)').matches;
     if (!canAnimate) return;
 
     const ctx = gsap.context(() => {
-      // Butter-smooth, instantaneous presentation that never dips opacity or delays photo paint
       gsap.fromTo(
         imgCol,
         { x: -10, opacity: 0.82 },
@@ -112,27 +106,27 @@ const AboutFounderSection: React.FC<AboutFounderSectionProps> = ({
     <section
       ref={sectionRef}
       id="about"
-      className="relative py-16 md:py-24 px-6 lg:px-20 bg-[#fdfbf7] overflow-hidden border-t border-stone-200/60"
+      className="relative py-14 md:py-24 px-5 sm:px-6 lg:px-20 bg-[#fdfbf7] overflow-hidden border-t border-stone-200/60"
     >
       <div className="max-w-6xl mx-auto relative z-10">
         
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center">
           
-          {/* LEFT COLUMN: Founder Portrait glides in smoothly from the left */}
+          {/* LEFT COLUMN: Founder Portrait */}
           <div
             ref={imageColRef}
-            className="lg:col-span-5 flex justify-center lg:justify-start will-change-transform transform-gpu"
+            className="lg:col-span-5 flex justify-center lg:justify-start"
           >
-            <div className="relative w-full max-w-[340px] sm:max-w-[380px] group">
+            <div className="relative w-full max-w-[320px] sm:max-w-[380px] group">
               
-              {/* Subtle decorative glow & backdrop accent */}
+              {/* Subtle decorative glow & backdrop accent (desktop only to save mobile GPU fill-rate) */}
               <div 
                 aria-hidden="true" 
-                className="absolute -inset-1.5 bg-gradient-to-tr from-emerald-600/15 via-stone-400/10 to-transparent rounded-lg blur-lg opacity-75 group-hover:opacity-100 transition-opacity duration-700"
+                className="hidden md:block absolute -inset-1.5 bg-gradient-to-tr from-emerald-600/15 via-stone-400/10 to-transparent rounded-lg blur-lg opacity-75 group-hover:opacity-100 transition-opacity duration-700"
               />
 
-              {/* Founder Image Frame - More square with clean modern radius */}
-              <div className="relative rounded-lg overflow-hidden bg-stone-900 border border-stone-300/90 shadow-[0_12px_36px_-12px_rgba(0,0,0,0.15)] aspect-[3/4] transform-gpu will-change-transform">
+              {/* Founder Image Frame */}
+              <div className="relative rounded-lg overflow-hidden bg-stone-900 border border-stone-300/90 shadow-lg aspect-[3/4]">
                 <picture className="block w-full h-full">
                   <source srcSet="/assets/aistudio/image_c05e976f.webp" type="image/webp" />
                   <img
@@ -140,7 +134,7 @@ const AboutFounderSection: React.FC<AboutFounderSectionProps> = ({
                     alt="Raphael - Founder of SABR Digital in Wiltshire"
                     width={1069}
                     height={1472}
-                    className="w-full h-full object-cover object-top transform-gpu transition-transform duration-700 group-hover:scale-[1.03]"
+                    className="w-full h-full object-cover object-top md:transition-transform md:duration-700 md:group-hover:scale-[1.03]"
                     loading="eager"
                     decoding="async"
                     fetchPriority="high"
@@ -161,10 +155,10 @@ const AboutFounderSection: React.FC<AboutFounderSectionProps> = ({
             </div>
           </div>
 
-          {/* RIGHT COLUMN: ABOUT SABR text glides in smoothly from the right */}
+          {/* RIGHT COLUMN: ABOUT SABR text */}
           <div
             ref={textColRef}
-            className="lg:col-span-7 flex flex-col justify-center space-y-4 sm:space-y-5 will-change-transform"
+            className="lg:col-span-7 flex flex-col justify-center space-y-4 sm:space-y-5"
           >
             
             {/* EYEBROW */}
@@ -173,7 +167,7 @@ const AboutFounderSection: React.FC<AboutFounderSectionProps> = ({
               <span>ABOUT SABR</span>
             </div>
 
-            {/* HEADLINE: Compact, high-impact typography - Not all capitals, SABR DIGITAL stays uppercase */}
+            {/* HEADLINE */}
             <h2 className="font-syne text-2xl sm:text-3xl lg:text-[2rem] font-bold text-slate-950 tracking-tight leading-[1.15]">
               {headline ?? (
                 <>
@@ -183,12 +177,12 @@ const AboutFounderSection: React.FC<AboutFounderSectionProps> = ({
               )}
             </h2>
 
-            {/* FOUNDER STATEMENT: Concise, focused narrative */}
+            {/* FOUNDER STATEMENT */}
             <p className="text-slate-600 font-inter text-sm sm:text-base leading-relaxed font-normal">
               {body ?? 'Rooted in Wiltshire, I founded SABR Digital with a straightforward conviction: ambitious local businesses deserve websites that command respect and outperform generic competitors. No sluggish WordPress templates or bloated agency retainers — every site is engineered from scratch with clean TypeScript, sub-second load times, and conversion architecture built to turn visitors into paying clients from day one.'}
             </p>
 
-            {/* CORE STRENGTHS / DELIVERABLES: defaults to the 4 web design studio points */}
+            {/* CORE STRENGTHS / DELIVERABLES */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2.5 pt-2 border-t border-stone-200/70">
               {points.map((point) => (
                 <div key={point} className="flex items-center gap-2.5">
@@ -205,7 +199,7 @@ const AboutFounderSection: React.FC<AboutFounderSectionProps> = ({
               <Link
                 to={ctaTo ?? PAGE_PATHS.contact}
                 onClick={() => !ctaTo && navigateTo && navigateTo('contact')}
-                className="inline-flex items-center gap-2.5 px-7 py-3 bg-emerald-600 hover:bg-slate-950 text-white rounded-full font-semibold text-xs uppercase tracking-wider transition-[transform,background-color,box-shadow] duration-200 ease-out shadow-md hover:scale-105 active:scale-95 transform-gpu"
+                className="inline-flex items-center gap-2.5 px-7 py-3 bg-emerald-600 hover:bg-slate-950 text-white rounded-full font-semibold text-xs uppercase tracking-wider transition-colors duration-200 ease-out shadow-md active:scale-95"
               >
                 <span>{ctaLabel}</span>
                 <ArrowRight size={14} />

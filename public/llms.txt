@@ -19,7 +19,7 @@ SABR Digital is an independent web design and AI search optimisation studio foun
 ### 1. Small Business Web Design & Creation
 - Custom engineered websites hand-built with modern TypeScript and React (no sluggish WordPress templates or bloated visual page builders).
 - Mobile-first architecture tested across real devices (smartphones, tablets, laptops, desktops).
-- 2 to 3 week turnaround from kickoff to live launch.
+- Up to 10-day turnaround from kickoff to live launch.
 - 100% complete client ownership: clients own their code, domains, and assets with no vendor lock-in.
 - Transparent, fixed-price quotes in writing with no hidden retainers.
 

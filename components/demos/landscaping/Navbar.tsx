@@ -114,9 +114,12 @@ export const Navbar: React.FC = () => {
         aria-hidden={!menuOpen}
       >
         {/* Left Half: Pure White Minimalist Navigation Column */}
-        <div className="w-full md:w-1/2 h-full bg-white flex flex-col justify-between items-center py-6 sm:py-10 md:py-12 px-6 sm:px-8 relative overflow-y-auto">
+        <div className="w-full md:w-1/2 h-full bg-white flex flex-col justify-between items-center pt-5 pb-16 sm:py-10 md:py-12 px-6 sm:px-8 relative overflow-y-auto">
           {/* Thin Close X Button at Top */}
-          <div className="w-full flex justify-center md:justify-start md:pl-[34%]">
+          <div className="w-full flex items-center justify-between md:justify-start md:pl-[34%]">
+            <span className="md:hidden text-xs font-light uppercase tracking-[0.28em] text-[#5B6450]">
+              OAK &amp; ASH
+            </span>
             <button
               type="button"
               onClick={() => setMenuOpen(false)}
@@ -128,7 +131,7 @@ export const Navbar: React.FC = () => {
           </div>
 
           {/* Centered Vertical Navigation Links */}
-          <nav aria-label="Main menu" className="flex flex-col items-center space-y-2.5 sm:space-y-3.5 md:space-y-4 my-auto py-4">
+          <nav aria-label="Main menu" className="flex flex-col items-center space-y-2 sm:space-y-3.5 md:space-y-4 my-auto py-3">
             {MENU_ITEMS.map((item, idx) => {
               const isActive = location.pathname === item.path;
               return (

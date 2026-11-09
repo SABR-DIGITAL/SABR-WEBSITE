@@ -36,7 +36,7 @@ const EquestrianFacilities: React.FC = () => {
   }, []);
 
   return (
-    <div className="relative min-h-screen bg-[#FAF6EE] font-inter text-[#1E2822] selection:bg-[#2D5A43] selection:text-[#FAF6EE] overflow-x-hidden">
+    <div className="relative min-h-screen bg-[#FAF6EE] font-inter text-[#1E2822] selection:bg-[#2D5A43] selection:text-[#FAF6EE]">
       <EquestrianNav />
 
       {/* ── WARM EDITORIAL HEADER ────────────────────────────────────────── */}

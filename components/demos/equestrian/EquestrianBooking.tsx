@@ -105,7 +105,7 @@ const EquestrianBooking: React.FC = () => {
     }`;
 
   return (
-    <div className="relative min-h-screen bg-[#FAF6EE] font-inter text-[#1E2822] selection:bg-[#2D5A43] selection:text-[#FAF6EE] overflow-x-hidden">
+    <div className="relative min-h-screen bg-[#FAF6EE] font-inter text-[#1E2822] selection:bg-[#2D5A43] selection:text-[#FAF6EE]">
       <EquestrianNav />
 
       <section className="relative z-10 pt-24 sm:pt-32 md:pt-40 pb-8 sm:pb-10 px-5 sm:px-6 md:px-12">

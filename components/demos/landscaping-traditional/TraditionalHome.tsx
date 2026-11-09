@@ -63,12 +63,12 @@ export const TraditionalHome: React.FC = () => {
         />
         <div className="absolute inset-0 bg-gradient-to-b from-[#0A2213]/75 via-[#0F2E1C]/65 to-[#0A2213]/85" />
 
-        <div className="relative z-10 max-w-[1380px] w-full mx-auto px-5 sm:px-6 md:px-10 pt-16 text-center flex flex-col items-center">
+        <div className="relative z-10 max-w-[1380px] w-full mx-auto px-5 sm:px-6 md:px-10 pt-24 pb-8 sm:pt-16 sm:pb-0 text-center flex flex-col items-center">
           <motion.p
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-            className="text-xs sm:text-sm md:text-base font-bold tracking-[0.18em] uppercase text-[#86EFAC] mb-4"
+            className="text-[11px] sm:text-sm md:text-base font-bold tracking-[0.14em] sm:tracking-[0.18em] uppercase text-[#86EFAC] mb-3.5 sm:mb-4"
           >
             Oak &amp; Ash · Landscape Architecture &amp; Construction · Est. 1998
           </motion.p>
@@ -77,7 +77,7 @@ export const TraditionalHome: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.06, ease: [0.16, 1, 0.3, 1] }}
-            className="text-[clamp(2.25rem,6vw,5.25rem)] font-extrabold tracking-tight text-white leading-[1.06] max-w-4xl mb-6"
+            className="text-[clamp(2rem,6vw,5.25rem)] font-extrabold tracking-tight text-white leading-[1.08] sm:leading-[1.06] max-w-4xl mb-5 sm:mb-6"
           >
             28 Years of Award-Winning <span className="text-[#4ADE80]">Gardens.</span>
           </motion.h1>
@@ -86,7 +86,7 @@ export const TraditionalHome: React.FC = () => {
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.12, ease: [0.16, 1, 0.3, 1] }}
-            className="text-base sm:text-lg md:text-xl text-emerald-50/90 max-w-2xl leading-relaxed mb-9"
+            className="text-sm sm:text-lg md:text-xl text-emerald-50/90 max-w-2xl leading-relaxed mb-7 sm:mb-9"
           >
             From initial garden design and 3D plans through to natural stone patios, pergolas, and seasonal planting — crafted under one roof across Wiltshire, Surrey, and London.
           </motion.p>
@@ -95,18 +95,18 @@ export const TraditionalHome: React.FC = () => {
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.16, ease: [0.16, 1, 0.3, 1] }}
-            className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3.5 sm:gap-5 w-full sm:w-auto max-w-xs sm:max-w-none"
+            className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-5 w-full sm:w-auto max-w-xs sm:max-w-none"
           >
             <Link
               to="/demo/landscaping-traditional/contact"
-              className="group inline-flex items-center justify-center gap-3 px-8 py-4 bg-[#16A34A] hover:bg-white hover:text-[#14532D] text-white text-sm font-bold rounded-lg shadow-lg transition-all duration-200 whitespace-nowrap"
+              className="group inline-flex items-center justify-center gap-3 px-7 sm:px-8 py-3.5 sm:py-4 bg-[#16A34A] hover:bg-white hover:text-[#14532D] text-white text-sm font-bold rounded-lg shadow-lg transition-all duration-200 whitespace-nowrap"
             >
               Arrange a Free Site Visit
               <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform duration-200" />
             </Link>
             <Link
               to="/demo/landscaping-traditional/gallery"
-              className="inline-flex items-center justify-center gap-2.5 px-8 py-4 bg-white/15 hover:bg-white/25 backdrop-blur-md text-white border border-white/35 text-sm font-bold rounded-lg transition-all duration-200 whitespace-nowrap"
+              className="inline-flex items-center justify-center gap-2.5 px-7 sm:px-8 py-3.5 sm:py-4 bg-white/15 hover:bg-white/25 backdrop-blur-md text-white border border-white/35 text-sm font-bold rounded-lg transition-all duration-200 whitespace-nowrap"
             >
               <MapPin size={16} className="text-[#86EFAC]" />
               View Our Garden Projects

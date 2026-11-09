@@ -44,7 +44,7 @@ export const WhatWeOfferSection: React.FC<WhatWeOfferProps> = ({ navigateTo }) =
       id: 'bespoke-web',
       badge: 'CORE ARCHITECTURE',
       title: 'Bespoke Web Design & Engineering',
-      timeline: '2–3 Week Delivery',
+      timeline: 'Up to 10-Day Delivery',
       summary: 'Handcrafted, high-converting digital storefronts built from scratch with modern TypeScript, React, and tailored aesthetic systems — completely free of bloated WordPress templates.',
       icon: Code2,
       deliverables: [

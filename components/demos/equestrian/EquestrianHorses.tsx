@@ -21,7 +21,7 @@ const EquestrianHorses: React.FC = () => {
   }
 
   return (
-    <div className="relative min-h-screen bg-[#FAF6EE] font-inter text-[#1E2822] selection:bg-[#2D5A43] selection:text-[#FAF6EE] overflow-x-hidden">
+    <div className="relative min-h-screen bg-[#FAF6EE] font-inter text-[#1E2822] selection:bg-[#2D5A43] selection:text-[#FAF6EE]">
       <EquestrianNav />
 
       {/* ── WARM EDITORIAL HEADER ────────────────────────────────────────── */}
@@ -51,42 +51,24 @@ const EquestrianHorses: React.FC = () => {
         </div>
       </section>
 
-      {/* ── MINIMALISTIC TWO-PER-ROW SCROLL-REVEAL HORSE PAIRS ───────────── */}
+      {/* ── MINIMALISTIC TWO-PER-ROW HORSE PAIRS ───────────── */}
       <section className="relative z-10 px-5 sm:px-6 md:px-12 pb-16 sm:pb-20 md:pb-28">
         <div className="max-w-[1240px] mx-auto space-y-12 sm:space-y-16 md:space-y-20">
           {horsePairs.map((pair, pairIndex) => (
-            <motion.div
+            <div
               key={pair.map((h) => h.name).join('-')}
-              initial={{ opacity: 0, y: 38 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.18 }}
-              transition={{ duration: 0.95, ease: [0.16, 1, 0.3, 1] }}
               className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-14"
             >
-              {pair.map((horse, idxInPair) => (
-                <motion.article
-                  key={horse.name}
-                  initial={{ opacity: 0, y: 22 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.2 }}
-                  transition={{
-                    duration: 0.85,
-                    delay: idxInPair * 0.14,
-                    ease: [0.16, 1, 0.3, 1]
-                  }}
-                >
+              {pair.map((horse) => (
+                <article key={horse.name}>
                   {/* Clean, compact portrait photograph */}
                   <div className="overflow-hidden rounded-2xl bg-[#E8E2D5] aspect-[16/11] mb-4 sm:mb-5">
-                    <motion.img
+                    <img
                       src={horse.photo}
                       alt={`${horse.name} — ${horse.colour} ${horse.breed}`}
                       loading={pairIndex === 0 ? 'eager' : 'lazy'}
                       decoding="async"
-                      className="w-full h-full object-cover"
-                      initial={{ scale: 1.05 }}
-                      whileInView={{ scale: 1 }}
-                      viewport={{ once: true, amount: 0.2 }}
-                      transition={{ duration: 1.35, ease: [0.16, 1, 0.3, 1] }}
+                      className="w-full h-full object-cover block"
                     />
                   </div>
 
@@ -117,9 +99,9 @@ const EquestrianHorses: React.FC = () => {
                   <p className="text-[14px] md:text-[15px] text-[#5F665E] leading-relaxed">
                     {horse.character}
                   </p>
-                </motion.article>
+                </article>
               ))}
-            </motion.div>
+            </div>
           ))}
         </div>
       </section>

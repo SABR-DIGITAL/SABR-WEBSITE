@@ -284,152 +284,44 @@ const DetailedHorseshoeSvg: React.FC<{ className?: string; isLeft?: boolean }> =
   </svg>
 );
 
-// Full-page equine horseshoe trail that walks across the page (right -> left -> right -> left)
-// and actively follows the user's scroll position.
+// Subtle decorative equine horseshoe trail on desktop only, using percentage positioning
+// so it never inflates document scrollHeight or runs 60fps scroll state updates.
 export const HoofPrintTrail: React.FC = () => {
-  const [docSize, setDocSize] = useState({ width: 1280, height: 3200 });
-  const [walkerY, setWalkerY] = useState(650);
-  const targetYRef = useRef(650);
-  const walkerYRef = useRef(650);
-
-  useEffect(() => {
-    const measure = () => {
-      const h = Math.max(
-        document.body.scrollHeight,
-        document.documentElement.scrollHeight,
-        window.innerHeight * 1.5
-      );
-      const w = window.innerWidth || 1280;
-      setDocSize({ width: w, height: h });
-    };
-
-    measure();
-    const ro =
-      typeof ResizeObserver !== 'undefined' ? new ResizeObserver(() => measure()) : null;
-    if (ro && document.body) ro.observe(document.body);
-    window.addEventListener('resize', measure, { passive: true });
-
-    return () => {
-      ro?.disconnect();
-      window.removeEventListener('resize', measure);
-    };
-  }, []);
-
-  useEffect(() => {
-    let rafId = 0;
-
-    const onScroll = () => {
-      const scrollY = window.scrollY || window.pageYOffset || 0;
-      // Target sits inside the lower portion of the user's viewport so the horse
-      // walks right behind/with the user as they scroll down.
-      targetYRef.current = scrollY + window.innerHeight * 0.82;
-    };
-
-    onScroll();
-    walkerYRef.current = targetYRef.current;
-    setWalkerY(walkerYRef.current);
-
-    const tick = () => {
-      const diff = targetYRef.current - walkerYRef.current;
-      if (Math.abs(diff) > 1.5) {
-        // Smooth, unhurried walking pursuit speed so the footsteps visibly follow the user
-        const stepDelta = Math.sign(diff) * Math.min(Math.abs(diff) * 0.065, 22);
-        walkerYRef.current += stepDelta;
-        setWalkerY(walkerYRef.current);
-      }
-      rafId = requestAnimationFrame(tick);
-    };
-
-    window.addEventListener('scroll', onScroll, { passive: true });
-    rafId = requestAnimationFrame(tick);
-
-    return () => {
-      cancelAnimationFrame(rafId);
-      window.removeEventListener('scroll', onScroll);
-    };
-  }, []);
-
-  // Build the S-curve walking steps from top to bottom of the page:
-  // Starts on the right (~82%), glides across to the left (~18%), back to the right (~82%), and back to the left.
-  const STRIDE_Y = 235;
-  const START_Y = 280;
-  const END_Y = Math.max(START_Y + STRIDE_Y * 4, docSize.height - 380);
-  const WAVE_PERIOD = 2100; // px per full right-to-left-to-right cycle
-  const k = (2 * Math.PI) / WAVE_PERIOD;
-  const vw = docSize.width;
-  const isMobile = vw < 640;
-  const lateralHoofOffsetPx = isMobile ? 22 : vw < 768 ? 34 : 58; // natural left/right leg spread
-  const waveAmpPct = isMobile ? 28 : 34;
-
-  const footprints: {
-    id: number;
-    xPx: number;
-    yPx: number;
-    rotDeg: number;
-    isLeft: boolean;
-  }[] = [];
-
-  let idx = 0;
-  for (let y = START_Y; y <= END_Y; y += STRIDE_Y) {
-    const phase = (y - START_Y) * k;
-    // Centerline in % of viewport width: 50% + waveAmpPct * cos(phase)
-    const centerXPct = 50 + waveAmpPct * Math.cos(phase);
-    const centerXPx = (centerXPct / 100) * vw;
-
-    // Derivative dx/dy in pixels per pixel of vertical travel
-    const dxDy = -(waveAmpPct / 100) * vw * k * Math.sin(phase);
-    // Rotation angle so a downward-pointing horseshoe aligns with tangent (dxDy, 1)
-    const tangentRad = Math.atan2(-dxDy, 1);
-    const tangentDeg = (tangentRad * 180) / Math.PI;
-
-    // Perpendicular normal vector to offset left vs right hoof
-    const isLeft = idx % 2 === 0;
-    const sign = isLeft ? -1 : 1;
-    const normalX = Math.cos(tangentRad) * sign * lateralHoofOffsetPx;
-    const normalY = Math.sin(tangentRad) * sign * (lateralHoofOffsetPx * 0.35);
-
-    footprints.push({
-      id: idx,
-      xPx: centerXPx + normalX,
-      yPx: y + normalY,
-      rotDeg: tangentDeg + (isLeft ? -4 : 4),
-      isLeft
-    });
-    idx += 1;
-  }
+  const footprints = [
+    { id: 0, xPct: 82, yPx: 320, rotDeg: 14, isLeft: true },
+    { id: 1, xPct: 74, yPx: 560, rotDeg: 22, isLeft: false },
+    { id: 2, xPct: 60, yPx: 800, rotDeg: 26, isLeft: true },
+    { id: 3, xPct: 44, yPx: 1040, rotDeg: 22, isLeft: false },
+    { id: 4, xPct: 28, yPx: 1280, rotDeg: 12, isLeft: true },
+    { id: 5, xPct: 20, yPx: 1520, rotDeg: -6, isLeft: false },
+    { id: 6, xPct: 28, yPx: 1760, rotDeg: -20, isLeft: true },
+    { id: 7, xPct: 46, yPx: 2000, rotDeg: -26, isLeft: false },
+    { id: 8, xPct: 64, yPx: 2240, rotDeg: -20, isLeft: true },
+    { id: 9, xPct: 78, yPx: 2480, rotDeg: -8, isLeft: false }
+  ];
 
   return (
     <div
       aria-hidden="true"
-      className="pointer-events-none absolute inset-x-0 top-0 z-[4] overflow-hidden select-none"
-      style={{ height: `${docSize.height}px` }}
+      className="hidden lg:block pointer-events-none absolute inset-0 z-[4] overflow-hidden select-none"
     >
-      {footprints.map((fp) => {
-        const distFromWalker = walkerY - fp.yPx;
-        const isStepped = distFromWalker >= -40;
-        // Freshly stepped prints near the user's current scroll are slightly richer
-        const isFreshStep = isStepped && distFromWalker >= -40 && distFromWalker < 480;
-        const opacity = !isStepped ? 0 : isFreshStep ? 0.22 : 0.14;
-        const scale = !isStepped ? 0.82 : isFreshStep ? 1.04 : 0.98;
-
-        return (
-          <div
-            key={fp.id}
-            className="absolute text-[#2D5A43] transition-all duration-700 ease-out will-change-transform"
-            style={{
-              left: `${fp.xPx}px`,
-              top: `${fp.yPx}px`,
-              opacity,
-              transform: `translate3d(-50%, -50%, 0) rotate(${fp.rotDeg.toFixed(1)}deg) scale(${scale})`
-            }}
-          >
-            <DetailedHorseshoeSvg
-              isLeft={fp.isLeft}
-              className="w-16 h-20 sm:w-24 sm:h-28 md:w-36 md:h-40 lg:w-44 lg:h-48"
-            />
-          </div>
-        );
-      })}
+      {footprints.map((fp) => (
+        <div
+          key={fp.id}
+          className="absolute text-[#2D5A43]"
+          style={{
+            left: `${fp.xPct}%`,
+            top: `${fp.yPx}px`,
+            opacity: 0.13,
+            transform: `translate3d(-50%, -50%, 0) rotate(${fp.rotDeg}deg)`
+          }}
+        >
+          <DetailedHorseshoeSvg
+            isLeft={fp.isLeft}
+            className="w-36 h-40 lg:w-44 lg:h-48"
+          />
+        </div>
+      ))}
     </div>
   );
 };
@@ -439,16 +331,10 @@ export const Reveal: React.FC<{
   delay?: number;
   y?: number;
   className?: string;
-}> = ({ children, delay = 0, y = 24, className = '' }) => (
-  <motion.div
-    className={className}
-    initial={{ opacity: 0, y }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true, amount: 0.2 }}
-    transition={{ duration: 0.85, delay, ease: [0.22, 1, 0.36, 1] }}
-  >
+}> = ({ children, className = '' }) => (
+  <div className={className}>
     {children}
-  </motion.div>
+  </div>
 );
 
 export const SectionLabel: React.FC<{ children: React.ReactNode; className?: string }> = ({
@@ -468,27 +354,19 @@ export const PhotoReveal: React.FC<{
   imgClassName?: string;
   priority?: boolean;
   delay?: number;
-}> = ({ src, alt, className = '', imgClassName = '', priority = false, delay = 0 }) => (
-  <motion.div
+}> = ({ src, alt, className = '', imgClassName = '', priority = false }) => (
+  <div
     className={`overflow-hidden rounded-2xl md:rounded-3xl bg-[#E8E2D5] shadow-[0_20px_50px_-28px_rgba(30,40,34,0.22)] ${className}`}
-    initial={{ opacity: 0 }}
-    whileInView={{ opacity: 1 }}
-    viewport={{ once: true, amount: 0.15 }}
-    transition={{ duration: 0.8, delay, ease: 'easeOut' }}
   >
-    <motion.img
+    <img
       src={src}
       alt={alt}
       loading={priority ? 'eager' : 'lazy'}
       decoding="async"
       {...(priority ? { fetchPriority: 'high' as const } : {})}
-      className={`w-full h-full object-cover ${imgClassName}`}
-      initial={{ scale: 1.06 }}
-      whileInView={{ scale: 1 }}
-      viewport={{ once: true, amount: 0.15 }}
-      transition={{ duration: 1.4, delay, ease: [0.16, 1, 0.3, 1] }}
+      className={`w-full h-full object-cover block ${imgClassName}`}
     />
-  </motion.div>
+  </div>
 );
 
 export { palette };

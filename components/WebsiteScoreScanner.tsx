@@ -263,23 +263,27 @@ export const WebsiteScoreScanner: React.FC<WebsiteScoreScannerProps> = ({
   };
 
   return (
-    <section className="relative bg-[#05070a] min-h-[720px] md:min-h-[780px] py-20 md:py-28 px-6 lg:px-24 overflow-hidden border-y border-white/10 text-white flex items-center justify-center">
-      {/* Ambient Radial Lighting - Emerald green tones */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[750px] h-[750px] bg-emerald-600/10 rounded-full blur-[140px]" />
-        <div className="absolute top-0 right-10 w-[400px] h-[400px] bg-teal-500/5 rounded-full blur-[120px]" />
-      </div>
+    <section className="relative bg-[#05070a] min-h-[560px] md:min-h-[760px] py-16 md:py-28 px-5 sm:px-6 lg:px-24 overflow-hidden border-y border-white/10 text-white flex items-center justify-center">
+      {/* Zero-cost CSS Radial Lighting instead of heavy GPU filter blur-[140px] */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            'radial-gradient(circle at 50% 50%, rgba(5, 150, 105, 0.12) 0%, rgba(20, 184, 166, 0.04) 42%, transparent 72%)'
+        }}
+      />
 
-      {/* Central Content Stage - Height and center anchor remain constant to prevent background jumping */}
-      <div className="w-full max-w-4xl mx-auto relative z-10 flex items-center justify-center min-h-[500px] md:min-h-[540px]">
+      {/* Central Content Stage */}
+      <div className="w-full max-w-4xl mx-auto relative z-10 flex items-center justify-center min-h-[420px] md:min-h-[540px]">
         
         {/* VIEW 1: BEFORE URL INPUT */}
         {!report && (
           <div 
-            className={`w-full space-y-8 text-center transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] transform ${getGlideClasses()}`}
+            className={`w-full space-y-6 sm:space-y-8 text-center transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] transform ${getGlideClasses()}`}
           >
             {/* HEADLINE: Clean, stacked typography */}
-            <h2 className="font-syne text-[clamp(2.4rem,6vw,4.5rem)] font-black uppercase tracking-tight leading-[0.96]">
+            <h2 className="font-syne text-[clamp(2.2rem,6vw,4.5rem)] font-black uppercase tracking-tight leading-[0.96]">
               {headline ?? (
                 <>
                   Score<br />
@@ -295,12 +299,12 @@ export const WebsiteScoreScanner: React.FC<WebsiteScoreScannerProps> = ({
               {subtitle ?? 'Enter your domain for an immediate technical audit covering Google mobile performance, SEO architecture, UX accessibility, and AI discovery readiness.'}
             </p>
 
-            {/* SEARCH BOX: Wide, spacious, all placeholder writing is 100% visible */}
+            {/* SEARCH BOX */}
             <div className="max-w-2xl mx-auto w-full">
               <form onSubmit={handleScan} className="relative group">
-                <div className="flex flex-col sm:flex-row items-stretch sm:items-center bg-[#0d1117] border border-white/15 focus-within:border-emerald-500 focus-within:ring-2 focus-within:ring-emerald-500/20 rounded-2xl sm:rounded-full p-2.5 sm:p-2 transition-[border-color,box-shadow] duration-150 ease-out shadow-2xl gap-2 sm:gap-0">
-                  <div className="flex items-center px-4 py-2 sm:py-0 flex-1 gap-3 min-w-0">
-                    <Globe size={19} className="text-emerald-400 shrink-0" />
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center bg-[#0d1117] border border-white/15 focus-within:border-emerald-500 focus-within:ring-2 focus-within:ring-emerald-500/20 rounded-2xl sm:rounded-full p-2.5 sm:p-2 transition-[border-color,box-shadow] duration-150 ease-out shadow-xl gap-2 sm:gap-0">
+                  <div className="flex items-center px-3.5 sm:px-4 py-2 sm:py-0 flex-1 gap-3 min-w-0">
+                    <Globe size={18} className="text-emerald-400 shrink-0" />
                     <input
                       type="text"
                       value={url}
@@ -314,7 +318,7 @@ export const WebsiteScoreScanner: React.FC<WebsiteScoreScannerProps> = ({
                   <button
                     type="submit"
                     disabled={loading}
-                    className="inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl sm:rounded-full font-semibold text-xs uppercase tracking-wider transition-[transform,background-color,box-shadow] duration-200 ease-out cursor-pointer shadow-lg hover:scale-105 active:scale-95 disabled:opacity-50 shrink-0 transform-gpu"
+                    className="inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl sm:rounded-full font-semibold text-xs uppercase tracking-wider transition-colors duration-200 ease-out cursor-pointer shadow-lg active:scale-95 disabled:opacity-50 shrink-0"
                   >
                     {loading ? (
                       <>
@@ -357,7 +361,7 @@ export const WebsiteScoreScanner: React.FC<WebsiteScoreScannerProps> = ({
           <div 
             className={`w-full space-y-8 text-center transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] transform ${getGlideClasses()}`}
           >
-            {/* AUDIT RESULT HEADER: Underlined domain, separated score out of 100, normal legible text */}
+            {/* AUDIT RESULT HEADER */}
             <div className="space-y-3">
               <h3 className="font-inter text-xl sm:text-2xl md:text-3xl text-white font-normal tracking-normal">
                 <span className="underline decoration-emerald-400/80 underline-offset-[10px] decoration-2 font-medium text-white">
@@ -377,7 +381,7 @@ export const WebsiteScoreScanner: React.FC<WebsiteScoreScannerProps> = ({
               </div>
             </div>
 
-            {/* MINIMALIST METRICS: Clean architectural typography with hairline dividers */}
+            {/* MINIMALIST METRICS */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 py-6 sm:py-8 border-y border-white/10 max-w-3xl mx-auto w-full">
               
               {/* Performance */}
@@ -420,7 +424,7 @@ export const WebsiteScoreScanner: React.FC<WebsiteScoreScannerProps> = ({
                 <Link
                   to={ctaTo ?? PAGE_PATHS.contact}
                   onClick={() => !ctaTo && navigateTo && navigateTo('contact')}
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-semibold text-xs uppercase tracking-wider transition-[transform,background-color,box-shadow] duration-200 ease-out cursor-pointer shadow-lg hover:scale-105 active:scale-95 transform-gpu"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-semibold text-xs uppercase tracking-wider transition-colors duration-200 ease-out cursor-pointer shadow-lg active:scale-95"
                 >
                   <span>{ctaLabel}</span>
                   <ArrowRight size={14} />

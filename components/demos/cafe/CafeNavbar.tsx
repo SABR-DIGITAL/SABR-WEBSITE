@@ -92,8 +92,8 @@ const CafeNavbar: React.FC = () => {
 
       {/* Mobile Overlay */}
       {mobileMenuOpen && (
-        <div className="fixed inset-0 z-[200] bg-[#FFF9F5] flex flex-col p-8 sm:p-10 lg:hidden animate-fadeIn">
-          <div className="flex justify-between items-center mb-14">
+        <div className="fixed inset-0 z-[300] bg-[#FFF9F5] flex flex-col p-6 sm:p-10 pb-20 sm:pb-12 lg:hidden overflow-y-auto animate-fadeIn">
+          <div className="flex justify-between items-center mb-8 sm:mb-14">
             <Link
               to="/demo/cafe"
               onClick={() => setMobileMenuOpen(false)}
@@ -102,7 +102,7 @@ const CafeNavbar: React.FC = () => {
               <div className="w-10 h-10 bg-[#A4715E] rounded-full flex items-center justify-center text-[#FFF9F5]">
                 <Coffee size={20} />
               </div>
-              <span className="font-serif text-2xl font-bold text-[#4A403A]">The Hearth</span>
+              <span className="font-serif text-xl sm:text-2xl font-bold text-[#4A403A]">The Hearth</span>
             </Link>
             <button
               type="button"
@@ -110,11 +110,11 @@ const CafeNavbar: React.FC = () => {
               onClick={() => setMobileMenuOpen(false)}
               className="p-2.5 rounded-full bg-[#FDE2E4] text-[#4A403A] hover:bg-[#A4715E] hover:text-white transition-colors"
             >
-              <X size={26} />
+              <X size={22} />
             </button>
           </div>
 
-          <div className="flex flex-col gap-7 my-auto">
+          <div className="flex flex-col gap-4 sm:gap-7 my-auto">
             {navLinks.map((link) => {
               const isActive = location.pathname === link.path;
               return (
@@ -122,7 +122,7 @@ const CafeNavbar: React.FC = () => {
                   key={link.name}
                   to={link.path}
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`font-serif text-4xl sm:text-5xl font-black tracking-tighter transition-colors ${
+                  className={`font-serif text-3xl sm:text-5xl font-black tracking-tighter transition-colors ${
                     isActive ? 'text-[#A4715E] italic' : 'text-[#4A403A] hover:text-[#A4715E]'
                   }`}
                 >
@@ -132,11 +132,11 @@ const CafeNavbar: React.FC = () => {
             })}
           </div>
 
-          <div className="mt-auto pt-8 border-t border-[#A4715E]/15 flex flex-col gap-4">
+          <div className="mt-auto pt-6 sm:pt-8 border-t border-[#A4715E]/15 flex flex-col gap-4">
             <Link
               to="/demo/cafe/book"
               onClick={() => setMobileMenuOpen(false)}
-              className="block w-full py-5 bg-[#4A403A] hover:bg-[#A4715E] text-white text-center rounded-2xl font-black text-xs uppercase tracking-[0.3em] transition-colors shadow-lg"
+              className="block w-full py-4 sm:py-5 bg-[#4A403A] hover:bg-[#A4715E] text-white text-center rounded-2xl font-black text-xs uppercase tracking-[0.3em] transition-colors shadow-lg"
             >
               Book a Table
             </Link>

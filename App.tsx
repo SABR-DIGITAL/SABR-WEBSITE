@@ -25,11 +25,7 @@ import ContactForm from './components/ContactForm';
 import NotFound from './components/NotFound';
 
 // Demo websites. Each is its own route chunk, so a visitor only downloads a
-// demo when they are about to look at it. The gallery warms every demo chunk
-// while the browser is idle (and again on hover of a "View demo" link), the
-// router keeps the current page on screen until a chunk has arrived, and a
-// direct /demo/... link starts the chunk download alongside this file (see
-// index.tsx) — so in practice nobody sees a loading state.
+// demo when they are about to look at it.
 const EquestrianHome = lazy(() => import('./components/demos/equestrian/EquestrianHome'));
 const EquestrianLessons = lazy(() => import('./components/demos/equestrian/EquestrianLessons'));
 const EquestrianHorses = lazy(() => import('./components/demos/equestrian/EquestrianHorses'));
@@ -218,7 +214,7 @@ const SEO_META: Record<Page, { title: string; description: string }> = {
   },
   process: {
     title: 'Our Web Design Process | 5-Step Transparent Build | SABR',
-    description: 'From first chat to live launch in 2 to 3 weeks. See our transparent web design process with fixed pricing, clear communication, and complete client ownership.'
+    description: 'From first chat to live launch in up to 10 days. See our transparent web design process with fixed pricing, clear communication, and complete client ownership.'
   },
   'why-us': {
     title: 'Why Choose SABR Digital | Custom Web Design & Conversion | Wiltshire',
@@ -226,7 +222,7 @@ const SEO_META: Record<Page, { title: string; description: string }> = {
   },
   faq: {
     title: 'Web Design FAQs | Pricing, Timelines & SEO | SABR Digital',
-    description: 'Clear answers on website costs, deposit terms, 2-3 week build timelines, Google SEO, mobile responsiveness, and hosting for Wiltshire & UK businesses.'
+    description: 'Clear answers on website costs, deposit terms, up to 10-day build timelines, Google SEO, mobile responsiveness, and hosting for Wiltshire & UK businesses.'
   },
   contact: {
     title: 'Contact SABR Digital | Wiltshire Web Design & AI Optimisation',
@@ -286,24 +282,27 @@ const MainApp: React.FC = () => {
   useLayoutEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' as any });
 
-    const timer = setTimeout(() => {
-      ScrollTrigger.refresh();
-    }, 100);
-
-    return () => clearTimeout(timer);
+    // Only refresh ScrollTrigger on desktop or routes that use ScrollTrigger on mobile
+    if (typeof window !== 'undefined' && window.innerWidth >= 1024) {
+      const timer = setTimeout(() => {
+        ScrollTrigger.refresh();
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+    return undefined;
   }, [location.pathname, location.key]);
 
   useEffect(() => {
     if (!showIntro && !isDemo) {
       setIsRevealed(true);
-      const timer = setTimeout(() => {
-        ScrollTrigger.refresh();
-      }, 300);
-
-      return () => {
-        clearTimeout(timer);
-      };
+      if (typeof window !== 'undefined' && window.innerWidth >= 1024) {
+        const timer = setTimeout(() => {
+          ScrollTrigger.refresh();
+        }, 300);
+        return () => clearTimeout(timer);
+      }
     }
+    return undefined;
   }, [showIntro, isDemo]);
 
   const firstPath = useRef(location.pathname);
@@ -320,8 +319,8 @@ const MainApp: React.FC = () => {
 
     gsap.fromTo(
       contentRef.current,
-      { opacity: 0, y: 18 },
-      { opacity: 1, y: 0, duration: 0.42, ease: 'power3.out', force3D: true, clearProps: 'transform' }
+      { opacity: 0, y: 12 },
+      { opacity: 1, y: 0, duration: 0.3, ease: 'power2.out', force3D: true, clearProps: 'transform' }
     );
   }, [location.pathname, isDemo]);
 
@@ -375,12 +374,6 @@ const MainApp: React.FC = () => {
         <main className="relative flex-grow">
           <div ref={contentRef} className="w-full">
             <ErrorBoundary>
-              {/* Only ever shown on a direct link straight into a demo, while its
-                  chunk is still arriving: the same dark shell index.tsx paints
-                  while this file loads, so the sequence reads as one wait, not
-                  a flash of the studio's cream page in between. In-app
-                  navigation never shows it (see the router's startTransition
-                  flag below). */}
               <Suspense fallback={<div aria-hidden="true" className="fixed inset-0 z-[5000] bg-[#0A0D14]" />}>
               <Routes>
                 <Route path="/" element={renderHomeContent()} />
@@ -439,32 +432,32 @@ const MainApp: React.FC = () => {
           </div>
 
           {!isDemo && (
-            <footer className="py-56 text-center bg-white border-t border-slate-100 relative z-20">
-              <div className="max-w-7xl mx-auto px-6">
+            <footer className="py-20 md:py-56 text-center bg-white border-t border-slate-100 relative z-20">
+              <div className="max-w-7xl mx-auto px-5 sm:px-6">
                 <Link
                   to="/"
-                  className="inline-block font-syne text-4xl sm:text-6xl md:text-7xl tracking-tighter font-black mb-16 text-slate-950 uppercase hover:opacity-70 transition-opacity focus:outline-none leading-none"
+                  className="inline-block font-syne text-3xl sm:text-6xl md:text-7xl tracking-tighter font-black mb-10 md:mb-16 text-slate-950 uppercase hover:opacity-70 transition-opacity focus:outline-none leading-none"
                 >
                   SABR <span className="text-emerald-600 italic">DIGITAL</span>
                 </Link>
-                <nav aria-label="Footer" className="flex flex-wrap justify-center gap-16 mb-24">
+                <nav aria-label="Footer" className="flex flex-wrap justify-center gap-6 sm:gap-12 md:gap-16 mb-12 md:mb-24">
                    {(['work', 'about', 'process', 'why-us', 'faq', 'contact'] as Page[]).map(p => (
                      <Link
                        key={p}
                        to={PAGE_PATHS[p]}
-                       className="text-[12px] uppercase tracking-[0.6em] text-slate-400 hover:text-emerald-600 transition-all font-black"
+                       className="text-[11px] md:text-[12px] uppercase tracking-[0.4em] md:tracking-[0.6em] text-slate-400 hover:text-emerald-600 transition-colors font-black"
                      >
                        {p === 'work' ? 'Projects' : p === 'about' ? 'About' : p === 'process' ? 'Process' : p === 'why-us' ? 'Why Us?' : p === 'faq' ? 'FAQ' : 'Contact'}
                      </Link>
                    ))}
                 </nav>
-                <p className="text-slate-400 text-3xl font-black mb-12 tracking-tight">Built for Growth. Optimized for Success.</p>
+                <p className="text-slate-400 text-xl sm:text-2xl md:text-3xl font-black mb-10 md:mb-12 tracking-tight">Built for Growth. Optimized for Success.</p>
 
                 {/* LOCAL SEO: services, coverage and direct contact routes */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-14 md:gap-10 text-left max-w-5xl mx-auto mb-20 border-t border-slate-100 pt-20">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-10 text-left max-w-5xl mx-auto mb-12 md:mb-20 border-t border-slate-100 pt-12 md:pt-20">
                   <div>
-                    <h2 className="text-[10px] uppercase tracking-[0.5em] text-emerald-600 font-black mb-6">Web Design Services</h2>
-                    <ul className="space-y-3 text-slate-400 text-sm font-medium">
+                    <h2 className="text-[10px] uppercase tracking-[0.5em] text-emerald-600 font-black mb-4 md:mb-6">Web Design Services</h2>
+                    <ul className="space-y-2.5 md:space-y-3 text-slate-400 text-sm font-medium">
                       <li>Small business web design</li>
                       <li>Website redesign &amp; rebuilds</li>
                       <li>SEO &amp; local search optimisation</li>
@@ -472,15 +465,15 @@ const MainApp: React.FC = () => {
                     </ul>
                   </div>
                   <div>
-                    <h2 className="text-[10px] uppercase tracking-[0.5em] text-emerald-600 font-black mb-6">Areas We Cover</h2>
+                    <h2 className="text-[10px] uppercase tracking-[0.5em] text-emerald-600 font-black mb-4 md:mb-6">Areas We Cover</h2>
                     <p className="text-slate-400 text-sm font-medium leading-relaxed">
                       We work with tradespeople, salons, clinics, cafes and other small businesses,
                       wherever they are based. Everything is handled remotely, by call and email.
                     </p>
                   </div>
                   <div>
-                    <h2 className="text-[10px] uppercase tracking-[0.5em] text-emerald-600 font-black mb-6">Talk To Us</h2>
-                    <ul className="space-y-3 text-sm font-medium">
+                    <h2 className="text-[10px] uppercase tracking-[0.5em] text-emerald-600 font-black mb-4 md:mb-6">Talk To Us</h2>
+                    <ul className="space-y-2.5 md:space-y-3 text-sm font-medium">
                       <li>
                         <a href="mailto:Sabrdigitalwilts@gmail.com" className="text-slate-400 hover:text-emerald-600 transition-colors break-words">
                           Sabrdigitalwilts@gmail.com
@@ -497,11 +490,11 @@ const MainApp: React.FC = () => {
                 </div>
 
                 {/* BACK TO TOP */}
-                <div className="flex justify-center mb-16">
+                <div className="flex justify-center mb-10 md:mb-16">
                   <button
                     type="button"
                     onClick={scrollToTop}
-                    className="group inline-flex items-center gap-3 px-8 py-4 rounded-full border border-slate-200 bg-slate-50 hover:bg-white hover:border-emerald-600 text-slate-600 hover:text-emerald-600 text-[11px] font-black uppercase tracking-[0.3em] transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-1 active:scale-95 focus:outline-none focus:ring-2 focus:ring-emerald-600/30 cursor-pointer"
+                    className="group inline-flex items-center gap-3 px-7 md:px-8 py-3.5 md:py-4 rounded-full border border-slate-200 bg-slate-50 hover:bg-white hover:border-emerald-600 text-slate-600 hover:text-emerald-600 text-[10.5px] md:text-[11px] font-black uppercase tracking-[0.28em] md:tracking-[0.3em] transition-colors duration-200 shadow-xs active:scale-95 focus:outline-none cursor-pointer"
                     aria-label="Take me to the top"
                   >
                     <span>Take me to the top</span>
@@ -510,13 +503,13 @@ const MainApp: React.FC = () => {
                 </div>
 
                 {/* LEGAL / COMPLIANCE POLICIES */}
-                <div className="border-t border-slate-100 pt-10 mt-12 flex flex-col items-center">
-                  <nav aria-label="Legal policies" className="flex flex-wrap justify-center items-center gap-x-6 sm:gap-x-10 gap-y-3 mb-8">
+                <div className="border-t border-slate-100 pt-8 md:pt-10 mt-8 md:mt-12 flex flex-col items-center">
+                  <nav aria-label="Legal policies" className="flex flex-wrap justify-center items-center gap-x-6 sm:gap-x-10 gap-y-3 mb-6 md:mb-8">
                     <a
                       href="/documents/privacy-policy.pdf"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-[11px] uppercase tracking-[0.3em] font-bold text-slate-400 hover:text-emerald-600 transition-colors py-1 px-2 focus:outline-none focus:ring-2 focus:ring-emerald-600/30 rounded"
+                      className="text-[10.5px] md:text-[11px] uppercase tracking-[0.25em] md:tracking-[0.3em] font-bold text-slate-400 hover:text-emerald-600 transition-colors py-1 px-2 rounded"
                     >
                       Privacy Policy
                     </a>
@@ -525,7 +518,7 @@ const MainApp: React.FC = () => {
                       href="/documents/terms-of-service.pdf"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-[11px] uppercase tracking-[0.3em] font-bold text-slate-400 hover:text-emerald-600 transition-colors py-1 px-2 focus:outline-none focus:ring-2 focus:ring-emerald-600/30 rounded"
+                      className="text-[10.5px] md:text-[11px] uppercase tracking-[0.25em] md:tracking-[0.3em] font-bold text-slate-400 hover:text-emerald-600 transition-colors py-1 px-2 rounded"
                     >
                       Terms of Service
                     </a>
@@ -534,15 +527,15 @@ const MainApp: React.FC = () => {
                       href="/documents/cookie-policy.pdf"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-[11px] uppercase tracking-[0.3em] font-bold text-slate-400 hover:text-emerald-600 transition-colors py-1 px-2 focus:outline-none focus:ring-2 focus:ring-emerald-600/30 rounded"
+                      className="text-[10.5px] md:text-[11px] uppercase tracking-[0.25em] md:tracking-[0.3em] font-bold text-slate-400 hover:text-emerald-600 transition-colors py-1 px-2 rounded"
                     >
                       Cookie Policy
                     </a>
                   </nav>
 
                   <div className="flex flex-col gap-2 items-center">
-                    <p className="text-[12px] text-slate-300 uppercase tracking-[0.6em] font-black">© 2025 SABR DIGITAL STUDIO</p>
-                    <div className="w-24 h-1.5 bg-emerald-600 rounded-full mt-8"></div>
+                    <p className="text-[11px] md:text-[12px] text-slate-300 uppercase tracking-[0.45em] md:tracking-[0.6em] font-black">© 2025 SABR DIGITAL STUDIO</p>
+                    <div className="w-20 md:w-24 h-1.5 bg-emerald-600 rounded-full mt-4 md:mt-8"></div>
                   </div>
                 </div>
               </div>
@@ -555,9 +548,6 @@ const MainApp: React.FC = () => {
 };
 
 const App: React.FC = () => (
-  // v7_startTransition wraps every navigation in React.startTransition, so
-  // when a link leads to a demo whose chunk has not arrived yet, the page the
-  // visitor is on stays put until it has — no fallback, no blank frame.
   <BrowserRouter basename="/web-design" future={{ v7_startTransition: true }}>
     <MainApp />
   </BrowserRouter>

@@ -40,7 +40,6 @@ interface LandscapingTierConfig {
   accent: string;
   badgeBg: string;
   badgeText: string;
-  description: string;
   features: string[];
 }
 
@@ -56,8 +55,6 @@ const LANDSCAPING_TIERS: Record<LandscapingTierKey, LandscapingTierConfig> = {
     accent: '#15803D',
     badgeBg: '#ECFDF5',
     badgeText: '#15803D',
-    description:
-      'A classic, high-trust green landscaper website designed for effortless scrolling, clear service checklists, instant telephone enquiries, and straightforward quote requests.',
     features: [
       'Traditional & easy-to-scroll layout inspired by trusted local trades',
       'Standard high-contrast green palette with clear service breakdowns',
@@ -75,8 +72,6 @@ const LANDSCAPING_TIERS: Record<LandscapingTierKey, LandscapingTierConfig> = {
     accent: '#5B6450',
     badgeBg: '#F4F1EA',
     badgeText: '#44503B',
-    description:
-      'A formal, minimalist landscape architecture showcase built with spacious editorial pacing, unobstructed full-bleed photography, and a refined private consultation journey.',
     features: [
       'Minimalistic & formal layout that lets the gardens speak first',
       'Spacious architectural typography across desktop and mobile',
@@ -94,10 +89,8 @@ const LANDSCAPING_TIERS: Record<LandscapingTierKey, LandscapingTierConfig> = {
     accent: '#C8B88A',
     badgeBg: '#18140F',
     badgeText: '#C8B88A',
-    description:
-      'An ultra-luxury warm obsidian and tan architectural experience featuring a real cylinder lawn-mowing intro animation, bespoke 5-column atelier index, and smooth glide choreography.',
     features: [
-      'Real 60fps lawn-mowing intro animation that trims tall grass into stripes',
+      'Direct-to-canvas full-bleed architectural showcase with zero intro delay',
       'Warm obsidian & champagne-tan palette with smooth, glide-heavy motion',
       'Bespoke 5-pillar architectural index drawer and private commission dossier'
     ]
@@ -122,7 +115,6 @@ interface Project {
   heroImage: string;
   /* Accent lifted from the demo's own palette. */
   accent: string;
-  description: string;
   /* Real pages and features inside each build. */
   features: string[];
 }
@@ -136,8 +128,6 @@ const projects: Project[] = [
     path: '/demo/landscaping',
     heroImage: SHARED_LANDSCAPING_HERO_IMAGE,
     accent: '#5B6450',
-    description:
-      'A luxury landscape architecture and construction showcase built with spacious editorial pacing, unobstructed full-bleed photography, and an effortless private consultation journey.',
     features: [
       'Minimalist luxury layout that lets the work speak first',
       'Smooth, glide-like animations across desktop and mobile',
@@ -152,8 +142,6 @@ const projects: Project[] = [
     path: '/demo/equestrian',
     heroImage: '/images/projects/equestrian-preview.webp',
     accent: '#3E4B41',
-    description:
-      'A minimalist, editorial website for a Wiltshire riding academy — pairing full-screen equine photography with a single-line tuition directory, scroll-reveal horse profiles, and a calm three-step booking request.',
     features: [
       'Spacious, gallery-grade layout that elevates brand perception',
       'Clean single-line lesson directory and paired horse profiles',
@@ -168,8 +156,6 @@ const projects: Project[] = [
     path: '/demo/physio',
     heroImage: '/images/projects/physio-preview.webp',
     accent: '#0D9488',
-    description:
-      'A bright, welcoming UK physiotherapy and sports rehabilitation showcase across Bath, Bristol, and Cheltenham — featuring an interactive pain-relief explorer, six clinical service pathways, and instant multi-clinic appointment requests.',
     features: [
       'Light, uplifting palette that builds instant patient trust',
       'Interactive pain-relief guide and three UK clinic directories',
@@ -184,8 +170,6 @@ const projects: Project[] = [
     path: '/demo/spa',
     heroImage: '/images/projects/spa-preview.webp',
     accent: '#10B981',
-    description:
-      'A luxury forest sanctuary where suites, thermal mineral baths, and wood-fired dining are explored with editorial transitions and seamless online booking.',
     features: [
       'Refined visual pacing that mirrors the calm of the resort',
       'Intuitive browsing that keeps guests engaged longer',
@@ -200,8 +184,6 @@ const projects: Project[] = [
     path: '/demo/cafe',
     heroImage: '/images/projects/cafe-preview.webp',
     accent: '#A4715E',
-    description:
-      'The menu, the opening hours and a table booking are each one tap from the top of the page, on both sites, for people deciding where to go in the next ten minutes.',
     features: [
       'Built for speed so on-the-go customers never bounce',
       'One-tap access to menus, hours, and table reservations',
@@ -262,7 +244,7 @@ const PreviewWindow: React.FC<{ project: Project; priority?: boolean }> = ({ pro
         height="1000"
         loading="eager"
         fetchPriority="high"
-        decoding="sync"
+        decoding="async"
         className="preview-shot absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover/card:scale-[1.05]"
       />
     </div>
@@ -299,7 +281,7 @@ const TierHeroScreen: React.FC<{
           src={heroImage}
           alt="Oak & Ash Essential Traditional tier preview"
           loading="eager"
-          decoding="sync"
+          decoding="async"
           className="preview-shot absolute inset-0 w-full h-full object-cover transition-transform duration-1000 ease-out group-hover/card:scale-[1.03]"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#052e16]/80 via-[#052e16]/20 to-black/35" />
@@ -337,7 +319,7 @@ const TierHeroScreen: React.FC<{
           src={heroImage}
           alt="Oak & Ash Prestige Luxury tier preview"
           loading="eager"
-          decoding="sync"
+          decoding="async"
           className="preview-shot absolute inset-0 w-full h-full object-cover transition-transform duration-1000 ease-out group-hover/card:scale-[1.03]"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#0C0A08]/90 via-[#0C0A08]/25 to-[#0C0A08]/70" />
@@ -379,7 +361,7 @@ const TierHeroScreen: React.FC<{
         src={heroImage}
         alt="Oak & Ash Premier Minimalistic tier preview"
         loading="eager"
-        decoding="sync"
+        decoding="async"
         className="preview-shot absolute inset-0 w-full h-full object-cover transition-transform duration-1000 ease-out group-hover/card:scale-[1.03]"
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-black/25" />
@@ -450,9 +432,9 @@ const LandscapingSpreadPreview: React.FC<{
   ];
 
   return (
-    <div className="relative w-full py-6 sm:py-8 px-4 sm:px-8 flex items-center justify-center select-none overflow-visible">
+    <div className="relative w-full py-3 sm:py-8 px-2 sm:px-8 flex items-center justify-center select-none overflow-visible">
       {/* Stage sized with generous margin around all 4 corners so rotated cards are never clipped */}
-      <div className="relative w-[86%] sm:w-[84%] aspect-[16/11.5]">
+      <div className="relative w-[88%] sm:w-[84%] aspect-[16/11.5]">
         {SLOTS.map((slot, slotIdx) => {
           const tierKey = orderedTiers[slotIdx];
           const tier = LANDSCAPING_TIERS[tierKey];
@@ -656,12 +638,16 @@ const ProjectRow: React.FC<{ project: Project; index: number }> = ({ project, in
       window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduceMotion) return;
 
+    // Only run heavy clip-path scroll-scrub animations on desktop so mobile scrolls at 60fps
+    const canAnimate =
+      typeof window.matchMedia === 'function' &&
+      window.matchMedia('(hover: hover) and (pointer: fine) and (min-width: 1024px)').matches;
+    if (!canAnimate) return;
+
     const ctx = gsap.context(() => {
       const shot = card.querySelectorAll('.preview-shot');
       const items = text.querySelectorAll('.reveal-item');
 
-      // For the fanned 3-card spread, avoid rectangular clipPath on cardRef so
-      // rotated card corners and shadows are never sliced off.
       if (isLandscaping) {
         gsap.set(card, { y: -36, opacity: 0 });
       } else {
@@ -738,17 +724,16 @@ const ProjectRow: React.FC<{ project: Project; index: number }> = ({ project, in
   }, [isEven, isLandscaping]);
 
   const currentTier = LANDSCAPING_TIERS[activeTier];
-  const displayedDescription = isLandscaping ? currentTier.description : project.description;
   const displayedFeatures = isLandscaping ? currentTier.features : project.features;
 
   return (
     <div
       ref={rowRef}
-      className="grid grid-cols-1 lg:grid-cols-12 gap-10 md:gap-14 lg:gap-20 items-center"
+      className="grid grid-cols-1 lg:grid-cols-12 gap-5 md:gap-14 lg:gap-20 items-center"
     >
       <div
         ref={cardRef}
-        className={`lg:col-span-7 will-change-transform overflow-visible ${isEven ? 'lg:order-1' : 'lg:order-2'}`}
+        className={`lg:col-span-7 overflow-visible ${isEven ? 'lg:order-1' : 'lg:order-2'}`}
       >
         {isLandscaping ? (
           <LandscapingSpreadPreview
@@ -766,17 +751,17 @@ const ProjectRow: React.FC<{ project: Project; index: number }> = ({ project, in
         ref={textRef}
         className={`lg:col-span-5 flex flex-col items-start ${isEven ? 'lg:order-2' : 'lg:order-1'}`}
       >
-        <div className="reveal-item flex flex-wrap items-center gap-4 mb-7">
-          <span className="font-syne text-base font-black text-slate-300 tabular-nums">
+        <div className="reveal-item flex flex-wrap items-center gap-3 md:gap-4 mb-3.5 md:mb-7">
+          <span className="font-syne text-sm md:text-base font-black text-slate-300 tabular-nums">
             {String(index + 1).padStart(2, '0')}
           </span>
-          <span className="w-8 h-px bg-slate-300" />
+          <span className="w-6 md:w-8 h-px bg-slate-300" />
           <span className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.45em] text-emerald-700">
             {project.industry}
           </span>
           {isLandscaping && (
             <span
-              className="px-2.5 py-1 rounded-full text-[8px] font-black uppercase tracking-[0.25em] transition-colors duration-300"
+              className="px-2.5 py-0.5 md:py-1 rounded-full text-[7.5px] md:text-[8px] font-black uppercase tracking-[0.22em] md:tracking-[0.25em] transition-colors duration-300"
               style={{
                 backgroundColor: currentTier.badgeBg,
                 color: currentTier.badgeText
@@ -787,20 +772,16 @@ const ProjectRow: React.FC<{ project: Project; index: number }> = ({ project, in
           )}
         </div>
 
-        <h3 className="reveal-item font-syne text-3xl md:text-4xl lg:text-[2.75rem] font-black text-slate-950 uppercase tracking-tighter leading-[0.95] mb-6">
+        <h3 className="reveal-item font-syne text-2xl sm:text-3xl md:text-4xl lg:text-[2.75rem] font-black text-slate-950 uppercase tracking-tighter leading-[0.95] mb-4 md:mb-7">
           {project.headline[0]} <br />
           <span className="text-shimmer-blue italic">{project.headline[1]}</span>
         </h3>
 
-        <p className="reveal-item text-base md:text-lg text-slate-500 font-medium leading-relaxed max-w-lg mb-8">
-          {displayedDescription}
-        </p>
-
-        <ul className="reveal-item flex flex-col w-full max-w-lg mb-10 border-t border-slate-200">
+        <ul className="reveal-item flex flex-col w-full max-w-lg mb-5 md:mb-10 border-t border-slate-200">
           {displayedFeatures.map((f) => (
             <li
               key={f}
-              className="flex items-center gap-3 py-3 border-b border-slate-200 text-[10px] md:text-[11px] font-black uppercase tracking-[0.28em] text-slate-600"
+              className="flex items-center gap-2.5 md:gap-3 py-2 md:py-3 border-b border-slate-200 text-[9px] md:text-[11px] font-black uppercase tracking-[0.22em] md:tracking-[0.28em] text-slate-600"
             >
               <span className="block w-1 h-1 rounded-full bg-emerald-600 shrink-0" />
               {f}
@@ -809,8 +790,8 @@ const ProjectRow: React.FC<{ project: Project; index: number }> = ({ project, in
         </ul>
 
         {isLandscaping ? (
-          <div ref={dropdownRef} className="reveal-item relative z-30 flex flex-wrap items-center gap-3">
-            {/* VIEW DEMO DROPDOWN BUTTON */}
+          <div ref={dropdownRef} className="reveal-item relative z-30 flex flex-wrap items-center gap-2.5 md:gap-3">
+            {/* MINIMALISTIC, CONDENSED VIEW DEMO DROPDOWN BUTTON */}
             <button
               type="button"
               onClick={() => {
@@ -821,19 +802,19 @@ const ProjectRow: React.FC<{ project: Project; index: number }> = ({ project, in
               }}
               aria-expanded={dropdownOpen}
               aria-haspopup="listbox"
-              className="group/btn inline-flex items-center gap-4 pl-7 pr-2 py-2 rounded-full bg-slate-950 hover:bg-emerald-700 transition-colors duration-500 cursor-pointer shadow-md"
+              className="group/btn inline-flex items-center gap-3 pl-5 pr-1.5 py-1.5 rounded-full bg-slate-950 hover:bg-emerald-700 transition-colors duration-300 cursor-pointer shadow-sm"
             >
-              <span className="flex flex-col items-start text-left">
-                <span className="text-[8px] font-bold uppercase tracking-[0.28em] text-emerald-400">
-                  View demo · 3 tiers
+              <span className="flex items-center gap-2">
+                <span className="text-[8.5px] md:text-[9px] font-bold uppercase tracking-[0.24em] text-emerald-400">
+                  Tier:
                 </span>
-                <span className="text-[10px] font-black uppercase tracking-[0.26em] text-white">
-                  {currentTier.tierName}
+                <span className="text-[9.5px] md:text-[10px] font-black uppercase tracking-[0.22em] text-white">
+                  {currentTier.shortLabel}
                 </span>
               </span>
-              <span className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-slate-950 transition-transform duration-300">
+              <span className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-white flex items-center justify-center text-slate-950 transition-transform duration-300">
                 <ChevronDown
-                  size={17}
+                  size={14}
                   strokeWidth={2.5}
                   className={`transition-transform duration-300 ${dropdownOpen ? 'rotate-180' : ''}`}
                 />
@@ -845,51 +826,42 @@ const ProjectRow: React.FC<{ project: Project; index: number }> = ({ project, in
               type="button"
               onClick={() => handleOpenLandscapingDemo(activeTier)}
               onMouseEnter={() => warmDemo(currentTier.id, SHARED_LANDSCAPING_HERO_IMAGE)}
-              className="group/launch inline-flex items-center gap-3 pl-5 pr-2 py-2 rounded-full bg-white border border-slate-300 hover:border-emerald-600 text-slate-950 hover:text-emerald-700 transition-all duration-300 cursor-pointer shadow-xs"
+              className="group/launch inline-flex items-center gap-2.5 pl-4 pr-1.5 py-1.5 rounded-full bg-white border border-slate-300 hover:border-emerald-600 text-slate-950 hover:text-emerald-700 transition-all duration-300 cursor-pointer shadow-xs"
             >
-              <span className="text-[9.5px] font-black uppercase tracking-[0.26em]">
+              <span className="text-[9px] md:text-[9.5px] font-black uppercase tracking-[0.24em]">
                 Open {currentTier.shortLabel}
               </span>
-              <span className="w-9 h-9 rounded-full bg-slate-950 group-hover/launch:bg-emerald-600 text-white flex items-center justify-center transition-colors">
-                <ArrowUpRight size={15} strokeWidth={2.5} />
+              <span className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-slate-950 group-hover/launch:bg-emerald-600 text-white flex items-center justify-center transition-colors">
+                <ArrowUpRight size={13} strokeWidth={2.5} />
               </span>
             </button>
 
-            {/* DROPDOWN MENU: Essential (Traditional) → Premier (Minimalistic) → Prestige (Luxury) */}
+            {/* MINIMALISTIC CONDENSED DROPDOWN MENU: Opens upwards on mobile so it never overlaps the next project */}
             {dropdownOpen && (
               <div
                 role="listbox"
                 aria-label="Select Oak & Ash Landscaping website tier"
-                className="absolute left-0 top-[calc(100%+12px)] w-[min(92vw,420px)] rounded-2xl bg-white border border-slate-200 shadow-[0_30px_80px_-20px_rgba(15,23,42,0.38)] p-2.5 z-50"
+                className="absolute left-0 bottom-[calc(100%+8px)] md:bottom-auto md:top-[calc(100%+8px)] w-[min(86vw,290px)] rounded-xl bg-white/98 backdrop-blur-md border border-slate-200/90 shadow-[0_20px_50px_-15px_rgba(15,23,42,0.32)] p-1.5 z-50"
               >
-                <div className="px-3 py-2 border-b border-slate-100 flex items-center justify-between">
-                  <span className="text-[8.5px] font-black uppercase tracking-[0.3em] text-slate-400">
-                    Essential → Premier → Prestige
-                  </span>
-                  <span className="text-[8px] font-bold uppercase tracking-[0.2em] text-emerald-700">
-                    Click to preview or launch
-                  </span>
-                </div>
-
-                <div className="divide-y divide-slate-100 mt-1">
+                <div className="divide-y divide-slate-100">
                   {LANDSCAPING_TIER_ORDER.map((tierKey, idx) => {
                     const tier = LANDSCAPING_TIERS[tierKey];
                     const isSelected = activeTier === tierKey;
                     return (
                       <div
                         key={tier.key}
-                        className={`flex items-center justify-between gap-2 p-2.5 rounded-xl transition-colors ${
-                          isSelected ? 'bg-emerald-50/70' : 'hover:bg-slate-50'
+                        className={`flex items-center justify-between gap-2 px-2.5 py-1.5 rounded-lg transition-colors ${
+                          isSelected ? 'bg-emerald-50/80' : 'hover:bg-slate-50'
                         }`}
                       >
                         <button
                           type="button"
                           onClick={() => handleSelectLandscapingTier(tier.key)}
                           onMouseEnter={() => warmDemo(tier.id, SHARED_LANDSCAPING_HERO_IMAGE)}
-                          className="flex-1 flex items-start gap-3 text-left cursor-pointer"
+                          className="flex-1 flex items-center gap-2.5 text-left cursor-pointer min-w-0 py-0.5"
                         >
                           <span
-                            className="mt-0.5 w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-black shrink-0"
+                            className="w-5 h-5 rounded-md flex items-center justify-center text-[9px] font-black shrink-0"
                             style={{
                               backgroundColor: tier.badgeBg,
                               color: tier.badgeText
@@ -897,17 +869,17 @@ const ProjectRow: React.FC<{ project: Project; index: number }> = ({ project, in
                           >
                             0{idx + 1}
                           </span>
-                          <span className="min-w-0">
-                            <span className="flex items-center gap-2">
-                              <span className="font-syne text-xs font-black uppercase tracking-tight text-slate-950">
-                                {tier.tierName}
+                          <span className="min-w-0 flex-1">
+                            <span className="flex items-center gap-1.5">
+                              <span className="font-syne text-[11px] font-black uppercase tracking-tight text-slate-950 truncate">
+                                {tier.shortLabel}
+                              </span>
+                              <span className="text-[8.5px] font-bold uppercase tracking-wider text-slate-400 truncate">
+                                · {tier.key === 'traditional' ? 'Traditional' : tier.key === 'minimalistic' ? 'Minimalistic' : 'Luxury'}
                               </span>
                               {isSelected && (
-                                <Check size={13} className="text-emerald-600 shrink-0" strokeWidth={3} />
+                                <Check size={11} className="text-emerald-600 shrink-0" strokeWidth={3} />
                               )}
-                            </span>
-                            <span className="block text-[9.5px] font-bold uppercase tracking-[0.2em] text-slate-500 mt-0.5">
-                              {tier.styleLabel}
                             </span>
                           </span>
                         </button>
@@ -916,10 +888,10 @@ const ProjectRow: React.FC<{ project: Project; index: number }> = ({ project, in
                           type="button"
                           onClick={() => handleOpenLandscapingDemo(tier.key)}
                           onMouseEnter={() => warmDemo(tier.id, SHARED_LANDSCAPING_HERO_IMAGE)}
-                          className="px-3 py-2 rounded-lg bg-slate-950 hover:bg-emerald-600 text-white text-[8.5px] font-black uppercase tracking-[0.24em] inline-flex items-center gap-1 shrink-0 transition-colors cursor-pointer"
+                          className="px-2.5 py-1 rounded-md bg-slate-950 hover:bg-emerald-600 text-white text-[8px] font-black uppercase tracking-[0.2em] inline-flex items-center gap-1 shrink-0 transition-colors cursor-pointer"
                         >
-                          <span>Launch</span>
-                          <ArrowUpRight size={12} strokeWidth={2.5} />
+                          <span>Open</span>
+                          <ArrowUpRight size={10} strokeWidth={2.5} />
                         </button>
                       </div>
                     );
@@ -934,11 +906,11 @@ const ProjectRow: React.FC<{ project: Project; index: number }> = ({ project, in
             onMouseEnter={() => warmDemo(project.id, project.heroImage)}
             onFocus={() => warmDemo(project.id, project.heroImage)}
             onTouchStart={() => warmDemo(project.id, project.heroImage)}
-            className="reveal-item group/btn inline-flex items-center gap-5 pl-8 pr-2 py-2 rounded-full bg-slate-950 hover:bg-emerald-600 transition-colors duration-500"
+            className="reveal-item group/btn inline-flex items-center gap-4 md:gap-5 pl-6 md:pl-8 pr-1.5 md:pr-2 py-1.5 md:py-2 rounded-full bg-slate-950 hover:bg-emerald-600 transition-colors duration-500"
           >
-            <span className="text-[10px] font-black uppercase tracking-[0.35em] text-white">View demo</span>
-            <span className="w-11 h-11 rounded-full bg-white flex items-center justify-center text-slate-950 transition-transform duration-500 group-hover/btn:rotate-45">
-              <ArrowUpRight size={18} strokeWidth={2.5} />
+            <span className="text-[9.5px] md:text-[10px] font-black uppercase tracking-[0.32em] md:tracking-[0.35em] text-white">View demo</span>
+            <span className="w-9 h-9 md:w-11 md:h-11 rounded-full bg-white flex items-center justify-center text-slate-950 transition-transform duration-500 group-hover/btn:rotate-45">
+              <ArrowUpRight size={16} strokeWidth={2.5} />
             </span>
           </Link>
         )}
@@ -970,29 +942,29 @@ const ProjectsGallery: React.FC = () => {
   }, []);
 
   return (
-    <div className="bg-[#fdfbf7] min-h-screen pt-32 md:pt-48 pb-40 md:pb-56 px-6 md:px-10 lg:px-16 overflow-hidden">
+    <div className="bg-[#fdfbf7] min-h-screen pt-24 md:pt-48 pb-20 md:pb-56 px-5 md:px-10 lg:px-16 overflow-hidden">
       <div className="max-w-7xl mx-auto">
 
         {/* HERO */}
-        <div className="mb-28 md:mb-40">
+        <div className="mb-14 md:mb-40">
           <p
-            className="pg-rise mb-6 text-[9px] md:text-[11px] font-black uppercase tracking-[0.45em] text-emerald-700"
+            className="pg-rise mb-3.5 md:mb-6 text-[9px] md:text-[11px] font-black uppercase tracking-[0.45em] text-emerald-700"
             style={{ animationDelay: '0ms' }}
           >
             Web design demos
           </p>
           <h1
-            className="pg-rise font-syne text-[clamp(2.5rem,10vw,5rem)] font-black text-slate-950 tracking-tighter uppercase leading-[0.9] mb-12"
+            className="pg-rise font-syne text-[clamp(2.25rem,10vw,5rem)] font-black text-slate-950 tracking-tighter uppercase leading-[0.9] mb-6 md:mb-12"
             style={{ animationDelay: '80ms' }}
           >
             SITES THAT <br />
             <span className="text-shimmer-blue italic">GET RESULTS.</span>
           </h1>
           <div
-            className="pg-rise max-w-3xl border-l-[6px] md:border-l-[8px] border-emerald-100 pl-8 md:pl-14"
+            className="pg-rise max-w-3xl border-l-[4px] md:border-l-[8px] border-emerald-100 pl-5 md:pl-14"
             style={{ animationDelay: '160ms' }}
           >
-            <p className="text-lg md:text-xl lg:text-2xl text-slate-500 font-medium italic leading-relaxed">
+            <p className="text-base md:text-xl lg:text-2xl text-slate-500 font-medium italic leading-relaxed">
               Five working websites, built the way we build for clients. Open any one of them and use it as a
               customer would.
             </p>
@@ -1000,18 +972,18 @@ const ProjectsGallery: React.FC = () => {
         </div>
 
         {/* PROJECTS */}
-        <div className="space-y-28 md:space-y-40">
+        <div className="space-y-16 md:space-y-40">
           {projects.map((project, idx) => (
             <ProjectRow key={project.id} project={project} index={idx} />
           ))}
         </div>
 
         {/* CTA */}
-        <div className="mt-32 md:mt-48 pt-20 md:pt-28 border-t border-slate-200 text-center">
-          <p className="text-[9px] md:text-[11px] font-black uppercase tracking-[0.45em] text-emerald-700 mb-8">
+        <div className="mt-16 md:mt-48 pt-12 md:pt-28 border-t border-slate-200 text-center">
+          <p className="text-[9px] md:text-[11px] font-black uppercase tracking-[0.45em] text-emerald-700 mb-4 md:mb-8">
             Next step
           </p>
-          <h2 className="font-syne text-[clamp(2.5rem,10vw,5rem)] font-black text-slate-950 tracking-tighter uppercase leading-[0.9] mb-12 md:mb-14">
+          <h2 className="font-syne text-[clamp(2.25rem,10vw,5rem)] font-black text-slate-950 tracking-tighter uppercase leading-[0.9] mb-8 md:mb-14">
             READY WHEN <br />
             <span className="text-shimmer-blue italic">YOU ARE.</span>
           </h2>

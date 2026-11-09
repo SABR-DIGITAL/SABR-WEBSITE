@@ -74,15 +74,15 @@ export const SpaMenuModal: React.FC<{ isOpen: boolean; onClose: () => void; onOp
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.35, ease: 'easeOut' }}
-          className="fixed inset-0 z-[130] bg-[#070908]/98 text-white flex flex-col justify-between overflow-y-auto backdrop-blur-2xl"
+          className="fixed inset-0 z-[130] bg-[#070908]/98 text-white flex flex-col justify-between overflow-y-auto pb-16 sm:pb-0 backdrop-blur-2xl"
         >
           {/* TOP BAR */}
-          <div className="flex items-center justify-between px-5 sm:px-6 md:px-14 py-5 sm:py-8 border-b border-white/10">
+          <div className="flex items-center justify-between px-4 sm:px-6 md:px-14 py-4 sm:py-8 border-b border-white/10">
             <button
               onClick={onClose}
-              className="flex items-center gap-2.5 sm:gap-3 text-xs md:text-sm uppercase tracking-[0.25em] sm:tracking-[0.3em] font-medium text-white/70 hover:text-white transition-colors group cursor-pointer"
+              className="flex items-center gap-2 sm:gap-3 text-xs md:text-sm uppercase tracking-[0.22em] sm:tracking-[0.3em] font-medium text-white/70 hover:text-white transition-colors group cursor-pointer"
             >
-              <X size={20} className="transition-transform group-hover:rotate-90 duration-300 text-emerald-400" />
+              <X size={18} className="transition-transform group-hover:rotate-90 duration-300 text-emerald-400" />
               <span>CLOSE</span>
             </button>
 
@@ -91,7 +91,7 @@ export const SpaMenuModal: React.FC<{ isOpen: boolean; onClose: () => void; onOp
               onClick={onClose}
               className="text-center group"
             >
-              <span className="font-cinzel text-lg sm:text-xl md:text-2xl tracking-[0.24em] sm:tracking-[0.32em] font-bold block text-white group-hover:text-emerald-400 transition-colors">
+              <span className="font-cinzel text-base sm:text-xl md:text-2xl tracking-[0.2em] sm:tracking-[0.32em] font-bold block text-white group-hover:text-emerald-400 transition-colors">
                 {SPA_DATA.brand.name}
               </span>
               <span className="hidden sm:block text-[8px] uppercase tracking-[0.55em] text-white/50 font-mono">
@@ -105,7 +105,7 @@ export const SpaMenuModal: React.FC<{ isOpen: boolean; onClose: () => void; onOp
                   onClose();
                   onOpenBooking();
                 }}
-                className="inline-flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-2.5 rounded-none bg-white hover:bg-emerald-400 hover:text-slate-950 text-slate-950 font-bold text-[10px] sm:text-xs uppercase tracking-[0.22em] sm:tracking-[0.25em] transition-all cursor-pointer border border-white/20"
+                className="inline-flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-6 py-2 sm:py-2.5 rounded-none bg-white hover:bg-emerald-400 hover:text-slate-950 text-slate-950 font-bold text-[10px] sm:text-xs uppercase tracking-[0.2em] sm:tracking-[0.25em] transition-all cursor-pointer border border-white/20"
               >
                 <Calendar size={12} />
                 <span className="hidden sm:inline">RESERVE STAY</span>
@@ -115,19 +115,19 @@ export const SpaMenuModal: React.FC<{ isOpen: boolean; onClose: () => void; onOp
           </div>
 
           {/* EDITORIAL SPLIT MENU CONTENT (NO SUB-OPTIONS, EACH ITEM IS ITS OWN SELECTION) */}
-          <div className="max-w-7xl mx-auto w-full px-5 sm:px-6 md:px-14 py-8 sm:py-16 grid grid-cols-1 lg:grid-cols-12 gap-10 sm:gap-12 lg:gap-24 items-center flex-1">
+          <div className="max-w-7xl mx-auto w-full px-5 sm:px-6 md:px-14 py-6 sm:py-16 grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-12 lg:gap-24 items-center flex-1">
             {/* LEFT: MAIN NAV DIRECTORY */}
-            <div className="lg:col-span-6 space-y-2.5 sm:space-y-5">
+            <div className="lg:col-span-6 space-y-2 sm:space-y-5">
               {menuSections.map((section, idx) => {
                 const isActive = activeCategory === idx;
                 return (
                   <div
                     key={section.num}
                     onMouseEnter={() => setActiveCategory(idx)}
-                    className="relative cursor-pointer group py-1.5 sm:py-2"
+                    className="relative cursor-pointer group py-1 sm:py-2"
                   >
-                    <div className="flex items-center gap-4 sm:gap-8">
-                      <span className={`font-mono text-xs md:text-sm tracking-widest transition-colors duration-200 w-7 sm:w-8 shrink-0 ${
+                    <div className="flex items-center gap-3.5 sm:gap-8">
+                      <span className={`font-mono text-xs md:text-sm tracking-widest transition-colors duration-200 w-6 sm:w-8 shrink-0 ${
                         isActive ? 'text-emerald-400 font-bold' : 'text-white/30 group-hover:text-white/60'
                       }`}>
                         {section.num}
@@ -136,7 +136,7 @@ export const SpaMenuModal: React.FC<{ isOpen: boolean; onClose: () => void; onOp
                       <Link
                         to={section.path}
                         onClick={onClose}
-                        className={`font-cinzel text-lg sm:text-3xl lg:text-4xl font-bold uppercase tracking-tight transition-colors duration-200 sm:whitespace-nowrap leading-tight flex items-center gap-3 sm:gap-4 ${
+                        className={`font-cinzel text-base sm:text-3xl lg:text-4xl font-bold uppercase tracking-tight transition-colors duration-200 sm:whitespace-nowrap leading-tight flex items-center gap-3 sm:gap-4 ${
                           isActive
                             ? 'text-white'
                             : 'text-white/45 hover:text-white/80'
@@ -154,7 +154,7 @@ export const SpaMenuModal: React.FC<{ isOpen: boolean; onClose: () => void; onOp
             </div>
 
             {/* RIGHT: CLEAN 4K PREVIEW PHOTO & DIRECT PAGE LINK */}
-            <div className="lg:col-span-6 space-y-6 sm:space-y-8">
+            <div className="lg:col-span-6 space-y-5 sm:space-y-8">
               <Link
                 to={currentActive.path}
                 onClick={onClose}
@@ -171,7 +171,7 @@ export const SpaMenuModal: React.FC<{ isOpen: boolean; onClose: () => void; onOp
               </Link>
 
               <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 sm:gap-6 pt-1 sm:pt-2">
-                <div className="space-y-2 max-w-md">
+                <div className="space-y-1.5 sm:space-y-2 max-w-md">
                   <span className="text-[10px] uppercase tracking-[0.35em] text-emerald-400 font-mono font-bold block">
                     {currentActive.num} · {currentActive.title}
                   </span>
@@ -193,7 +193,7 @@ export const SpaMenuModal: React.FC<{ isOpen: boolean; onClose: () => void; onOp
           </div>
 
           {/* BOTTOM BAR STRIP */}
-          <div className="px-5 sm:px-6 md:px-14 py-5 sm:py-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between text-xs text-white/50 gap-3 sm:gap-4 text-center sm:text-left">
+          <div className="px-5 sm:px-6 md:px-14 py-4 sm:py-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between text-xs text-white/50 gap-2.5 sm:gap-4 text-center sm:text-left">
             <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 sm:gap-3 font-mono">
               <span className="text-white">{SPA_DATA.brand.phone}</span>
               <span className="hidden sm:inline">·</span>
@@ -273,7 +273,7 @@ const SpaNavbar: React.FC<SpaNavbarProps> = ({ onOpenBooking }) => {
           <div className="flex items-center justify-end">
             <button
               onClick={handleBookingClick}
-              className="inline-flex items-center gap-1.5 sm:gap-2 px-4 sm:px-7 py-2 sm:py-2.5 rounded-none bg-white hover:bg-emerald-400 hover:text-slate-950 text-slate-950 font-bold text-[10px] sm:text-xs uppercase tracking-[0.2em] sm:tracking-[0.25em] transition-all shadow-[0_4px_20px_rgba(0,0,0,0.4)] cursor-pointer border border-white/20"
+              className="inline-flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-7 py-2 sm:py-2.5 rounded-none bg-white hover:bg-emerald-400 hover:text-slate-950 text-slate-950 font-bold text-[10px] sm:text-xs uppercase tracking-[0.18em] sm:tracking-[0.25em] transition-all shadow-[0_4px_20px_rgba(0,0,0,0.4)] cursor-pointer border border-white/20"
             >
               <Calendar size={12} className="text-emerald-700" />
               <span className="hidden sm:inline">RESERVE STAY</span>

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import * as RouterDOM from 'react-router-dom';
 const { Link } = RouterDOM as any;
-import { motion as framerMotion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, ArrowUpRight, Phone } from 'lucide-react';
 import EquestrianNav from './EquestrianNav';
 import EquestrianFooter from './EquestrianFooter';
@@ -13,8 +12,6 @@ import {
   testimonials,
   images
 } from './equestrianData';
-
-const motion = framerMotion as any;
 
 const pillars = [
   {
@@ -51,103 +48,45 @@ const EquestrianHome: React.FC = () => {
   const activeLesson = featuredLessons[activeLessonIndex] || featuredLessons[0];
 
   return (
-    <div className="relative min-h-screen bg-[#FAF6EE] font-inter text-[#1E2822] selection:bg-[#2D5A43] selection:text-[#FAF6EE] overflow-x-hidden">
+    <div className="relative min-h-screen bg-[#FAF6EE] font-inter text-[#1E2822] selection:bg-[#2D5A43] selection:text-[#FAF6EE]">
       <HoofPrintTrail />
       <EquestrianNav transparentOnTop />
 
-      {/* ── FULL-SCREEN LUXURY HERO (SOPHISTICATED & BOLD TYPOGRAPHY) ─────── */}
-      <section className="relative z-10 min-h-[100svh] md:h-screen md:min-h-[680px] w-full overflow-hidden bg-[#1E2822] flex items-center py-28 md:py-0">
-        <motion.div
-          className="absolute inset-0"
-          initial={{ scale: 1.08, opacity: 0.8 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 2.6, ease: [0.16, 1, 0.3, 1] }}
-        >
+      {/* ── FULL-SCREEN LUXURY HERO (MINIMALISTIC TITLE ONLY, INSTANT MOBILE SCROLL) ─────── */}
+      <section className="relative z-10 h-[100svh] md:h-screen md:min-h-[640px] w-full overflow-hidden bg-[#1E2822] flex items-end md:items-center pb-14 sm:pb-20 md:pb-0">
+        <div className="absolute inset-0">
           <img
             src={images.hero}
             alt="Horse and rider cantering in the outdoor arena at Bramble & Bay"
             loading="eager"
             fetchPriority="high"
             decoding="async"
-            className="w-full h-full object-cover object-center"
+            className="w-full h-full object-cover object-[58%_center] sm:object-center block"
           />
-        </motion.div>
+        </div>
 
         <div
           aria-hidden="true"
           className="absolute inset-0"
           style={{
             background:
-              'linear-gradient(180deg, rgba(18,28,22,0.56) 0%, rgba(18,28,22,0.38) 48%, rgba(18,28,22,0.78) 100%)'
+              'linear-gradient(180deg, rgba(18,28,22,0.42) 0%, rgba(18,28,22,0.22) 45%, rgba(18,28,22,0.72) 100%)'
           }}
         />
 
-        <div className="relative z-10 max-w-[1440px] w-full mx-auto px-5 sm:px-6 md:px-12 md:pt-16">
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.0, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
-            className="text-[10px] sm:text-[11px] uppercase tracking-[0.36em] sm:tracking-[0.44em] font-semibold text-[#CFE3D6] mb-5 sm:mb-7"
-          >
+        <div className="relative z-10 max-w-[1440px] w-full mx-auto px-5 sm:px-6 md:px-12 md:pt-12">
+          <p className="text-[10px] sm:text-[11px] uppercase tracking-[0.34em] sm:tracking-[0.42em] font-semibold text-[#CFE3D6] mb-3.5 sm:mb-5">
             Bramble &amp; Bay &middot; Pewsey Vale, Wiltshire
-          </motion.p>
+          </p>
 
-          <h1 className="font-serif text-[#FAF6EE] text-[clamp(2.45rem,6.8vw,6.4rem)] leading-[1.04] tracking-[-0.025em] max-w-5xl">
-            <span className="block overflow-hidden pb-1.5 sm:pb-2">
-              <motion.span
-                className="block font-semibold text-white"
-                initial={{ y: '105%', opacity: 0 }}
-                animate={{ y: '0%', opacity: 1 }}
-                transition={{ duration: 1.25, delay: 0.28, ease: [0.16, 1, 0.3, 1] }}
-              >
-                Classical Equitation.
-              </motion.span>
+          <h1 className="font-serif text-[#FAF6EE] text-[clamp(2.35rem,6.6vw,6.2rem)] leading-[1.04] tracking-[-0.025em] max-w-4xl">
+            <span className="block font-semibold text-white">
+              Classical Equitation.
             </span>
-            <span className="block overflow-hidden pb-1.5 sm:pb-2 mt-1 md:mt-2">
-              <motion.span
-                className="block italic font-normal text-[#CFE3D6]"
-                initial={{ y: '105%', opacity: 0 }}
-                animate={{ y: '0%', opacity: 1 }}
-                transition={{ duration: 1.25, delay: 0.46, ease: [0.16, 1, 0.3, 1] }}
-              >
-                Four hundred private acres.
-              </motion.span>
+            <span className="block italic font-normal text-[#CFE3D6] mt-1 md:mt-2">
+              Four hundred private acres.
             </span>
           </h1>
-
-          <motion.p
-            initial={{ opacity: 0, y: 22 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.1, delay: 0.72, ease: [0.16, 1, 0.3, 1] }}
-            className="mt-6 sm:mt-8 md:mt-10 max-w-xl text-[15px] sm:text-[16px] md:text-[18px] text-[#FAF6EE]/90 leading-[1.75] sm:leading-[1.8]"
-          >
-            Private and small-group tuition in the heart of the Wiltshire chalk downland — pairing twenty-two schooled horses with quiet classical coaching and open turf hacking straight from the yard gate.
-          </motion.p>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.0, delay: 0.92, ease: [0.16, 1, 0.3, 1] }}
-            className="mt-8 sm:mt-10 md:mt-12 flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3.5 sm:gap-4"
-          >
-            <Link
-              to="/demo/equestrian/book"
-              className="group inline-flex items-center justify-center gap-3.5 px-8 py-4 rounded-full bg-[#2D5A43] text-[#FAF6EE] text-[11px] uppercase tracking-[0.28em] font-medium hover:bg-[#234734] transition-all duration-300 shadow-lg"
-            >
-              <span>Book a Lesson</span>
-              <ArrowUpRight
-                size={15}
-                className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-              />
-            </Link>
-            <Link
-              to="/demo/equestrian/lessons"
-              className="group inline-flex items-center justify-center gap-3.5 px-8 py-4 rounded-full bg-white/15 backdrop-blur-md border border-white/30 text-[#FAF6EE] text-[11px] uppercase tracking-[0.28em] hover:bg-white/25 transition-all duration-300"
-            >
-              <span>Explore Lessons</span>
-              <ArrowRight size={15} className="transition-transform duration-300 group-hover:translate-x-1" />
-            </Link>
-          </motion.div>
         </div>
       </section>
 
@@ -226,7 +165,7 @@ const EquestrianHome: React.FC = () => {
         </div>
       </section>
 
-      {/* ── SECTION 03: LESSONS & CLINICS (CLEAN EDITORIAL SPLIT SHOWCASE) ─ */}
+      {/* ── SECTION 03: LESSONS & CLINICS (GLITCH-FREE STACKED PREVIEW) ──── */}
       <section className="relative z-10 py-16 sm:py-24 md:py-32 px-5 sm:px-6 md:px-12">
         <div className="max-w-[1440px] mx-auto">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 sm:gap-8 mb-10 sm:mb-16">
@@ -248,32 +187,33 @@ const EquestrianHome: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-12 lg:gap-16 items-start">
-            {/* Left: Interactive Live Photograph Preview */}
+            {/* Left: Pre-mounted Photograph Stack — zero unmount/remount or scroll glitch */}
             <div className="lg:col-span-5 lg:sticky lg:top-28">
-              <div className="relative overflow-hidden rounded-2xl aspect-[16/10] sm:aspect-[4/5] bg-[#E8E2D5]">
-                <AnimatePresence mode="wait">
-                  <motion.img
-                    key={activeLesson.id}
-                    src={activeLesson.photo}
-                    alt={activeLesson.name}
-                    loading="lazy"
-                    decoding="async"
-                    initial={{ opacity: 0, scale: 1.04 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-                    className="absolute inset-0 w-full h-full object-cover"
-                  />
-                </AnimatePresence>
+              <div className="relative overflow-hidden rounded-2xl aspect-[16/10] sm:aspect-[4/5] bg-[#E8E2D5] shadow-[0_20px_50px_-28px_rgba(30,40,34,0.22)]">
+                {featuredLessons.map((lesson, idx) => {
+                  const isCurrent = idx === activeLessonIndex;
+                  return (
+                    <img
+                      key={lesson.id}
+                      src={lesson.photo}
+                      alt={lesson.name}
+                      loading="eager"
+                      decoding="async"
+                      className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ease-out ${
+                        isCurrent ? 'opacity-100 z-[1]' : 'opacity-0 z-0 pointer-events-none'
+                      }`}
+                    />
+                  );
+                })}
                 <div
                   aria-hidden="true"
-                  className="absolute inset-0"
+                  className="absolute inset-0 z-[2] pointer-events-none"
                   style={{
                     background:
                       'linear-gradient(to top, rgba(24,36,29,0.72) 0%, rgba(24,36,29,0.12) 45%, rgba(24,36,29,0) 100%)'
                   }}
                 />
-                <div className="absolute inset-x-0 bottom-0 p-5 sm:p-7 text-[#FAF6EE]">
+                <div className="absolute inset-x-0 bottom-0 z-[3] p-5 sm:p-7 text-[#FAF6EE]">
                   <p className="text-[10px] uppercase tracking-[0.3em] text-[#CFE3D6] mb-1.5">
                     {activeLesson.setting} &middot; {activeLesson.duration}
                   </p>
@@ -289,8 +229,11 @@ const EquestrianHome: React.FC = () => {
                 return (
                   <div
                     key={lesson.id}
-                    onMouseEnter={() => setActiveLessonIndex(i)}
-                    onFocus={() => setActiveLessonIndex(i)}
+                    onPointerEnter={(e) => {
+                      if (e.pointerType === 'mouse') {
+                        setActiveLessonIndex(i);
+                      }
+                    }}
                     className="py-5 sm:py-7 first:pt-0 last:pb-0 transition-colors"
                   >
                     <Link

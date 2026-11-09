@@ -16,14 +16,14 @@ const Hero: React.FC<HeroProps> = ({ navigateTo, startAnimation = true }) => {
   return (
     <section ref={containerRef} className="relative h-[100dvh] flex items-center px-6 lg:px-24 overflow-hidden bg-[#0b0d10]">
       {/* Background Image with Lighter Top Overlay */}
-      <div className="absolute inset-0 z-0 transform-gpu">
+      <div className="absolute inset-0 z-0">
         {/* Same candidates as HERO['web-design'] in gateway/GatewayPage.tsx, so the
             file the gateway panel (or index.html's preload) already fetched is
             exactly the one this element asks for. */}
         <picture>
           <source type="image/webp" srcSet={HERO['web-design'].srcSet} sizes="100vw" />
           <img
-            src="/images/hero-bg-1920.webp"
+            src="/images/hero-bg-1280.webp"
             srcSet="/images/hero-bg-1280.webp 1280w, /images/hero-bg-1920.webp 1920w, /images/hero-bg-2560.webp 2560w, /images/hero-bg-3840.webp 3840w"
             sizes="100vw"
             width={1920}
@@ -39,12 +39,12 @@ const Hero: React.FC<HeroProps> = ({ navigateTo, startAnimation = true }) => {
         <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/45 to-black/75"></div>
       </div>
 
-      {/* Vertically Centered Content Container with Unveil Sequence */}
+      {/* Vertically Centered Content Container with Pure GPU Unveil Sequence */}
       <div className={`relative z-10 w-full max-w-4xl mx-auto sm:mx-0 flex flex-col items-center sm:items-start text-center sm:text-left justify-center gap-6 md:gap-8 pt-8 ${startAnimation ? 'hero-revealed' : 'hero-hidden'}`}>
         
         {/* HERO TITLE: Masked cinematic unveil */}
         <div className="overflow-hidden py-1">
-          <h1 className="hero-unveil-title font-syne text-[clamp(2.6rem,7vw,4.4rem)] font-black leading-[0.98] tracking-[-0.035em] text-white will-change-[transform,opacity,filter] transform-gpu">
+          <h1 className="hero-unveil-title font-syne text-[clamp(2.5rem,7vw,4.4rem)] font-black leading-[0.98] tracking-[-0.035em] text-white">
             <span className="inline-block [text-shadow:0_3px_14px_rgba(0,0,0,0.55)]">
               Rooted in <span className="text-shimmer-blue italic font-black">Wiltshire.</span>
             </span>
@@ -53,18 +53,18 @@ const Hero: React.FC<HeroProps> = ({ navigateTo, startAnimation = true }) => {
 
         {/* SUBTEXT: Masked glide & fade unveil */}
         <div className="hero-subtext-container max-w-2xl overflow-hidden py-0.5">
-          <p className="hero-unveil-subtext font-inter text-lg sm:text-xl md:text-2xl text-stone-100 font-normal leading-relaxed tracking-normal [text-shadow:0_2px_8px_rgba(0,0,0,0.6)] will-change-[transform,opacity,filter] transform-gpu">
+          <p className="hero-unveil-subtext font-inter text-lg sm:text-xl md:text-2xl text-stone-100 font-normal leading-relaxed tracking-normal [text-shadow:0_2px_8px_rgba(0,0,0,0.6)]">
             Custom designs for Ambitous brands.
           </p>
         </div>
 
-        {/* ACTION BUTTONS: Smooth fade-and-float unveil with instant interactive hovers */}
-        <div className="hero-unveil-cta flex flex-col sm:flex-row gap-4 items-center sm:items-start pt-2 will-change-[transform,opacity] transform-gpu">
+        {/* ACTION BUTTONS: Compact, content-sized buttons as before */}
+        <div className="hero-unveil-cta flex flex-row flex-wrap justify-center sm:justify-start gap-3 sm:gap-4 items-center pt-2">
           {/* Primary Warm Off-White Button */}
           <Link 
             to={PAGE_PATHS.contact}
             onClick={() => navigateTo('contact')}
-            className="w-full sm:w-auto px-7 py-3.5 bg-[#f5f2eb] hover:bg-white text-stone-900 rounded-xl font-semibold text-xs sm:text-sm tracking-wide transition-[transform,background-color,box-shadow] duration-150 ease-out shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2.5 cursor-pointer transform-gpu will-change-transform"
+            className="w-auto px-6 sm:px-7 py-3 sm:py-3.5 bg-[#f5f2eb] hover:bg-white text-stone-900 rounded-xl font-semibold text-xs sm:text-sm tracking-wide transition-colors duration-150 ease-out shadow-lg inline-flex items-center justify-center gap-2 cursor-pointer active:scale-95 whitespace-nowrap"
           >
             <span>Start Your Project</span>
             <ArrowRight size={15} />
@@ -74,7 +74,7 @@ const Hero: React.FC<HeroProps> = ({ navigateTo, startAnimation = true }) => {
           <Link 
             to={PAGE_PATHS.work}
             onClick={() => navigateTo('work')}
-            className="w-full sm:w-auto px-7 py-3.5 bg-white/10 hover:bg-white/20 text-white/95 border border-white/25 hover:border-white/40 rounded-xl font-medium text-xs sm:text-sm tracking-wide transition-[transform,background-color,border-color] duration-150 ease-out backdrop-blur-sm hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2 cursor-pointer transform-gpu will-change-transform"
+            className="w-auto px-6 sm:px-7 py-3 sm:py-3.5 bg-white/10 hover:bg-white/20 text-white/95 border border-white/25 hover:border-white/40 rounded-xl font-medium text-xs sm:text-sm tracking-wide transition-colors duration-150 ease-out md:backdrop-blur-sm inline-flex items-center justify-center gap-2 cursor-pointer active:scale-95 whitespace-nowrap"
           >
             <span>The Work</span>
           </Link>
@@ -92,63 +92,54 @@ const Hero: React.FC<HeroProps> = ({ navigateTo, startAnimation = true }) => {
 
         .hero-unveil-title {
           opacity: 0;
-          transform: translate3d(0, 115%, 0);
-          filter: blur(8px);
+          transform: translate3d(0, 105%, 0);
         }
         .hero-revealed .hero-unveil-title {
-          animation: heroTitleUnveil 0.95s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+          animation: heroTitleUnveil 0.75s cubic-bezier(0.16, 1, 0.3, 1) 0.06s both;
         }
 
         .hero-unveil-subtext {
           opacity: 0;
-          transform: translate3d(0, 26px, 0);
-          filter: blur(4px);
+          transform: translate3d(0, 20px, 0);
         }
         .hero-revealed .hero-unveil-subtext {
-          animation: heroSubtextUnveil 0.88s cubic-bezier(0.16, 1, 0.3, 1) 0.26s both;
+          animation: heroSubtextUnveil 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.18s both;
         }
 
         .hero-unveil-cta {
           opacity: 0;
-          transform: translate3d(0, 22px, 0);
+          transform: translate3d(0, 18px, 0);
         }
         .hero-revealed .hero-unveil-cta {
-          animation: heroCtaUnveil 0.82s cubic-bezier(0.16, 1, 0.3, 1) 0.42s both;
+          animation: heroCtaUnveil 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.28s both;
         }
 
         @keyframes heroTitleUnveil {
           0% {
             opacity: 0;
-            transform: translate3d(0, 115%, 0);
-            filter: blur(8px);
-          }
-          40% {
-            opacity: 0.75;
+            transform: translate3d(0, 105%, 0);
           }
           100% {
             opacity: 1;
             transform: translate3d(0, 0, 0);
-            filter: blur(0px);
           }
         }
 
         @keyframes heroSubtextUnveil {
           0% {
             opacity: 0;
-            transform: translate3d(0, 26px, 0);
-            filter: blur(4px);
+            transform: translate3d(0, 20px, 0);
           }
           100% {
             opacity: 1;
             transform: translate3d(0, 0, 0);
-            filter: blur(0px);
           }
         }
 
         @keyframes heroCtaUnveil {
           0% {
             opacity: 0;
-            transform: translate3d(0, 22px, 0);
+            transform: translate3d(0, 18px, 0);
           }
           100% {
             opacity: 1;
@@ -162,7 +153,6 @@ const Hero: React.FC<HeroProps> = ({ navigateTo, startAnimation = true }) => {
           .hero-unveil-cta {
             opacity: 1 !important;
             transform: none !important;
-            filter: none !important;
             animation: none !important;
             visibility: visible !important;
           }

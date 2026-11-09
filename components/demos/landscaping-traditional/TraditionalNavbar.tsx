@@ -96,42 +96,42 @@ export const TraditionalNavbar: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -12 }}
             transition={{ duration: 0.22 }}
-            className="fixed inset-0 z-[300] bg-white flex flex-col px-6 py-6 lg:hidden overflow-y-auto"
+            className="fixed inset-0 z-[300] bg-white flex flex-col px-5 sm:px-6 pt-5 pb-16 lg:hidden overflow-y-auto"
           >
-            <div className="flex justify-between items-center pb-6 border-b border-slate-200">
-              <span className="text-xl font-extrabold tracking-tight text-[#14532D]">
+            <div className="flex justify-between items-center pb-5 border-b border-slate-200">
+              <span className="text-lg sm:text-xl font-extrabold tracking-tight text-[#14532D]">
                 {OAK_ASH_BRAND.name}
               </span>
               <button
                 type="button"
                 aria-label="Close menu"
                 onClick={() => setMobileMenuOpen(false)}
-                className="w-11 h-11 flex items-center justify-center rounded-lg border border-slate-200 text-[#14532D] cursor-pointer"
+                className="w-10 h-10 flex items-center justify-center rounded-lg border border-slate-200 text-[#14532D] cursor-pointer"
               >
                 <X size={20} />
               </button>
             </div>
 
-            <nav aria-label="Mobile" className="flex flex-col divide-y divide-slate-100 py-4">
+            <nav aria-label="Mobile" className="flex flex-col divide-y divide-slate-100 py-3">
               {NAV_LINKS.map((link) => (
                 <Link
                   key={link.path}
                   to={link.path}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="text-xl font-semibold text-[#14532D] py-4 hover:text-[#15803D] transition-colors"
+                  className="text-lg sm:text-xl font-semibold text-[#14532D] py-3.5 hover:text-[#15803D] transition-colors"
                 >
                   {link.name}
                 </Link>
               ))}
             </nav>
 
-            <div className="mt-auto pt-6 border-t border-slate-200 space-y-3">
+            <div className="mt-auto pt-5 border-t border-slate-200 space-y-2.5">
               <p className="text-xs font-medium text-slate-500">
                 Wiltshire · Surrey · Cotswolds · London
               </p>
               <a
                 href={`tel:${OAK_ASH_BRAND.phoneHref}`}
-                className="flex items-center justify-center gap-2 w-full py-3.5 rounded-lg border border-emerald-800/25 text-[#14532D] text-sm font-semibold tabular-nums"
+                className="flex items-center justify-center gap-2 w-full py-3 rounded-lg border border-emerald-800/25 text-[#14532D] text-sm font-semibold tabular-nums"
               >
                 <Phone size={15} />
                 Call Us: {OAK_ASH_BRAND.phoneDisplay}
@@ -139,7 +139,7 @@ export const TraditionalNavbar: React.FC = () => {
               <Link
                 to="/demo/landscaping-traditional/contact"
                 onClick={() => setMobileMenuOpen(false)}
-                className="block text-center w-full py-3.5 rounded-lg bg-[#15803D] text-white text-sm font-semibold shadow-sm"
+                className="block text-center w-full py-3 rounded-lg bg-[#15803D] text-white text-sm font-semibold shadow-sm"
               >
                 Get a Free Quote
               </Link>

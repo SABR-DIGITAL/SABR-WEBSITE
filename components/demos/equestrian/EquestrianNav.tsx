@@ -145,8 +145,8 @@ const EquestrianNav: React.FC<EquestrianNavProps> = ({ transparentOnTop = false 
       </header>
 
       {open && (
-        <div className="fixed inset-0 z-[140] bg-[#FAF6EE] pt-20 px-5 pb-8 flex flex-col justify-between lg:hidden overflow-y-auto">
-          <nav aria-label="Mobile" className="space-y-1.5">
+        <div className="fixed inset-0 z-[140] bg-[#FAF6EE] pt-20 px-5 pb-20 sm:pb-10 flex flex-col justify-between lg:hidden overflow-y-auto">
+          <nav aria-label="Mobile" className="space-y-1">
             {[
               { name: 'Home', path: '/demo/equestrian' },
               ...navLinks
@@ -157,7 +157,7 @@ const EquestrianNav: React.FC<EquestrianNavProps> = ({ transparentOnTop = false 
                   key={link.path}
                   to={link.path}
                   onClick={() => setOpen(false)}
-                  className={`flex items-center justify-between px-4 py-3.5 rounded-2xl font-serif text-xl sm:text-2xl transition-colors ${
+                  className={`flex items-center justify-between px-4 py-3 rounded-2xl font-serif text-lg sm:text-2xl transition-colors ${
                     active ? 'bg-[#2D5A43] text-[#FAF6EE]' : 'text-[#1E2822] hover:bg-[#E8F0EB]'
                   }`}
                 >
@@ -174,17 +174,17 @@ const EquestrianNav: React.FC<EquestrianNavProps> = ({ transparentOnTop = false 
             })}
           </nav>
 
-          <div className="pt-6 space-y-4">
-            <div className="p-4 sm:p-5 rounded-2xl bg-[#E8F0EB]">
+          <div className="pt-5 space-y-3.5">
+            <div className="p-4 rounded-2xl bg-[#E8F0EB]">
               <p className="text-[10px] uppercase tracking-[0.3em] text-[#2D5A43] mb-1">Ring the Tack Room</p>
-              <a href={`tel:${academy.phoneHref}`} className="font-serif text-xl sm:text-2xl text-[#1E2822]">
+              <a href={`tel:${academy.phoneHref}`} className="font-serif text-lg sm:text-2xl text-[#1E2822]">
                 {academy.phoneDisplay}
               </a>
             </div>
             <Link
               to="/demo/equestrian/book"
               onClick={() => setOpen(false)}
-              className="w-full inline-flex items-center justify-center gap-3 py-4 rounded-full bg-[#2D5A43] text-[#FAF6EE] text-[10px] uppercase tracking-[0.3em]"
+              className="w-full inline-flex items-center justify-center gap-3 py-3.5 sm:py-4 rounded-full bg-[#2D5A43] text-[#FAF6EE] text-[10px] uppercase tracking-[0.3em]"
             >
               <span>Book a Lesson</span>
               <ArrowUpRight size={15} />

@@ -336,7 +336,7 @@
               "@type": "SiteNavigationElement",
               "position": 1,
               "name": "Home",
-              "description": "We design and build fast, easy-to-find websites for small businesses. Most sites go live in two to three weeks.",
+              "description": "We design and build fast, easy-to-find websites for small businesses. Most sites go live in up to 10 days.",
               "url": "https://sabrdigital.co.uk/web-design/"
             },
             {
@@ -374,7 +374,7 @@
           "@id": "https://sabrdigital.co.uk/web-design/#webpage",
           "url": "https://sabrdigital.co.uk/web-design/",
           "name": "SABR Digital | Web Design for Small Businesses",
-          "description": "We design and build fast, easy-to-find websites for small businesses. Most sites go live in two to three weeks.",
+          "description": "We design and build fast, easy-to-find websites for small businesses. Most sites go live in up to 10 days.",
           "isPartOf": {
             "@id": "https://sabrdigital.co.uk/web-design/#website"
           },
@@ -477,7 +477,7 @@
               "name": "How long does it take?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Most websites go live two to three weeks after our first call. Larger builds take longer, and we will give you an honest date before you commit to anything."
+                "text": "Most websites go live in up to 10 days after our first call. Larger builds take longer, and we will give you an honest date before you commit to anything."
               }
             },
             {
@@ -664,6 +664,15 @@
       html {
         overflow-x: hidden;
         overflow-x: clip;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+      }
+
+      html::-webkit-scrollbar,
+      body::-webkit-scrollbar {
+        display: none;
+        width: 0;
+        height: 0;
       }
 
       /* Layout Integrity: Refined for clarity and anti-crowding */
@@ -783,6 +792,7 @@
       window.__sabrStartFluidBg = () => {
         if (fluidStarted) return;
         fluidStarted = true;
+        if (window.innerWidth < 1024) return;
         const canvas = document.getElementById('fluid-bg');
         if (!canvas) return;
         const gl = canvas.getContext('webgl', {

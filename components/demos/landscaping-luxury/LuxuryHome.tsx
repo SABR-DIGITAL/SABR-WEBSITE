@@ -12,7 +12,6 @@ import {
 } from 'lucide-react';
 import LuxuryNavbar from './LuxuryNavbar';
 import LuxuryFooter from './LuxuryFooter';
-import LuxuryMowIntro from './LuxuryMowIntro';
 import LuxuryCountUp from './LuxuryCountUp';
 import {
   OAK_ASH_BRAND,
@@ -35,19 +34,9 @@ export const markLuxuryInternalNav = () => {
 
 export const LuxuryHome: React.FC = () => {
   const pageRef = useRef<HTMLDivElement>(null);
-  const [introFinished, setIntroFinished] = useState<boolean>(
-    () => typeof window !== 'undefined' && Boolean((window as any).__oakAshLuxuryInternalNav)
-  );
   const [heroIndex, setHeroIndex] = useState(0);
   const [activePortfolioIdx, setActivePortfolioIdx] = useState(0);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
-
-  const handleIntroComplete = () => {
-    if (typeof window !== 'undefined') {
-      (window as any).__oakAshLuxuryInternalNav = true;
-    }
-    setIntroFinished(true);
-  };
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -63,7 +52,6 @@ export const LuxuryHome: React.FC = () => {
 
   // Bespoke Architectural Mask-Reveal, Stat Progress & Glide Choreography
   useEffect(() => {
-    if (!introFinished) return;
     const root = pageRef.current;
     if (!root) return;
 
@@ -214,7 +202,7 @@ export const LuxuryHome: React.FC = () => {
     }, root);
 
     return () => ctx.revert();
-  }, [introFinished]);
+  }, []);
 
   const activePortfolio =
     PORTFOLIO_COLLECTIONS[activePortfolioIdx] || PORTFOLIO_COLLECTIONS[0];
@@ -222,19 +210,14 @@ export const LuxuryHome: React.FC = () => {
   return (
     <div
       ref={pageRef}
-      className="bg-[#0C0A08] text-[#F4F1EA] min-h-screen selection:bg-[#C8B88A] selection:text-[#0C0A08] font-sans relative overflow-x-hidden"
+      className="bg-[#0C0A08] text-[#F4F1EA] min-h-screen selection:bg-[#C8B88A] selection:text-[#0C0A08] font-sans relative"
     >
-      {/* LAWN-MOWING LUXURY INTRO (Pure mowing animation, smooth dissolve into site) */}
-      <AnimatePresence>
-        {!introFinished && <LuxuryMowIntro onComplete={handleIntroComplete} />}
-      </AnimatePresence>
-
       <LuxuryNavbar />
 
       {/* =================================================================== */}
       {/* 1. CLEAN UNOBSTRUCTED FULL-BLEED HERO                               */}
       {/* =================================================================== */}
-      <section className="relative h-screen min-h-[100svh] flex flex-col justify-end pb-20 sm:pb-28 md:pb-32 px-6 sm:px-12 md:px-20 overflow-hidden bg-[#0C0A08]">
+      <section className="relative h-screen min-h-[100svh] flex flex-col justify-end pb-20 sm:pb-28 md:pb-32 px-5 sm:px-12 md:px-20 overflow-hidden bg-[#0C0A08]">
         {HERO_SLIDES.map((slide, idx) => {
           const isCurrent = idx === heroIndex;
           return (
@@ -262,17 +245,13 @@ export const LuxuryHome: React.FC = () => {
         })}
 
         {/* ONLY THE 4 REQUESTED LINES IN THE OPTIMAL EDITORIAL FOCAL POSITION */}
-        <div
-          className={`relative z-20 max-w-7xl mx-auto w-full transition-opacity duration-700 ${
-            introFinished ? 'opacity-100' : 'opacity-0'
-          }`}
-        >
-          <div className="max-w-4xl space-y-5 sm:space-y-6">
-            <span className="lux-hero-kicker block text-[10px] sm:text-xs font-mono uppercase tracking-[0.48em] text-[#C8B88A]">
+        <div className="relative z-20 max-w-7xl mx-auto w-full">
+          <div className="max-w-4xl space-y-4 sm:space-y-6">
+            <span className="lux-hero-kicker block text-[9px] sm:text-xs font-mono uppercase tracking-[0.28em] sm:tracking-[0.48em] text-[#C8B88A]">
               EST. 1998 · WILTSHIRE, SURREY &amp; LONDON
             </span>
 
-            <h1 className="font-cinzel text-4xl sm:text-6xl md:text-7xl lg:text-[5.6rem] font-bold uppercase text-[#F4F1EA] leading-[0.96] tracking-tight drop-shadow-2xl">
+            <h1 className="font-cinzel text-[2.1rem] sm:text-6xl md:text-7xl lg:text-[5.6rem] font-bold uppercase text-[#F4F1EA] leading-[0.98] sm:leading-[0.96] tracking-tight drop-shadow-2xl">
               <span className="block overflow-hidden pb-1">
                 <span className="lux-mask-line block">TWENTY-EIGHT</span>
               </span>
@@ -280,7 +259,7 @@ export const LuxuryHome: React.FC = () => {
                 <span className="lux-mask-line block">YEARS OF RARE</span>
               </span>
               <span className="block overflow-hidden pt-1">
-                <span className="lux-mask-line block font-cormorant italic font-normal normal-case tracking-normal text-[#C8B88A] text-5xl sm:text-7xl lg:text-[6.2rem]">
+                <span className="lux-mask-line block font-cormorant italic font-normal normal-case tracking-normal text-[#C8B88A] text-[2.5rem] sm:text-7xl lg:text-[6.2rem]">
                   Award-Winning Gardens.
                 </span>
               </span>
@@ -292,14 +271,14 @@ export const LuxuryHome: React.FC = () => {
       {/* =================================================================== */}
       {/* 2. THE PRACTICE (With Live Counting Numbers & Animated Progress)    */}
       {/* =================================================================== */}
-      <section className="relative py-20 sm:py-32 md:py-48 px-5 sm:px-6 md:px-14 bg-[#0C0A08] border-b border-[#C8B88A]/15">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 sm:gap-16 lg:gap-24 items-center">
+      <section className="relative py-16 sm:py-32 md:py-48 px-5 sm:px-6 md:px-14 bg-[#0C0A08] border-b border-[#C8B88A]/15">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 sm:gap-16 lg:gap-24 items-center">
           <div className="prestige-glide lg:col-span-6 space-y-6 sm:space-y-8">
             <span className="text-[10px] uppercase tracking-[0.45em] text-[#C8B88A] font-mono font-bold block">
               <LuxuryCountUp end={1} padZero /> · THE PRACTICE
             </span>
 
-            <h2 className="font-cinzel text-3xl sm:text-5xl font-bold uppercase tracking-tight text-[#F4F1EA] leading-[1.12]">
+            <h2 className="font-cinzel text-2xl sm:text-5xl font-bold uppercase tracking-tight text-[#F4F1EA] leading-[1.14] sm:leading-[1.12]">
               TWENTY-EIGHT YEARS OF <br />
               AWARD-WINNING GARDENS. <br />
               <span className="font-cormorant italic font-normal text-[#C8B88A]">
@@ -313,40 +292,40 @@ export const LuxuryHome: React.FC = () => {
               From the initial consultation and spatial masterplan through to natural stone masonry, bespoke metalwork, and mature planting, our permanent in-house teams handle every stage of your garden transformation without third-party friction.
             </p>
 
-            {/* ANIMATED COUNTING STATS (Matches Screenshot 1 across the demo) */}
-            <div className="prestige-stat-group pt-8 border-t border-[#C8B88A]/20 grid grid-cols-3 gap-6 sm:gap-8">
+            {/* ANIMATED COUNTING STATS */}
+            <div className="prestige-stat-group pt-7 sm:pt-8 border-t border-[#C8B88A]/20 grid grid-cols-3 gap-4 sm:gap-8">
               <div className="prestige-stat-item">
-                <div className="font-cinzel text-3xl sm:text-5xl font-bold text-[#C8B88A]">
+                <div className="font-cinzel text-2xl sm:text-5xl font-bold text-[#C8B88A]">
                   <LuxuryCountUp end={28} suffix="+" duration={1900} />
                 </div>
-                <div className="h-[1px] w-full bg-[#C8B88A]/15 my-2.5 overflow-hidden">
+                <div className="h-[1px] w-full bg-[#C8B88A]/15 my-2 sm:my-2.5 overflow-hidden">
                   <div className="prestige-stat-bar h-full w-full bg-[#C8B88A]" />
                 </div>
-                <div className="text-[10px] font-mono uppercase tracking-[0.26em] text-[#F4F1EA]/55">
+                <div className="text-[9px] sm:text-[10px] font-mono uppercase tracking-[0.16em] sm:tracking-[0.26em] text-[#F4F1EA]/55">
                   Years Est.
                 </div>
               </div>
 
               <div className="prestige-stat-item">
-                <div className="font-cinzel text-3xl sm:text-5xl font-bold text-[#C8B88A]">
+                <div className="font-cinzel text-2xl sm:text-5xl font-bold text-[#C8B88A]">
                   <LuxuryCountUp end={22} duration={2000} />
                 </div>
-                <div className="h-[1px] w-full bg-[#C8B88A]/15 my-2.5 overflow-hidden">
+                <div className="h-[1px] w-full bg-[#C8B88A]/15 my-2 sm:my-2.5 overflow-hidden">
                   <div className="prestige-stat-bar h-full w-full bg-[#C8B88A]" />
                 </div>
-                <div className="text-[10px] font-mono uppercase tracking-[0.26em] text-[#F4F1EA]/55">
+                <div className="text-[9px] sm:text-[10px] font-mono uppercase tracking-[0.16em] sm:tracking-[0.26em] text-[#F4F1EA]/55">
                   RHS &amp; BALI
                 </div>
               </div>
 
               <div className="prestige-stat-item">
-                <div className="font-cinzel text-3xl sm:text-5xl font-bold text-[#C8B88A]">
+                <div className="font-cinzel text-2xl sm:text-5xl font-bold text-[#C8B88A]">
                   <LuxuryCountUp end={100} suffix="%" duration={2100} />
                 </div>
-                <div className="h-[1px] w-full bg-[#C8B88A]/15 my-2.5 overflow-hidden">
+                <div className="h-[1px] w-full bg-[#C8B88A]/15 my-2 sm:my-2.5 overflow-hidden">
                   <div className="prestige-stat-bar h-full w-full bg-[#C8B88A]" />
                 </div>
-                <div className="text-[10px] font-mono uppercase tracking-[0.26em] text-[#F4F1EA]/55">
+                <div className="text-[9px] sm:text-[10px] font-mono uppercase tracking-[0.16em] sm:tracking-[0.26em] text-[#F4F1EA]/55">
                   In-House
                 </div>
               </div>
@@ -389,14 +368,14 @@ export const LuxuryHome: React.FC = () => {
       {/* =================================================================== */}
       {/* 3. CURATED PORTFOLIOS (Fluid Tabs + Interactive Showcase)           */}
       {/* =================================================================== */}
-      <section className="relative py-20 sm:py-32 md:py-48 px-5 sm:px-6 md:px-14 bg-[#110E0B] border-b border-[#C8B88A]/15">
-        <div className="max-w-6xl mx-auto space-y-14 sm:space-y-20">
+      <section className="relative py-16 sm:py-32 md:py-48 px-5 sm:px-6 md:px-14 bg-[#110E0B] border-b border-[#C8B88A]/15">
+        <div className="max-w-6xl mx-auto space-y-12 sm:space-y-20">
           <div className="prestige-glide flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8 border-b border-[#C8B88A]/20">
             <div className="space-y-3">
               <span className="text-[10px] uppercase tracking-[0.45em] text-[#C8B88A] font-mono font-bold block">
                 <LuxuryCountUp end={2} padZero /> · SELECTED WORKS (<LuxuryCountUp end={6} padZero /> COLLECTIONS)
               </span>
-              <h2 className="font-cinzel text-3xl sm:text-5xl font-bold uppercase tracking-tight text-[#F4F1EA]">
+              <h2 className="font-cinzel text-2xl sm:text-5xl font-bold uppercase tracking-tight text-[#F4F1EA]">
                 GARDEN PORTFOLIOS
               </h2>
             </div>
@@ -515,14 +494,14 @@ export const LuxuryHome: React.FC = () => {
       {/* =================================================================== */}
       {/* 4. FOUR ARCHITECTURAL DISCIPLINES (Heavy Curtain Glide)             */}
       {/* =================================================================== */}
-      <section className="py-20 sm:py-32 md:py-48 px-5 sm:px-6 md:px-14 bg-[#0C0A08] border-b border-[#C8B88A]/15">
-        <div className="max-w-6xl mx-auto space-y-20 sm:space-y-32">
+      <section className="py-16 sm:py-32 md:py-48 px-5 sm:px-6 md:px-14 bg-[#0C0A08] border-b border-[#C8B88A]/15">
+        <div className="max-w-6xl mx-auto space-y-16 sm:space-y-32">
           <div className="prestige-glide flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8 border-b border-[#C8B88A]/20">
             <div>
               <span className="text-[10px] uppercase tracking-[0.45em] text-[#C8B88A] font-mono font-bold block mb-3">
                 <LuxuryCountUp end={3} padZero /> · TURNKEY PRACTICE (<LuxuryCountUp end={4} padZero /> DISCIPLINES)
               </span>
-              <h2 className="font-cinzel text-3xl sm:text-5xl font-bold uppercase tracking-tight text-[#F4F1EA]">
+              <h2 className="font-cinzel text-2xl sm:text-5xl font-bold uppercase tracking-tight text-[#F4F1EA]">
                 DESIGN &amp; MASTER CONSTRUCTION
               </h2>
             </div>
@@ -578,14 +557,14 @@ export const LuxuryHome: React.FC = () => {
       {/* =================================================================== */}
       {/* 5. RHS CHELSEA SHOW GARDENS                                         */}
       {/* =================================================================== */}
-      <section className="py-20 sm:py-32 md:py-44 px-5 sm:px-6 md:px-14 bg-[#110E0B] border-b border-[#C8B88A]/15">
+      <section className="py-16 sm:py-32 md:py-44 px-5 sm:px-6 md:px-14 bg-[#110E0B] border-b border-[#C8B88A]/15">
         <div className="max-w-6xl mx-auto">
-          <div className="prestige-glide flex flex-col md:flex-row md:items-end justify-between mb-14 sm:mb-20 gap-6 pb-8 border-b border-[#C8B88A]/20">
+          <div className="prestige-glide flex flex-col md:flex-row md:items-end justify-between mb-12 sm:mb-20 gap-6 pb-8 border-b border-[#C8B88A]/20">
             <div className="space-y-3">
               <span className="text-[10px] font-mono uppercase tracking-[0.42em] text-[#C8B88A] block">
                 <LuxuryCountUp end={4} padZero /> · ROYAL HORTICULTURAL SOCIETY HONOURS
               </span>
-              <h2 className="font-cinzel text-3xl sm:text-5xl font-bold text-[#F4F1EA] uppercase tracking-tight">
+              <h2 className="font-cinzel text-2xl sm:text-5xl font-bold text-[#F4F1EA] uppercase tracking-tight">
                 AWARD-WINNING SHOW GARDENS
               </h2>
             </div>
@@ -628,10 +607,10 @@ export const LuxuryHome: React.FC = () => {
       {/* =================================================================== */}
       {/* 6. PRIVATE COMMISSIONS & FREQUENTLY ASKED QUESTIONS                 */}
       {/* =================================================================== */}
-      <section className="py-20 sm:py-32 md:py-44 px-5 sm:px-6 md:px-14 bg-[#0C0A08]">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-14 lg:gap-20 items-start">
+      <section className="py-16 sm:py-32 md:py-44 px-5 sm:px-6 md:px-14 bg-[#0C0A08]">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 sm:gap-14 lg:gap-20 items-start">
           {/* Left: Private Commissions Desk */}
-          <div className="prestige-glide lg:col-span-5 space-y-8 border border-[#C8B88A]/30 bg-[#120F0B] p-7 sm:p-10">
+          <div className="prestige-glide lg:col-span-5 space-y-6 sm:space-y-8 border border-[#C8B88A]/30 bg-[#120F0B] p-6 sm:p-10">
             <div className="space-y-3">
               <span className="text-[10px] font-mono uppercase tracking-[0.4em] text-[#C8B88A] block">
                 <LuxuryCountUp end={5} padZero /> · PRIVATE COMMISSIONS
@@ -685,11 +664,11 @@ export const LuxuryHome: React.FC = () => {
 
           {/* Right: Luxury Accordion */}
           <div className="prestige-glide lg:col-span-7">
-            <div className="mb-10 space-y-2.5">
+            <div className="mb-8 sm:mb-10 space-y-2.5">
               <span className="text-[10px] font-mono uppercase tracking-[0.4em] text-[#C8B88A] block">
                 CLIENT GUIDANCE
               </span>
-              <h2 className="font-cinzel text-3xl sm:text-4xl font-bold text-[#F4F1EA] uppercase">
+              <h2 className="font-cinzel text-2xl sm:text-4xl font-bold text-[#F4F1EA] uppercase">
                 FREQUENTLY ASKED QUESTIONS
               </h2>
             </div>
@@ -702,7 +681,7 @@ export const LuxuryHome: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => setOpenFaq(isOpen ? null : idx)}
-                      className="w-full py-6 text-left flex items-center justify-between gap-6 group cursor-pointer"
+                      className="w-full py-5 sm:py-6 text-left flex items-center justify-between gap-6 group cursor-pointer"
                     >
                       <h3 className="font-cormorant text-xl sm:text-2xl font-normal text-[#F4F1EA] group-hover:text-[#C8B88A] transition-colors leading-snug">
                         {item.q}

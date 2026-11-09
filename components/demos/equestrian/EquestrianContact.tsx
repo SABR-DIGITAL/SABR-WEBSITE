@@ -13,7 +13,7 @@ const EquestrianContact: React.FC = () => {
   }, []);
 
   return (
-    <div className="relative min-h-screen bg-[#FAF6EE] font-inter text-[#1E2822] selection:bg-[#2D5A43] selection:text-[#FAF6EE] overflow-x-hidden flex flex-col justify-between">
+    <div className="relative min-h-screen bg-[#FAF6EE] font-inter text-[#1E2822] selection:bg-[#2D5A43] selection:text-[#FAF6EE] flex flex-col justify-between">
       <EquestrianNav />
 
       <main className="relative z-10 pt-24 sm:pt-32 md:pt-44 pb-16 sm:pb-24 md:pb-36 px-5 sm:px-6 md:px-12">

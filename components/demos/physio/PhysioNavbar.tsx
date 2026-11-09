@@ -40,14 +40,14 @@ const PhysioNavbar: React.FC = () => {
         className={`fixed top-0 left-0 right-0 z-[200] transition-all duration-300 ${
           scrolled
             ? 'bg-white/95 backdrop-blur-md border-b border-slate-200/80 py-3.5 shadow-[0_8px_30px_rgb(15,41,66,0.05)]'
-            : 'bg-white/90 backdrop-blur-sm border-b border-slate-200/60 py-5'
+            : 'bg-white/90 backdrop-blur-sm border-b border-slate-200/60 py-4 sm:py-5'
         }`}
       >
-        <div className="max-w-[1380px] mx-auto px-6 md:px-10 flex items-center justify-between gap-8">
+        <div className="max-w-[1380px] mx-auto px-5 sm:px-6 md:px-10 flex items-center justify-between gap-4 sm:gap-8">
           {/* Zone 1: Single text element wordmark */}
           <Link
             to="/demo/physio"
-            className="text-xl md:text-2xl font-bold tracking-tight text-[#0F2942] hover:text-[#0D9488] transition-colors whitespace-nowrap shrink-0"
+            className="text-lg sm:text-xl md:text-2xl font-bold tracking-tight text-[#0F2942] hover:text-[#0D9488] transition-colors whitespace-nowrap shrink-0"
           >
             {clinic.name}
           </Link>
@@ -103,7 +103,7 @@ const PhysioNavbar: React.FC = () => {
             <button
               type="button"
               aria-label="Open menu"
-              className="lg:hidden w-11 h-11 flex items-center justify-center rounded-lg text-[#0F2942] border border-slate-200 bg-white hover:bg-slate-50 transition-colors"
+              className="lg:hidden w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-lg text-[#0F2942] border border-slate-200 bg-white hover:bg-slate-50 transition-colors"
               onClick={() => setMobileMenuOpen(true)}
             >
               <Menu size={20} />
@@ -120,25 +120,25 @@ const PhysioNavbar: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -12 }}
             transition={{ duration: 0.22 }}
-            className="fixed inset-0 z-[300] bg-white flex flex-col px-6 py-6 lg:hidden overflow-y-auto"
+            className="fixed inset-0 z-[300] bg-white flex flex-col px-6 pt-5 pb-20 sm:pb-8 lg:hidden overflow-y-auto"
           >
-            <div className="flex justify-between items-center pb-6 border-b border-slate-200">
-              <span className="text-xl font-bold tracking-tight text-[#0F2942]">{clinic.name}</span>
+            <div className="flex justify-between items-center pb-5 border-b border-slate-200">
+              <span className="text-lg sm:text-xl font-bold tracking-tight text-[#0F2942]">{clinic.name}</span>
               <button
                 type="button"
                 aria-label="Close menu"
                 onClick={() => setMobileMenuOpen(false)}
-                className="w-11 h-11 flex items-center justify-center rounded-lg border border-slate-200 text-[#0F2942]"
+                className="w-10 h-10 flex items-center justify-center rounded-lg border border-slate-200 text-[#0F2942]"
               >
                 <X size={20} />
               </button>
             </div>
 
-            <nav aria-label="Mobile" className="flex flex-col divide-y divide-slate-100 py-4">
+            <nav aria-label="Mobile" className="flex flex-col divide-y divide-slate-100 py-3">
               <Link
                 to="/demo/physio"
                 onClick={() => setMobileMenuOpen(false)}
-                className="text-xl font-semibold text-[#0F2942] py-4 hover:text-[#0D9488] transition-colors"
+                className="text-lg sm:text-xl font-semibold text-[#0F2942] py-3.5 hover:text-[#0D9488] transition-colors"
               >
                 Home
               </Link>
@@ -147,20 +147,20 @@ const PhysioNavbar: React.FC = () => {
                   key={link.path}
                   to={link.path}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="text-xl font-semibold text-[#0F2942] py-4 hover:text-[#0D9488] transition-colors"
+                  className="text-lg sm:text-xl font-semibold text-[#0F2942] py-3.5 hover:text-[#0D9488] transition-colors"
                 >
                   {link.name}
                 </Link>
               ))}
             </nav>
 
-            <div className="mt-auto pt-6 border-t border-slate-200 space-y-3">
+            <div className="mt-auto pt-5 border-t border-slate-200 space-y-3">
               <p className="text-xs font-medium text-slate-500">
                 3 UK Clinics: Bath · Bristol · Cheltenham
               </p>
               <a
                 href={`tel:${clinic.phoneHref}`}
-                className="flex items-center justify-center gap-2 w-full py-3.5 rounded-lg border border-slate-300 text-[#0F2942] text-sm font-semibold"
+                className="flex items-center justify-center gap-2 w-full py-3 rounded-lg border border-slate-300 text-[#0F2942] text-sm font-semibold"
               >
                 <Phone size={15} />
                 Call Central Reception: {clinic.phoneDisplay}

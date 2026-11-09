@@ -50,18 +50,14 @@ if (initialSite === 'web-design') {
 // Which site is on screen right now — updated on gateway handover and site switches.
 let currentSite: GatewaySite | null = initialSite;
 
-// Warm the web-design destination chunk and pre-decode its hero image once the
-// initial view is settled and the browser is idle.
+// Warm the web-design destination chunk and pre-decode its hero image right away
+// so entering from the gateway is instantaneous on mobile and desktop.
 {
   const warmAll = () => {
     loadSite['web-design']().catch(() => undefined);
     decodeHero('web-design').catch(() => undefined);
   };
-  window.setTimeout(() => {
-    const idle = (window as any).requestIdleCallback;
-    if (typeof idle === 'function') idle(warmAll, { timeout: 2000 });
-    else warmAll();
-  }, 1800);
+  window.setTimeout(warmAll, 80);
 }
 
 // How long the expanded gateway panel takes to fade off the top of the

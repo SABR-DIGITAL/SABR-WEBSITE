@@ -31,7 +31,7 @@ const EquestrianLessons: React.FC = () => {
       : lessons.filter((l) => l.category === selectedCategory);
 
   return (
-    <div className="relative min-h-screen bg-[#FAF6EE] font-inter text-[#1E2822] selection:bg-[#2D5A43] selection:text-[#FAF6EE] overflow-x-hidden">
+    <div className="relative min-h-screen bg-[#FAF6EE] font-inter text-[#1E2822] selection:bg-[#2D5A43] selection:text-[#FAF6EE]">
       <EquestrianNav />
 
       {/* ── WARM EDITORIAL HEADER ────────────────────────────────────────── */}
@@ -85,85 +85,78 @@ const EquestrianLessons: React.FC = () => {
       {/* ── VISUAL LESSON STREAM (ENGAGING, WARM & UNCLUTTERED) ──────────── */}
       <section className="relative z-10 px-5 sm:px-6 md:px-12 pb-16 sm:pb-24 md:pb-32">
         <div className="max-w-[1440px] mx-auto space-y-5 sm:space-y-6">
-          <AnimatePresence mode="popLayout">
-            {filteredLessons.map((lesson, i) => (
-              <motion.article
-                key={lesson.id}
-                layout
-                initial={{ opacity: 0, y: 24 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -16 }}
-                transition={{ duration: 0.45, delay: Math.min(i, 5) * 0.04, ease: [0.22, 1, 0.36, 1] }}
-                className="group rounded-3xl bg-white/80 backdrop-blur-[2px] hover:bg-white p-5 sm:p-6 md:p-8 lg:p-10 transition-all duration-300 shadow-[0_14px_40px_-26px_rgba(30,40,34,0.18)]"
-              >
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-8 items-center">
-                  {/* Left: Correlated Lesson Photograph */}
-                  <div className="lg:col-span-4 overflow-hidden rounded-2xl aspect-[16/10] bg-[#E8E2D5]">
-                    <img
-                      src={lesson.photo}
-                      alt={lesson.name}
-                      loading={i < 2 ? 'eager' : 'lazy'}
-                      decoding="async"
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
+          {filteredLessons.map((lesson, i) => (
+            <article
+              key={lesson.id}
+              className="group rounded-3xl bg-white/85 hover:bg-white p-5 sm:p-6 md:p-8 lg:p-10 transition-colors duration-300 shadow-[0_14px_40px_-26px_rgba(30,40,34,0.18)]"
+            >
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-8 items-center">
+                {/* Left: Correlated Lesson Photograph */}
+                <div className="lg:col-span-4 overflow-hidden rounded-2xl aspect-[16/10] bg-[#E8E2D5]">
+                  <img
+                    src={lesson.photo}
+                    alt={lesson.name}
+                    loading={i < 3 ? 'eager' : 'lazy'}
+                    decoding="async"
+                    className="w-full h-full object-cover block"
+                  />
+                </div>
+
+                {/* Middle: Title, Badges, Description & Highlights */}
+                <div className="lg:col-span-5">
+                  <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 mb-2.5 sm:mb-3">
+                    <span className="px-3.5 py-1 rounded-full bg-[#E8F0EB] text-[#2D5A43] text-[10px] uppercase tracking-[0.24em] font-medium">
+                      {lesson.category}
+                    </span>
+                    <span className="text-[11px] uppercase tracking-[0.22em] text-[#5F665E]">
+                      &middot; {lesson.who}
+                    </span>
                   </div>
 
-                  {/* Middle: Title, Badges, Description & Highlights */}
-                  <div className="lg:col-span-5">
-                    <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 mb-2.5 sm:mb-3">
-                      <span className="px-3.5 py-1 rounded-full bg-[#E8F0EB] text-[#2D5A43] text-[10px] uppercase tracking-[0.24em] font-medium">
-                        {lesson.category}
-                      </span>
-                      <span className="text-[11px] uppercase tracking-[0.22em] text-[#5F665E]">
-                        &middot; {lesson.who}
-                      </span>
-                    </div>
+                  <h2 className="font-serif text-2xl md:text-3xl text-[#1E2822] group-hover:text-[#2D5A43] transition-colors mb-2.5 sm:mb-3">
+                    {lesson.name}
+                  </h2>
 
-                    <h2 className="font-serif text-2xl md:text-3xl text-[#1E2822] group-hover:text-[#2D5A43] transition-colors mb-2.5 sm:mb-3">
-                      {lesson.name}
-                    </h2>
+                  <p className="text-[14px] sm:text-[15px] md:text-[16px] text-[#5F665E] leading-[1.75] sm:leading-[1.8] mb-4 sm:mb-5">
+                    {lesson.detail}
+                  </p>
 
-                    <p className="text-[14px] sm:text-[15px] md:text-[16px] text-[#5F665E] leading-[1.75] sm:leading-[1.8] mb-4 sm:mb-5">
-                      {lesson.detail}
-                    </p>
-
-                    <div className="flex flex-wrap gap-x-5 gap-y-2">
-                      {lesson.highlights.map((h) => (
-                        <span key={h} className="inline-flex items-center gap-2 text-[13px] text-[#2D5A43]">
-                          <span className="w-4 h-4 rounded-full bg-[#E8F0EB] flex items-center justify-center shrink-0">
-                            <Check size={10} />
-                          </span>
-                          <span className="text-[#454D46]">{h}</span>
+                  <div className="flex flex-wrap gap-x-5 gap-y-2">
+                    {lesson.highlights.map((h) => (
+                      <span key={h} className="inline-flex items-center gap-2 text-[13px] text-[#2D5A43]">
+                        <span className="w-4 h-4 rounded-full bg-[#E8F0EB] flex items-center justify-center shrink-0">
+                          <Check size={10} />
                         </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Right: Duration, Arena & Book CTA */}
-                  <div className="lg:col-span-3 flex flex-col sm:flex-row lg:flex-col items-start sm:items-center lg:items-end justify-between gap-4 pt-3 sm:pt-4 lg:pt-0">
-                    <div className="lg:text-right space-y-1.5">
-                      <div className="inline-flex items-center gap-2 text-[12px] uppercase tracking-[0.22em] text-[#2D5A43] font-medium">
-                        <Clock size={14} />
-                        <span>{lesson.duration}</span>
-                      </div>
-                      <div className="flex items-center lg:justify-end gap-1.5 text-[12px] text-[#5F665E]">
-                        <MapPin size={13} className="text-[#2D5A43] shrink-0" />
-                        <span>{lesson.setting}</span>
-                      </div>
-                    </div>
-
-                    <Link
-                      to="/demo/equestrian/book"
-                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-full bg-[#2D5A43] text-[#FAF6EE] text-[10px] uppercase tracking-[0.28em] font-medium hover:bg-[#234734] transition-colors shrink-0"
-                    >
-                      <span>Book This Lesson</span>
-                      <ArrowUpRight size={14} />
-                    </Link>
+                        <span className="text-[#454D46]">{h}</span>
+                      </span>
+                    ))}
                   </div>
                 </div>
-              </motion.article>
-            ))}
-          </AnimatePresence>
+
+                {/* Right: Duration, Arena & Book CTA */}
+                <div className="lg:col-span-3 flex flex-col sm:flex-row lg:flex-col items-start sm:items-center lg:items-end justify-between gap-4 pt-3 sm:pt-4 lg:pt-0">
+                  <div className="lg:text-right space-y-1.5">
+                    <div className="inline-flex items-center gap-2 text-[12px] uppercase tracking-[0.22em] text-[#2D5A43] font-medium">
+                      <Clock size={14} />
+                      <span>{lesson.duration}</span>
+                    </div>
+                    <div className="flex items-center lg:justify-end gap-1.5 text-[12px] text-[#5F665E]">
+                      <MapPin size={13} className="text-[#2D5A43] shrink-0" />
+                      <span>{lesson.setting}</span>
+                    </div>
+                  </div>
+
+                  <Link
+                    to="/demo/equestrian/book"
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-full bg-[#2D5A43] text-[#FAF6EE] text-[10px] uppercase tracking-[0.28em] font-medium hover:bg-[#234734] transition-colors shrink-0"
+                  >
+                    <span>Book This Lesson</span>
+                    <ArrowUpRight size={14} />
+                  </Link>
+                </div>
+              </div>
+            </article>
+          ))}
         </div>
       </section>
 
