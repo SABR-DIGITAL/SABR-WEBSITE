@@ -15,10 +15,21 @@ const EquestrianNav: React.FC<EquestrianNavProps> = ({ transparentOnTop = false 
   const location = useLocation();
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 32);
+    let rafId = 0;
+    const onScroll = () => {
+      if (rafId) return;
+      rafId = window.requestAnimationFrame(() => {
+        rafId = 0;
+        const next = window.scrollY > 24;
+        setScrolled((prev) => (prev !== next ? next : prev));
+      });
+    };
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
+    return () => {
+      if (rafId) window.cancelAnimationFrame(rafId);
+      window.removeEventListener('scroll', onScroll);
+    };
   }, []);
 
   useEffect(() => {
@@ -37,13 +48,14 @@ const EquestrianNav: React.FC<EquestrianNavProps> = ({ transparentOnTop = false 
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-[150] transition-all duration-500 ${
+        style={{ transform: 'translate3d(0,0,0)', WebkitBackfaceVisibility: 'hidden' }}
+        className={`fixed top-0 left-0 right-0 z-[150] h-16 sm:h-20 flex items-center transition-colors duration-200 ${
           isLightOnHero
-            ? 'bg-gradient-to-b from-[#1E2822]/55 to-transparent py-4 sm:py-5 md:py-6'
-            : 'bg-[#FAF6EE]/95 backdrop-blur-md border-b border-[#2D5A43]/15 py-3 sm:py-3.5 shadow-[0_8px_30px_-20px_rgba(30,40,34,0.18)]'
+            ? 'bg-gradient-to-b from-[#1E2822]/60 via-[#1E2822]/20 to-transparent border-b border-transparent'
+            : 'bg-[#FAF6EE]/95 backdrop-blur-md border-b border-[#2D5A43]/15 shadow-[0_8px_30px_-20px_rgba(30,40,34,0.18)]'
         }`}
       >
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 md:px-12 flex items-center justify-between gap-4 sm:gap-6">
+        <div className="max-w-[1440px] w-full mx-auto px-4 sm:px-6 md:px-12 flex items-center justify-between gap-4 sm:gap-6">
           <Link to="/demo/equestrian" className="group inline-flex items-center gap-3 sm:gap-3.5 min-w-0">
             <span
               className={`w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center shrink-0 transition-colors duration-300 ${

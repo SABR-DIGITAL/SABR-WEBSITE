@@ -342,8 +342,8 @@ const CafeMenu: React.FC = () => {
                   </p>
                 </div>
 
-                {/* Refined 2-Column Dish Grid — Left & Right Items Slide In Towards Each Other */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-14 gap-y-9">
+                {/* Refined 2-Column Dish Grid — Zero Overlap Between Dish Names & Prices */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 lg:gap-x-14 gap-y-6 sm:gap-y-9">
                   {cat.items.map((item, j) => {
                     const isLeftCol = j % 2 === 0;
                     return (
@@ -351,29 +351,29 @@ const CafeMenu: React.FC = () => {
                         key={j}
                         className={`${
                           isLeftCol ? 'cafe-glide-left' : 'cafe-glide-right'
-                        } group p-4 -mx-4 rounded-2xl hover:bg-[#FAF6F0]/90 transition-colors flex flex-col justify-between gap-2.5`}
+                        } group p-3 sm:p-4 -mx-2 sm:-mx-4 rounded-2xl hover:bg-[#FAF6F0]/90 transition-colors flex flex-col justify-between gap-2 min-w-0`}
                       >
-                        <div>
-                          <div className="flex items-baseline gap-3">
-                            <h3 className="font-serif text-xl sm:text-[22px] font-bold text-[#2E241E] group-hover:text-[#A4715E] transition-colors shrink-0">
+                        <div className="min-w-0">
+                          <div className="flex items-baseline justify-between gap-3 sm:gap-4">
+                            <h3 className="font-serif text-[17px] sm:text-xl md:text-[21px] font-bold text-[#2E241E] group-hover:text-[#A4715E] transition-colors leading-snug min-w-0">
                               {item.name}
                             </h3>
                             <span
                               aria-hidden="true"
-                              className="flex-1 border-b border-dotted border-[#D8C7B6] mb-1.5 min-w-[20px]"
+                              className="hidden sm:block flex-1 border-b border-dotted border-[#D8C7B6] mb-1.5 min-w-[16px]"
                             />
-                            <span className="font-serif text-xl font-bold text-[#8C5E4C] shrink-0">
+                            <span className="font-serif text-[17px] sm:text-xl font-bold text-[#8C5E4C] shrink-0 tabular-nums ml-auto">
                               {item.price}
                             </span>
                           </div>
 
-                          <p className="text-sm text-[#6E5A4F] italic leading-relaxed mt-1.5">
+                          <p className="text-xs sm:text-sm text-[#6E5A4F] italic leading-relaxed mt-1.5">
                             {item.desc}
                           </p>
                         </div>
 
                         {(item.badge || item.tags.length > 0) && (
-                          <div className="flex items-center gap-2.5 pt-1 flex-wrap">
+                          <div className="flex items-center gap-2 pt-1 flex-wrap">
                             {item.badge && (
                               <span className="px-2.5 py-0.5 rounded-full bg-[#F5EAE2] border border-[#E2CFC2] text-[#8C5E4C] text-[9px] font-black uppercase tracking-[0.22em]">
                                 {item.badge}

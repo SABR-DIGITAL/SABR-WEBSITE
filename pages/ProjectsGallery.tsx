@@ -266,130 +266,23 @@ const PreviewWindow: React.FC<{ project: Project; priority?: boolean }> = ({ pro
 
 /**
  * Clean, unobstructed Hero Screen for each of the 3 Oak & Ash tiers.
- * Uses the exact shared homepage photo (`HERO_SLIDES[0].image`) so changing
- * the homepage photo updates all 3 preview cards automatically.
+ * Shows just the photograph in the middle screen while the outer card frame
+ * keeps its top tier badge + URL bar and bottom caption strip.
  */
 const TierHeroScreen: React.FC<{
   tierKey: LandscapingTierKey;
   heroImage: string;
 }> = ({ tierKey, heroImage }) => {
-  if (tierKey === 'traditional') {
-    // Tier 1: Essential — Traditional & Easy to Scroll (Standard Green Landscaper)
-    return (
-      <div className="relative w-full h-full overflow-hidden select-none">
-        <img
-          src={heroImage}
-          alt="Oak & Ash Essential Traditional tier preview"
-          loading="eager"
-          decoding="async"
-          className="preview-shot absolute inset-0 w-full h-full object-cover transition-transform duration-1000 ease-out group-hover/card:scale-[1.03]"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#052e16]/80 via-[#052e16]/20 to-black/35" />
-
-        {/* Clean Top Traditional Green Strip */}
-        <div className="relative z-10 flex items-center justify-between px-3.5 py-2 bg-[#15803d]/95 text-white border-b border-emerald-500/30">
-          <span className="text-[7.5px] sm:text-[8.5px] font-extrabold uppercase tracking-[0.16em]">
-            OAK &amp; ASH LANDSCAPING
-          </span>
-          <span className="px-2 py-0.5 rounded bg-white text-[#15803d] text-[6.5px] sm:text-[7.5px] font-extrabold uppercase tracking-wider">
-            Free Quote
-          </span>
-        </div>
-
-        {/* Clean Bottom Traditional Caption */}
-        <div className="absolute bottom-3 left-3.5 right-3.5 z-10 flex items-end justify-between gap-2 text-white">
-          <div>
-            <span className="inline-block px-2 py-0.5 rounded bg-[#15803d] text-[6px] sm:text-[7px] font-bold uppercase tracking-wider text-white mb-1">
-              ✓ Trusted Local Landscapers
-            </span>
-            <p className="font-serif text-[11px] sm:text-[14px] font-bold leading-tight drop-shadow-xs">
-              28 Years of Award-Winning Gardens.
-            </p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (tierKey === 'luxury') {
-    // Tier 3: Prestige — Luxury & Heavier Animations (Obsidian & Tan — Zero Green)
-    return (
-      <div className="relative w-full h-full overflow-hidden select-none">
-        <img
-          src={heroImage}
-          alt="Oak & Ash Prestige Luxury tier preview"
-          loading="eager"
-          decoding="async"
-          className="preview-shot absolute inset-0 w-full h-full object-cover transition-transform duration-1000 ease-out group-hover/card:scale-[1.03]"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0C0A08]/90 via-[#0C0A08]/25 to-[#0C0A08]/70" />
-
-        {/* Top Luxury Tan & Obsidian Bar */}
-        <div className="relative z-10 flex items-center justify-between px-3.5 py-2 border-b border-[#C8B88A]/30 bg-[#0C0A08]/70 backdrop-blur-xs">
-          <span className="text-[6.5px] sm:text-[7.5px] font-mono uppercase tracking-[0.26em] text-[#C8B88A]">
-            INDEX
-          </span>
-          <span className="font-cinzel text-[8.5px] sm:text-[10px] font-bold uppercase tracking-[0.3em] text-[#F4F1EA]">
-            OAK &amp; ASH
-          </span>
-          <span className="px-2 py-0.5 bg-[#C8B88A] text-[#0C0A08] text-[6px] sm:text-[7px] font-bold uppercase tracking-[0.2em]">
-            Commission
-          </span>
-        </div>
-
-        {/* Bottom Clean Luxury Hero Typography */}
-        <div className="absolute bottom-3 left-3.5 right-3.5 z-10">
-          <span className="block text-[5.5px] sm:text-[6.5px] font-mono uppercase tracking-[0.3em] text-[#C8B88A] mb-0.5">
-            EST. 1998 · WILTSHIRE, SURREY &amp; LONDON
-          </span>
-          <p className="font-cinzel text-[10px] sm:text-[13px] font-bold uppercase tracking-wider text-[#F4F1EA] leading-[1.05]">
-            TWENTY-EIGHT <br />
-            YEARS OF RARE <br />
-            <span className="font-cormorant italic font-normal capitalize text-[#C8B88A]">
-              Award-Winning Gardens.
-            </span>
-          </p>
-        </div>
-      </div>
-    );
-  }
-
-  // Tier 2: Premier — Minimalistic & Formal (Clean unobstructed full-bleed photo)
   return (
-    <div className="relative w-full h-full overflow-hidden select-none">
+    <div className="relative w-full h-full overflow-hidden select-none bg-[#121613]">
       <img
         src={heroImage}
-        alt="Oak & Ash Premier Minimalistic tier preview"
+        alt={`Oak & Ash ${tierKey} tier preview`}
         loading="eager"
+        fetchPriority="high"
         decoding="async"
-        className="preview-shot absolute inset-0 w-full h-full object-cover transition-transform duration-1000 ease-out group-hover/card:scale-[1.03]"
+        className="preview-shot absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover/card:scale-[1.03]"
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-black/25" />
-
-      {/* Minimalist Top Bar */}
-      <div className="relative z-10 flex items-center justify-between px-3.5 py-2 text-white border-b border-white/15">
-        <span className="font-serif text-[8.5px] sm:text-[10px] tracking-[0.26em] uppercase font-semibold">
-          OAK &amp; ASH
-        </span>
-        <span className="px-2 py-0.5 border border-white/45 text-[6.5px] sm:text-[7.5px] uppercase tracking-[0.22em]">
-          Enquire
-        </span>
-      </div>
-
-      {/* Minimalist Bottom Caption */}
-      <div className="absolute bottom-3 left-3.5 right-3.5 z-10 flex items-end justify-between gap-2 text-white">
-        <div>
-          <span className="block text-[6px] sm:text-[7px] uppercase tracking-[0.3em] text-white/80 mb-0.5">
-            01 / 04 — Surrey &amp; Wiltshire
-          </span>
-          <p className="font-serif text-[11px] sm:text-[14px] leading-tight">
-            28 years of <span className="italic">award-winning gardens.</span>
-          </p>
-        </div>
-        <span className="px-2.5 py-1 bg-white text-stone-900 text-[6.5px] sm:text-[7.5px] font-bold uppercase tracking-[0.22em] shrink-0">
-          Explore
-        </span>
-      </div>
     </div>
   );
 };

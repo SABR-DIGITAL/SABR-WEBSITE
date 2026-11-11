@@ -170,13 +170,14 @@ const CafeHome: React.FC = () => {
         </Link>
       </div>
 
-      {/* HERO SECTION */}
-      <section className="relative min-h-screen flex items-center justify-center pt-28 pb-20 px-5 sm:px-6 overflow-hidden">
-        <div className="absolute inset-0 z-0">
+      {/* HERO SECTION — OPTIMIZED ACROSS MOBILE, TABLET & DESKTOP SO ALL 3 CUPS IN PHOTO ARE VISIBLE */}
+      <section className="relative lg:min-h-screen flex items-center justify-center pt-24 sm:pt-28 lg:pt-28 pb-14 sm:pb-20 px-5 sm:px-6 overflow-hidden bg-[#261E19]">
+        {/* Desktop Full-Bleed Background */}
+        <div className="hidden lg:block absolute inset-0 z-0">
           <img
             src="/images/projects/cafe-hero.webp"
-            className="w-full h-full object-cover brightness-[0.72]"
-            alt="High-end brunch table setting"
+            className="w-full h-full object-cover object-center brightness-[0.76]"
+            alt="Three artisan coffee cups on a rustic timber counter at The Hearth"
             loading="eager"
             fetchPriority="high"
             decoding="async"
@@ -185,20 +186,35 @@ const CafeHome: React.FC = () => {
         </div>
 
         <div className="max-w-7xl mx-auto w-full relative z-10 text-center lg:text-left">
-          <div className="max-w-4xl space-y-8 sm:space-y-10 cafe-hero-rise">
-            <h1 className="font-serif text-4xl sm:text-6xl md:text-[clamp(4rem,9vw,8rem)] leading-[0.9] sm:leading-[0.85] text-white font-black tracking-tighter drop-shadow-sm">
+          {/* Mobile & Tablet Wide Framed Photo so the full 3-cup hero photograph is clearly visible */}
+          <div className="lg:hidden mb-7 sm:mb-9 cafe-hero-rise">
+            <div className="relative aspect-[16/10] sm:aspect-[16/9] w-full rounded-3xl sm:rounded-[2.5rem] overflow-hidden shadow-2xl border-2 border-white/15 bg-[#1B1512]">
+              <img
+                src="/images/projects/cafe-hero.webp"
+                className="w-full h-full object-cover object-center"
+                alt="Three artisan coffee cups on a rustic timber counter at The Hearth"
+                loading="eager"
+                fetchPriority="high"
+                decoding="async"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/10" />
+            </div>
+          </div>
+
+          <div className="max-w-4xl space-y-6 sm:space-y-9 cafe-hero-rise mx-auto lg:mx-0">
+            <h1 className="font-serif text-4xl sm:text-6xl md:text-[clamp(4rem,9vw,8rem)] leading-[0.92] sm:leading-[0.86] text-white font-black tracking-tighter drop-shadow-sm">
               SAVOUR THE <br /> <span className="text-[#FDE2E4] italic">MOMENT.</span>
             </h1>
-            <div className="flex flex-col sm:flex-row gap-3.5 sm:gap-5 justify-center lg:justify-start pt-2 sm:pt-4">
+            <div className="flex flex-col sm:flex-row gap-3.5 sm:gap-5 justify-center lg:justify-start pt-1 sm:pt-3">
               <Link
                 to="/demo/cafe/menu"
-                className="px-8 sm:px-14 py-4 sm:py-7 bg-[#A4715E] text-white rounded-2xl font-black text-[10px] sm:text-[11px] uppercase tracking-[0.3em] sm:tracking-[0.4em] shadow-[0_20px_50px_rgba(164,113,94,0.35)] hover:bg-white hover:text-[#4A403A] transition-all duration-300 text-center"
+                className="px-8 sm:px-14 py-4 sm:py-6 bg-[#A4715E] text-white rounded-2xl font-black text-[10px] sm:text-[11px] uppercase tracking-[0.3em] sm:tracking-[0.4em] shadow-[0_20px_50px_rgba(164,113,94,0.35)] hover:bg-white hover:text-[#4A403A] transition-all duration-300 text-center"
               >
                 View Our Menu
               </Link>
               <Link
                 to="/demo/cafe/book"
-                className="px-8 sm:px-14 py-4 sm:py-7 bg-[#FFF9F5]/95 backdrop-blur-xl border border-white text-[#4A403A] rounded-2xl font-black text-[10px] sm:text-[11px] uppercase tracking-[0.3em] sm:tracking-[0.4em] hover:bg-[#4A403A] hover:text-white transition-all duration-300 text-center shadow-lg"
+                className="px-8 sm:px-14 py-4 sm:py-6 bg-[#FFF9F5]/95 backdrop-blur-xl border border-white text-[#4A403A] rounded-2xl font-black text-[10px] sm:text-[11px] uppercase tracking-[0.3em] sm:tracking-[0.4em] hover:bg-[#4A403A] hover:text-white transition-all duration-300 text-center shadow-lg"
               >
                 Reservations
               </Link>
@@ -368,10 +384,10 @@ const CafeHome: React.FC = () => {
               </div>
             </div>
             <div className="w-full lg:w-1/2 relative cafe-glide-right">
-              <div className="relative aspect-square rounded-3xl sm:rounded-[4rem] overflow-hidden shadow-2xl group bg-[#F5EBE4]">
+              <div className="relative aspect-[16/11] sm:aspect-[4/3] lg:aspect-square rounded-3xl sm:rounded-[3.5rem] overflow-hidden shadow-2xl group bg-[#F5EBE4]">
                 <img
                   src="/images/projects/cafe-interior.webp"
-                  className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+                  className="w-full h-full object-cover object-center transition-transform duration-1000 group-hover:scale-105"
                   alt="Cafe Interior Ambiance"
                   loading="lazy"
                   decoding="async"
@@ -424,10 +440,10 @@ const CafeHome: React.FC = () => {
             </Link>
           </div>
           <div className="relative cafe-glide-right">
-            <div className="rounded-3xl sm:rounded-[4rem] overflow-hidden shadow-[0_50px_100px_rgba(0,0,0,0.5)] group border border-white/10">
+            <div className="aspect-[16/10] sm:aspect-[4/3] rounded-3xl sm:rounded-[3.5rem] overflow-hidden shadow-[0_50px_100px_rgba(0,0,0,0.5)] group border border-white/10">
               <img
                 src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=75&w=1000"
-                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+                className="w-full h-full object-cover object-center transition-transform duration-1000 group-hover:scale-105"
                 alt="Private Dining Event Space"
                 loading="lazy"
                 decoding="async"

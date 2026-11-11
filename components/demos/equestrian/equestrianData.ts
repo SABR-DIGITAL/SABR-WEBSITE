@@ -265,6 +265,9 @@ export interface Horse {
   schooling: string;
   bestFor: string;
   character: string;
+  temperament: string;
+  quirk: string;
+  matchTags: ('first-time' | 'returners' | 'dressage' | 'jumping')[];
   photo: string;
 }
 
@@ -275,12 +278,15 @@ export const horses: Horse[] = [
     breed: 'Welsh Section B',
     bloodline: 'By Hilin Glyndwr',
     age: '14 yrs',
-    colour: 'Bright Bay',
+    colour: 'Dapple Grey',
     discipline: 'Lead-Rein & First Ridden',
     schooling: 'Voice transitions & poles',
     bestFor: 'Lead-rein & first lessons',
     character: 'Four hundred children taught to trot, and never once in a hurry.',
-    photo: 'https://images.unsplash.com/photo-1598974357801-cbca100e65d3?auto=format&fit=crop&q=80&w=1200'
+    temperament: '10/10 Steady · Voice-trained',
+    quirk: 'Rests her chin on the mounting block while waiting for small riders.',
+    matchTags: ['first-time', 'jumping'],
+    photo: 'https://images.unsplash.com/photo-1676504848820-e1488d13c261?auto=format&fit=crop&q=80&w=1200'
   },
   {
     name: 'Marmalade',
@@ -293,7 +299,10 @@ export const horses: Horse[] = [
     schooling: 'Balanced canter & 65cm fences',
     bestFor: 'Foundation groups & young riders',
     character: 'Cheerful, sure-footed, and completely honest into a cross-pole.',
-    photo: 'https://images.unsplash.com/photo-1604429287879-6bc7a7572048?auto=format&fit=crop&q=80&w=1200'
+    temperament: 'Kind & rhythmic · Loves polework',
+    quirk: 'Nickers softly whenever the tack room kettle clicks on.',
+    matchTags: ['first-time', 'jumping'],
+    photo: 'https://images.unsplash.com/photo-1534773728080-33d31da27ae5?auto=format&fit=crop&q=80&w=1200'
   },
   {
     name: 'Bluebell',
@@ -301,12 +310,15 @@ export const horses: Horse[] = [
     breed: 'Connemara',
     bloodline: 'By I Love You Melody',
     age: '13 yrs',
-    colour: 'Dapple Grey',
+    colour: 'Grey',
     discipline: 'Classical Flatwork & Lateral Work',
     schooling: 'Shoulder-in, travers & counter-canter',
     bestFor: 'Improvers & adult flatwork',
     character: 'Gives you a textbook shoulder-in the moment you ask with a quiet leg.',
-    photo: 'https://images.unsplash.com/photo-1552908768-910f4cd7b201?auto=format&fit=crop&q=80&w=1200'
+    temperament: 'Supple, forgiving & balanced',
+    quirk: 'Loves having her forehead scratched after untacking in the barn.',
+    matchTags: ['returners', 'dressage'],
+    photo: 'https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?auto=format&fit=crop&q=80&w=1200'
   },
   {
     name: 'Hawthorn',
@@ -319,7 +331,10 @@ export const horses: Horse[] = [
     schooling: 'Affiliated to 1.10m & BE100',
     bestFor: 'Showjumping clinics',
     character: 'Thorn to his friends — bold, scopey, and locks onto a fence from three strides out.',
-    photo: 'https://images.unsplash.com/photo-1545780699-605328d5e41b?auto=format&fit=crop&q=80&w=1200'
+    temperament: 'Athletic, honest & Adjustable',
+    quirk: 'Watches the grass jumping paddock from his top door all morning.',
+    matchTags: ['jumping'],
+    photo: 'https://images.unsplash.com/photo-1559295928-6964f905e9c7?auto=format&fit=crop&q=80&w=1200'
   },
   {
     name: 'Clover',
@@ -332,6 +347,9 @@ export const horses: Horse[] = [
     schooling: 'Open-country pace control',
     bestFor: 'Downland hacks & returning adults',
     character: 'Knows every chalk ridge on the downs and looks after her rider in every gait.',
+    temperament: 'Unflappable in open country',
+    quirk: 'Stops at the top of Pewsey Hill so her rider can admire the view.',
+    matchTags: ['first-time', 'returners'],
     photo: 'https://images.unsplash.com/photo-1680230955909-c0be7faa4bde?auto=format&fit=crop&q=80&w=1200'
   },
   {
@@ -345,7 +363,10 @@ export const horses: Horse[] = [
     schooling: 'Medium paces & lateral work',
     bestFor: 'Adult private tuition',
     character: 'Light off the leg, elegant in the bridle, and a joy for riders who have ridden before.',
-    photo: 'https://images.unsplash.com/photo-1654693519854-175cee0fa7d6?auto=format&fit=crop&q=80&w=1200'
+    temperament: 'Responsive & elastic contact',
+    quirk: 'Adores warm bran mash after a winter afternoon dressage lesson.',
+    matchTags: ['returners', 'dressage'],
+    photo: 'https://images.unsplash.com/photo-1604429287879-6bc7a7572048?auto=format&fit=crop&q=80&w=1200'
   },
   {
     name: 'Juniper',
@@ -353,33 +374,62 @@ export const horses: Horse[] = [
     breed: 'Dutch Warmblood',
     bloodline: 'By Jazz (KWPN) × Ferro',
     age: '12 yrs',
-    colour: 'Black',
+    colour: 'Dark Bay',
     discipline: 'Affiliated Dressage Schoolmaster',
     schooling: 'Advanced Medium & half-pass',
     bestFor: 'Dressage clinics',
     character: 'Joined us from an affiliated dressage yard and teaches the true feel of self-carriage.',
-    photo: 'https://images.unsplash.com/photo-1727036545577-c83cd920277b?auto=format&fit=crop&q=80&w=1200'
+    temperament: 'True uphill schoolmaster',
+    quirk: 'Polite gentleman who stands stock-still while his plaits are done.',
+    matchTags: ['dressage'],
+    photo: 'https://images.unsplash.com/photo-1511746687876-42cb762f6ac1?auto=format&fit=crop&q=80&w=1200'
   },
   {
     name: 'Pip',
     height: '11.2hh',
-    breed: 'Shetland Cross',
+    breed: 'Welsh Mountain Pony',
     bloodline: 'Native pony lines',
     age: '19 yrs',
-    colour: 'Piebald',
+    colour: 'Grey',
     discipline: 'Horsemanship & First Ponies',
     schooling: 'Grooming & lead-rein walk/trot',
     bestFor: 'Stable mornings & youngest riders',
     character: 'Quietly in charge of the bottom yard since 2011 and patient for hours of brushing.',
-    photo: 'https://images.unsplash.com/photo-1463748465553-80db1e6ff830?auto=format&fit=crop&q=80&w=1200'
+    temperament: 'Gentle pocket schoolmaster',
+    quirk: 'Can untie a haynet knot in under thirty seconds if nobody is looking.',
+    matchTags: ['first-time'],
+    photo: 'https://images.unsplash.com/photo-1743851612756-9aeb50658ce8?auto=format&fit=crop&q=80&w=1200'
   }
 ];
+
+// Preload and pre-decode all Equestrian photographs at module load so every page and photo renders with 0ms delay
+const preloadedEquestrianImages: HTMLImageElement[] = [];
+if (typeof window !== 'undefined') {
+  const uniqueUrls = Array.from(
+    new Set([
+      ...Object.values(images),
+      ...horses.map((h) => h.photo)
+    ])
+  );
+  uniqueUrls.forEach((src, idx) => {
+    const img = new Image();
+    img.decoding = idx < 6 ? 'sync' : 'async';
+    if (idx < 4) {
+      (img as any).fetchPriority = 'high';
+    }
+    img.src = src;
+    img.decode?.().catch(() => {});
+    preloadedEquestrianImages.push(img);
+  });
+}
 
 export interface Coach {
   name: string;
   role: string;
   focus: string;
   bio: string;
+  softSpot: string;
+  quote: string;
 }
 
 export const coaches: Coach[] = [
@@ -387,25 +437,33 @@ export const coaches: Coach[] = [
     name: 'Rosie Ashcombe',
     role: 'Principal · BHS Accredited Professional Coach',
     focus: 'Classical seat, nervous riders & adult returners',
-    bio: `Founded Bramble & Bay in ${academy.established} with four native ponies and a single sand paddock. Still teaches in the school five days a week.`
+    bio: `Founded Bramble & Bay in ${academy.established} with four native ponies and a single sand paddock. Still teaches in the school five days a week.`,
+    softSpot: 'Usually found hacking Clover across the ridge at 7am.',
+    quote: '“A quiet seat and a soft hand will take you further than any gadget.”'
   },
   {
     name: 'Tom Neave',
     role: 'Senior Coach · BHS Stage 4 Senior Coach',
     focus: 'Showjumping clinics, gridwork & eventing preparation',
-    bio: 'Produced horses to Intermediate eventing before settling in the Pewsey Vale. Leads our jumping clinics and course-walk sessions.'
+    bio: 'Produced horses to Intermediate eventing before settling in the Pewsey Vale. Leads our jumping clinics and course-walk sessions.',
+    softSpot: 'Schooled Hawthorn from a four-year-old in Ireland.',
+    quote: '“Find the rhythm on the turn and the fence takes care of itself.”'
   },
   {
     name: 'Amara Ellis',
     role: 'Equitation Coach · BHS Stage 3',
     focus: 'Young riders, lead-rein & foundation flatwork',
-    bio: 'First rode Poppy here at age six and qualified through every BHS stage on the yard. Known for calm, patient teaching.'
+    bio: 'First rode Poppy here at age six and qualified through every BHS stage on the yard. Known for calm, patient teaching.',
+    softSpot: 'Keeps a pocket of mint treats specifically for Poppy & Pip.',
+    quote: '“Children learn fastest when they feel proud of their pony first.”'
   },
   {
     name: 'Fen Marlow',
     role: 'Yard & Welfare Manager',
     focus: 'Equine nutrition, turnout, saddlery fitting & veterinary care',
-    bio: 'On the yard before dawn every morning overseeing our twenty-two horses, their individual forage plans, and saddle checks.'
+    bio: 'On the yard before dawn every morning overseeing our twenty-two horses, their individual forage plans, and saddle checks.',
+    softSpot: 'Knows every horse’s hoof print and breakfast mash recipe by heart.',
+    quote: '“Happy horses who live out in settled herds make the kindest teachers.”'
   }
 ];
 

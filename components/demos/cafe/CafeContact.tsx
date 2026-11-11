@@ -23,44 +23,44 @@ const CafeContact: React.FC = () => {
     <div className="min-h-screen bg-[#FFF9F5] font-sans selection:bg-[#A4715E] selection:text-white overflow-x-hidden">
       <CafeNavbar />
 
-      <section className="pt-44 md:pt-52 pb-24 px-6 text-center cafe-glide-up">
-        <p className="text-[#A4715E] font-black text-[11px] uppercase tracking-[0.8em] mb-6">
+      <section className="pt-28 sm:pt-36 md:pt-48 pb-12 sm:pb-20 px-5 sm:px-6 text-center cafe-glide-up">
+        <p className="text-[#A4715E] font-black text-[10px] sm:text-[11px] uppercase tracking-[0.5em] sm:tracking-[0.8em] mb-4 sm:mb-6">
           Establish A Connection
         </p>
-        <h1 className="font-serif text-6xl md:text-[10vw] font-black uppercase tracking-tighter text-[#4A403A] leading-none">
+        <h1 className="font-serif text-4xl sm:text-6xl md:text-[8.5vw] font-black uppercase tracking-tighter text-[#4A403A] leading-none">
           SAY <span className="text-[#A4715E] italic">HELLO.</span>
         </h1>
       </section>
 
-      <section className="max-w-7xl mx-auto px-6 pb-40">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-start">
+      <section className="max-w-7xl mx-auto px-5 sm:px-6 pb-20 sm:pb-36">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 sm:gap-16 lg:gap-20 items-start">
           {/* LEFT STORY & PHOTO SLIDING IN FROM LEFT */}
-          <div className="space-y-16 cafe-glide-left">
-            <div className="space-y-8">
-              <div className="w-20 h-1 bg-[#A4715E]" />
-              <h2 className="font-serif text-5xl md:text-6xl font-bold text-[#4A403A] uppercase tracking-tighter leading-none">
+          <div className="space-y-10 sm:space-y-14 cafe-glide-left">
+            <div className="space-y-5 sm:space-y-8">
+              <div className="w-16 h-1 bg-[#A4715E]" />
+              <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl font-bold text-[#4A403A] uppercase tracking-tighter leading-none">
                 We&apos;d love to <br /> host you.
               </h2>
-              <p className="text-[#A4715E]/80 text-xl md:text-2xl font-medium italic border-l-4 border-[#FDE2E4] pl-8 leading-relaxed max-w-lg">
+              <p className="text-[#A4715E]/80 text-lg sm:text-xl md:text-2xl font-medium italic border-l-4 border-[#FDE2E4] pl-5 sm:pl-8 leading-relaxed max-w-lg">
                 &ldquo;Whether you&apos;re planning an event, inquiring about our beans, or just sharing the love—our inbox is open.&rdquo;
               </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
-              <div className="space-y-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-10">
+              <div className="space-y-1.5 sm:space-y-2">
                 <p className="text-[10px] font-black uppercase tracking-widest text-[#A4715E]/60">Email Studio</p>
                 <a
                   href="mailto:hello@thehearth.cafe"
-                  className="block text-2xl font-bold text-[#4A403A] hover:text-[#A4715E] transition-colors break-words"
+                  className="block text-xl sm:text-2xl font-bold text-[#4A403A] hover:text-[#A4715E] transition-colors break-words"
                 >
                   hello@thehearth.cafe
                 </a>
               </div>
-              <div className="space-y-2">
+              <div className="space-y-1.5 sm:space-y-2">
                 <p className="text-[10px] font-black uppercase tracking-widest text-[#A4715E]/60">Direct Line</p>
                 <a
                   href="tel:01225482910"
-                  className="block text-2xl font-bold text-[#4A403A] hover:text-[#A4715E] transition-colors"
+                  className="block text-xl sm:text-2xl font-bold text-[#4A403A] hover:text-[#A4715E] transition-colors"
                 >
                   01225 482 910
                 </a>
@@ -71,19 +71,19 @@ const CafeContact: React.FC = () => {
               href="https://instagram.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="block relative aspect-video rounded-[3.5rem] overflow-hidden shadow-2xl border-[10px] border-white group"
+              className="block relative aspect-[16/10] rounded-[2rem] sm:rounded-[3rem] overflow-hidden shadow-2xl border-4 sm:border-[8px] border-white group bg-[#F2E8DF]"
             >
               <img
                 src="https://images.unsplash.com/photo-1445116572660-236099ec97a0?auto=format&fit=crop&q=75&w=1000"
-                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+                className="w-full h-full object-cover object-center transition-transform duration-1000 group-hover:scale-105"
                 alt="Cafe exterior window view"
                 loading="lazy"
                 decoding="async"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#4A403A]/65 to-transparent" />
-              <div className="absolute bottom-8 left-8 text-white flex items-center gap-4">
-                <div className="w-12 h-12 bg-white/20 backdrop-blur-xl rounded-full flex items-center justify-center border border-white/30">
-                  <Instagram size={22} />
+              <div className="absolute bottom-5 left-5 sm:bottom-8 sm:left-8 text-white flex items-center gap-3.5">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white/20 backdrop-blur-xl rounded-full flex items-center justify-center border border-white/30">
+                  <Instagram size={20} />
                 </div>
                 <span className="font-bold tracking-widest uppercase text-xs">@TheHearthCafe</span>
               </div>
@@ -91,7 +91,7 @@ const CafeContact: React.FC = () => {
           </div>
 
           {/* RIGHT INQUIRY FORM SLIDING IN FROM RIGHT TOWARDS THE LEFT COLUMN */}
-          <div className="cafe-glide-right bg-white p-10 md:p-16 rounded-[4rem] shadow-[0_40px_120px_rgba(164,113,94,0.12)] border border-[#A4715E]/10 relative overflow-hidden">
+          <div className="cafe-glide-right bg-white p-6 sm:p-10 md:p-14 rounded-[2rem] sm:rounded-[3.5rem] shadow-[0_40px_120px_rgba(164,113,94,0.12)] border border-[#A4715E]/10 relative overflow-hidden">
             <div className="absolute top-0 right-0 p-12 opacity-[0.03] pointer-events-none rotate-12">
               <Send size={340} strokeWidth={1} />
             </div>

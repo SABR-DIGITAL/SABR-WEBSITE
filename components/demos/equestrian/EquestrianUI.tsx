@@ -439,18 +439,40 @@ export const Reveal: React.FC<{
   delay?: number;
   y?: number;
   className?: string;
-}> = ({ children, className = '' }) => (
-  <div className={className}>
+}> = ({ children, delay = 0, className = '' }) => (
+  <div
+    style={{
+      animation: `eqGlideIn 0.72s cubic-bezier(0.16, 1, 0.3, 1) ${Math.max(0, delay)}s both`
+    }}
+    className={`will-change-[transform,opacity] ${className}`}
+  >
     {children}
+    <style>{`
+      @keyframes eqGlideIn {
+        from {
+          opacity: 0;
+          transform: translate3d(0, 18px, 0);
+        }
+        to {
+          opacity: 1;
+          transform: translate3d(0, 0, 0);
+        }
+      }
+    `}</style>
   </div>
 );
 
-export const SectionLabel: React.FC<{ children: React.ReactNode; className?: string }> = ({
+export const SectionLabel: React.FC<{ children: React.ReactNode; className?: string; light?: boolean }> = ({
   children,
-  className = ''
+  className = '',
+  light = false
 }) => (
-  <p className={`inline-flex items-center gap-3 text-[11px] uppercase tracking-[0.34em] text-[#2D5A43] font-medium ${className}`}>
-    <Bloom size={15} />
+  <p
+    className={`inline-flex items-center gap-3 text-[11px] uppercase tracking-[0.34em] font-medium ${
+      light ? 'text-[#CFE3D6]' : 'text-[#2D5A43]'
+    } ${className}`}
+  >
+    <Bloom size={15} className={light ? '!text-[#CFE3D6]' : ''} />
     <span>{children}</span>
   </p>
 );
@@ -462,17 +484,16 @@ export const PhotoReveal: React.FC<{
   imgClassName?: string;
   priority?: boolean;
   delay?: number;
-}> = ({ src, alt, className = '', imgClassName = '', priority = false }) => (
+}> = ({ src, alt, className = '', imgClassName = '' }) => (
   <div
     className={`overflow-hidden rounded-2xl md:rounded-3xl bg-[#E8E2D5] shadow-[0_20px_50px_-28px_rgba(30,40,34,0.22)] ${className}`}
   >
     <img
       src={src}
       alt={alt}
-      loading={priority ? 'eager' : 'lazy'}
+      loading="eager"
       decoding="async"
-      {...(priority ? { fetchPriority: 'high' as const } : {})}
-      className={`w-full h-full object-cover block ${imgClassName}`}
+      className={`w-full h-full object-cover object-center block ${imgClassName}`}
     />
   </div>
 );
