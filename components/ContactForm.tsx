@@ -59,7 +59,7 @@ const channels: Channel[] = [
     key: 'instagram',
     label: 'Instagram',
     value: `@${INSTAGRAM_HANDLE}`,
-    href: `https://instagram.com/${INSTAGRAM_HANDLE}`,
+    href: 'https://www.instagram.com/sabrdigital',
     external: true,
     logo: <InstagramLogo className="w-7 h-7 md:w-8 md:h-8" />,
     tile: 'bg-slate-950 text-white',

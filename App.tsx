@@ -12,6 +12,7 @@ import ExitPreviewButton from './components/ExitPreviewButton';
 
 // Home components
 import Hero from './components/Hero';
+import OurWorkCarousel from './components/OurWorkCarousel';
 import WebsiteScoreScanner from './components/WebsiteScoreScanner';
 import WhyWebsiteSection from './components/WhyWebsiteSection';
 import AboutFounderSection from './components/AboutFounderSection';
@@ -33,6 +34,50 @@ const EquestrianFacilities = lazy(() => import('./components/demos/equestrian/Eq
 const EquestrianFaqs = lazy(() => import('./components/demos/equestrian/EquestrianFaqs'));
 const EquestrianContact = lazy(() => import('./components/demos/equestrian/EquestrianContact'));
 const EquestrianBooking = lazy(() => import('./components/demos/equestrian/EquestrianBooking'));
+
+const EquestrianLuxuryHome = lazy(() => import('./components/demos/equestrian-luxury/EquestrianLuxuryHome'));
+const EquestrianLuxuryLessons = lazy(() =>
+  import('./components/demos/equestrian-luxury/EquestrianLuxuryPages').then((m) => ({
+    default: m.EquestrianLuxuryLessons
+  }))
+);
+const EquestrianLuxuryHorses = lazy(() =>
+  import('./components/demos/equestrian-luxury/EquestrianLuxuryPages').then((m) => ({
+    default: m.EquestrianLuxuryHorses
+  }))
+);
+const EquestrianLuxuryFacilities = lazy(() =>
+  import('./components/demos/equestrian-luxury/EquestrianLuxuryPages').then((m) => ({
+    default: m.EquestrianLuxuryFacilities
+  }))
+);
+const EquestrianLuxuryContact = lazy(() =>
+  import('./components/demos/equestrian-luxury/EquestrianLuxuryPages').then((m) => ({
+    default: m.EquestrianLuxuryContact
+  }))
+);
+
+const EquestrianVibrantHome = lazy(() => import('./components/demos/equestrian-vibrant/EquestrianVibrantSite'));
+const EquestrianVibrantLessons = lazy(() =>
+  import('./components/demos/equestrian-vibrant/EquestrianVibrantSite').then((m) => ({
+    default: m.EquestrianVibrantLessons
+  }))
+);
+const EquestrianVibrantHorses = lazy(() =>
+  import('./components/demos/equestrian-vibrant/EquestrianVibrantSite').then((m) => ({
+    default: m.EquestrianVibrantHorses
+  }))
+);
+const EquestrianVibrantFacilities = lazy(() =>
+  import('./components/demos/equestrian-vibrant/EquestrianVibrantSite').then((m) => ({
+    default: m.EquestrianVibrantFacilities
+  }))
+);
+const EquestrianVibrantContact = lazy(() =>
+  import('./components/demos/equestrian-vibrant/EquestrianVibrantSite').then((m) => ({
+    default: m.EquestrianVibrantContact
+  }))
+);
 
 const LandscaperHome = lazy(() => import('./components/demos/landscaping/Home'));
 const LandscaperContact = lazy(() => import('./components/demos/landscaping/Contact'));
@@ -357,6 +402,7 @@ const MainApp: React.FC = () => {
   const renderHomeContent = () => (
     <>
       <Hero navigateTo={navigateTo} startAnimation={isRevealed} />
+      <OurWorkCarousel navigateTo={navigateTo} />
       <AboutFounderSection navigateTo={navigateTo} />
       <WebsiteScoreScanner navigateTo={navigateTo} />
       <WhyWebsiteSection />
@@ -390,6 +436,16 @@ const MainApp: React.FC = () => {
                 <Route path="/demo/equestrian/faqs" element={<EquestrianFaqs />} />
                 <Route path="/demo/equestrian/contact" element={<EquestrianContact />} />
                 <Route path="/demo/equestrian/book" element={<EquestrianBooking />} />
+                <Route path="/demo/equestrian-luxury" element={<EquestrianLuxuryHome />} />
+                <Route path="/demo/equestrian-luxury/lessons" element={<EquestrianLuxuryLessons />} />
+                <Route path="/demo/equestrian-luxury/horses" element={<EquestrianLuxuryHorses />} />
+                <Route path="/demo/equestrian-luxury/facilities" element={<EquestrianLuxuryFacilities />} />
+                <Route path="/demo/equestrian-luxury/contact" element={<EquestrianLuxuryContact />} />
+                <Route path="/demo/equestrian-vibrant" element={<EquestrianVibrantHome />} />
+                <Route path="/demo/equestrian-vibrant/lessons" element={<EquestrianVibrantLessons />} />
+                <Route path="/demo/equestrian-vibrant/horses" element={<EquestrianVibrantHorses />} />
+                <Route path="/demo/equestrian-vibrant/facilities" element={<EquestrianVibrantFacilities />} />
+                <Route path="/demo/equestrian-vibrant/contact" element={<EquestrianVibrantContact />} />
                 <Route path="/demo/landscaping" element={<LandscaperHome />} />
                 <Route path="/demo/landscaping/services" element={<LandscaperServices />} />
                 <Route path="/demo/landscaping/about" element={<LandscaperAbout />} />

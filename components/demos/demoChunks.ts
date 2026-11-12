@@ -8,6 +8,8 @@ export type DemoId =
   | 'landscaping-traditional'
   | 'landscaping-luxury'
   | 'equestrian'
+  | 'equestrian-vibrant'
+  | 'equestrian-luxury'
   | 'physio'
   | 'spa'
   | 'cafe';
@@ -17,6 +19,8 @@ export const demoChunks: Record<DemoId, () => Promise<unknown>> = {
   'landscaping-traditional': () => import('./landscaping-traditional/TraditionalHome'),
   'landscaping-luxury': () => import('./landscaping-luxury/LuxuryHome'),
   equestrian: () => import('./equestrian/EquestrianHome'),
+  'equestrian-vibrant': () => import('./equestrian-vibrant/EquestrianVibrantSite'),
+  'equestrian-luxury': () => import('./equestrian-luxury/EquestrianLuxuryHome'),
   physio: () => import('./physio/PhysioHome'),
   spa: () => import('./spa/SpaHome'),
   cafe: () => import('./cafe/CafeHome')
