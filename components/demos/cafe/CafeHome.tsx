@@ -170,10 +170,58 @@ const CafeHome: React.FC = () => {
         </Link>
       </div>
 
-      {/* HERO SECTION — OPTIMIZED ACROSS MOBILE, TABLET & DESKTOP SO ALL 3 CUPS IN PHOTO ARE VISIBLE */}
-      <section className="relative lg:min-h-screen flex items-center justify-center pt-24 sm:pt-28 lg:pt-28 pb-14 sm:pb-20 px-5 sm:px-6 overflow-hidden bg-[#261E19]">
-        {/* Desktop Full-Bleed Background */}
-        <div className="hidden lg:block absolute inset-0 z-0">
+      {/* MOBILE & TABLET HERO (< lg): Covers top half of screen edge-to-edge with all 3 coffees visible, and SAVOUR THE MOMENT + compact CTAs underneath */}
+      <section className="lg:hidden relative flex flex-col bg-[#1E1713] overflow-hidden">
+        {/* Top Half of Screen: Full-Bleed 3-Coffees Hero Photograph */}
+        <div className="relative w-full h-[55vh] min-h-[340px] max-h-[480px] sm:h-[60vh] sm:max-h-[560px] overflow-hidden bg-[#14100E] flex items-end justify-center">
+          {/* Seamless upper cafe atmosphere & steam backdrop behind the top navbar */}
+          <img
+            src="/images/projects/cafe-hero.webp"
+            alt=""
+            aria-hidden="true"
+            className="absolute inset-0 w-full h-full object-cover object-top scale-110 blur-md brightness-[0.68]"
+          />
+          {/* Main crisp photograph scaled so all 3 coffee cups fit horizontally edge-to-edge */}
+          <img
+            src="/images/projects/cafe-hero.webp"
+            alt="Three artisan coffee cups on a rustic timber counter at The Hearth"
+            loading="eager"
+            fetchPriority="high"
+            decoding="sync"
+            style={{
+              maskImage: 'linear-gradient(to bottom, transparent 0%, black 20%, black 100%)',
+              WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 20%, black 100%)'
+            }}
+            className="relative z-10 w-[136%] sm:w-[108%] max-w-none h-auto block shrink-0"
+          />
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-[#1E1713] to-transparent z-20" />
+        </div>
+
+        {/* Underneath: SAVOUR THE MOMENT. + Proportionally Sized CTAs */}
+        <div className="relative z-20 bg-[#1E1713] px-5 sm:px-8 pt-4 pb-9 sm:pb-12 text-center">
+          <h1 className="font-serif text-3xl sm:text-5xl leading-[0.94] text-white font-black tracking-tighter mb-4 sm:mb-6">
+            SAVOUR THE <br /> <span className="text-[#FDE2E4] italic">MOMENT.</span>
+          </h1>
+          <div className="flex flex-row items-center justify-center gap-3 sm:gap-4 max-w-sm sm:max-w-md mx-auto">
+            <Link
+              to="/demo/cafe/menu"
+              className="flex-1 px-4 sm:px-7 py-2.5 sm:py-3.5 bg-[#A4715E] text-white rounded-xl font-black text-[9.5px] sm:text-[10.5px] uppercase tracking-[0.18em] sm:tracking-[0.25em] shadow-md hover:bg-white hover:text-[#4A403A] transition-colors duration-300 text-center whitespace-nowrap"
+            >
+              View Our Menu
+            </Link>
+            <Link
+              to="/demo/cafe/book"
+              className="flex-1 px-4 sm:px-7 py-2.5 sm:py-3.5 bg-[#FFF9F5] border border-white text-[#4A403A] rounded-xl font-black text-[9.5px] sm:text-[10.5px] uppercase tracking-[0.18em] sm:tracking-[0.25em] hover:bg-[#4A403A] hover:text-white transition-colors duration-300 text-center shadow-md whitespace-nowrap"
+            >
+              Reservations
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* DESKTOP HERO (lg+) */}
+      <section className="hidden lg:flex relative min-h-screen items-center justify-center pt-28 pb-20 px-6 overflow-hidden bg-[#261E19]">
+        <div className="absolute inset-0 z-0">
           <img
             src="/images/projects/cafe-hero.webp"
             className="w-full h-full object-cover object-center brightness-[0.76]"
@@ -185,36 +233,21 @@ const CafeHome: React.FC = () => {
           <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/20 to-[#FFF9F5]" />
         </div>
 
-        <div className="max-w-7xl mx-auto w-full relative z-10 text-center lg:text-left">
-          {/* Mobile & Tablet Wide Framed Photo so the full 3-cup hero photograph is clearly visible */}
-          <div className="lg:hidden mb-7 sm:mb-9 cafe-hero-rise">
-            <div className="relative aspect-[16/10] sm:aspect-[16/9] w-full rounded-3xl sm:rounded-[2.5rem] overflow-hidden shadow-2xl border-2 border-white/15 bg-[#1B1512]">
-              <img
-                src="/images/projects/cafe-hero.webp"
-                className="w-full h-full object-cover object-center"
-                alt="Three artisan coffee cups on a rustic timber counter at The Hearth"
-                loading="eager"
-                fetchPriority="high"
-                decoding="async"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/10" />
-            </div>
-          </div>
-
-          <div className="max-w-4xl space-y-6 sm:space-y-9 cafe-hero-rise mx-auto lg:mx-0">
-            <h1 className="font-serif text-4xl sm:text-6xl md:text-[clamp(4rem,9vw,8rem)] leading-[0.92] sm:leading-[0.86] text-white font-black tracking-tighter drop-shadow-sm">
+        <div className="max-w-7xl mx-auto w-full relative z-10 text-left">
+          <div className="max-w-4xl space-y-9 cafe-hero-rise">
+            <h1 className="font-serif text-[clamp(4rem,9vw,8rem)] leading-[0.86] text-white font-black tracking-tighter drop-shadow-sm">
               SAVOUR THE <br /> <span className="text-[#FDE2E4] italic">MOMENT.</span>
             </h1>
-            <div className="flex flex-col sm:flex-row gap-3.5 sm:gap-5 justify-center lg:justify-start pt-1 sm:pt-3">
+            <div className="flex flex-row gap-5 justify-start pt-3">
               <Link
                 to="/demo/cafe/menu"
-                className="px-8 sm:px-14 py-4 sm:py-6 bg-[#A4715E] text-white rounded-2xl font-black text-[10px] sm:text-[11px] uppercase tracking-[0.3em] sm:tracking-[0.4em] shadow-[0_20px_50px_rgba(164,113,94,0.35)] hover:bg-white hover:text-[#4A403A] transition-all duration-300 text-center"
+                className="px-14 py-6 bg-[#A4715E] text-white rounded-2xl font-black text-[11px] uppercase tracking-[0.4em] shadow-[0_20px_50px_rgba(164,113,94,0.35)] hover:bg-white hover:text-[#4A403A] transition-all duration-300 text-center"
               >
                 View Our Menu
               </Link>
               <Link
                 to="/demo/cafe/book"
-                className="px-8 sm:px-14 py-4 sm:py-6 bg-[#FFF9F5]/95 backdrop-blur-xl border border-white text-[#4A403A] rounded-2xl font-black text-[10px] sm:text-[11px] uppercase tracking-[0.3em] sm:tracking-[0.4em] hover:bg-[#4A403A] hover:text-white transition-all duration-300 text-center shadow-lg"
+                className="px-14 py-6 bg-[#FFF9F5]/95 backdrop-blur-xl border border-white text-[#4A403A] rounded-2xl font-black text-[11px] uppercase tracking-[0.4em] hover:bg-[#4A403A] hover:text-white transition-all duration-300 text-center shadow-lg"
               >
                 Reservations
               </Link>

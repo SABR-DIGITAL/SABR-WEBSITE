@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import * as RouterDOM from 'react-router-dom';
 const { Link, useLocation } = RouterDOM as any;
 import { Coffee, Menu, X, Calendar } from 'lucide-react';
@@ -9,7 +10,11 @@ const CafeNavbar: React.FC = () => {
   const location = useLocation();
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
+    const handleScroll = () => {
+      if (window.innerWidth < 1024) return;
+      const next = window.scrollY > 20;
+      setScrolled((prev) => (prev !== next ? next : prev));
+    };
     handleScroll();
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
@@ -27,26 +32,27 @@ const CafeNavbar: React.FC = () => {
     { name: 'Contact', path: '/demo/cafe/contact' },
   ];
 
-  return (
+  const navContent = (
     <>
       <nav
         aria-label="The Hearth Navigation"
-        className={`fixed top-0 left-0 right-0 z-[150] transition-all duration-500 px-4 sm:px-6 pointer-events-none ${
-          scrolled ? 'py-3.5' : 'py-5 md:py-7'
+        style={{ transform: 'translate3d(0, 0, 0)', WebkitBackfaceVisibility: 'hidden', backfaceVisibility: 'hidden' }}
+        className={`fixed top-0 left-0 right-0 z-[150] px-4 sm:px-6 pointer-events-none py-3.5 lg:transition-[padding] lg:duration-500 ${
+          scrolled ? 'lg:py-3.5' : 'lg:py-6'
         }`}
       >
         <div
-          className={`pointer-events-auto max-w-6xl mx-auto flex items-center justify-between rounded-full px-5 sm:px-8 py-3.5 transition-all duration-500 bg-[#FFF9F5]/95 backdrop-blur-2xl border border-[#A4715E]/25 ${
+          className={`pointer-events-auto max-w-6xl mx-auto flex items-center justify-between rounded-full px-4 sm:px-8 py-2.5 sm:py-3.5 bg-[#FFF9F5] lg:bg-[#FFF9F5]/95 lg:backdrop-blur-2xl border border-[#A4715E]/25 shadow-[0_12px_32px_rgba(0,0,0,0.18)] ${
             scrolled
-              ? 'shadow-[0_20px_50px_rgba(74,64,58,0.18)]'
-              : 'shadow-[0_16px_40px_rgba(0,0,0,0.22)]'
+              ? 'lg:shadow-[0_20px_50px_rgba(74,64,58,0.18)]'
+              : 'lg:shadow-[0_16px_40px_rgba(0,0,0,0.22)]'
           }`}
         >
-          <Link to="/demo/cafe" className="flex items-center gap-3 group shrink-0">
-            <div className="w-10 h-10 bg-[#A4715E] rounded-full flex items-center justify-center text-[#FFF9F5] shadow-sm group-hover:rotate-[15deg] transition-transform duration-500">
-              <Coffee size={20} />
+          <Link to="/demo/cafe" className="flex items-center gap-2.5 sm:gap-3 group shrink-0">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 bg-[#A4715E] rounded-full flex items-center justify-center text-[#FFF9F5] shadow-sm group-hover:rotate-[15deg] transition-transform duration-500">
+              <Coffee size={18} />
             </div>
-            <span className="font-serif text-xl sm:text-2xl font-bold text-[#4A403A] tracking-tighter group-hover:text-[#A4715E] transition-colors">
+            <span className="font-serif text-lg sm:text-2xl font-bold text-[#4A403A] tracking-tighter group-hover:text-[#A4715E] transition-colors">
               The Hearth
             </span>
           </Link>
@@ -73,7 +79,7 @@ const CafeNavbar: React.FC = () => {
           <div className="flex items-center gap-3 sm:gap-4">
             <Link
               to="/demo/cafe/book"
-              className="hidden sm:inline-flex items-center gap-2 px-6 sm:px-7 py-3 bg-[#4A403A] text-[#FFF9F5] rounded-full text-[10px] font-black uppercase tracking-[0.25em] hover:bg-[#A4715E] transition-all shadow-md active:scale-95"
+              className="hidden sm:inline-flex items-center gap-2 px-6 sm:px-7 py-3 bg-[#4A403A] text-[#FFF9F5] rounded-full text-[10px] font-black uppercase tracking-[0.25em] hover:bg-[#A4715E] transition-colors shadow-md"
             >
               <Calendar size={13} />
               <span>Reserve</span>
@@ -81,10 +87,10 @@ const CafeNavbar: React.FC = () => {
             <button
               type="button"
               aria-label="Open navigation menu"
-              className="lg:hidden text-[#4A403A] hover:text-[#A4715E] transition-colors p-2.5 bg-[#FDE2E4]/70 hover:bg-[#FDE2E4] rounded-full border border-[#A4715E]/20"
+              className="lg:hidden text-[#4A403A] hover:text-[#A4715E] transition-colors p-2 sm:p-2.5 bg-[#FDE2E4]/70 hover:bg-[#FDE2E4] rounded-full border border-[#A4715E]/20"
               onClick={() => setMobileMenuOpen(true)}
             >
-              <Menu size={22} />
+              <Menu size={20} />
             </button>
           </div>
         </div>
@@ -145,6 +151,8 @@ const CafeNavbar: React.FC = () => {
       )}
     </>
   );
+
+  return typeof document !== 'undefined' ? createPortal(navContent, document.body) : navContent;
 };
 
 export default CafeNavbar;

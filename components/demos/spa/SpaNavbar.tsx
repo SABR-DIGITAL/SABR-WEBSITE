@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import * as RouterDOM from 'react-router-dom';
 const { Link } = RouterDOM as any;
 import { X, Calendar, ArrowRight } from 'lucide-react';
@@ -218,7 +219,9 @@ const SpaNavbar: React.FC<SpaNavbarProps> = ({ onOpenBooking }) => {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 30);
+      if (window.innerWidth < 1024) return;
+      const next = window.scrollY > 30;
+      setIsScrolled((prev) => (prev !== next ? next : prev));
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
@@ -232,13 +235,14 @@ const SpaNavbar: React.FC<SpaNavbarProps> = ({ onOpenBooking }) => {
     }
   };
 
-  return (
+  const navContent = (
     <>
       <header
-        className={`fixed top-0 left-0 w-full z-[100] transition-[background-color,border-color,padding,backdrop-filter] duration-500 will-change-transform transform-gpu ${
+        style={{ transform: 'translate3d(0, 0, 0)', WebkitBackfaceVisibility: 'hidden', backfaceVisibility: 'hidden' }}
+        className={`fixed top-0 left-0 w-full z-[100] py-3.5 sm:py-4 bg-[#070908] border-b border-white/10 lg:transition-colors lg:duration-500 ${
           isScrolled
-            ? 'bg-[#070908]/95 backdrop-blur-xl border-b border-white/10 py-3.5 sm:py-4 shadow-2xl'
-            : 'bg-gradient-to-b from-black/90 via-black/40 to-transparent py-4 sm:py-6'
+            ? 'lg:bg-[#070908]/95 lg:backdrop-blur-xl lg:border-white/10 lg:shadow-2xl'
+            : 'lg:bg-gradient-to-b lg:from-black/90 lg:via-black/40 lg:to-transparent lg:border-transparent'
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 grid grid-cols-3 items-center text-white select-none">
@@ -273,7 +277,7 @@ const SpaNavbar: React.FC<SpaNavbarProps> = ({ onOpenBooking }) => {
           <div className="flex items-center justify-end">
             <button
               onClick={handleBookingClick}
-              className="inline-flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-7 py-2 sm:py-2.5 rounded-none bg-white hover:bg-emerald-400 hover:text-slate-950 text-slate-950 font-bold text-[10px] sm:text-xs uppercase tracking-[0.18em] sm:tracking-[0.25em] transition-all shadow-[0_4px_20px_rgba(0,0,0,0.4)] cursor-pointer border border-white/20"
+              className="inline-flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-7 py-2 sm:py-2.5 rounded-none bg-white hover:bg-emerald-400 hover:text-slate-950 text-slate-950 font-bold text-[10px] sm:text-xs uppercase tracking-[0.18em] sm:tracking-[0.25em] transition-colors shadow-[0_4px_20px_rgba(0,0,0,0.4)] cursor-pointer border border-white/20"
             >
               <Calendar size={12} className="text-emerald-700" />
               <span className="hidden sm:inline">RESERVE STAY</span>
@@ -297,6 +301,8 @@ const SpaNavbar: React.FC<SpaNavbarProps> = ({ onOpenBooking }) => {
       />
     </>
   );
+
+  return typeof document !== 'undefined' ? createPortal(navContent, document.body) : navContent;
 };
 
 export default SpaNavbar;

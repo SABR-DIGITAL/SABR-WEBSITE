@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import * as RouterDOM from 'react-router-dom';
 const { Link, useLocation } = RouterDOM as any;
 import { Menu, X, Phone } from 'lucide-react';
@@ -21,18 +22,23 @@ export const TraditionalNavbar: React.FC = () => {
   const location = useLocation();
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
+    const handleScroll = () => {
+      if (window.innerWidth < 1024) return;
+      const next = window.scrollY > 20;
+      setScrolled((prev) => (prev !== next ? next : prev));
+    };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  return (
+  const navContent = (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-[200] transition-all duration-300 ${
+        style={{ transform: 'translate3d(0, 0, 0)', WebkitBackfaceVisibility: 'hidden', backfaceVisibility: 'hidden' }}
+        className={`fixed top-0 left-0 right-0 z-[200] py-3.5 sm:py-4 bg-white lg:bg-white/95 lg:backdrop-blur-md border-b border-emerald-900/15 lg:transition-shadow lg:duration-300 ${
           scrolled
-            ? 'bg-white/95 backdrop-blur-md border-b border-emerald-900/15 py-3.5 shadow-[0_8px_30px_rgb(20,83,45,0.08)]'
-            : 'bg-white/95 backdrop-blur-sm border-b border-emerald-900/10 py-4.5'
+            ? 'shadow-[0_8px_30px_rgb(20,83,45,0.08)]'
+            : 'shadow-none'
         }`}
       >
         <div className="max-w-[1380px] mx-auto px-6 md:px-10 flex items-center justify-between gap-8">
@@ -149,6 +155,8 @@ export const TraditionalNavbar: React.FC = () => {
       </AnimatePresence>
     </>
   );
+
+  return typeof document !== 'undefined' ? createPortal(navContent, document.body) : navContent;
 };
 
 export default TraditionalNavbar;

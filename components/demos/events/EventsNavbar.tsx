@@ -1,7 +1,7 @@
-
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Activity } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const EventsNavbar: React.FC = () => {
@@ -10,8 +10,12 @@ const EventsNavbar: React.FC = () => {
   const location = useLocation();
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', handleScroll);
+    const handleScroll = () => {
+      if (window.innerWidth < 1024) return;
+      const next = window.scrollY > 20;
+      setScrolled((prev) => (prev !== next ? next : prev));
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -22,10 +26,13 @@ const EventsNavbar: React.FC = () => {
     { name: 'LINK: SECURE', path: '/demo/events/contact', label: 'SIGNAL' },
   ];
 
-  return (
+  const navContent = (
     <>
-      <nav className={`fixed top-0 left-0 right-0 z-[150] transition-all duration-1000 px-6 ${scrolled ? 'py-4' : 'py-10'}`}>
-        <div className={`max-w-7xl mx-auto flex items-center justify-between px-8 py-4 border-b transition-all duration-1000 ${scrolled ? 'bg-[#050505]/90 backdrop-blur-3xl border-[#D4AF37]/30 shadow-[0_10px_40px_rgba(212,175,55,0.1)]' : 'bg-transparent border-white/5 shadow-none'}`}>
+      <nav
+        style={{ transform: 'translate3d(0, 0, 0)', WebkitBackfaceVisibility: 'hidden', backfaceVisibility: 'hidden' }}
+        className={`fixed top-0 left-0 right-0 z-[150] px-6 py-4 lg:transition-[padding] lg:duration-1000 ${scrolled ? 'lg:py-4' : 'lg:py-10'}`}
+      >
+        <div className={`max-w-7xl mx-auto flex items-center justify-between px-8 py-4 border-b bg-[#050505] lg:transition-colors lg:duration-1000 ${scrolled ? 'lg:bg-[#050505]/90 lg:backdrop-blur-3xl border-[#D4AF37]/30 shadow-[0_10px_40px_rgba(212,175,55,0.1)]' : 'lg:bg-transparent border-white/10 lg:border-white/5 shadow-none'}`}>
           <Link to="/demo/events" className="flex items-center gap-6 group">
             <div className="relative">
               <div className="w-10 h-10 border border-[#D4AF37]/50 flex items-center justify-center group-hover:rotate-45 transition-transform duration-700">
@@ -115,6 +122,8 @@ const EventsNavbar: React.FC = () => {
       </AnimatePresence>
     </>
   );
+
+  return typeof document !== 'undefined' ? createPortal(navContent, document.body) : navContent;
 };
 
 export default EventsNavbar;

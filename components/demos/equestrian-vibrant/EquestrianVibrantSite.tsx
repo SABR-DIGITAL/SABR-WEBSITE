@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import * as RouterDOM from 'react-router-dom';
 import { motion as framerMotion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, ArrowUpRight, Calendar, X } from 'lucide-react';
@@ -362,7 +363,9 @@ const VibrantNavbar: React.FC<{ isHomeHero?: boolean }> = ({ isHomeHero = false 
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 36);
+      if (window.innerWidth < 1024) return;
+      const next = window.scrollY > 36;
+      setIsScrolled((prev) => (prev !== next ? next : prev));
     };
     handleScroll();
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -375,13 +378,14 @@ const VibrantNavbar: React.FC<{ isHomeHero?: boolean }> = ({ isHomeHero = false 
 
   const solidBar = !isHomeHero || isScrolled;
 
-  return (
+  const navContent = (
     <>
       <header
-        className={`fixed top-0 left-0 w-full z-[100] transition-all duration-300 ${
+        style={{ transform: 'translate3d(0, 0, 0)', WebkitBackfaceVisibility: 'hidden', backfaceVisibility: 'hidden' }}
+        className={`fixed top-0 left-0 w-full z-[100] py-3 sm:py-3.5 lg:transition-colors lg:duration-300 ${
           solidBar
-            ? 'bg-white border-b border-[#11161C]/10 py-3 sm:py-3.5 text-[#11161C] shadow-[0_2px_16px_rgba(17,22,28,0.04)]'
-            : 'bg-white lg:bg-transparent border-b border-[#11161C]/10 lg:border-transparent py-3 sm:py-3.5 lg:py-4 text-[#11161C] lg:text-white'
+            ? 'bg-white border-b border-[#11161C]/10 text-[#11161C] shadow-[0_2px_16px_rgba(17,22,28,0.04)]'
+            : 'bg-white lg:bg-transparent border-b border-[#11161C]/10 lg:border-transparent text-[#11161C] lg:text-white'
         }`}
       >
         <div className="max-w-7xl mx-auto px-3.5 sm:px-8 md:px-12 flex items-center justify-between sm:grid sm:grid-cols-3 gap-2 select-none">
@@ -391,7 +395,7 @@ const VibrantNavbar: React.FC<{ isHomeHero?: boolean }> = ({ isHomeHero = false 
               type="button"
               onClick={() => setIsMenuOpen(true)}
               aria-label="Open menu"
-              className={`flex items-center gap-1.5 sm:gap-3 text-xs font-semibold uppercase transition-colors group cursor-pointer py-1 ${
+              className={`flex items-center gap-1.5 sm:gap-3 text-xs font-semibold uppercase lg:transition-colors group cursor-pointer py-1 ${
                 solidBar
                   ? 'text-[#11161C] hover:text-[#0D82DF]'
                   : 'text-[#11161C] lg:text-white hover:text-[#0D82DF] lg:hover:text-white/80'
@@ -399,14 +403,14 @@ const VibrantNavbar: React.FC<{ isHomeHero?: boolean }> = ({ isHomeHero = false 
             >
               <div className="flex flex-col gap-1 sm:gap-1.5 w-4 sm:w-5">
                 <span
-                  className={`h-[1.5px] w-full transition-colors ${
+                  className={`h-[1.5px] w-full lg:transition-colors ${
                     solidBar
                       ? 'bg-[#11161C] group-hover:bg-[#0D82DF]'
                       : 'bg-[#11161C] lg:bg-white group-hover:bg-[#0D82DF] lg:group-hover:bg-white'
                   }`}
                 />
                 <span
-                  className={`h-[1.5px] w-2.5 sm:w-3.5 transition-colors ${
+                  className={`h-[1.5px] w-2.5 sm:w-3.5 lg:transition-colors ${
                     solidBar
                       ? 'bg-[#11161C] group-hover:bg-[#0D82DF]'
                       : 'bg-[#11161C] lg:bg-white group-hover:bg-[#0D82DF] lg:group-hover:bg-white'
@@ -426,7 +430,7 @@ const VibrantNavbar: React.FC<{ isHomeHero?: boolean }> = ({ isHomeHero = false 
               className="flex flex-col items-center group text-center no-underline"
             >
               <span
-                className={`font-cinzel text-[11.5px] sm:text-lg md:text-xl tracking-[0.14em] sm:tracking-[0.3em] font-bold transition-colors whitespace-nowrap ${
+                className={`font-cinzel text-[11.5px] sm:text-lg md:text-xl tracking-[0.14em] sm:tracking-[0.3em] font-bold lg:transition-colors whitespace-nowrap ${
                   solidBar
                     ? 'text-[#11161C] group-hover:text-[#0D82DF]'
                     : 'text-[#11161C] lg:text-white group-hover:text-[#0D82DF] lg:group-hover:text-white/90'
@@ -441,7 +445,7 @@ const VibrantNavbar: React.FC<{ isHomeHero?: boolean }> = ({ isHomeHero = false 
           <div className="flex items-center justify-end shrink-0">
             <Link
               to="/demo/equestrian-vibrant/contact"
-              className={`inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-5 py-1.5 sm:py-2 font-bold text-[8.5px] sm:text-[11px] uppercase tracking-[0.13em] sm:tracking-[0.2em] transition-all whitespace-nowrap ${
+              className={`inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-5 py-1.5 sm:py-2 font-bold text-[8.5px] sm:text-[11px] uppercase tracking-[0.13em] sm:tracking-[0.2em] lg:transition-colors whitespace-nowrap ${
                 solidBar
                   ? 'bg-[#0D82DF] text-white hover:bg-[#11161C]'
                   : 'bg-[#0D82DF] text-white lg:bg-white lg:text-[#11161C] hover:bg-[#11161C] lg:hover:bg-[#FAF7F0]'
@@ -456,6 +460,8 @@ const VibrantNavbar: React.FC<{ isHomeHero?: boolean }> = ({ isHomeHero = false 
       <VibrantMenuDrawer isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
     </>
   );
+
+  return typeof document !== 'undefined' ? createPortal(navContent, document.body) : navContent;
 };
 
 /**

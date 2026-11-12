@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import * as RouterDOM from 'react-router-dom';
 import { X } from 'lucide-react';
 
@@ -90,14 +91,15 @@ export const Navbar: React.FC = () => {
     };
   }, [menuOpen]);
 
-  return (
+  const navContent = (
     <>
-      {/* Minimal Luxury Hamburger Trigger in Top-Right Corner — No Navbar Bars */}
+      {/* Minimal Luxury Hamburger Trigger in Top-Right Corner — Welded to viewport */}
       <button
         type="button"
         onClick={() => setMenuOpen(true)}
         aria-label="Open navigation menu"
-        className="fixed top-4 right-4 sm:top-6 sm:right-6 md:top-8 md:right-10 z-[150] w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-white/90 hover:bg-[#1C211D] text-[#1C211D] hover:text-white border border-[#E2DFD7] shadow-[0_8px_30px_rgba(0,0,0,0.08)] backdrop-blur-md flex flex-col items-center justify-center gap-[5px] transition-all duration-500 cursor-pointer group"
+        style={{ transform: 'translate3d(0, 0, 0)', WebkitBackfaceVisibility: 'hidden', backfaceVisibility: 'hidden' }}
+        className="fixed top-4 right-4 sm:top-6 sm:right-6 md:top-8 md:right-10 z-[150] w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-white lg:bg-white/90 hover:bg-[#1C211D] text-[#1C211D] hover:text-white border border-[#E2DFD7] shadow-[0_8px_30px_rgba(0,0,0,0.08)] lg:backdrop-blur-md flex flex-col items-center justify-center gap-[5px] lg:transition-colors lg:duration-500 cursor-pointer group"
       >
         <span className="w-4 sm:w-5 h-[1px] bg-current transition-transform duration-300 group-hover:w-5 sm:group-hover:w-6" />
         <span className="w-4 sm:w-5 h-[1px] bg-current transition-transform duration-300" />
@@ -191,6 +193,8 @@ export const Navbar: React.FC = () => {
       </div>
     </>
   );
+
+  return typeof document !== 'undefined' ? createPortal(navContent, document.body) : navContent;
 };
 
 export default Navbar;

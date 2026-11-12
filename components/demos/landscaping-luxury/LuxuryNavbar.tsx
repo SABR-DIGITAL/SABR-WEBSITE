@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import * as RouterDOM from 'react-router-dom';
 const { Link } = RouterDOM as any;
 import { X, Calendar, Phone } from 'lucide-react';
@@ -61,19 +62,22 @@ export const LuxuryNavbar: React.FC = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 30);
+      if (window.innerWidth < 1024) return;
+      const next = window.scrollY > 30;
+      setIsScrolled((prev) => (prev !== next ? next : prev));
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  return (
+  const navContent = (
     <>
       <header
-        className={`fixed top-0 left-0 w-full z-[120] transition-[background-color,border-color,padding,backdrop-filter] duration-500 will-change-transform transform-gpu ${
+        style={{ transform: 'translate3d(0, 0, 0)', WebkitBackfaceVisibility: 'hidden', backfaceVisibility: 'hidden' }}
+        className={`fixed top-0 left-0 w-full z-[120] py-3.5 sm:py-4 bg-[#0C0A08] border-b border-[#C8B88A]/25 lg:transition-colors lg:duration-500 ${
           isScrolled
-            ? 'bg-[#0C0A08]/95 backdrop-blur-xl border-b border-[#C8B88A]/25 py-3.5 sm:py-4 shadow-2xl'
-            : 'bg-gradient-to-b from-[#0C0A08]/90 via-[#0C0A08]/45 to-transparent py-4 sm:py-6'
+            ? 'lg:bg-[#0C0A08]/95 lg:backdrop-blur-xl lg:border-[#C8B88A]/25 lg:shadow-2xl'
+            : 'lg:bg-gradient-to-b lg:from-[#0C0A08]/90 lg:via-[#0C0A08]/45 lg:to-transparent lg:border-transparent'
         }`}
       >
         <div className="max-w-7xl mx-auto px-3.5 sm:px-6 md:px-12 grid grid-cols-3 items-center text-[#F4F1EA] select-none">
@@ -245,6 +249,8 @@ export const LuxuryNavbar: React.FC = () => {
       </AnimatePresence>
     </>
   );
+
+  return typeof document !== 'undefined' ? createPortal(navContent, document.body) : navContent;
 };
 
 export default LuxuryNavbar;

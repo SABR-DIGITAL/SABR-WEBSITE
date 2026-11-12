@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import * as RouterDOM from 'react-router-dom';
 const { Link, useLocation } = RouterDOM as any;
 import { ArrowUpRight, Menu, Phone, X } from 'lucide-react';
@@ -11,23 +12,27 @@ interface EquestrianNavProps {
 
 const EquestrianNav: React.FC<EquestrianNavProps> = ({ transparentOnTop = false }) => {
   const [scrolled, setScrolled] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(() =>
+    typeof window !== 'undefined' ? window.innerWidth >= 1024 : true
+  );
   const [open, setOpen] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
-    let rafId = 0;
-    const onScroll = () => {
-      if (rafId) return;
-      rafId = window.requestAnimationFrame(() => {
-        rafId = 0;
-        const next = window.scrollY > 24;
-        setScrolled((prev) => (prev !== next ? next : prev));
-      });
+    const onResize = () => {
+      setIsDesktop(window.innerWidth >= 1024);
     };
+    const onScroll = () => {
+      if (window.innerWidth < 1024) return;
+      const next = window.scrollY > 24;
+      setScrolled((prev) => (prev !== next ? next : prev));
+    };
+    onResize();
     onScroll();
+    window.addEventListener('resize', onResize, { passive: true });
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => {
-      if (rafId) window.cancelAnimationFrame(rafId);
+      window.removeEventListener('resize', onResize);
       window.removeEventListener('scroll', onScroll);
     };
   }, []);
@@ -43,22 +48,22 @@ const EquestrianNav: React.FC<EquestrianNavProps> = ({ transparentOnTop = false 
     };
   }, [open]);
 
-  const isLightOnHero = transparentOnTop && !scrolled && !open;
+  const isLightOnHero = isDesktop && transparentOnTop && !scrolled && !open;
 
-  return (
+  const navContent = (
     <>
       <header
-        style={{ transform: 'translate3d(0,0,0)', WebkitBackfaceVisibility: 'hidden' }}
-        className={`fixed top-0 left-0 right-0 z-[150] h-16 sm:h-20 flex items-center transition-colors duration-200 ${
+        style={{ transform: 'translate3d(0,0,0)', WebkitBackfaceVisibility: 'hidden', backfaceVisibility: 'hidden' }}
+        className={`fixed top-0 left-0 right-0 z-[150] h-16 sm:h-20 flex items-center lg:transition-colors lg:duration-200 ${
           isLightOnHero
             ? 'bg-gradient-to-b from-[#1E2822]/60 via-[#1E2822]/20 to-transparent border-b border-transparent'
-            : 'bg-[#FAF6EE]/95 backdrop-blur-md border-b border-[#2D5A43]/15 shadow-[0_8px_30px_-20px_rgba(30,40,34,0.18)]'
+            : 'bg-[#FAF6EE] lg:bg-[#FAF6EE]/95 lg:backdrop-blur-md border-b border-[#2D5A43]/15 shadow-[0_8px_30px_-20px_rgba(30,40,34,0.18)]'
         }`}
       >
         <div className="max-w-[1440px] w-full mx-auto px-4 sm:px-6 md:px-12 flex items-center justify-between gap-4 sm:gap-6">
           <Link to="/demo/equestrian" className="group inline-flex items-center gap-3 sm:gap-3.5 min-w-0">
             <span
-              className={`w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center shrink-0 transition-colors duration-300 ${
+              className={`w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center shrink-0 ${
                 isLightOnHero
                   ? 'bg-white/15 backdrop-blur-sm'
                   : 'bg-[#E8F0EB]'
@@ -72,14 +77,14 @@ const EquestrianNav: React.FC<EquestrianNavProps> = ({ transparentOnTop = false 
             </span>
             <div className="min-w-0">
               <span
-                className={`block font-serif text-lg sm:text-xl md:text-2xl tracking-[-0.01em] leading-none truncate transition-colors duration-300 ${
+                className={`block font-serif text-lg sm:text-xl md:text-2xl tracking-[-0.01em] leading-none truncate ${
                   isLightOnHero ? 'text-[#FAF6EE]' : 'text-[#1E2822]'
                 }`}
               >
                 {academy.name}
               </span>
               <span
-                className={`block text-[8px] sm:text-[9px] uppercase tracking-[0.26em] sm:tracking-[0.32em] mt-1 truncate transition-colors duration-300 ${
+                className={`block text-[8px] sm:text-[9px] uppercase tracking-[0.26em] sm:tracking-[0.32em] mt-1 truncate ${
                   isLightOnHero ? 'text-white/75' : 'text-[#2D5A43]'
                 }`}
               >
@@ -114,7 +119,7 @@ const EquestrianNav: React.FC<EquestrianNavProps> = ({ transparentOnTop = false 
           <div className="hidden md:flex items-center gap-5">
             <a
               href={`tel:${academy.phoneHref}`}
-              className={`inline-flex items-center gap-2 text-[12px] tracking-[0.14em] font-medium transition-colors duration-300 ${
+              className={`inline-flex items-center gap-2 text-[12px] tracking-[0.14em] font-medium ${
                 isLightOnHero
                   ? 'text-white/90 hover:text-white'
                   : 'text-[#2D5A43] hover:text-[#1E2822]'
@@ -126,7 +131,7 @@ const EquestrianNav: React.FC<EquestrianNavProps> = ({ transparentOnTop = false 
 
             <Link
               to="/demo/equestrian/book"
-              className={`group inline-flex items-center gap-2.5 px-6 py-3 rounded-full text-[10px] uppercase tracking-[0.28em] font-medium transition-all duration-300 ${
+              className={`group inline-flex items-center gap-2.5 px-6 py-3 rounded-full text-[10px] uppercase tracking-[0.28em] font-medium ${
                 isLightOnHero
                   ? 'bg-[#2D5A43] text-[#FAF6EE] hover:bg-[#244936] shadow-lg'
                   : 'bg-[#2D5A43] text-[#FAF6EE] hover:bg-[#224634]'
@@ -145,7 +150,7 @@ const EquestrianNav: React.FC<EquestrianNavProps> = ({ transparentOnTop = false 
             onClick={() => setOpen((v) => !v)}
             aria-expanded={open}
             aria-label={open ? 'Close menu' : 'Open menu'}
-            className={`lg:hidden w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-colors ${
+            className={`lg:hidden w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${
               isLightOnHero
                 ? 'bg-white/15 text-white'
                 : 'bg-[#E8F0EB] text-[#2D5A43]'
@@ -206,6 +211,8 @@ const EquestrianNav: React.FC<EquestrianNavProps> = ({ transparentOnTop = false 
       )}
     </>
   );
+
+  return typeof document !== 'undefined' ? createPortal(navContent, document.body) : navContent;
 };
 
 export default EquestrianNav;

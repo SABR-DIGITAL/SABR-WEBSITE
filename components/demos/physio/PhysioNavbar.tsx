@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 // Fix react-router-dom missing exports
 import * as RouterDOM from 'react-router-dom';
 const { Link, useLocation, useNavigate } = RouterDOM as any;
@@ -20,7 +21,11 @@ const PhysioNavbar: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
+    const handleScroll = () => {
+      if (window.innerWidth < 1024) return;
+      const next = window.scrollY > 20;
+      setScrolled((prev) => (prev !== next ? next : prev));
+    };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -34,13 +39,14 @@ const PhysioNavbar: React.FC = () => {
     return () => window.removeEventListener('pulteney-navigate-book', handleNavigateBook);
   }, [navigate]);
 
-  return (
+  const navContent = (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-[200] transition-all duration-300 ${
+        style={{ transform: 'translate3d(0, 0, 0)', WebkitBackfaceVisibility: 'hidden', backfaceVisibility: 'hidden' }}
+        className={`fixed top-0 left-0 right-0 z-[200] py-3.5 sm:py-4 bg-white lg:bg-white/95 lg:backdrop-blur-md border-b border-slate-200/80 lg:transition-shadow lg:duration-300 ${
           scrolled
-            ? 'bg-white/95 backdrop-blur-md border-b border-slate-200/80 py-3.5 shadow-[0_8px_30px_rgb(15,41,66,0.05)]'
-            : 'bg-white/90 backdrop-blur-sm border-b border-slate-200/60 py-4 sm:py-5'
+            ? 'shadow-[0_8px_30px_rgb(15,41,66,0.05)]'
+            : 'shadow-none'
         }`}
       >
         <div className="max-w-[1380px] mx-auto px-5 sm:px-6 md:px-10 flex items-center justify-between gap-4 sm:gap-8">
@@ -178,6 +184,8 @@ const PhysioNavbar: React.FC = () => {
       </AnimatePresence>
     </>
   );
+
+  return typeof document !== 'undefined' ? createPortal(navContent, document.body) : navContent;
 };
 
 export default PhysioNavbar;
