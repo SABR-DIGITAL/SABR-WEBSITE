@@ -26,12 +26,6 @@ export const HERO_SLIDES = [
   },
   {
     image:
-      'https://dmhdaawgg48dl.cloudfront.net/wp-content/uploads/2024/10/yorkstone-rill-water-feature-english-country-petworth-sussex-1920x1280.jpg',
-    alt: 'English country garden with Yorkstone water rill and herbaceous borders',
-    caption: 'Hand-Dressed Yorkstone Rill & Country Borders · Petworth',
-  },
-  {
-    image:
       'https://dmhdaawgg48dl.cloudfront.net/wp-content/uploads/2024/10/york-stone-patio-conservatory-hedges-classic-notting-hill-960x960.jpg',
     alt: 'Classic town garden with Yorkstone terrace and clipped yew hedging',
     caption: 'Sawn Yorkstone Courtyard & Clipped Yew · Notting Hill',

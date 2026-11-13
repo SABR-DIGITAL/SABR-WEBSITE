@@ -35,11 +35,21 @@ export const markLuxuryInternalNav = () => {
 export const LuxuryHome: React.FC = () => {
   const pageRef = useRef<HTMLDivElement>(null);
   const [heroIndex, setHeroIndex] = useState(0);
+  const [secondarySlidesReady, setSecondarySlidesReady] = useState(false);
   const [activePortfolioIdx, setActivePortfolioIdx] = useState(0);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' as any });
+  }, []);
+
+  // Mount secondary hero slides only after the initial hero entrance has completed
+  // so opening the page never decodes 4 high-res photos simultaneously.
+  useEffect(() => {
+    const readyTimer = window.setTimeout(() => {
+      setSecondarySlidesReady(true);
+    }, 1400);
+    return () => window.clearTimeout(readyTimer);
   }, []);
 
   // Gentle auto-advance on the hero slideshow
@@ -50,7 +60,8 @@ export const LuxuryHome: React.FC = () => {
     return () => window.clearInterval(timer);
   }, []);
 
-  // Bespoke Architectural Mask-Reveal, Stat Progress & Glide Choreography
+  // Below-the-fold scroll choreography — deferred until after the hero entrance
+  // so opening the site has zero main-thread layout contention.
   useEffect(() => {
     const root = pageRef.current;
     if (!root) return;
@@ -60,118 +71,81 @@ export const LuxuryHome: React.FC = () => {
       window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduceMotion) return;
 
-    const ctx = gsap.context(() => {
-      // 1. Hero kicker & staggered masked line rise
-      gsap.fromTo(
-        '.lux-hero-kicker',
-        { y: 18, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 1.1,
-          ease: 'power3.out',
-          delay: 0.05,
-        }
-      );
-
-      gsap.fromTo(
-        '.lux-mask-line',
-        { yPercent: 115, rotateZ: 2, opacity: 0 },
-        {
-          yPercent: 0,
-          rotateZ: 0,
-          opacity: 1,
-          duration: 1.35,
-          stagger: 0.14,
-          ease: 'expo.out',
-          delay: 0.12,
-        }
-      );
-
-      // 2. Smooth upward glide on editorial blocks
-      gsap.utils.toArray<HTMLElement>('.prestige-glide').forEach((el) => {
-        gsap.fromTo(
-          el,
-          { y: 52, opacity: 0 },
-          {
-            y: 0,
-            opacity: 1,
-            duration: 1.25,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: el,
-              start: 'top 88%',
-              once: true,
-            },
-          }
-        );
-      });
-
-      // 3. Staggered stat items pop & progress bar sweep
-      gsap.utils.toArray<HTMLElement>('.prestige-stat-group').forEach((group) => {
-        const items = group.querySelectorAll('.prestige-stat-item');
-        const bars = group.querySelectorAll('.prestige-stat-bar');
-
-        gsap.fromTo(
-          items,
-          { y: 32, opacity: 0 },
-          {
-            y: 0,
-            opacity: 1,
-            duration: 1.1,
-            stagger: 0.15,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: group,
-              start: 'top 88%',
-              once: true,
-            },
-          }
-        );
-
-        gsap.fromTo(
-          bars,
-          { scaleX: 0, transformOrigin: 'left center' },
-          {
-            scaleX: 1,
-            duration: 1.6,
-            stagger: 0.18,
-            ease: 'expo.out',
-            scrollTrigger: {
-              trigger: group,
-              start: 'top 88%',
-              once: true,
-            },
-          }
-        );
-      });
-
-      // 4. Luxury curtain clip-path reveal on images
-      gsap.utils.toArray<HTMLElement>('.prestige-curtain').forEach((wrap) => {
-        const img = wrap.querySelector('img');
-        gsap.fromTo(
-          wrap,
-          { clipPath: 'inset(12% 6% 12% 6%)', opacity: 0.2 },
-          {
-            clipPath: 'inset(0% 0% 0% 0%)',
-            opacity: 1,
-            duration: 1.45,
-            ease: 'expo.out',
-            scrollTrigger: {
-              trigger: wrap,
-              start: 'top 88%',
-              once: true,
-            },
-          }
-        );
-        if (img) {
+    let ctx: gsap.Context | null = null;
+    const initTimer = window.setTimeout(() => {
+      ctx = gsap.context(() => {
+        // 1. Smooth upward glide on editorial blocks below the fold
+        gsap.utils.toArray<HTMLElement>('.prestige-glide').forEach((el) => {
           gsap.fromTo(
-            img,
-            { scale: 1.18 },
+            el,
+            { y: 36, opacity: 0 },
             {
-              scale: 1,
-              duration: 1.65,
+              y: 0,
+              opacity: 1,
+              duration: 1.05,
+              ease: 'power3.out',
+              force3D: true,
+              scrollTrigger: {
+                trigger: el,
+                start: 'top 88%',
+                once: true,
+              },
+            }
+          );
+        });
+
+        // 2. Staggered stat items pop & progress bar sweep
+        gsap.utils.toArray<HTMLElement>('.prestige-stat-group').forEach((group) => {
+          const items = group.querySelectorAll('.prestige-stat-item');
+          const bars = group.querySelectorAll('.prestige-stat-bar');
+
+          gsap.fromTo(
+            items,
+            { y: 24, opacity: 0 },
+            {
+              y: 0,
+              opacity: 1,
+              duration: 0.95,
+              stagger: 0.12,
+              ease: 'power3.out',
+              force3D: true,
+              scrollTrigger: {
+                trigger: group,
+                start: 'top 88%',
+                once: true,
+              },
+            }
+          );
+
+          gsap.fromTo(
+            bars,
+            { scaleX: 0, transformOrigin: 'left center' },
+            {
+              scaleX: 1,
+              duration: 1.35,
+              stagger: 0.14,
               ease: 'expo.out',
+              force3D: true,
+              scrollTrigger: {
+                trigger: group,
+                start: 'top 88%',
+                once: true,
+              },
+            }
+          );
+        });
+
+        // 3. GPU-friendly image reveal on below-the-fold feature frames
+        gsap.utils.toArray<HTMLElement>('.prestige-curtain').forEach((wrap) => {
+          gsap.fromTo(
+            wrap,
+            { y: 28, opacity: 0 },
+            {
+              y: 0,
+              opacity: 1,
+              duration: 1.1,
+              ease: 'power3.out',
+              force3D: true,
               scrollTrigger: {
                 trigger: wrap,
                 start: 'top 88%',
@@ -179,33 +153,39 @@ export const LuxuryHome: React.FC = () => {
               },
             }
           );
-        }
-      });
+        });
 
-      // 5. Tan hairline sweep
-      gsap.utils.toArray<HTMLElement>('.prestige-rule').forEach((line) => {
-        gsap.fromTo(
-          line,
-          { scaleX: 0, transformOrigin: 'left center' },
-          {
-            scaleX: 1,
-            duration: 1.35,
-            ease: 'expo.out',
-            scrollTrigger: {
-              trigger: line,
-              start: 'top 90%',
-              once: true,
-            },
-          }
-        );
-      });
-    }, root);
+        // 4. Tan hairline sweep
+        gsap.utils.toArray<HTMLElement>('.prestige-rule').forEach((line) => {
+          gsap.fromTo(
+            line,
+            { scaleX: 0, transformOrigin: 'left center' },
+            {
+              scaleX: 1,
+              duration: 1.15,
+              ease: 'expo.out',
+              force3D: true,
+              scrollTrigger: {
+                trigger: line,
+                start: 'top 90%',
+                once: true,
+              },
+            }
+          );
+        });
+      }, root);
+    }, 220);
 
-    return () => ctx.revert();
+    return () => {
+      window.clearTimeout(initTimer);
+      ctx?.revert();
+    };
   }, []);
 
   const activePortfolio =
     PORTFOLIO_COLLECTIONS[activePortfolioIdx] || PORTFOLIO_COLLECTIONS[0];
+
+  const visibleSlides = secondarySlidesReady ? HERO_SLIDES : HERO_SLIDES.slice(0, 1);
 
   return (
     <div
@@ -218,12 +198,12 @@ export const LuxuryHome: React.FC = () => {
       {/* 1. CLEAN UNOBSTRUCTED FULL-BLEED HERO                               */}
       {/* =================================================================== */}
       <section className="relative h-screen min-h-[100svh] flex flex-col justify-end pb-20 sm:pb-28 md:pb-32 px-5 sm:px-12 md:px-20 overflow-hidden bg-[#0C0A08]">
-        {HERO_SLIDES.map((slide, idx) => {
+        {visibleSlides.map((slide, idx) => {
           const isCurrent = idx === heroIndex;
           return (
             <div
               key={slide.image}
-              className={`absolute inset-0 transition-opacity duration-[1600ms] ease-out ${
+              className={`absolute inset-0 transition-opacity duration-[1400ms] ease-out ${
                 isCurrent ? 'opacity-100 z-0' : 'opacity-0 z-0 pointer-events-none'
               }`}
             >
@@ -231,11 +211,9 @@ export const LuxuryHome: React.FC = () => {
                 src={slide.image}
                 alt={slide.alt}
                 loading={idx === 0 ? 'eager' : 'lazy'}
-                decoding="async"
+                decoding={idx === 0 ? 'sync' : 'async'}
                 fetchPriority={idx === 0 ? 'high' : undefined}
-                className={`w-full h-full object-cover opacity-75 transition-transform duration-[10000ms] ease-out ${
-                  isCurrent ? 'scale-100' : 'scale-110'
-                }`}
+                className="w-full h-full object-cover opacity-75 transform-gpu"
               />
               {/* Soft obsidian gradient for effortless legibility without any box or frame */}
               <div className="absolute inset-0 bg-gradient-to-t from-[#0C0A08] via-[#0C0A08]/35 to-[#0C0A08]/55" />
@@ -245,27 +223,87 @@ export const LuxuryHome: React.FC = () => {
         })}
 
         {/* ONLY THE 4 REQUESTED LINES IN THE OPTIMAL EDITORIAL FOCAL POSITION */}
+        {/* Animated via single-pass compositor-thread CSS keyframes (animation-fill-mode: both) so the text never flashes or stutters and only appears once */}
         <div className="relative z-20 max-w-7xl mx-auto w-full">
           <div className="max-w-4xl space-y-4 sm:space-y-6">
-            <span className="lux-hero-kicker block text-[9px] sm:text-xs font-mono uppercase tracking-[0.28em] sm:tracking-[0.48em] text-[#C8B88A]">
+            <span className="lux-hero-kicker-once block text-[9px] sm:text-xs font-mono uppercase tracking-[0.28em] sm:tracking-[0.48em] text-[#C8B88A]">
               EST. 1998 · WILTSHIRE, SURREY &amp; LONDON
             </span>
 
-            <h1 className="font-cinzel text-[2.1rem] sm:text-6xl md:text-7xl lg:text-[5.6rem] font-bold uppercase text-[#F4F1EA] leading-[0.98] sm:leading-[0.96] tracking-tight drop-shadow-2xl">
+            <h1
+              style={{ textShadow: '0 12px 32px rgba(0, 0, 0, 0.55)' }}
+              className="font-cinzel text-[2.1rem] sm:text-6xl md:text-7xl lg:text-[5.6rem] font-bold uppercase text-[#F4F1EA] leading-[0.98] sm:leading-[0.96] tracking-tight"
+            >
               <span className="block overflow-hidden pb-1">
-                <span className="lux-mask-line block">TWENTY-EIGHT</span>
+                <span
+                  style={{ animationDelay: '40ms' }}
+                  className="lux-mask-line-once block"
+                >
+                  TWENTY-EIGHT
+                </span>
               </span>
               <span className="block overflow-hidden pb-1">
-                <span className="lux-mask-line block">YEARS OF RARE</span>
+                <span
+                  style={{ animationDelay: '150ms' }}
+                  className="lux-mask-line-once block"
+                >
+                  YEARS OF RARE
+                </span>
               </span>
               <span className="block overflow-hidden pt-1">
-                <span className="lux-mask-line block font-cormorant italic font-normal normal-case tracking-normal text-[#C8B88A] text-[2.5rem] sm:text-7xl lg:text-[6.2rem]">
+                <span
+                  style={{ animationDelay: '260ms' }}
+                  className="lux-mask-line-once block font-cormorant italic font-normal normal-case tracking-normal text-[#C8B88A] text-[2.5rem] sm:text-7xl lg:text-[6.2rem]"
+                >
                   Award-Winning Gardens.
                 </span>
               </span>
             </h1>
           </div>
         </div>
+
+        <style>{`
+          @keyframes luxHeroKickerOnce {
+            0% {
+              opacity: 0;
+              transform: translate3d(0, 14px, 0);
+            }
+            100% {
+              opacity: 1;
+              transform: translate3d(0, 0, 0);
+            }
+          }
+          @keyframes luxMaskLineOnce {
+            0% {
+              opacity: 0;
+              transform: translate3d(0, 102%, 0);
+            }
+            100% {
+              opacity: 1;
+              transform: translate3d(0, 0, 0);
+            }
+          }
+          .lux-hero-kicker-once {
+            animation: luxHeroKickerOnce 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0ms 1 both;
+            will-change: transform, opacity;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+          }
+          .lux-mask-line-once {
+            animation: luxMaskLineOnce 0.95s cubic-bezier(0.22, 1, 0.36, 1) 1 both;
+            will-change: transform, opacity;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+          }
+          @media (prefers-reduced-motion: reduce) {
+            .lux-hero-kicker-once,
+            .lux-mask-line-once {
+              animation: none !important;
+              opacity: 1 !important;
+              transform: none !important;
+            }
+          }
+        `}</style>
       </section>
 
       {/* =================================================================== */}

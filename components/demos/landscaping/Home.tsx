@@ -1,11 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import * as RouterDOM from 'react-router-dom';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import {
   ArrowUpRight,
-  ChevronLeft,
-  ChevronRight,
   Plus,
   Minus,
 } from 'lucide-react';
@@ -15,9 +13,15 @@ import Footer from './Footer';
 gsap.registerPlugin(ScrollTrigger);
 
 const Link = (RouterDOM as any).Link || (RouterDOM as any).default?.Link;
+const useLocation = (RouterDOM as any).useLocation || (RouterDOM as any).default?.useLocation;
 
 import { HERO_SLIDES } from './landscapingData';
 export { HERO_SLIDES };
+
+export const MINIMAL_HERO_VIDEO_SRC =
+  '/images/projects/landscaping-minimal-hero-4k.mp4';
+export const MINIMAL_HERO_VIDEO_POSTER =
+  '/images/projects/landscaping-minimal-video-poster.jpg';
 
 const PORTFOLIO_COLLECTIONS = [
   {
@@ -124,22 +128,33 @@ const FAQS = [
 
 export const Home: React.FC = () => {
   const pageRef = useRef<HTMLDivElement>(null);
-  const [heroIndex, setHeroIndex] = useState(0);
+  const heroVideoRef = useRef<HTMLVideoElement>(null);
+  const location = useLocation ? useLocation() : { key: 'default' };
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' as any });
   }, []);
 
-  // Gentle auto-advance on the hero slideshow
-  useEffect(() => {
-    const timer = window.setInterval(() => {
-      setHeroIndex((prev) => (prev + 1) % HERO_SLIDES.length);
-    }, 6500);
-    return () => window.clearInterval(timer);
-  }, []);
+  // Start the looping 4K hero video immediately on open/reload
+  useLayoutEffect(() => {
+    const vid = heroVideoRef.current;
+    if (!vid) return;
+    vid.muted = true;
+    vid.defaultMuted = true;
+    vid.volume = 0;
+    try {
+      vid.currentTime = 0;
+    } catch {
+      // Ignore if metadata is still initializing; autoPlay begins at 0
+    }
+    const playPromise = vid.play();
+    if (playPromise && typeof playPromise.catch === 'function') {
+      playPromise.catch(() => {});
+    }
+  }, [location.key]);
 
-  // Smooth, glide-like scroll animations
+  // Smooth, glide-like scroll animations below the fold (deferred slightly so video starts at 60fps on frame 0)
   useEffect(() => {
     const root = pageRef.current;
     if (!root) return;
@@ -149,44 +164,52 @@ export const Home: React.FC = () => {
       window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduceMotion) return;
 
-    const ctx = gsap.context(() => {
-      gsap.utils.toArray<HTMLElement>('.lux-glide').forEach((el) => {
-        gsap.fromTo(
-          el,
-          { y: 36, opacity: 0 },
-          {
-            y: 0,
-            opacity: 1,
-            duration: 1.15,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: el,
-              start: 'top 88%',
-              once: true,
-            },
-          }
-        );
-      });
+    let ctx: gsap.Context | null = null;
+    const initTimer = window.setTimeout(() => {
+      ctx = gsap.context(() => {
+        gsap.utils.toArray<HTMLElement>('.lux-glide').forEach((el) => {
+          gsap.fromTo(
+            el,
+            { y: 36, opacity: 0 },
+            {
+              y: 0,
+              opacity: 1,
+              duration: 1.15,
+              ease: 'power3.out',
+              force3D: true,
+              scrollTrigger: {
+                trigger: el,
+                start: 'top 88%',
+                once: true,
+              },
+            }
+          );
+        });
 
-      gsap.utils.toArray<HTMLElement>('.lux-line').forEach((line) => {
-        gsap.fromTo(
-          line,
-          { scaleX: 0, transformOrigin: 'left center' },
-          {
-            scaleX: 1,
-            duration: 1.25,
-            ease: 'expo.out',
-            scrollTrigger: {
-              trigger: line,
-              start: 'top 90%',
-              once: true,
-            },
-          }
-        );
-      });
-    }, root);
+        gsap.utils.toArray<HTMLElement>('.lux-line').forEach((line) => {
+          gsap.fromTo(
+            line,
+            { scaleX: 0, transformOrigin: 'left center' },
+            {
+              scaleX: 1,
+              duration: 1.25,
+              ease: 'expo.out',
+              force3D: true,
+              scrollTrigger: {
+                trigger: line,
+                start: 'top 90%',
+                once: true,
+              },
+            }
+          );
+        });
+      }, root);
+    }, 180);
 
-    return () => ctx.revert();
+    return () => {
+      window.clearTimeout(initTimer);
+      ctx?.revert();
+    };
   }, []);
 
   return (
@@ -197,81 +220,54 @@ export const Home: React.FC = () => {
       <Navbar />
 
       {/* =================================================================== */}
-      {/* SECTION 1: FULL-SCREEN MINIMALIST HERO                              */}
+      {/* SECTION 1: FULL-SCREEN MINIMALIST VIDEO HERO                        */}
       {/* =================================================================== */}
-      <section className="relative h-[100svh] min-h-[560px] w-full overflow-hidden bg-[#151915]">
-        {HERO_SLIDES.map((slide, idx) => {
-          const isCurrent = idx === heroIndex;
-          return (
-            <div
-              key={slide.image}
-              className={`absolute inset-0 transition-opacity duration-[1800ms] ease-out ${
-                isCurrent ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
-              }`}
-            >
-              <img
-                src={slide.image}
-                alt={slide.alt}
-                loading={idx === 0 ? 'eager' : 'lazy'}
-                decoding="async"
-                fetchPriority={idx === 0 ? 'high' : undefined}
-                className={`w-full h-full object-cover object-center transition-transform duration-[8500ms] ease-out ${
-                  isCurrent ? 'scale-100' : 'scale-105'
-                }`}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-black/15" />
-            </div>
-          );
-        })}
-
-        {/* Far-Left Minimal Square Prev Button */}
-        <button
-          type="button"
-          onClick={() =>
-            setHeroIndex((prev) => (prev - 1 + HERO_SLIDES.length) % HERO_SLIDES.length)
-          }
-          aria-label="Previous photograph"
-          className="absolute left-3 sm:left-5 md:left-6 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-9 sm:h-9 bg-black/25 hover:bg-black/55 text-white/85 flex items-center justify-center transition-colors duration-300 cursor-pointer"
+      <section className="relative h-[100svh] min-h-[560px] w-full overflow-hidden bg-[#F3F1EB]">
+        <div
+          className="absolute inset-0 z-10 bg-cover bg-center"
+          style={{ backgroundImage: `url(${MINIMAL_HERO_VIDEO_POSTER})` }}
         >
-          <ChevronLeft size={16} strokeWidth={1.5} />
-        </button>
-
-        {/* Far-Right Minimal Square Next Button */}
-        <button
-          type="button"
-          onClick={() => setHeroIndex((prev) => (prev + 1) % HERO_SLIDES.length)}
-          aria-label="Next photograph"
-          className="absolute right-3 sm:right-5 md:right-6 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-9 sm:h-9 bg-black/25 hover:bg-black/55 text-white/85 flex items-center justify-center transition-colors duration-300 cursor-pointer"
-        >
-          <ChevronRight size={16} strokeWidth={1.5} />
-        </button>
+          <video
+            ref={heroVideoRef}
+            src={MINIMAL_HERO_VIDEO_SRC}
+            poster={MINIMAL_HERO_VIDEO_POSTER}
+            autoPlay
+            loop
+            muted
+            playsInline
+            disablePictureInPicture
+            disableRemotePlayback
+            controlsList="nodownload nofullscreen noremoteplayback"
+            preload="auto"
+            {...({ fetchPriority: 'high' } as any)}
+            onLoadedMetadata={(e) => {
+              e.currentTarget.muted = true;
+              e.currentTarget.volume = 0;
+            }}
+            onVolumeChange={(e) => {
+              if (!e.currentTarget.muted || e.currentTarget.volume !== 0) {
+                e.currentTarget.muted = true;
+                e.currentTarget.volume = 0;
+              }
+            }}
+            className="w-full h-full object-cover object-center block transform-gpu pointer-events-none select-none"
+          />
+        </div>
 
         {/* Bottom-Center Architectural Micro-Typography & Vertical Hairline */}
-        <div className="absolute inset-x-0 bottom-12 sm:bottom-7 z-20 flex flex-col items-center text-center pointer-events-none px-4">
-          <p className="text-[9px] sm:text-[10px] md:text-[11px] font-light uppercase tracking-[0.26em] sm:tracking-[0.34em] text-white/90 leading-relaxed">
+        <div
+          className="absolute inset-x-0 bottom-12 sm:bottom-7 z-20 flex flex-col items-center text-center pointer-events-none px-4"
+          style={{ textShadow: '0 2px 14px rgba(0, 0, 0, 0.55)' }}
+        >
+          <p className="text-[9px] sm:text-[10px] md:text-[11px] font-light uppercase tracking-[0.26em] sm:tracking-[0.34em] text-white/95 leading-relaxed">
             LANDSCAPE ARCHITECTURE &nbsp;·&nbsp; CONSTRUCTION
             <br />
             WILTSHIRE &amp; LONDON
           </p>
-          <span className="block w-[1px] h-4 sm:h-7 bg-[#C8B88A]/85 my-2 sm:my-3" />
-          <span className="text-[8px] sm:text-[9px] font-light uppercase tracking-[0.34em] sm:tracking-[0.36em] text-white/80">
+          <span className="block w-[1px] h-4 sm:h-7 bg-[#E5D7AE]/90 my-2 sm:my-3 shadow-sm" />
+          <span className="text-[8px] sm:text-[9px] font-light uppercase tracking-[0.34em] sm:tracking-[0.36em] text-white/90">
             EST 1998
           </span>
-        </div>
-
-        {/* Bottom Progress Dashes (Centered on mobile so they never collide with text, bottom-left on sm+) */}
-        <div className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 sm:left-6 sm:translate-x-0 z-20 flex items-center gap-2">
-          {HERO_SLIDES.map((_, idx) => (
-            <button
-              key={idx}
-              type="button"
-              onClick={() => setHeroIndex(idx)}
-              aria-label={`Slide ${idx + 1}`}
-              className={`h-[1.5px] transition-all duration-500 cursor-pointer ${
-                idx === heroIndex ? 'w-5 bg-[#C8B88A]' : 'w-3.5 bg-white/35 hover:bg-white/60'
-              }`}
-            />
-          ))}
         </div>
       </section>
 

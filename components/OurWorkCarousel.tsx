@@ -5,8 +5,6 @@ import { Page, PAGE_PATHS } from '../App';
 import { warmDemoChunk, type DemoId } from './demos/demoChunks';
 import { HERO_SLIDES } from './demos/landscaping/landscapingData';
 import { images as physioImages } from './demos/physio/physioData';
-import { images as equestrianImages } from './demos/equestrian/equestrianData';
-import { LUXURY_VIDEO_SRC } from './demos/equestrian-luxury/EquestrianLuxuryUI';
 
 const { Link } = RouterDOM as any;
 
@@ -23,6 +21,8 @@ interface WorkCarouselItem {
   renderHeroMedia: () => React.ReactNode;
 }
 
+const LUXURY_EQUESTRIAN_HERO =
+  '/images/projects/equestrian-luxury-frame.jpg';
 const VIBRANT_EQUESTRIAN_HERO =
   '/assets/aistudio/Gemini_Generated_Image_sma90vsma90vsma9_300587b3.jpg';
 const LUXURY_LANDSCAPING_HERO =
@@ -38,23 +38,14 @@ const CAROUSEL_ITEMS: WorkCarouselItem[] = [
     key: 'equestrian-luxury',
     demoId: 'equestrian-luxury',
     label: 'Equestrian V1',
-    alt: 'Bramble & Bay Luxury Equestrian video frame',
+    alt: 'Bramble & Bay Luxury Equestrian hero frame',
     path: '/demo/equestrian-luxury',
     renderHeroMedia: () => (
-      <video
-        src={`${LUXURY_VIDEO_SRC}#t=0.05`}
-        poster={equestrianImages.hacking}
-        muted
-        playsInline
-        preload="metadata"
-        onLoadedData={(e) => {
-          try {
-            e.currentTarget.currentTime = 0.05;
-            e.currentTarget.pause();
-          } catch {
-            // Ignore seek restrictions
-          }
-        }}
+      <img
+        src={LUXURY_EQUESTRIAN_HERO}
+        alt="Bramble & Bay Luxury Equestrian hero"
+        loading="eager"
+        decoding="async"
         className="w-full h-full object-cover object-center transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/card:scale-[1.03]"
       />
     )

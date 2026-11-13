@@ -59,9 +59,7 @@ const LANDSCAPING_TIERS: Record<TierKey, TierConfig> = {
     styleLabel: 'Luxury & Bespoke Motion',
     cardIndex: '01',
     path: '/demo/landscaping-luxury',
-    previewImage:
-      HERO_SLIDES[2]?.image ||
-      'https://dmhdaawgg48dl.cloudfront.net/wp-content/uploads/2025/02/reflection-pool-york-stone-courtyard-country-garden-petworth-760x760.jpg',
+    previewImage: SHARED_LANDSCAPING_HERO_IMAGE,
     accent: '#8C7A5B',
     badgeBg: '#F4F1EA',
     badgeText: '#4A4031',
@@ -79,7 +77,7 @@ const LANDSCAPING_TIERS: Record<TierKey, TierConfig> = {
     styleLabel: 'Minimalistic & Formal',
     cardIndex: '02',
     path: '/demo/landscaping',
-    previewImage: SHARED_LANDSCAPING_HERO_IMAGE,
+    previewImage: '/images/projects/landscaping-minimal-video-poster.jpg',
     accent: '#5B6450',
     badgeBg: '#F4F1EA',
     badgeText: '#44503B',
@@ -98,14 +96,13 @@ const LANDSCAPING_TIERS: Record<TierKey, TierConfig> = {
     cardIndex: '03',
     path: '/demo/landscaping-traditional',
     previewImage:
-      HERO_SLIDES[1]?.image ||
-      'https://dmhdaawgg48dl.cloudfront.net/wp-content/uploads/2024/11/metal-dining-set-boxwood-topiary-cottage-esher-surrey-960x960.jpg',
-    accent: '#15803D',
-    badgeBg: '#ECFDF5',
-    badgeText: '#15803D',
+      'https://dmhdaawgg48dl.cloudfront.net/wp-content/uploads/2024/10/yorkstone-rill-water-feature-english-country-petworth-sussex-1920x1280.jpg',
+    accent: '#14532D',
+    badgeBg: '#F4F4F5',
+    badgeText: '#14532D',
     features: [
       'Traditional, familiar structure built for immediate local trust',
-      'High-contrast heritage green palette with clear service cards',
+      'Clean two-tone heritage green palette with open editorial spacing',
       'Direct telephone bar & fast quote form for instant enquiries'
     ]
   }

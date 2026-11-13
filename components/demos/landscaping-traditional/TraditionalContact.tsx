@@ -26,127 +26,125 @@ export const TraditionalContact: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F5F9F6] text-[#112A1B] font-sans overflow-x-hidden">
+    <div className="min-h-screen bg-[#F7F7F5] text-zinc-900 font-sans overflow-x-hidden">
       <TraditionalNavbar />
 
       {/* Header */}
       <section className="pt-28 sm:pt-36 pb-14 sm:pb-20 px-5 sm:px-6 md:px-10 bg-[#14532D] text-white">
         <div className="max-w-[1380px] mx-auto">
-          <span className="text-xs font-bold uppercase tracking-wider text-[#86EFAC] block mb-3">
+          <span className="text-xs font-bold uppercase tracking-wider text-white/75 block mb-3">
             Contact Oak &amp; Ash · Free Site Consultations
           </span>
           <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-tight mb-4">
-            Let&rsquo;s Talk About <span className="text-[#4ADE80]">Your Garden.</span>
+            Let&rsquo;s Talk About <span className="text-[#16A34A]">Your Garden.</span>
           </h1>
-          <p className="text-emerald-100/90 text-base sm:text-lg max-w-2xl leading-relaxed">
+          <p className="text-white/85 text-base sm:text-lg max-w-2xl leading-relaxed">
             Tell us about your garden. We will come back with a clear plan, a complimentary site consultation, and a fixed-price build proposal.
           </p>
         </div>
       </section>
 
       {/* Main Content */}
-      <section className="py-16 sm:py-24 px-5 sm:px-6 md:px-10 max-w-[1380px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+      <section className="py-16 sm:py-24 px-5 sm:px-6 md:px-10 max-w-[1380px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
         {/* Left: Direct Contact Info */}
         <div className="lg:col-span-5 space-y-6">
-          <div className="bg-white rounded-2xl p-6 sm:p-8 border border-emerald-900/15 shadow-sm space-y-6">
-            <h2 className="text-2xl font-extrabold text-[#112A1B]">
-              Direct Contact Details
-            </h2>
+          <h2 className="text-2xl font-extrabold text-zinc-900">
+            Direct Contact Details
+          </h2>
 
-            <div className="space-y-4">
-              <a
-                href={`tel:${OAK_ASH_BRAND.phoneHref}`}
-                className="flex items-start gap-4 p-4 rounded-xl bg-[#F5F9F6] hover:bg-emerald-50 transition-colors"
-              >
-                <Phone size={20} className="text-[#16A34A] shrink-0 mt-0.5" />
-                <div>
-                  <span className="text-xs font-bold uppercase tracking-wider text-slate-500 block">
-                    Telephone
-                  </span>
-                  <span className="text-xl font-extrabold text-[#14532D] tabular-nums">
-                    {OAK_ASH_BRAND.phoneDisplay}
-                  </span>
-                </div>
-              </a>
+          <div className="divide-y divide-zinc-200 border-t border-b border-zinc-200">
+            <a
+              href={`tel:${OAK_ASH_BRAND.phoneHref}`}
+              className="flex items-start gap-4 py-5 group"
+            >
+              <Phone size={20} className="text-[#16A34A] shrink-0 mt-0.5" />
+              <div>
+                <span className="text-xs font-bold uppercase tracking-wider text-zinc-500 block">
+                  Telephone
+                </span>
+                <span className="text-xl font-extrabold text-[#14532D] group-hover:text-[#16A34A] transition-colors tabular-nums">
+                  {OAK_ASH_BRAND.phoneDisplay}
+                </span>
+              </div>
+            </a>
 
-              <a
-                href={`mailto:${OAK_ASH_BRAND.email}`}
-                className="flex items-start gap-4 p-4 rounded-xl bg-[#F5F9F6] hover:bg-emerald-50 transition-colors"
-              >
-                <Mail size={20} className="text-[#16A34A] shrink-0 mt-0.5" />
-                <div className="min-w-0">
-                  <span className="text-xs font-bold uppercase tracking-wider text-slate-500 block">
-                    Email
-                  </span>
-                  <span className="text-sm sm:text-base font-bold text-[#14532D] break-all">
-                    {OAK_ASH_BRAND.email}
-                  </span>
-                </div>
-              </a>
+            <a
+              href={`mailto:${OAK_ASH_BRAND.email}`}
+              className="flex items-start gap-4 py-5 group"
+            >
+              <Mail size={20} className="text-[#16A34A] shrink-0 mt-0.5" />
+              <div className="min-w-0">
+                <span className="text-xs font-bold uppercase tracking-wider text-zinc-500 block">
+                  Email
+                </span>
+                <span className="text-sm sm:text-base font-bold text-[#14532D] group-hover:text-[#16A34A] transition-colors break-all">
+                  {OAK_ASH_BRAND.email}
+                </span>
+              </div>
+            </a>
 
-              <div className="flex items-start gap-4 p-4 rounded-xl bg-[#F5F9F6]">
-                <MapPin size={20} className="text-[#16A34A] shrink-0 mt-0.5" />
-                <div>
-                  <span className="text-xs font-bold uppercase tracking-wider text-slate-500 block">
-                    Design Studio &amp; Stone Yard
-                  </span>
-                  <span className="text-base font-bold text-[#112A1B] block">
-                    {OAK_ASH_BRAND.address}
-                  </span>
-                  <span className="text-xs text-slate-500 mt-1 block">
-                    {OAK_ASH_BRAND.hours}
-                  </span>
-                </div>
+            <div className="flex items-start gap-4 py-5">
+              <MapPin size={20} className="text-[#16A34A] shrink-0 mt-0.5" />
+              <div>
+                <span className="text-xs font-bold uppercase tracking-wider text-zinc-500 block">
+                  Design Studio &amp; Stone Yard
+                </span>
+                <span className="text-base font-bold text-zinc-900 block">
+                  {OAK_ASH_BRAND.address}
+                </span>
+                <span className="text-xs text-zinc-500 mt-1 block">
+                  {OAK_ASH_BRAND.hours}
+                </span>
               </div>
             </div>
+          </div>
 
-            <div className="pt-4 border-t border-slate-100 space-y-2 text-xs font-medium text-slate-600">
-              <div className="flex items-center gap-2">
-                <CheckCircle2 size={15} className="text-[#16A34A]" />
-                <span>Replies within 24 hours</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 size={15} className="text-[#16A34A]" />
-                <span>Complimentary site visit &amp; written quote</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 size={15} className="text-[#16A34A]" />
-                <span>Covering Wiltshire, Surrey &amp; London</span>
-              </div>
+          <div className="space-y-2.5 text-xs font-medium text-zinc-600">
+            <div className="flex items-center gap-2">
+              <CheckCircle2 size={15} className="text-[#16A34A]" />
+              <span>Replies within 24 hours</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <CheckCircle2 size={15} className="text-[#16A34A]" />
+              <span>Complimentary site visit &amp; written quote</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <CheckCircle2 size={15} className="text-[#16A34A]" />
+              <span>Covering Wiltshire, Surrey &amp; London</span>
             </div>
           </div>
         </div>
 
         {/* Right: Quote Request Form */}
-        <div className="lg:col-span-7 bg-white rounded-2xl p-6 sm:p-10 border border-emerald-900/15 shadow-sm">
+        <div className="lg:col-span-7 bg-white p-6 sm:p-10 border border-zinc-200">
           {submitted ? (
             <div className="py-12 text-center space-y-4">
-              <div className="w-14 h-14 rounded-full bg-emerald-100 text-[#15803D] flex items-center justify-center mx-auto">
+              <div className="w-14 h-14 rounded-full bg-[#16A34A]/10 text-[#16A34A] flex items-center justify-center mx-auto">
                 <CheckCircle2 size={28} />
               </div>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-[#112A1B]">
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-zinc-900">
                 Thank You, {formData.name || 'for Enquiring'}!
               </h2>
-              <p className="text-slate-600 text-sm sm:text-base max-w-md mx-auto leading-relaxed">
+              <p className="text-zinc-600 text-sm sm:text-base max-w-md mx-auto leading-relaxed">
                 Our Principal Designer will review your brief and contact you within one working day to arrange your free site consultation.
               </p>
               <button
                 type="button"
                 onClick={() => setSubmitted(false)}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-[#15803D] text-white text-sm font-semibold cursor-pointer"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-md bg-[#16A34A] hover:bg-[#14532D] text-white text-sm font-semibold cursor-pointer transition-colors"
               >
                 Send Another Enquiry
               </button>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-6">
-              <h2 className="text-2xl font-extrabold text-[#112A1B] mb-2">
+              <h2 className="text-2xl font-extrabold text-zinc-900 mb-2">
                 Request a Free Garden Quote
               </h2>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-zinc-600 mb-2">
                     Full Name *
                   </label>
                   <input
@@ -155,11 +153,11 @@ export const TraditionalContact: React.FC = () => {
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     placeholder="Your full name"
-                    className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-[#15803D] focus:outline-none text-sm"
+                    className="w-full px-4 py-3 rounded-md border border-zinc-300 focus:border-[#14532D] focus:outline-none text-sm"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-zinc-600 mb-2">
                     Email Address *
                   </label>
                   <input
@@ -168,11 +166,11 @@ export const TraditionalContact: React.FC = () => {
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     placeholder="name@example.co.uk"
-                    className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-[#15803D] focus:outline-none text-sm"
+                    className="w-full px-4 py-3 rounded-md border border-zinc-300 focus:border-[#14532D] focus:outline-none text-sm"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-zinc-600 mb-2">
                     Telephone *
                   </label>
                   <input
@@ -181,11 +179,11 @@ export const TraditionalContact: React.FC = () => {
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                     placeholder="07700 900 000"
-                    className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-[#15803D] focus:outline-none text-sm"
+                    className="w-full px-4 py-3 rounded-md border border-zinc-300 focus:border-[#14532D] focus:outline-none text-sm"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-zinc-600 mb-2">
                     Postcode / Town *
                   </label>
                   <input
@@ -194,17 +192,17 @@ export const TraditionalContact: React.FC = () => {
                     value={formData.postcode}
                     onChange={(e) => setFormData({ ...formData, postcode: e.target.value })}
                     placeholder="e.g. SN8, SW3, GU28"
-                    className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-[#15803D] focus:outline-none text-sm"
+                    className="w-full px-4 py-3 rounded-md border border-zinc-300 focus:border-[#14532D] focus:outline-none text-sm"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-zinc-600 mb-2">
                     Service Needed
                   </label>
                   <select
                     value={formData.service}
                     onChange={(e) => setFormData({ ...formData, service: e.target.value })}
-                    className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-[#15803D] focus:outline-none text-sm bg-white"
+                    className="w-full px-4 py-3 rounded-md border border-zinc-300 focus:border-[#14532D] focus:outline-none text-sm bg-white"
                   >
                     <option value="Full Design & Build">Full Garden Design &amp; Build</option>
                     <option value="Build From Architect Plans">Construction from Existing Plans</option>
@@ -213,13 +211,13 @@ export const TraditionalContact: React.FC = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-zinc-600 mb-2">
                     Estimated Budget
                   </label>
                   <select
                     value={formData.budget}
                     onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
-                    className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-[#15803D] focus:outline-none text-sm bg-white"
+                    className="w-full px-4 py-3 rounded-md border border-zinc-300 focus:border-[#14532D] focus:outline-none text-sm bg-white"
                   >
                     <option value="£25,000 – £50,000">£25,000 – £50,000</option>
                     <option value="£50,000 – £100,000">£50,000 – £100,000</option>
@@ -230,7 +228,7 @@ export const TraditionalContact: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">
+                <label className="block text-xs font-bold uppercase tracking-wider text-zinc-600 mb-2">
                   Tell Us About Your Garden
                 </label>
                 <textarea
@@ -238,13 +236,13 @@ export const TraditionalContact: React.FC = () => {
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                   placeholder="Briefly describe your garden project, ideas, or preferred timeframe..."
-                  className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-[#15803D] focus:outline-none text-sm resize-none"
+                  className="w-full px-4 py-3 rounded-md border border-zinc-300 focus:border-[#14532D] focus:outline-none text-sm resize-none"
                 />
               </div>
 
               <button
                 type="submit"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-lg bg-[#15803D] hover:bg-[#14532D] text-white text-sm font-bold shadow-sm transition-colors cursor-pointer"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-md bg-[#16A34A] hover:bg-[#14532D] text-white text-sm font-bold transition-colors cursor-pointer"
               >
                 <span>Submit Free Quote Request</span>
                 <ArrowRight size={16} />

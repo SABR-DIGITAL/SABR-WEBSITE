@@ -122,6 +122,9 @@ const EquestrianLuxuryHome: React.FC = () => {
             muted
             loop
             playsInline
+            disablePictureInPicture
+            disableRemotePlayback
+            controlsList="nodownload nofullscreen noremoteplayback"
             preload="auto"
             {...({ fetchPriority: 'high' } as any)}
             onLoadedMetadata={(e) => {
@@ -134,7 +137,7 @@ const EquestrianLuxuryHome: React.FC = () => {
                 e.currentTarget.volume = 0;
               }
             }}
-            className="w-full h-full object-cover object-center scale-[1.035] transform-gpu block"
+            className="w-full h-full object-cover object-center scale-[1.035] transform-gpu block pointer-events-none select-none"
           />
 
           {/* Subtle forest-obsidian veil for crisp white crest legibility */}

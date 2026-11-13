@@ -577,6 +577,29 @@
           document.head.appendChild(v);
           return;
         }
+        if (p.indexOf('/demo/landscaping-luxury') !== -1) {
+          var lLux = document.createElement('link');
+          lLux.rel = 'preload';
+          lLux.as = 'image';
+          lLux.type = 'image/webp';
+          lLux.href = '/images/projects/landscaping-preview.webp';
+          lLux.setAttribute('fetchpriority', 'high');
+          document.head.appendChild(lLux);
+          return;
+        }
+        if (
+          p.indexOf('/demo/landscaping-traditional') === -1 &&
+          p.indexOf('/demo/landscaping') !== -1
+        ) {
+          var vLand = document.createElement('link');
+          vLand.rel = 'preload';
+          vLand.as = 'video';
+          vLand.type = 'video/mp4';
+          vLand.href = '/images/projects/landscaping-minimal-hero-4k.mp4';
+          vLand.setAttribute('fetchpriority', 'high');
+          document.head.appendChild(vLand);
+          return;
+        }
         var studio = p === '/web-design' || p === '/web-design/';
         var gateway = p === '/' || p === '/index.html';
         if (!studio && !gateway) return;
