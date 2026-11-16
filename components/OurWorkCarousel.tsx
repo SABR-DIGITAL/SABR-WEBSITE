@@ -24,7 +24,7 @@ interface WorkCarouselItem {
 const LUXURY_EQUESTRIAN_HERO =
   '/images/projects/equestrian-luxury-frame.jpg';
 const VIBRANT_EQUESTRIAN_HERO =
-  '/assets/aistudio/Gemini_Generated_Image_sma90vsma90vsma9_300587b3.jpg';
+  '/images/projects/equestrian-vibrant-scroll-poster.webp';
 const LUXURY_LANDSCAPING_HERO =
   HERO_SLIDES[0]?.image || '/images/projects/landscaping-preview.webp';
 

@@ -577,6 +577,16 @@
           document.head.appendChild(v);
           return;
         }
+        if (p.indexOf('/demo/equestrian-vibrant') !== -1) {
+          var pVib = document.createElement('link');
+          pVib.rel = 'preload';
+          pVib.as = 'image';
+          pVib.type = 'image/webp';
+          pVib.href = '/images/projects/equestrian-vibrant-scroll-poster.webp';
+          pVib.setAttribute('fetchpriority', 'high');
+          document.head.appendChild(pVib);
+          return;
+        }
         if (p.indexOf('/demo/landscaping-luxury') !== -1) {
           var lLux = document.createElement('link');
           lLux.rel = 'preload';

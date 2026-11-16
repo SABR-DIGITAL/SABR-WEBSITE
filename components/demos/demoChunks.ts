@@ -14,6 +14,11 @@ export type DemoId =
   | 'spa'
   | 'cafe';
 
+import {
+  SCROLL_POSTER_URL as VIBRANT_SCROLL_POSTER_URL,
+  prewarmVibrantScrollFrames
+} from './equestrian-vibrant/equestrianScrollLoader';
+
 export const demoChunks: Record<DemoId, () => Promise<unknown>> = {
   landscaping: () => import('./landscaping/Home'),
   'landscaping-traditional': () => import('./landscaping-traditional/TraditionalHome'),
@@ -29,6 +34,9 @@ export const demoChunks: Record<DemoId, () => Promise<unknown>> = {
 const warmed = new Set<DemoId>();
 const warmedMedia = new Set<string>();
 const keptVideoElements: HTMLVideoElement[] = [];
+const readyVideoBlobs = new Map<string, string>();
+
+export const getReadyVideoSrc = (src: string): string => readyVideoBlobs.get(src) || src;
 
 const warmVideoAsset = (src: string, poster?: string) => {
   if (typeof window === 'undefined' || typeof document === 'undefined') return;
@@ -38,6 +46,7 @@ const warmVideoAsset = (src: string, poster?: string) => {
     img.decoding = 'async';
     (img as any).fetchPriority = 'high';
     img.src = poster;
+    img.decode?.().catch(() => {});
   }
   if (warmedMedia.has(src)) return;
   warmedMedia.add(src);
@@ -62,6 +71,18 @@ const warmVideoAsset = (src: string, poster?: string) => {
     // Ignore load errors in non-media environments
   }
   keptVideoElements.push(vid);
+
+  // Also cache the video binary into a local Blob URL so clicking a demo plays immediately from RAM
+  if (typeof fetch === 'function' && typeof URL !== 'undefined' && typeof URL.createObjectURL === 'function') {
+    fetch(src, { cache: 'force-cache', priority: 'high' } as RequestInit)
+      .then((res) => (res.ok ? res.blob() : null))
+      .then((blob) => {
+        if (blob && blob.size > 0 && !readyVideoBlobs.has(src)) {
+          readyVideoBlobs.set(src, URL.createObjectURL(blob));
+        }
+      })
+      .catch(() => {});
+  }
 };
 
 const warmImageAsset = (src: string) => {
@@ -86,6 +107,9 @@ export const warmDemoChunk = (id: DemoId) => {
     warmImageAsset('/images/projects/landscaping-preview.webp');
   } else if (id === 'equestrian-luxury') {
     warmVideoAsset('/assets/aistudio/gemini_generated_video_7de186c5_667a4438.mp4');
+  } else if (id === 'equestrian-vibrant') {
+    warmImageAsset(VIBRANT_SCROLL_POSTER_URL);
+    prewarmVibrantScrollFrames();
   }
 
   if (warmed.has(id)) return;
@@ -93,11 +117,13 @@ export const warmDemoChunk = (id: DemoId) => {
   demoChunks[id]().catch(() => warmed.delete(id));
 };
 
-// Proactively start buffering the Minimalistic Landscaping hero video and Luxury Landscaping hero photo
-// shortly after initial page load so clicking into either demo starts with zero latency.
+// Proactively start buffering key demo hero videos and posters shortly after initial page load
+// so clicking into any video demo starts playback on frame 0 with zero latency.
 if (typeof window !== 'undefined') {
   const prewarmKeyDemos = () => {
     warmImageAsset('/images/projects/landscaping-preview.webp');
+    warmImageAsset(VIBRANT_SCROLL_POSTER_URL);
+    prewarmVibrantScrollFrames();
     warmVideoAsset(
       '/images/projects/landscaping-minimal-hero-4k.mp4',
       '/images/projects/landscaping-minimal-video-poster.jpg'
