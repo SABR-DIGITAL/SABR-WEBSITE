@@ -52,7 +52,8 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, startAnimation = true }) =
     { name: 'Projects', id: 'work' },
     { name: 'Process', id: 'process' },
     { name: 'Why Us?', id: 'why-us' },
-    { name: 'FAQ', id: 'faq' }
+    { name: 'FAQ', id: 'faq' },
+    { name: 'Referrals', id: 'referrals' }
   ];
 
   const handleNav = (_id: Page) => {
@@ -100,7 +101,7 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, startAnimation = true }) =
           </div>
 
           {/* SLEEK NAVIGATION LINKS */}
-          <nav aria-label="Primary" className="hidden lg:flex items-center gap-10">
+          <nav aria-label="Primary" className="hidden lg:flex items-center gap-7 xl:gap-10">
             {links.map((item) => (
               <Link
                 key={item.id}

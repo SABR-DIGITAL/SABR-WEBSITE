@@ -22,6 +22,7 @@ import ProjectsGallery from './pages/ProjectsGallery';
 import WhyUsPage from './pages/WhyUsPage';
 import SnakeTimeline from './components/SnakeTimeline';
 import FAQSection from './components/FAQSection';
+import ReferralsPage from './pages/ReferralsPage';
 import ContactForm from './components/ContactForm';
 import NotFound from './components/NotFound';
 
@@ -122,7 +123,7 @@ const SpaBooking = lazy(() => import('./components/demos/spa/SpaBooking'));
 
 gsap.registerPlugin(ScrollTrigger);
 
-export type Page = 'home' | 'work' | 'about' | 'process' | 'why-us' | 'faq' | 'contact';
+export type Page = 'home' | 'work' | 'about' | 'process' | 'why-us' | 'faq' | 'referrals' | 'contact';
 
 // Real, crawlable URLs — one per section, so every page can be indexed,
 // shared and shown as a sitelink under the search result.
@@ -133,6 +134,7 @@ export const PAGE_PATHS: Record<Page, string> = {
   process: '/process',
   'why-us': '/why-us',
   faq: '/faq',
+  referrals: '/referrals',
   contact: '/contact'
 };
 
@@ -143,6 +145,7 @@ const PATH_PAGES: Record<string, Page> = {
   '/process': 'process',
   '/why-us': 'why-us',
   '/faq': 'faq',
+  '/referrals': 'referrals',
   '/contact': 'contact'
 };
 
@@ -268,6 +271,10 @@ const SEO_META: Record<Page, { title: string; description: string }> = {
   faq: {
     title: 'Web Design FAQs | Pricing, Timelines & SEO | SABR Digital',
     description: 'Clear answers on website costs, deposit terms, up to 10-day build timelines, Google SEO, mobile responsiveness, and hosting for Wiltshire & UK businesses.'
+  },
+  referrals: {
+    title: 'Referrals | Earn £100 Per Completed Website | SABR Digital',
+    description: 'Know a business needing a proper website or major redesign? Refer them to SABR Digital and earn £100 straight to your bank once their project finishes.'
   },
   contact: {
     title: 'Contact SABR Digital | Wiltshire Web Design & AI Optimisation',
@@ -427,6 +434,7 @@ const MainApp: React.FC = () => {
                 <Route path="/process" element={<SnakeTimeline navigateTo={navigateTo} />} />
                 <Route path="/why-us" element={<WhyUsPage navigateTo={navigateTo} />} />
                 <Route path="/faq" element={<FAQSection navigateTo={navigateTo} />} />
+                <Route path="/referrals" element={<ReferralsPage />} />
                 <Route path="/contact" element={<ContactForm />} />
                 <Route path="/projects" element={<ProjectsGallery />} />
                 <Route path="/demo/equestrian" element={<EquestrianHome />} />
@@ -497,13 +505,13 @@ const MainApp: React.FC = () => {
                   SABR <span className="text-emerald-600 italic">DIGITAL</span>
                 </Link>
                 <nav aria-label="Footer" className="flex flex-wrap justify-center gap-6 sm:gap-12 md:gap-16 mb-12 md:mb-24">
-                   {(['work', 'about', 'process', 'why-us', 'faq', 'contact'] as Page[]).map(p => (
+                   {(['work', 'about', 'process', 'why-us', 'faq', 'referrals', 'contact'] as Page[]).map(p => (
                      <Link
                        key={p}
                        to={PAGE_PATHS[p]}
                        className="text-[11px] md:text-[12px] uppercase tracking-[0.4em] md:tracking-[0.6em] text-slate-400 hover:text-emerald-600 transition-colors font-black"
                      >
-                       {p === 'work' ? 'Projects' : p === 'about' ? 'About' : p === 'process' ? 'Process' : p === 'why-us' ? 'Why Us?' : p === 'faq' ? 'FAQ' : 'Contact'}
+                       {p === 'work' ? 'Projects' : p === 'about' ? 'About' : p === 'process' ? 'Process' : p === 'why-us' ? 'Why Us?' : p === 'faq' ? 'FAQ' : p === 'referrals' ? 'Referrals' : 'Contact'}
                      </Link>
                    ))}
                 </nav>
