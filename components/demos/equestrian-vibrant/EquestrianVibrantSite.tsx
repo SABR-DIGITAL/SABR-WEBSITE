@@ -1,15 +1,9 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import * as RouterDOM from 'react-router-dom';
 import { motion as framerMotion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, ArrowUpRight, Calendar, X } from 'lucide-react';
 import LuxuryCountUp from '../landscaping-luxury/LuxuryCountUp';
-import {
-  TOTAL_FRAMES,
-  SCROLL_POSTER_URL,
-  drawScrollFrame,
-  prewarmVibrantScrollFrames
-} from './equestrianScrollLoader';
 import {
   academy,
   facilities,
@@ -24,14 +18,13 @@ import {
 const { Link, useLocation } = RouterDOM as any;
 const motion = framerMotion as any;
 
-export const VIBRANT_HERO_VIDEO_POSTER = SCROLL_POSTER_URL;
-export const VIBRANT_HERO_IMAGE = SCROLL_POSTER_URL;
+export const VIBRANT_HERO_IMAGE =
+  '/assets/aistudio/Gemini_Generated_Image_sma90vsma90vsma9_300587b3.jpg';
 
-// Preload coarse 4K canvas keyframes & menu column photographs immediately on module load
+// Preload and decode the hero photograph & menu column photographs immediately on module load
 if (typeof window !== 'undefined') {
-  prewarmVibrantScrollFrames();
   [
-    SCROLL_POSTER_URL,
+    VIBRANT_HERO_IMAGE,
     images.arena,
     images.jumping,
     images.meadow,
@@ -213,38 +206,22 @@ const EQUESTRIAN_BRAND_LOGOS: React.FC[] = [
 /**
  * Unboxed Vector Logo Marquee (Pure logos, zero cards, zero text captions)
  */
-const BrandLogoMarquee: React.FC<{ compact?: boolean }> = ({ compact = false }) => {
+const BrandLogoMarquee: React.FC = () => {
   const doubled = [...EQUESTRIAN_BRAND_LOGOS, ...EQUESTRIAN_BRAND_LOGOS];
 
   return (
     <section
       aria-label="Official Equestrian Brand Partners"
-      className={`relative border-b border-[#0D82DF]/15 overflow-hidden select-none shrink-0 ${
-        compact ? 'bg-white/95 py-2.5 sm:py-4' : 'bg-[#FAF7F0] py-9 sm:py-12'
-      }`}
+      className="relative bg-[#FAF7F0] py-7 sm:py-10 lg:py-12 border-b border-[#0D82DF]/15 overflow-hidden select-none"
     >
-      <div
-        className={`pointer-events-none absolute inset-y-0 left-0 bg-gradient-to-r to-transparent z-10 ${
-          compact ? 'w-10 sm:w-20 from-white/95' : 'w-16 sm:w-32 from-[#FAF7F0]'
-        }`}
-      />
-      <div
-        className={`pointer-events-none absolute inset-y-0 right-0 bg-gradient-to-l to-transparent z-10 ${
-          compact ? 'w-10 sm:w-20 from-white/95' : 'w-16 sm:w-32 from-[#FAF7F0]'
-        }`}
-      />
+      <div className="pointer-events-none absolute inset-y-0 left-0 w-12 sm:w-24 lg:w-32 bg-gradient-to-r from-[#FAF7F0] to-transparent z-10" />
+      <div className="pointer-events-none absolute inset-y-0 right-0 w-12 sm:w-24 lg:w-32 bg-gradient-to-l from-[#FAF7F0] to-transparent z-10" />
 
-      <div
-        className={`bb-logo-marquee flex items-center w-max ${
-          compact
-            ? 'gap-10 sm:gap-16 px-5 [&_svg]:h-7 sm:[&_svg]:h-9'
-            : 'gap-14 sm:gap-24 px-8'
-        }`}
-      >
+      <div className="bb-logo-marquee flex items-center gap-12 sm:gap-20 lg:gap-24 w-max px-6 sm:px-8">
         {doubled.map((LogoComponent, idx) => (
           <div
             key={idx}
-            className="text-[#11161C]/75 hover:text-[#0D82DF] transition-colors duration-300 shrink-0 flex items-center justify-center"
+            className="text-[#11161C]/70 hover:text-[#0D82DF] transition-colors duration-300 shrink-0 flex items-center justify-center"
           >
             <LogoComponent />
           </div>
@@ -387,14 +364,6 @@ const VibrantNavbar: React.FC<{ isHomeHero?: boolean }> = ({ isHomeHero = false 
   useEffect(() => {
     const handleScroll = () => {
       if (window.innerWidth < 1024) return;
-      if (isHomeHero) {
-        const trackEl = document.getElementById('vibrant-hero-track');
-        const next = trackEl
-          ? trackEl.getBoundingClientRect().bottom <= window.innerHeight + 80
-          : window.scrollY > 36;
-        setIsScrolled((prev) => (prev !== next ? next : prev));
-        return;
-      }
       const next = window.scrollY > 36;
       setIsScrolled((prev) => (prev !== next ? next : prev));
     };
@@ -639,332 +608,58 @@ const DISCIPLINE_SHOWCASE = [
 
 /**
  * 1. HOME PAGE
- * - Sticky pinned 4K hero video ("FIND YOUR STRIDE" galloping horse) scrubbed by user scroll.
- * - Stops immediately when scrolling stops and keeps the hero pinned until the video finishes.
+ * - Clean full-bleed showjumping hero photograph ("FIND YOUR STRIDE") optimized across
+ *   mobile, tablet (uncropped natural ratio directly beneath the crisp white navbar),
+ *   and desktop (full-viewport blue sky framing with generous clearance below navbar).
  */
 export const EquestrianVibrantHome: React.FC = () => {
   const [activeDisciplineIdx, setActiveDisciplineIdx] = useState(0);
-  const [scrollProgress, setScrollProgress] = useState(0);
-  const heroTrackRef = useRef<HTMLElement>(null);
-  const canvasBoxRef = useRef<HTMLDivElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const location = useLocation ? useLocation() : { key: 'default' };
   const activeDiscipline = DISCIPLINE_SHOWCASE[activeDisciplineIdx] || DISCIPLINE_SHOWCASE[0];
-
-  // Ensure initial scroll position & prewarmed canvas state at frame 0 when entering/reloading
-  useLayoutEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: 'instant' as any });
-    prewarmVibrantScrollFrames();
-    setScrollProgress(0);
-  }, [location.key]);
-
-  // High-DPI 4K canvas scroll-scrubbing: instant start, zero-wait keyframes, stops dead on scroll halt
-  useEffect(() => {
-    const track = heroTrackRef.current;
-    const box = canvasBoxRef.current;
-    const canvas = canvasRef.current;
-    if (!track || !box || !canvas) return;
-
-    const ctx = canvas.getContext('2d', { alpha: false });
-    if (!ctx) return;
-
-    prewarmVibrantScrollFrames();
-
-    let rafId: number | null = null;
-    let targetProgress = 0;
-    let currentFrame = 0;
-    let lastDrawnFrame = -1;
-    let lastDrawnWasFallback = false;
-    let lastReportedProgress = 0;
-    let canvasW = 0;
-    let canvasH = 0;
-    let isMobileMode = window.innerWidth < 1024;
-    let destroyed = false;
-
-    const syncCanvasSize = () => {
-      const rect = box.getBoundingClientRect();
-      if (!rect.width || !rect.height) return;
-
-      isMobileMode = window.innerWidth < 1024;
-      const dpr = window.devicePixelRatio || 1;
-      // On desktop, supersample up to native 3840px 4K width so every detail & text edge looks razor-crisp
-      const scaleFactor = isMobileMode
-        ? Math.min(dpr, 2)
-        : Math.max(1.5, Math.min(dpr, 2));
-      const maxWidth = isMobileMode ? 1920 : 3840;
-      const nextW = Math.min(maxWidth, Math.max(320, Math.round(rect.width * scaleFactor)));
-      const nextH = Math.max(180, Math.round((nextW * rect.height) / rect.width));
-
-      if (canvas.width !== nextW || canvas.height !== nextH) {
-        canvas.width = nextW;
-        canvas.height = nextH;
-        canvasW = nextW;
-        canvasH = nextH;
-        lastDrawnFrame = -1;
-      } else {
-        canvasW = nextW;
-        canvasH = nextH;
-      }
-    };
-
-    const computeProgress = () => {
-      const rect = track.getBoundingClientRect();
-      const maxScroll = Math.max(1, track.offsetHeight - window.innerHeight);
-      return Math.min(1, Math.max(0, -rect.top / maxScroll));
-    };
-
-    const requestRedraw = () => {
-      if (destroyed) return;
-      if (rafId === null) {
-        rafId = window.requestAnimationFrame(tick);
-      }
-    };
-
-    const paintFrame = (frameFloat: number, force = false) => {
-      if (!canvasW || !canvasH) return;
-      const rounded = Math.max(0, Math.min(TOTAL_FRAMES - 1, Math.round(frameFloat)));
-      if (!force && rounded === lastDrawnFrame && !lastDrawnWasFallback) return;
-
-      const exactHit = drawScrollFrame(
-        ctx,
-        rounded,
-        canvasW,
-        canvasH,
-        isMobileMode,
-        () => {
-          lastDrawnWasFallback = true;
-          requestRedraw();
-        }
-      );
-
-      lastDrawnFrame = rounded;
-      lastDrawnWasFallback = !exactHit;
-    };
-
-    const tick = () => {
-      rafId = null;
-      if (destroyed) return;
-
-      const targetFrame = targetProgress * (TOTAL_FRAMES - 1);
-      const diff = targetFrame - currentFrame;
-
-      if (Math.abs(diff) <= 0.12) {
-        currentFrame = targetFrame;
-      } else {
-        currentFrame += diff * 0.42;
-      }
-
-      paintFrame(currentFrame, lastDrawnWasFallback || lastDrawnFrame === -1);
-
-      if (Math.abs(targetFrame - currentFrame) > 0.12) {
-        rafId = window.requestAnimationFrame(tick);
-      }
-    };
-
-    const scheduleSync = () => {
-      if (destroyed) return;
-      targetProgress = computeProgress();
-      if (Math.abs(targetProgress - lastReportedProgress) > 0.008) {
-        lastReportedProgress = targetProgress;
-        setScrollProgress(targetProgress);
-      }
-      requestRedraw();
-    };
-
-    const handleResize = () => {
-      syncCanvasSize();
-      scheduleSync();
-    };
-
-    syncCanvasSize();
-    paintFrame(0, true);
-    scheduleSync();
-
-    let resizeObserver: ResizeObserver | null = null;
-    if (typeof ResizeObserver === 'function') {
-      resizeObserver = new ResizeObserver(() => {
-        handleResize();
-      });
-      resizeObserver.observe(box);
-    }
-
-    window.addEventListener('scroll', scheduleSync, { passive: true });
-    window.addEventListener('resize', handleResize, { passive: true });
-
-    return () => {
-      destroyed = true;
-      window.removeEventListener('scroll', scheduleSync);
-      window.removeEventListener('resize', handleResize);
-      if (resizeObserver) resizeObserver.disconnect();
-      if (rafId !== null) window.cancelAnimationFrame(rafId);
-    };
-  }, [location.key]);
 
   return (
     <VibrantShell isHomeHero>
       {/* =================================================================== */}
-      {/* 1. SCROLL-SCRUBBED STICKY 4K CANVAS HERO                             */}
-      {/* - Remains pinned still until the user finishes scrolling the frames. */}
-      {/* - Advances strictly with scroll and halts immediately on stop.      */}
-      {/* - On Mobile/Tablet, packs the partner marquee + club intro + stats   */}
-      {/*   flush beneath the 16:9 canvas so there is no empty background gap. */}
+      {/* 1. VIBRANT SHOWJUMPING HERO PHOTOGRAPH                              */}
+      {/* - Mobile & Tablet (< lg): full-width uncropped 2176x1952 frame so   */}
+      {/*   "FIND YOUR STRIDE", horse, rider & oxer poles stay 100% visible.  */}
+      {/* - Desktop (>= lg): full-bleed viewport hero with generous open sky  */}
+      {/*   between the top navbar and "FIND YOUR STRIDE".                    */}
       {/* =================================================================== */}
-      <section
-        id="vibrant-hero-track"
-        ref={heroTrackRef}
-        className="relative w-full h-[235svh] lg:h-[260vh] bg-[#FAF7F0] lg:bg-[#1385E0] pt-[49px] sm:pt-[55px] lg:pt-0 select-none"
-      >
-        <div className="sticky top-[49px] sm:top-[55px] lg:top-0 w-full h-[calc(100svh-49px)] sm:h-[calc(100svh-55px)] lg:h-screen lg:min-h-[640px] flex flex-col justify-between lg:block overflow-hidden bg-[#FAF7F0] lg:bg-[#1385E0]">
-          {/* Crisp 4K Canvas Box + Instant First-Frame Poster Underlay */}
-          <div
-            ref={canvasBoxRef}
-            className="relative w-full shrink-0 aspect-video lg:aspect-auto lg:h-full overflow-hidden bg-[#1385E0]"
-          >
-            <img
-              src={SCROLL_POSTER_URL}
-              alt="Find Your Stride — Bramble & Bay bay thoroughbred galloping across Wiltshire chalk downland"
-              loading="eager"
-              decoding="sync"
-              {...({ fetchPriority: 'high' } as any)}
-              className="absolute inset-0 w-full h-full object-cover object-[center_45%] pointer-events-none select-none"
-            />
-            <canvas
-              ref={canvasRef}
-              aria-label="Scroll-controlled galloping horse film"
-              className="relative z-10 w-full h-full block pointer-events-none select-none"
-            />
-
-            {/* Ultra-thin scrub progress hairline along bottom edge of canvas */}
-            <div className="absolute bottom-0 inset-x-0 z-20 h-[2px] bg-black/15 lg:bg-white/25 pointer-events-none">
-              <div
-                className="h-full bg-[#0D82DF] lg:bg-white transition-none"
-                style={{ width: `${Math.round(scrollProgress * 1000) / 10}%` }}
-              />
-            </div>
-
-            {/* Desktop subtle scroll cue over grass */}
-            <div
-              className={`hidden lg:flex items-center justify-center absolute inset-x-0 bottom-6 z-20 pointer-events-none transition-opacity duration-300 ${
-                scrollProgress > 0.04 ? 'opacity-0' : 'opacity-100'
-              }`}
-            >
-              <span
-                className="text-[10px] font-mono uppercase tracking-[0.36em] text-white/95"
-                style={{ textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}
-              >
-                Scroll to gallop ↓
-              </span>
-            </div>
-          </div>
-
-          {/* Mobile & Tablet Compact Stack: Partner Logo Marquee + Club Title, Points & CTAs */}
-          <div className="lg:hidden flex-1 min-h-0 flex flex-col justify-between bg-[#FAF7F0] overflow-hidden">
-            <BrandLogoMarquee compact />
-
-            <div className="flex-1 min-h-0 flex flex-col justify-between px-5 sm:px-8 py-3.5 sm:py-6 max-w-2xl mx-auto w-full">
-              <div className="space-y-1.5 sm:space-y-3">
-                <div className="flex items-center justify-between gap-3">
-                  <span className="text-[9px] sm:text-[10px] uppercase tracking-[0.34em] text-[#0D82DF] font-mono font-bold block">
-                    01 · THE RIDING CLUB · PEWSEY VALE
-                  </span>
-                  <span
-                    className={`text-[9px] font-mono uppercase tracking-[0.26em] text-[#11161C]/55 shrink-0 transition-opacity duration-300 ${
-                      scrollProgress > 0.04 ? 'opacity-0' : 'opacity-100'
-                    }`}
-                  >
-                    Scroll ↓
-                  </span>
-                </div>
-
-                <h1 className="font-cinzel text-[clamp(1.25rem,5vw,2.35rem)] font-bold uppercase tracking-tight text-[#11161C] leading-[1.08]">
-                  BOLD RIDING, OPEN SKIES &amp;{' '}
-                  <span className="font-cormorant italic font-normal text-[#0D82DF] normal-case text-[clamp(1.42rem,5.6vw,2.6rem)]">
-                    True Partnership.
-                  </span>
-                </h1>
-
-                <p className="text-xs sm:text-sm text-[#11161C]/75 font-light leading-[1.55] line-clamp-3 sm:line-clamp-none">
-                  Set across four hundred acres of sunlit Wiltshire chalk downland, Bramble &amp; Bay caps every ride at four horses so you spend your hour in rhythm, not waiting in line.
-                </p>
-              </div>
-
-              {/* Compact 3 Key Points Directly In Viewport */}
-              <div className="py-2.5 sm:py-4 border-y border-[#11161C]/12 grid grid-cols-3 gap-3 sm:gap-8">
-                <div>
-                  <div className="font-cinzel text-lg sm:text-3xl font-bold text-[#0D82DF] leading-none">
-                    <LuxuryCountUp end={400} duration={1600} />
-                  </div>
-                  <div className="h-[1px] w-full bg-[#0D82DF]/25 my-1 sm:my-1.5" />
-                  <div className="text-[8px] sm:text-[10px] font-mono uppercase tracking-[0.14em] text-[#11161C]/70">
-                    Private Acres
-                  </div>
-                </div>
-
-                <div>
-                  <div className="font-cinzel text-lg sm:text-3xl font-bold text-[#0D82DF] leading-none">
-                    <LuxuryCountUp end={22} duration={1700} />
-                  </div>
-                  <div className="h-[1px] w-full bg-[#0D82DF]/25 my-1 sm:my-1.5" />
-                  <div className="text-[8px] sm:text-[10px] font-mono uppercase tracking-[0.14em] text-[#11161C]/70">
-                    Schoolmasters
-                  </div>
-                </div>
-
-                <div>
-                  <div className="font-cinzel text-lg sm:text-3xl font-bold text-[#0D82DF] leading-none">
-                    <LuxuryCountUp end={18} duration={1800} />
-                  </div>
-                  <div className="h-[1px] w-full bg-[#0D82DF]/25 my-1 sm:my-1.5" />
-                  <div className="text-[8px] sm:text-[10px] font-mono uppercase tracking-[0.14em] text-[#11161C]/70">
-                    Turf Fences
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
-                <Link
-                  to="/demo/equestrian-vibrant/lessons"
-                  className="inline-flex items-center gap-2.5 px-5 sm:px-7 py-2.5 sm:py-3.5 bg-[#0D82DF] hover:bg-[#11161C] text-white font-bold text-[10px] sm:text-xs uppercase tracking-[0.22em] transition-colors"
-                >
-                  <span>EXPLORE TUITION</span>
-                  <ArrowRight size={12} />
-                </Link>
-                <Link
-                  to="/demo/equestrian-vibrant/horses"
-                  className="text-[10px] sm:text-xs uppercase tracking-[0.22em] font-mono text-[#0D82DF] hover:text-[#11161C] transition-colors"
-                >
-                  MEET THE HERD →
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
+      <section className="relative w-full bg-[#0A83D9] pt-[49px] sm:pt-[55px] lg:pt-0 lg:h-[100svh] lg:min-h-[640px] overflow-hidden select-none">
+        <img
+          src={VIBRANT_HERO_IMAGE}
+          alt="Find Your Stride — Bramble & Bay showjumper clearing an oxer against clear blue sky"
+          width={2176}
+          height={1952}
+          loading="eager"
+          decoding="sync"
+          {...({ fetchPriority: 'high' } as any)}
+          className="w-full h-auto block lg:h-full lg:object-cover lg:object-[50%_46%] pointer-events-none select-none"
+        />
       </section>
 
       {/* =================================================================== */}
-      {/* 2. REAL VECTOR BRAND LOGO MARQUEE (Desktop; mobile uses compact bar) */}
+      {/* 2. REAL VECTOR BRAND LOGO MARQUEE (ZERO BOXES, ZERO TEXT CAPTIONS)  */}
       {/* =================================================================== */}
-      <div className="hidden lg:block">
-        <BrandLogoMarquee />
-      </div>
+      <BrandLogoMarquee />
 
       {/* =================================================================== */}
       {/* 3. THE ACADEMY — Open Editorial Split + Live Counting Numbers       */}
       {/* =================================================================== */}
-      <section className="py-10 sm:py-14 lg:py-40 px-5 sm:px-8 md:px-14 bg-[#FAF7F0] border-b border-[#11161C]/10">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 sm:gap-14 lg:gap-24 items-center">
-          <div className="hidden lg:block lg:col-span-6 space-y-6 sm:space-y-8">
+      <section className="py-16 sm:py-24 lg:py-40 px-5 sm:px-8 md:px-14 bg-[#FAF7F0] border-b border-[#11161C]/10">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 sm:gap-16 lg:gap-24 items-center">
+          <div className="lg:col-span-6 space-y-6 sm:space-y-8">
             <span className="text-[10px] uppercase tracking-[0.42em] text-[#0D82DF] font-mono font-bold block">
               01 · THE RIDING CLUB · PEWSEY VALE
             </span>
 
-            <h2 className="font-cinzel text-2xl sm:text-5xl font-bold uppercase tracking-tight text-[#11161C] leading-[1.12]">
+            <h1 className="font-cinzel text-2xl sm:text-5xl font-bold uppercase tracking-tight text-[#11161C] leading-[1.12]">
               BOLD RIDING, <br />
               OPEN SKIES &amp; <br />
               <span className="font-cormorant italic font-normal text-[#0D82DF] normal-case text-3xl sm:text-6xl">
                 True Partnership.
               </span>
-            </h2>
+            </h1>
 
             <div className="h-[1px] w-24 bg-[#0D82DF]" />
 

@@ -135,12 +135,13 @@ const EQUESTRIAN_TIERS: Record<TierKey, TierConfig> = {
     styleLabel: 'Vibrant, Minimalist & Modern',
     cardIndex: '02',
     path: '/demo/equestrian-vibrant',
-    previewImage: '/images/projects/equestrian-vibrant-scroll-poster.webp',
+    previewImage:
+      '/assets/aistudio/Gemini_Generated_Image_sma90vsma90vsma9_300587b3.jpg',
     accent: '#0D82DF',
     badgeBg: '#EBF6FF',
     badgeText: '#0D82DF',
     features: [
-      '4K pinned scroll-driven galloping horse video hero synced smoothly to user scroll',
+      'Vibrant full-bleed showjumping hero crafted cleanly across mobile, tablet & desktop',
       'Five-column architectural photo menu & vector equestrian brand logo marquee',
       'Curated discipline showcase and spacious resident schoolmaster gallery'
     ]

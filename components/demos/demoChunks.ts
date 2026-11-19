@@ -14,10 +14,8 @@ export type DemoId =
   | 'spa'
   | 'cafe';
 
-import {
-  SCROLL_POSTER_URL as VIBRANT_SCROLL_POSTER_URL,
-  prewarmVibrantScrollFrames
-} from './equestrian-vibrant/equestrianScrollLoader';
+const VIBRANT_HERO_IMAGE_URL =
+  '/assets/aistudio/Gemini_Generated_Image_sma90vsma90vsma9_300587b3.jpg';
 
 export const demoChunks: Record<DemoId, () => Promise<unknown>> = {
   landscaping: () => import('./landscaping/Home'),
@@ -108,8 +106,7 @@ export const warmDemoChunk = (id: DemoId) => {
   } else if (id === 'equestrian-luxury') {
     warmVideoAsset('/assets/aistudio/gemini_generated_video_7de186c5_667a4438.mp4');
   } else if (id === 'equestrian-vibrant') {
-    warmImageAsset(VIBRANT_SCROLL_POSTER_URL);
-    prewarmVibrantScrollFrames();
+    warmImageAsset(VIBRANT_HERO_IMAGE_URL);
   }
 
   if (warmed.has(id)) return;
@@ -122,8 +119,7 @@ export const warmDemoChunk = (id: DemoId) => {
 if (typeof window !== 'undefined') {
   const prewarmKeyDemos = () => {
     warmImageAsset('/images/projects/landscaping-preview.webp');
-    warmImageAsset(VIBRANT_SCROLL_POSTER_URL);
-    prewarmVibrantScrollFrames();
+    warmImageAsset(VIBRANT_HERO_IMAGE_URL);
     warmVideoAsset(
       '/images/projects/landscaping-minimal-hero-4k.mp4',
       '/images/projects/landscaping-minimal-video-poster.jpg'
